@@ -1,0 +1,56 @@
+/* [TAGS LIST] */
+#tag_dock {
+  max-width: 400px;
+  padding: 20px;
+  background: #f7f7f7;
+}
+#tag_dock h3 {
+  margin: 0 0 3px 0;
+  color: #bf4646;
+}
+#tag_list {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+#tag_list div.tag {
+  box-sizing: border-box;
+  font-size: 0.9em;
+  width: 30%;
+  margin: 3px;
+  padding: 5px;
+  border: 1px solid #aaa;
+  background: #e8f2ff;
+}
+#tag_list div:hover {
+  background: #ffe8e8;
+  cursor: pointer;
+}
+
+/* [TAGS FORM] */
+#tag_dock label, #tag_dock input {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+}
+#tag_dock label {
+  font-size: 0.9em;
+  color: #888;
+}
+#tag_dock input {
+  padding: 8px;
+  font-size: 1em;
+}
+#tag_dock input[type=button] {
+  background: #2f75b7;
+  color: #fff;
+  cursor: pointer;
+  border: 0;
+}
+
+/* [DOES NOT MATTER] */
+html, body {
+  font-family: arial, sans-serif;
+}

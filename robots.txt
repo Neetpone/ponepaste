@@ -1,0 +1,24 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /includes/
+Disallow: /theme/
+Disallow: /langs/
+Disallow: /tmp/
+Disallow: /oauth/
+Disallow: /mail/
+
+User-Agent: Googlebot
+Disallow: /
+Disallow: /admin/
+
+User-Agent: Googlebot-Mobile
+Disallow: /
+Disallow: /admin/
+
+User-Agent: Mediapartners-Google
+Disallow: /
+Disallow: /admin/
+
+User-Agent: msnbot
+Disallow: /
+Disallow: /admin/
