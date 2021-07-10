@@ -115,7 +115,7 @@ while ($row = $site_view_rows->fetch()) {
     $last_id = $row['@last_id := MAX(id)'];
 }
 
-$site_view_last = $conn->query("SELECT * FROM page_view WHERE id='?'");
+$site_view_last = $conn->query("SELECT * FROM page_view WHERE id=?");
 $site_view_last->execute([$last_id]);      
 while ($row = $site_view_last->fetch()) {
     $last_date = $row['date'];
@@ -123,7 +123,7 @@ while ($row = $site_view_last->fetch()) {
 
 if ($last_date == $date) {
     if (str_contains($data_ip, $ip)) {
-        $statement = $conn->prepare("SELECT * FROM page_view WHERE id ='?'");
+        $statement = $conn->prepare("SELECT * FROM page_view WHERE id =?");
         $statement->execute([$last_id]);        
         while ($row = $statement->fetch()) {
             $last_tpage = Trim($row['tpage']);
@@ -131,10 +131,10 @@ if ($last_date == $date) {
         $last_tpage = $last_tpage + 1;
         
         // IP already exists, Update view count
-        $statement = $conn->prepare("UPDATE page_view SET tpage=? WHERE id='?'");
+        $statement = $conn->prepare("UPDATE page_view SET tpage=? WHERE id=?");
         $statement->execute([$last_tpage,$last_id]);  
     } else {
-        $statement = $conn->prepare("SELECT * FROM page_view WHERE id ='?'");
+        $statement = $conn->prepare("SELECT * FROM page_view WHERE id =?");
         $statement->execute([$last_id]);  
         while ($row = $statement->fetch()) {
             $last_tpage  = Trim($row['tpage']);
@@ -144,7 +144,7 @@ if ($last_date == $date) {
         $last_tvisit = $last_tvisit + 1;
       
         // Update both tpage and tvisit.
-        $statement = $conn->prepare("UPDATE page_view SET tpage=?,tvisit=? WHERE id ='?'");
+        $statement = $conn->prepare("UPDATE page_view SET tpage=?,tvisit=? WHERE id =?");
         $statement->execute([$last_tpage,$last_tvisit,$last_id]); 
         file_put_contents('tmp/temp.tdata', $data_ip . "\r\n" . $ip);
     }
@@ -154,7 +154,7 @@ if ($last_date == $date) {
     $data_ip = "";
     
     // New date is created
-    $statement = $conn->prepare("INSERT INTO page_view (date,tpage,tvisit) VALUES ('?','1','1')");
+    $statement = $conn->prepare("INSERT INTO page_view (date,tpage,tvisit) VALUES (?,'1','1')");
     $statement->execute([$date]); 
     // Update the IP
     file_put_contents('tmp/temp.tdata', $data_ip . "\r\n" . $ip);

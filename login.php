@@ -158,7 +158,7 @@ if ($last_date == $date) {
     $data_ip = "";
     
     // New date is created
-    $statement = $conn->prepare("INSERT INTO page_view (date,tpage,tvisit) VALUES ('?','1','1')");
+    $statement = $conn->prepare("INSERT INTO page_view (date,tpage,tvisit) VALUES (?,'1','1')");
     $statement->execute([$date]); 
     // Update the IP
     file_put_contents('tmp/temp.tdata', $data_ip . "\r\n" . $ip);
@@ -274,7 +274,7 @@ if ($_SERVER['REQUEST_METHOD'] == POST) {
             $username = htmlentities(trim($_POST['username']));
             $password = $_POST['password'];
             if ($username != null && $password != null) {
-                $query  = $conn->prepare("SELECT * FROM users WHERE username='?'");
+                $query  = $conn->prepare("SELECT * FROM users WHERE username=?");
                 $query->execute([$username]);
                 if ($query->fetchColumn() > 0) {
                     // Username found

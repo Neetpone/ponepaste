@@ -153,7 +153,7 @@ while ($row = $site_view_rows->fetch()) {
     $last_id = $row['@last_id := MAX(id)'];
 }
 
-$site_view_last = $conn->query("SELECT * FROM page_view WHERE id='?'");
+$site_view_last = $conn->prepare("SELECT * FROM page_view WHERE id = ?");
 $site_view_last->execute([$last_id]);      
 while ($row = $site_view_last->fetch()) {
     $last_date = $row['date'];
@@ -161,7 +161,7 @@ while ($row = $site_view_last->fetch()) {
 
 if ($last_date == $date) {
     if (str_contains($data_ip, $ip)) {
-        $statement = $conn->prepare("SELECT * FROM page_view WHERE id ='?'");
+        $statement = $conn->prepare("SELECT * FROM page_view WHERE id = ?");
         $statement->execute([$last_id]);        
         while ($row = $statement->fetch()) {
             $last_tpage = Trim($row['tpage']);
@@ -169,10 +169,10 @@ if ($last_date == $date) {
         $last_tpage = $last_tpage + 1;
         
         // IP already exists, Update view count
-        $statement = $conn->prepare("UPDATE page_view SET tpage=? WHERE id='?'");
+        $statement = $conn->prepare("UPDATE page_view SET tpage=? WHERE id = ?");
         $statement->execute([$last_tpage,$last_id]);  
     } else {
-        $statement = $conn->prepare("SELECT * FROM page_view WHERE id ='?'");
+        $statement = $conn->prepare("SELECT * FROM page_view WHERE id = ?");
         $statement->execute([$last_id]);  
         while ($row = $statement->fetch()) {
             $last_tpage  = Trim($row['tpage']);
@@ -182,7 +182,7 @@ if ($last_date == $date) {
         $last_tvisit = $last_tvisit + 1;
       
         // Update both tpage and tvisit.
-        $statement = $conn->prepare("UPDATE page_view SET tpage=?,tvisit=? WHERE id ='?'");
+        $statement = $conn->prepare("UPDATE page_view SET tpage = ?, tvisit = ? WHERE id = ?");
         $statement->execute([$last_tpage,$last_tvisit,$last_id]); 
         file_put_contents('tmp/temp.tdata', $data_ip . "\r\n" . $ip);
     }
@@ -192,7 +192,7 @@ if ($last_date == $date) {
     $data_ip = "";
     
     // New date is created
-    $statement = $conn->prepare("INSERT INTO page_view (date,tpage,tvisit) VALUES ('?','1','1')");
+    $statement = $conn->prepare("INSERT INTO page_view (date,tpage,tvisit) VALUES (?,'1','1')");
     $statement->execute([$date]); 
     // Update the IP
     file_put_contents('tmp/temp.tdata', $data_ip . "\r\n" . $ip);
@@ -337,12 +337,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ( isset($_POST['edit'] ) ) {
             if (isset($_SESSION['username'])) {
             $edit_paste_id = $_POST['paste_id'];
-            $statement = $conn->prepare("UPDATE pastes SET title='?',content='?',visible='?',code='?',expiry='?',password='?',encrypt='?',member='?',ip='?',tagsys='?',now_time='?' ,timeedit='?' WHERE id = '?'");
+            $statement = $conn->prepare("UPDATE pastes SET title=?,content=?,visible=?,code=?,expiry=?,password=?,encrypt=?,member=?,ip=?,tagsys=?,now_time=? ,timeedit=? WHERE id = '?'");
             $statement->execute([$p_title,$p_content,$p_visible,$p_code,$expires,$p_password,$p_encrypt,$p_member,$ip,$p_tagsys,$now_time,$timeedit,$edit_paste_id]); 
         }}
         else {
              $statement = $conn->prepare("INSERT INTO pastes (title,content,visible,code,expiry,password,encrypt,member,date,ip,now_time,views,s_date,tagsys) VALUES 
-            ('?','?','?','?','?','?',?',?','?','?','?','0','?','?')");
+            (?,?,?,?,?,?,?,?,?,?,?,'0',?,?)");
             $statement->execute([$p_title,$p_content,$p_visible,$p_code,$expires,$p_password,$p_encrypt,$p_member,$p_date,$ip,$now_time,$date,$p_tagsys]); 
             
         }
