@@ -15,10 +15,8 @@
 
 session_start();
 
-if (isset($_SESSION['login'])) {
-// Do nothing	
-} else {
-    header("Location: .");
+if (!isset($_SESSION['login'])) {
+    header('Location: .');
     exit();
 }
 
@@ -38,99 +36,79 @@ $date = date('jS F Y');
 $ip   = $_SERVER['REMOTE_ADDR'];
 require_once('../config.php');
 require_once('../includes/functions.php');
-$con = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
 
-if (mysqli_connect_errno()) {
-    $sql_error = mysqli_connect_error();
-    die("Unable connect to database");
-}
+$conn = new PDO(
+    "mysql:host=$db_host;dbname=$db_schema;charset=utf8",
+    $db_user,
+    $db_pass,
+    $db_opts
+);
 
-$query = "SELECT @last_id := MAX(id) FROM admin_history";
+$query = $conn->query('SELECT @last_id := MAX(id) FROM admin_history');
 
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
+while ($row = $query->fetch()) {
     $last_id = $row['@last_id := MAX(id)'];
 }
 
-$query  = "SELECT * FROM admin_history WHERE id=" . Trim($last_id);
-$result = mysqli_query($con, $query);
+$query = $conn->prepare('SELECT ip, last_date FROM admin_history WHERE id = ?');
+$query->execute([$last_id]);
 
-while ($row = mysqli_fetch_array($result)) {
+while ($row = $query->fetch()) {
     $last_date = $row['last_date'];
     $last_ip   = $row['ip'];
 }
 
-if ($last_ip == $ip) {
-    if ($last_date == $date) {
 
-    } else {
-        $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
-        mysqli_query($con, $query);
-    }
-} else {
-    $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
-    mysqli_query($con, $query);
+if ($last_ip !== $ip || $last_date !== $date) {
+    $conn->prepare('INSERT INTO admin_history (ip, last_date) VALUES (?, ?)')->execute([$date, $ip]);
 }
 
-$query  = "SELECT * FROM page_view";
-$result = mysqli_query($con, $query);
 
-while ($row = mysqli_fetch_array($result)) {
-    $total_page  = isset($total_page) + Trim($row['tpage']);
-    $total_visit = isset($total_visit) + Trim($row['tvisit']);
-}
 
-$query = "SELECT @last_id := MAX(id) FROM page_view";
+$query = $conn->query("SELECT @last_id := MAX(id) FROM page_view");
+$row = $query->fetch(PDO::FETCH_NUM);
+$page_last_id = intval($row[0]);
 
-$result = mysqli_query($con, $query);
 
-while ($row = mysqli_fetch_array($result)) {
-    $page_last_id = $row['@last_id := MAX(id)'];
-}
+$query = $conn->prepare('SELECT tpage, tvisit FROM page_view WHERE id = ?');
+$query->execute([$page_last_id]);
 
-$query  = "SELECT * FROM page_view WHERE id=" . Trim($page_last_id);
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
+while ($row = $query->fetch()) {
     $today_page  = $row['tpage'];
     $today_visit = $row['tvisit'];
 }
 
-$query  = "SELECT * FROM site_info";
-$result = mysqli_query($con, $query);
+$query = $conn->query('SELECT email FROM site_info');
 
-while ($row = mysqli_fetch_array($result)) {
+while ($row = $query->fetch()) {
     $admin_email = Trim($row['email']);
 }
 
 $c_date = date('jS F Y');
-$query  = "SELECT id, username, date, ip FROM users where date='$c_date'";
-$result = mysqli_query($con, $query);
 
-while ($row = mysqli_fetch_array($result)) {
-    $today_users_count = $today_users_count + 1;
-}
+/* Number of users today */
+$query = $conn->prepare('SELECT COUNT(*) FROM users WHERE `date` = ?');
+$query->execute([$c_date]);
+$today_users_count = intval($query->fetch(PDO::FETCH_NUM)[0]);
 
-$query  = "SELECT id, ip, title, date, now_time, s_date, views, member FROM pastes where s_date='$c_date'";
-$result = mysqli_query($con, $query);
+/* Number of pastes today */
+$query = $conn->prepare('SELECT COUNT(*) FROM pastes where s_date = ?');
+$query->execute([$c_date]);
+$today_pastes_count = intval($query->fetch(PDO::FETCH_NUM)[0]);
 
-while ($row = mysqli_fetch_array($result)) {
-    $today_pastes_count = $today_pastes_count + 1;
-}
 for ($loop = 0; $loop <= 6; $loop++) {
     $myid   = $page_last_id - $loop;
-    $query  = "SELECT * FROM page_view WHERE id='$myid'";
-    $result = mysqli_query($con, $query);
-    
-    while ($row = mysqli_fetch_array($result)) {
+    $query  = $conn->prepare("SELECT date, tpage, tvisit FROM page_view WHERE id = ?");
+    $query->execute([$myid]);
+
+    while ($row = $query->fetch()) {
         $sdate = $row['date'];
         $sdate = str_replace(date('Y'), '', $sdate);
         $sdate = str_replace('January', 'Jan', $sdate);
         $sdate = str_replace('February', 'Feb', $sdate);
         $sdate = str_replace('March', 'Mar', $sdate);
         $sdate = str_replace('April', 'Apr', $sdate);
-        $sdate = str_replace('August', 'Aug', $sdate);
+        $sdate = str_replace('August',  'Aug', $sdate);
         $sdate = str_replace('September', 'Sep', $sdate);
         $sdate = str_replace('October', 'Oct', $sdate);
         $sdate = str_replace('November', 'Nov', $sdate);
@@ -233,8 +211,8 @@ for ($loop = 0; $loop <= 6; $loop++) {
 						</thead>
 						<tbody>
 						<?php
-						$res = getRecentadmin($con, 7);
-						while ($row = mysqli_fetch_array($res)) {
+						$res = getRecentadmin($conn, 7);
+						foreach ($res as $row) {
 							$title    = Trim($row['title']);
 							$p_id     = Trim($row['id']);
 							$p_date   = Trim($row['s_date']);
@@ -284,33 +262,20 @@ for ($loop = 0; $loop <= 6; $loop++) {
 						</thead>
 						<tbody>
 						<?php
-						$query = "SELECT @last_id := MAX(id) FROM users";
-						$result = mysqli_query($con, $query);
+                        $most_recent_users = $conn->query('SELECT id, username, date, ip FROM users ORDER BY id DESC LIMIT 7')->fetchAll();
+                        $last_id = intval(
+                                $conn->query('SELECT MAX(id) FROM users')->fetch(PDO::FETCH_NUM)[0]
+                        );
 
-						if($result) {
-							while ($row = mysqli_fetch_array($result)) {
-								$last_id = $row['@last_id := MAX(id)'];
-							}
-						}
-	
-						for ($uloop = 0; $uloop <= 6; $uloop++) {
-							$r_my_id = $last_id - $uloop;
-							$query   = "SELECT * FROM users WHERE id='$r_my_id'";
-							$result  = mysqli_query($con, $query);
-							
-							while ($row = mysqli_fetch_array($result)) {
-								$u_date   = $row['date'];
-								$ip       = $row['ip'];
-								$username = $row['username'];
-							}
-							echo "
+                        foreach ($most_recent_users as $user) {
+                            echo "
 										  <tr>
-											<td>$r_my_id</td>
-											<td>$username</td>
-											<td>$u_date</td>
-											<td><span class='label label-default'>$ip</span></td>
+											<td>${user['id']}</td>
+											<td>${user['username']}</td>
+											<td>${user['date']}</td>
+											<td><span class='label label-default'>${user['ip']}</span></td>
 										  </tr> ";
-						}
+                        }
 
 						?>
 						</tbody>
@@ -344,8 +309,8 @@ for ($loop = 0; $loop <= 6; $loop++) {
 						</thead>
 						<tbody>
 						<?php
-						$res = getreports($con, 7);
-						while ($row = mysqli_fetch_array($res)) {
+						$res = getreports($conn, 7);
+						foreach ($res as $row) {
 							$r_paste    = Trim($row['p_report']);
 							$r_id     = Trim($row['id']);
 							$r_date   = Trim($row['t_report']);

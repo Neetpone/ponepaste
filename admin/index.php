@@ -20,18 +20,18 @@ session_start();
 
 require_once ('../config.php');
 
-$con = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
-if (mysqli_connect_errno()) {
-	$sql_error = mysqli_connect_error();
-	die("Unable connect to database");
-}
+$conn = new PDO(
+    "mysql:host=$db_host;dbname=$db_schema;charset=utf8",
+    $db_user,
+    $db_pass,
+    $db_opts
+);
 
-$query =  "SELECT * FROM admin";
-$result = mysqli_query($con,$query);
+$query  = $conn->query('SELECT user, pass FROM admin');
 
-while($row = mysqli_fetch_array($result)) {
-	$adminid =  Trim($row['user']);
-	$password =   $row['pass'];
+while ($row = $query->fetch()) {
+    $adminid  = Trim($row['user']);
+    $password = Trim($row['pass']);
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {

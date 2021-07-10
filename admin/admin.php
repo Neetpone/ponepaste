@@ -37,32 +37,35 @@ if (isset($_GET['logout'])) {
 $date = date('jS F Y');
 $ip   = $_SERVER['REMOTE_ADDR'];
 require_once('../config.php');
-$con = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
 
-if (mysqli_connect_errno()) {
-    $sql_error = mysqli_connect_error();
-    die("Unable connect to database");
-}
+$conn = new PDO(
+    "mysql:host=$db_host;dbname=$db_schema;charset=utf8",
+    $db_user,
+    $db_pass,
+    $db_opts
+);
 
 $query = "SELECT @last_id := MAX(id) FROM admin_history";
 
-$result = mysqli_query($con, $query);
+$query = $conn->query('SELECT @last_id := MAX(id) FROM admin_history');
 
-while ($row = mysqli_fetch_array($result)) {
+while ($row = $query->fetch()) {
     $last_id = $row['@last_id := MAX(id)'];
 }
 
-$query  = "SELECT * FROM admin_history WHERE id=" . Trim($last_id);
-$result = mysqli_query($con, $query);
+$query = $conn->prepare('SELECT ip, last_date FROM admin_history WHERE id = ?');
+$query->execute([$last_id]);
 
-while ($row = mysqli_fetch_array($result)) {
+while ($row = $query->fetch()) {
     $last_date = $row['last_date'];
     $last_ip   = $row['ip'];
 }
 
+/* This seems to take the same path in both cases and be overly convoluted, so I rewrote it below but kept this in case I
+ * am missing something...
 if ($last_ip == $ip) {
     if ($last_date == $date) {
-        
+
     } else {
         $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
         mysqli_query($con, $query);
@@ -70,13 +73,15 @@ if ($last_ip == $ip) {
 } else {
     $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
     mysqli_query($con, $query);
+}*/
+
+if ($last_ip !== $ip || $last_date !== $date) {
+    $conn->prepare('INSERT INTO admin_history (ip, last_date) VALUES (?, ?)')->execute([$date, $ip]);
 }
 
+$query  = $conn->query('SELECT user, pass FROM admin');
 
-$query  = "SELECT * FROM admin";
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
+while ($row = $query->fetch()) {
     $adminid  = Trim($row['user']);
     $password = Trim($row['pass']);
 }
@@ -183,24 +188,21 @@ while ($row = mysqli_fetch_array($result)) {
 													<th>IP</th>
 												</tr>
 												<?php
-												$rec_limit = 10;
-												$query     = "SELECT count(id) FROM admin_history";
-												$retval    = mysqli_query($con, $query);
+                                                $rec_limit = 10;
 
-												$row       = mysqli_fetch_array($retval);
-												$rec_count = Trim($row[0]);
+                                                $query = $conn->query('SELECT COUNT(*) FROM admin_history');
+												$row = $query->fetch(PDO::FETCH_NUM);
+												$rec_count = $row[0];
 
-												$sql      = "SELECT * FROM admin_history ORDER BY `id` DESC LIMIT $rec_limit";
-												$result   = mysqli_query($con, $sql);
+												$query = $conn->prepare('SELECT ip, last_date FROM admin_history ORDER BY `id` LIMIT ?');
+												$query->execute([$rec_limit]);
 
-												// Loop through each record
-												while ($row = mysqli_fetch_array($result)) {
-													// Populate and display result data in each row
+												while ($row = $query->fetch()) {
 													echo '<tr>';
 													echo '<td>' . $row['last_date'] . '</td>';
 													echo '<td>' . $row['ip'] . '</td>';
+													echo '</tr>';
 												}
-												echo '</tr>';
 												?>
 											</tbody>
 										</table>

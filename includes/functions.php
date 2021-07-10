@@ -83,12 +83,11 @@ function checkFavorite($paste_id, $user_id, $conn) {
         }
       }
 
- function getreports($conn, $count = 10)
-{
-    $limit  = $count ? "limit $count" : "";
-    $query  = "SELECT * FROM user_reports $count";
-    $result = mysqli_query($conn, $query);
-    return $result;
+      function getreports($conn, $count = 10) {
+    $query = $conn->prepare('SELECT * FROM user_reports LIMIT ?');
+    $query->execute([$count]);
+
+    return $query->fetchAll();
 }   
   
   function sandwitch($str){
@@ -233,13 +232,10 @@ LIMIT ?");
 
 function getRecentadmin($conn, $count = 5)
 {
-    $limit  = $count ? "limit $count" : "";
-    $query  = "SELECT id, ip, title, date, now_time, s_date, views, member 
-FROM pastes
-ORDER BY id DESC
-LIMIT 0 , $count";
-    $result = mysqli_query($conn, $query);
-    return $result;
+    $query = $conn->prepare('SELECT id, ip title, date, now_time, s_date, views, member FROM pastes ORDER BY id DESC LIMIT 0, ?');
+    $query->execute([$count]);
+
+    return $query->fetchAll();
 }    
 function getpopular($conn, $count = 10)
 {
