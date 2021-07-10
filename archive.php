@@ -29,13 +29,6 @@ $total_untagged = intval($conn->query("SELECT COUNT(*) from pastes WHERE tagsys 
 
 updatePageViews($conn);
 
-// Ads
-$site_ads_rows = $conn->query('SELECT * FROM ads WHERE id = 1');
-while ($row = $site_ads_rows->fetch()) {
-    $text_ads = Trim($row['text_ads']);
-    $ads_1    = Trim($row['ads_1']);
-    $ads_2    = Trim($row['ads_2']);
-}
 
 $p_title = $lang['archive']; // "Pastes Archive";
 

@@ -315,7 +315,11 @@ $(document).ready(function () {
                     </tbody>
                 </table>
                 </div>
-                <?php echo $ads_2; ?>
+                <?php
+                if (isset($site_ads)) {
+                    echo $site_ads['ads_2'];
+                }
+                ?>
             </div>
             <?php require_once('theme/' . $default_theme . '/sidebar.php'); ?>
         </div>

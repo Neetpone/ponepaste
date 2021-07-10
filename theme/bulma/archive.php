@@ -67,7 +67,12 @@ $(document).ready(function () {
 								<tbody>
 								</tbody>
 							</table>
-							<?php echo $ads_2; ?>
+
+                <?php
+                if (isset($site_ads)) {
+                    echo $site_ads['ads_2'];
+                }
+                ?>
 			</div>
 		<?php }
 				if ($privatesite == "on") { // Remove sidebar if site is private

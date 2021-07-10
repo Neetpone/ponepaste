@@ -22,7 +22,7 @@ session_start();
 header('Content-Type: text/html; charset=utf-8');
 
 // Required functions
-require_once('config.php');
+require_once('includes/common.php');
 require_once('includes/geshi.php');
 require_once('includes/functions.php');
 
@@ -48,128 +48,17 @@ if (isset($_GET['id'])) {
 // Prevent SQLInjection
 settype($paste_id, 'integer');
 
+updatePageViews($conn);
 
-// Database Connection
-$conn = new PDO(
-    "mysql:host=$db_host;dbname=$db_schema;charset=utf8",
-    $db_user,
-    $db_pass,
-    $db_opts
-);
-
-
-// Get site info
-$site_info_rows = $conn->query('SELECT * FROM site_info');
-while ($row = $site_info_rows->fetch()) {
-    $title				= Trim($row['title']);
-    $des				= Trim($row['des']);
-    $baseurl    		= Trim($row['baseurl']);
-    $keyword			= Trim($row['keyword']);
-    $site_name			= Trim($row['site_name']);
-    $email				= Trim($row['email']);
-    $twit				= Trim($row['twit']);
-    $face				= Trim($row['face']);
-    $gplus				= Trim($row['gplus']);
-    $ga					= Trim($row['ga']);
-    $additional_scripts	= Trim($row['additional_scripts']);
-}
-
-// Set theme and language
-$site_theme_rows = $conn->query('SELECT * FROM interface WHERE id="1"');
-while ($row = $site_theme_rows->fetch()) {
-    $default_lang  = Trim($row['lang']);
-    $default_theme = Trim($row['theme']);
-}
-require_once("langs/$default_lang");
-
-
-// Check if IP is banned
-if ( is_banned($conn, $ip) ) die($lang['banned']); // "You have been banned from ".$site_name;
-
-
-// Current date & user IP
-$date    = date('jS F Y');
-$ip      = $_SERVER['REMOTE_ADDR'];
-$data_ip = file_get_contents('tmp/temp.tdata');
-
-// Ads
-$site_ads_rows = $conn->query('SELECT * FROM ads WHERE id="1"');
-while ($row = $site_ads_rows->fetch()) {
-    $text_ads = Trim($row['text_ads']);
-    $ads_1    = Trim($row['ads_1']);
-    $ads_2    = Trim($row['ads_2']);
-}
-
-// Logout
-if (isset($_GET['logout'])) {
-	header('Location: ' . $_SERVER['HTTP_REFERER']);
-    unset($_SESSION['token']);
-    unset($_SESSION['oauth_uid']);
-    unset($_SESSION['username']);
-    session_destroy();
-}
-
-// Page views
-$site_view_rows = $conn->query("SELECT @last_id := MAX(id) FROM page_view");
-while ($row = $site_view_rows->fetch()) {
-    $last_id = $row['@last_id := MAX(id)'];
-}
-
-$site_view_last = $conn->query("SELECT * FROM page_view WHERE id=?");
-$site_view_last->execute([$last_id]);      
-while ($row = $site_view_last->fetch()) {
-    $last_date = $row['date'];
-}
-
-if ($last_date == $date) {
-    if (str_contains($data_ip, $ip)) {
-        $statement = $conn->prepare("SELECT * FROM page_view WHERE id =?");
-        $statement->execute([$last_id]);        
-        while ($row = $statement->fetch()) {
-            $last_tpage = Trim($row['tpage']);
-        }
-        $last_tpage = $last_tpage + 1;
-        
-        // IP already exists, Update view count
-        $statement = $conn->prepare("UPDATE page_view SET tpage=? WHERE id=?");
-        $statement->execute([$last_tpage,$last_id]);  
-    } else {
-        $statement = $conn->prepare("SELECT * FROM page_view WHERE id =?");
-        $statement->execute([$last_id]);  
-        while ($row = $statement->fetch()) {
-            $last_tpage  = Trim($row['tpage']);
-            $last_tvisit = Trim($row['tvisit']);
-        }
-        $last_tpage  = $last_tpage + 1;
-        $last_tvisit = $last_tvisit + 1;
-      
-        // Update both tpage and tvisit.
-        $statement = $conn->prepare("UPDATE page_view SET tpage=?,tvisit=? WHERE id =?");
-        $statement->execute([$last_tpage,$last_tvisit,$last_id]); 
-        file_put_contents('tmp/temp.tdata', $data_ip . "\r\n" . $ip);
-    }
-} else {
-    // Delete the file and clear data_ip
-    unlink("tmp/temp.tdata");
-    $data_ip = "";
-    
-    // New date is created
-    $statement = $conn->prepare("INSERT INTO page_view (date,tpage,tvisit) VALUES (?,'1','1')");
-    $statement->execute([$date]); 
-    // Update the IP
-    file_put_contents('tmp/temp.tdata', $data_ip . "\r\n" . $ip);
-    
-}
 //Get fav count
 $get_fav_count =  $conn->prepare("SELECT count(f_paste) as total FROM pins WHERE f_paste=?");
 $get_fav_count->execute([$paste_id]); 
-    while ($row = $get_fav_count->fetch()) {
+while ($row = $get_fav_count->fetch()) {
     $fav_count = $row['total'];
-    }
+}
 
 
-//Get paste info
-
+// Get paste info
 $get_paste_details = $conn->prepare("SELECT * FROM pastes WHERE id=?");
 $get_paste_details->execute([$paste_id]); 
     if ($get_paste_details->fetchColumn() > 0) {

@@ -329,11 +329,13 @@
 								</nav>
 							</div>
 							<div class="column is-3">
-								<!-- $text_ads -->
-								<?php if (isset($_SESSION['username'])) { ?>
-								<?php } else { ?>
-									<?php echo $text_ads; ?>
-								<?php } ?>
+                                <!-- $text_ads -->
+                                <?php
+                                    // don't display ads for logged in users.
+                                    if (isset($site_ads) && !isset($_SESSION['username'])) {
+                                        echo $site_ads['text_ads'];
+                                    }
+                                ?>
 							</div>
 							<div class="column is-4">
 								<!-- ReCaptcha & Captcha -->

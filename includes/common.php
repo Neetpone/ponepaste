@@ -15,6 +15,14 @@ function getSiteLangAndTheme($conn) {
     return $conn->query('SELECT lang, theme FROM interface LIMIT 1')->fetch();
 }
 
+function getSitePermissions($conn) {
+    return $conn->query('SELECT * FROM site_permissions LIMIT 1')->fetch();
+}
+
+function getSiteAds($conn) {
+    return $conn->query('SELECT text_ads, ads_1, ads_2 FROM ads LIMIT 1')->fetch();
+}
+
 function updatePageViews($conn) {
     $ip = $_SERVER['REMOTE_ADDR'];
     $date    = date('jS F Y');
@@ -86,6 +94,18 @@ if ($lang_and_theme) {
     $default_theme = 'bulma';
 }
 
+// site permissions
+$site_permissions = getSitePermissions($conn);
+
+if ($site_permissions) {
+    $siteprivate = $site_permissions['siteprivate'];
+} else {
+    $siteprivate = 'off';
+}
+
+$privatesite = $siteprivate;
+
+
 // Prevent a potential LFI (you never know :p)
 if (in_array($default_lang, scandir('langs/'))) {
     require_once("langs/$default_lang");
@@ -104,3 +124,5 @@ if (isset($_GET['logout'])) {
     unset($_SESSION['pic']);
     session_destroy();
 }
+
+$site_ads = getSiteAds($conn);

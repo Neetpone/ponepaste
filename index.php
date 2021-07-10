@@ -69,14 +69,6 @@ header('Content-Type: text/html; charset=utf-8');
 $date    = date('jS F Y');
 $ip      = $_SERVER['REMOTE_ADDR'];
 
-// Ads
-$site_ads_rows = $conn->query('SELECT * FROM ads WHERE id="1"');
-while ($row = $site_ads_rows->fetch()) {
-    $text_ads = Trim($row['text_ads']);
-    $ads_1    = Trim($row['ads_1']);
-    $ads_2    = Trim($row['ads_2']);
-}
-
 // Sitemap
 $site_sitemap_rows = $conn->query('SELECT * FROM sitemap_options WHERE id="1"');
 while ($row = $site_sitemap_rows->fetch()) {

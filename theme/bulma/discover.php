@@ -348,8 +348,8 @@
 
     <!-- End Panel -->
 <?php } if ($privatesite == "on") { // Remove sidebar if site is private
-	} else {
-		echo $ads_2;
+	} else if (isset($site_ads)) {
+		echo $site_ads['ads_2'];
 	}	
 ?>
 </div>

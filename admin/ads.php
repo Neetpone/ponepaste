@@ -12,70 +12,33 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License in GPL.txt for more details.
  */
- 
-session_start();
 
-if (isset($_SESSION['login'])) {
-// Do nothing	
+define('IN_ADMIN', 1);
+require_once('common.php');
+
+updateAdminHistory($conn);
+
+$row = $conn->query('SELECT text_ads, ads_1, ads_2 FROM ads LIMIT 1')->fetch();
+
+if ($row) {
+    $text_ads = trim($row['text_ads']);
+    $ads_1 = trim($row['ads_1']);
+    $ads_2 = trim($row['ads_2']);
 } else {
-    header("Location: .");
-    exit();
+    $text_ads = '';
+    $ads_1 = '';
+    $ads_2 = '';
 }
 
-if (isset($_GET['logout'])) {
-    if (isset($_SESSION['login']))
-        unset($_SESSION['login']);
-    
-    session_destroy();
-    header("Location: .");
-    exit();
-}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $text_ads = trim($_POST['text_ads']);
+    $ads_1    = trim($_POST['ads_1']);
+    $ads_2    = trim($_POST['ads_2']);
 
-$date = date('jS F Y');
-$ip   = $_SERVER['REMOTE_ADDR'];
-require_once('../config.php');
-$con = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
-
-if (mysqli_connect_errno()) {
-    $sql_error = mysqli_connect_error();
-    die("Unable connect to database");
-}
-
-$query = "SELECT @last_id := MAX(id) FROM admin_history";
-
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $last_id = $row['@last_id := MAX(id)'];
-}
-
-$query  = "SELECT * FROM admin_history WHERE id=" . Trim($last_id);
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $last_date = $row['last_date'];
-    $last_ip   = $row['ip'];
-}
-
-if ($last_ip == $ip) {
-    if ($last_date == $date) {
-        
-    } else {
-        $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
-        mysqli_query($con, $query);
-    }
-} else {
-    $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
-    mysqli_query($con, $query);
-}
-
-$query  = "SELECT * FROM ads WHERE id='1'";
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $text_ads = Trim($row['text_ads']);
-    $ads_1    = Trim($row['ads_1']);
-    $ads_2    = Trim($row['ads_2']);
+    $conn->prepare('UPDATE ads SET text_ads = ?, ads_1 = ?, ads_2 = ? WHERE id = 1')->execute([$text_ads, $ads_1, $ads_2]);
+    $msg = '<div class="paste-alert alert3">
+					 Ads saved
+					 </div>';
 }
 ?>
 
@@ -117,29 +80,6 @@ while ($row = mysqli_fetch_array($result)) {
 			<!-- Start Menu -->
         <?php include 'menu.php';?>
 			<!-- End Menu -->
-			
-			<?php
-			if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-				$ads_1    = Trim($_POST['ads_1']);
-				$ads_2    = Trim($_POST['ads_2']);
-				$text_ads = Trim($_POST['text_ads']);
-				
-				$query = "UPDATE ads SET text_ads='$text_ads', ads_1='$ads_1', ads_2='$ads_2' WHERE id='1'";
-				mysqli_query($con, $query);
-				
-				if (mysqli_errno($con)) {
-					$msg = '<div class="paste-alert alert6">
-				 ' . mysqli_error($con) . '
-				 </div>';
-					
-				} else {
-					$msg = '<div class="paste-alert alert3">
-					 Ads saved
-					 </div>';
-				}
-			}
-			?>  
-    
 			<!-- Start Ads -->
 			<div class="row">
 				<div class="col-md-12">
