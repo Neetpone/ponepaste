@@ -137,21 +137,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 }
 
-// Escape from quotes
-if (get_magic_quotes_gpc()) {
-    function callback_stripslashes(&$val, $name)
-    {
-        if (get_magic_quotes_gpc())
-            $val = stripslashes($val);
-    }
-    if (count($_GET))
-        array_walk($_GET, 'callback_stripslashes');
-    if (count($_POST))
-        array_walk($_POST, 'callback_stripslashes');
-    if (count($_COOKIE))
-        array_walk($_COOKIE, 'callback_stripslashes');
-}
-
 // Logout
 if (isset($_GET['logout'])) {
 	header('Location: ' . $_SERVER['HTTP_REFERER']);
