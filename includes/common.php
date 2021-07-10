@@ -1,6 +1,6 @@
 <?php
 if (!defined('IN_PONEPASTE')) {
-    die();
+    die('This file may not be accessed directly.');
 }
 
 require_once('config.php');
@@ -13,6 +13,43 @@ function getSiteInfo($conn) {
 
 function getSiteLangAndTheme($conn) {
     return $conn->query('SELECT lang, theme FROM interface LIMIT 1')->fetch();
+}
+
+function updatePageViews($conn) {
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $date    = date('jS F Y');
+    $data_ip = file_get_contents('tmp/temp.tdata');
+
+    $last_page_view = $conn->query('SELECT * FROM page_view ORDER BY id DESC LIMIT 1')->fetch();
+    $last_date = $last_page_view['date'];
+
+    if ($last_date == $date) {
+        if (str_contains($data_ip, $ip)) {
+            $last_tpage = intval($last_page_view['tpage']) + 1;
+
+            // IP already exists, Update view count
+            $statement = $conn->prepare("UPDATE page_view SET tpage = ? WHERE id = ?");
+            $statement->execute([$last_tpage, $last_page_view['id']]);
+        } else {
+            $last_tpage  = intval($last_page_view['tpage']) + 1;
+            $last_tvisit = intval($last_page_view['tvisit']) + 1;
+
+            // Update both tpage and tvisit.
+            $statement = $conn->prepare("UPDATE page_view SET tpage = ?,tvisit = ? WHERE id = ?");
+            $statement->execute([$last_tpage, $last_tvisit, $last_page_view['id']]);
+            file_put_contents('tmp/temp.tdata', $data_ip . "\r\n" . $ip);
+        }
+    } else {
+        // Delete the file and clear data_ip
+        unlink("tmp/temp.tdata");
+
+        // New date is created
+        $statement = $conn->prepare("INSERT INTO page_view (date, tpage, tvisit) VALUES (?, '1', '1')");
+        $statement->execute([$date]);
+
+        // Update the IP
+        file_put_contents('tmp/temp.tdata', $ip);
+    }
 }
 
 $conn = new PDO(
@@ -64,5 +101,6 @@ if (isset($_GET['logout'])) {
     unset($_SESSION['token']);
     unset($_SESSION['oauth_uid']);
     unset($_SESSION['username']);
+    unset($_SESSION['pic']);
     session_destroy();
 }

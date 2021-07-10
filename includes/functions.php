@@ -529,7 +529,7 @@ function embedView( $paste_id, $p_title, $p_conntent, $p_code, $title, $baseurl,
 function addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite)
 {
     $c_date    = date('Y-m-d');
-    $site_data = file_get_conntents("sitemap.xml");
+    $site_data = file_get_contents("sitemap.xml");
     $site_data = str_replace("</urlset>", "", $site_data);
 	// which protocol are we on
 	$protocol = paste_protocol();
@@ -550,7 +550,7 @@ function addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite)
 </urlset>';
 
     $full_map  = $site_data . $c_sitemap;
-    file_put_conntents("sitemap.xml", $full_map);
+    file_put_contents("sitemap.xml", $full_map);
 }
 function paste_protocol() {
 
