@@ -14,77 +14,13 @@
  */
 
 // PHP <5.5 compatibility
-require_once('../includes/password.php'); 
+require_once('../includes/password.php');
+define('IN_ADMIN', 1);
+require_once('common.php');
 
-session_start();
+$query  = $conn->query('SELECT user FROM admin LIMIT 1');
+$adminid = $query->fetch()['user'];
 
-if (isset($_SESSION['login'])) {
-// Do nothing	
-} else {
-    header("Location: .");
-    exit();
-}
-
-if (isset($_GET['logout'])) {
-    if (isset($_SESSION['login']))
-        unset($_SESSION['login']);
-    
-    session_destroy();
-    header("Location: .");
-    exit();
-}
-
-$date = date('jS F Y');
-$ip   = $_SERVER['REMOTE_ADDR'];
-require_once('../config.php');
-
-$conn = new PDO(
-    "mysql:host=$db_host;dbname=$db_schema;charset=utf8",
-    $db_user,
-    $db_pass,
-    $db_opts
-);
-
-$query = "SELECT @last_id := MAX(id) FROM admin_history";
-
-$query = $conn->query('SELECT @last_id := MAX(id) FROM admin_history');
-
-while ($row = $query->fetch()) {
-    $last_id = $row['@last_id := MAX(id)'];
-}
-
-$query = $conn->prepare('SELECT ip, last_date FROM admin_history WHERE id = ?');
-$query->execute([$last_id]);
-
-while ($row = $query->fetch()) {
-    $last_date = $row['last_date'];
-    $last_ip   = $row['ip'];
-}
-
-/* This seems to take the same path in both cases and be overly convoluted, so I rewrote it below but kept this in case I
- * am missing something...
-if ($last_ip == $ip) {
-    if ($last_date == $date) {
-
-    } else {
-        $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
-        mysqli_query($con, $query);
-    }
-} else {
-    $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
-    mysqli_query($con, $query);
-}*/
-
-if ($last_ip !== $ip || $last_date !== $date) {
-    $conn->prepare('INSERT INTO admin_history (ip, last_date) VALUES (?, ?)')->execute([$date, $ip]);
-}
-
-$query  = $conn->query('SELECT user, pass FROM admin');
-
-while ($row = $query->fetch()) {
-    $adminid  = Trim($row['user']);
-    $password = Trim($row['pass']);
-}
 ?>
 
 <!DOCTYPE html>

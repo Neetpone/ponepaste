@@ -12,63 +12,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License in GPL.txt for more details.
  */
-session_start();
+define('IN_ADMIN', 1);
+require_once('common.php');
 
-if (isset($_SESSION['login'])) {
-// Do nothing	
-} else {
-    header("Location: .");
-    exit();
-}
-
-if (isset($_GET['logout'])) {
-    if (isset($_SESSION['login']))
-        unset($_SESSION['login']);
-    
-    session_destroy();
-    header("Location: .");
-    exit();
-}
-
-$date = date('jS F Y');
-$ip   = $_SERVER['REMOTE_ADDR'];
-require_once('../config.php');
-$con = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
-
-if (mysqli_connect_errno()) {
-    $sql_error = mysqli_connect_error();
-    die("Unable connect to database");
-}
-
-$query = "SELECT @last_id := MAX(id) FROM admin_history";
-
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $last_id = $row['@last_id := MAX(id)'];
-}
-
-$query  = "SELECT * FROM admin_history WHERE id=" . Trim($last_id);
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $last_date = $row['last_date'];
-    $last_ip   = $row['ip'];
-}
-
-if ($last_ip == $ip) {
-    if ($last_date == $date) {
-        
-    } else {
-        $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
-        mysqli_query($con, $query);
-    }
-} else {
-    $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
-    mysqli_query($con, $query);
-}
-
-
+updateAdminHistory($conn);
 ?>
 
 <!DOCTYPE html>

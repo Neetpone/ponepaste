@@ -12,67 +12,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License in GPL.txt for more details.
  */
-session_start();
+define('IN_ADMIN', 1);
+require_once('common.php');
 
-if (isset($_SESSION['login'])) {
-// Do nothing	
-} else {
-    header("Location: .");
-    exit();
-}
+updateAdminHistory($conn);
 
-if (isset($_GET['logout'])) {
-    if (isset($_SESSION['login']))
-        unset($_SESSION['login']);
-    
-    session_destroy();
-    header("Location: .");
-    exit();
-}
+$query  = $conn->query('SELECT * FROM site_info');
 
-$date = date('jS F Y');
-$ip   = $_SERVER['REMOTE_ADDR'];
-require_once('../config.php');
-$con = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
-
-if (mysqli_connect_errno()) {
-    $sql_error = mysqli_connect_error();
-    die("Unable connect to database");
-}
-
-$query = "SELECT @last_id := MAX(id) FROM admin_history";
-
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $last_id = $row['@last_id := MAX(id)'];
-}
-
-$query  = "SELECT * FROM admin_history WHERE id=" . Trim($last_id);
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $last_date = $row['last_date'];
-    $last_ip   = $row['ip'];
-}
-
-if ($last_ip == $ip) {
-    if ($last_date == $date) {
-        
-    } else {
-        $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
-        mysqli_query($con, $query);
-    }
-} else {
-    $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
-    mysqli_query($con, $query);
-}
-
-
-$query  = "SELECT * FROM site_info";
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
+if ($row = $query->fetch()) {
     $title				= Trim($row['title']);
     $des				= Trim($row['des']);
     $baseurl		    = Trim($row['baseurl']);
@@ -85,10 +32,11 @@ while ($row = mysqli_fetch_array($result)) {
     $ga					= Trim($row['ga']);
     $additional_scripts = Trim($row['additional_scripts']);
 }
-$query  = "SELECT * FROM captcha WHERE id='1'";
-$result = mysqli_query($con, $query);
 
-while ($row = mysqli_fetch_array($result)) {
+$query  = "SELECT * FROM captcha WHERE id = '1'";
+$result = $conn->query('SELECT * FROM captcha WHERE id = 1');
+
+if ($row = $result->fetch()) {
     $cap_e					= $row['cap_e'];
     $mode					= $row['mode'];
     $mul					= $row['mul'];
@@ -98,18 +46,16 @@ while ($row = mysqli_fetch_array($result)) {
     $recaptcha_secretkey	= $row['recaptcha_secretkey'];
 }
 
-$query  = "SELECT * FROM site_permissions WHERE id='1'";
-$result = mysqli_query($con, $query);
+$result = $conn->query("SELECT * FROM site_permissions WHERE id='1'");
 
-while ($row = mysqli_fetch_array($result)) {
+if ($row = $result->fetch()) {
     $disableguest   = Trim($row['disableguest']);
     $siteprivate	= Trim($row['siteprivate']);
 }
 
-$query  = "SELECT * FROM mail WHERE id='1'";
-$result = mysqli_query($con, $query);
+$result = $conn->query("SELECT * FROM mail WHERE id='1'");
 
-while ($row = mysqli_fetch_array($result)) {
+if ($row = $result->fetch()) {
 	$verification	= Trim($row['verification']);
     $smtp_host		= Trim($row['smtp_host']);
     $smtp_username	= Trim($row['smtp_username']);
@@ -118,6 +64,85 @@ while ($row = mysqli_fetch_array($result)) {
     $protocol		= Trim($row['protocol']);
     $auth			= Trim($row['auth']);
     $socket			= Trim($row['socket']);
+}
+
+/* Update the configuration if necessary */
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['manage'])) {
+        $query = $conn->prepare(
+                'UPDATE site_info SET title = ?, des = ?, baseurl = ?, keyword = ?, site_name = ?, email = ?, twit = ?, face = ?, gplus = ?, ga = ?, additional_scripts = ? WHERE id = 1'
+        );
+        $query->execute([
+                trim($_POST['title']),
+                trim($_POST['des']),
+                trim($_POST['baseurl']),
+                trim($_POST['keyword']),
+                trim($_POST['site_name']),
+                trim($_POST['email']),
+                trim($_POST['twit']),
+                trim($_POST['face']),
+                trim($_POST['gplus']),
+                trim($_POST['ga']),
+                trim($_POST['additional_scripts'])
+        ]);
+
+        $msg = '<div class="paste-alert alert3" style="text-align: center;">
+											Configuration saved
+											</div>';
+    }
+
+    if (isset($_POST['cap'])) {
+        $query = $conn->prepare(
+                'UPDATE captcha SET cap_e = ?, mode = ?, mul = ?, allowed = ?, color = ?, recaptcha_sitekey = ?, recaptcha_secretkey = ? WHERE id = 1'
+        );
+        $query->execute([
+            trim($_POST['cap_e']),
+            trim($_POST['mode']),
+            trim($_POST['mul']),
+            trim($_POST['allowed']),
+            trim($_POST['color']),
+            trim($_POST['recaptcha_sitekey']),
+            trim($_POST['recaptcha_secretkey'])
+        ]);
+        $msg = '<div class="paste-alert alert3" style="text-align: center;">
+									Captcha settings saved
+									</div>';
+
+    }
+
+    if (isset($_POST['permissions'])) {
+        $query = $conn->prepare('UPDATE site_permissions SET disableguest = ?, siteprivate = ? WHERE id = 1');
+        $query->execute([
+            trim($_POST['disableguest']),
+            trim($_POST['siteprivate'])
+        ]);
+
+        $msg = '<div class="paste-alert alert3" style="text-align: center;">
+									Site permissions saved.
+									</div>';
+    }
+
+}
+
+if (isset($_POST['smtp_code'])) {
+    $query = $conn->prepare(
+            'UPDATE mail SET verification = ?, smtp_host = ?, smtp_port = ?, smtp_username = ?, smtp_password = ?, socket = ?, protocol = ?, auth = ? WHERE id = 1'
+    );
+
+    $query->execute([
+        trim($_POST['verification']),
+        trim($_POST['smtp_host']),
+        trim($_POST['smtp_port']),
+        trim($_POST['smtp_user']),
+        trim($_POST['socket']),
+        trim($_POST['auth']),
+        trim($_POST['protocol'])
+    ]);
+    $msg = '
+							<div class="paste-alert alert3" style="text-align: center;">
+							Mail settings updated
+							</div>';
 }
 ?>
 
@@ -165,104 +190,7 @@ while ($row = mysqli_fetch_array($result)) {
 				<div class="col-md-12">
 				  <div class="panel panel-widget">
 						<div class="panel-body">
-						<?php
-						if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-							if (isset($_POST['manage'])) {
-								$site_name	= mysqli_real_escape_string( $con, Trim($_POST['site_name']) );
-								$title		= mysqli_real_escape_string( $con, Trim($_POST['title']) );
-								$baseurl	= mysqli_real_escape_string( $con, Trim($_POST['baseurl']) );
-								$des		= mysqli_real_escape_string( $con, Trim($_POST['des']) );
-								$keyword	= htmlentities(Trim($_POST['keyword']));
-								$email		= mysqli_real_escape_string( $con, Trim($_POST['email']) );
-								$twit		= htmlentities(Trim($_POST['twit']));
-								$face		= htmlentities(Trim($_POST['face']));
-								$gplus		= htmlentities(Trim($_POST['gplus']));
-								$ga			= htmlentities(Trim($_POST['ga']));
-								$additional_scripts        = mysqli_real_escape_string( $con, $_POST['additional_scripts'] );
-                                
-								$query = "UPDATE site_info SET title='$title', des='$des', baseurl='$baseurl', keyword='$keyword', site_name='$site_name', email='$email', twit='$twit', face='$face', gplus='$gplus', ga='$ga', additional_scripts='$additional_scripts' WHERE id='1'";
-								mysqli_query($con, $query);
-								
-								if (mysqli_errno($con)) {
-									$msg = '<div class="paste-alert alert6" style="text-align: center;">
-											' . mysqli_error($con) . '
-											</div>';
-								} else {
-									$msg = '<div class="paste-alert alert3" style="text-align: center;">
-											Configuration saved
-											</div>';
-								}
-							}
-							if (isset($_POST['cap'])) {
-								$cap_e   = Trim($_POST['cap_e']);
-								$mode    = Trim($_POST['mode']);
-								$mul     = Trim($_POST['mul']);
-								$allowed = Trim($_POST['allowed']);
-								$color   = Trim($_POST['color']);
-                                $recaptcha_sitekey = Trim($_POST['recaptcha_sitekey']);
-								$recaptcha_secretkey   = Trim($_POST['recaptcha_secretkey']);
-								
-								$query = "UPDATE captcha SET cap_e='$cap_e', mode='$mode', mul='$mul', allowed='$allowed', color='$color', recaptcha_sitekey='$recaptcha_sitekey', recaptcha_secretkey='$recaptcha_secretkey' WHERE id='1'";
-								mysqli_query($con, $query);
-								
-								if (mysqli_errno($con)) {
-									$msg = '<div class="paste-alert alert6" style="text-align: center;">
-											' . mysqli_error($con) . '
-											</div>';
-								} else {
-									$msg = '<div class="paste-alert alert3" style="text-align: center;">
-									Captcha settings saved
-									</div>';
-								}
-							}
-							
-							if (isset($_POST['permissions'])) {
-								$disableguest = Trim($_POST['disableguest']);
-								$siteprivate  = Trim($_POST['siteprivate']);
-								
-								$query = "UPDATE site_permissions SET disableguest='$disableguest', siteprivate='$siteprivate' WHERE id='1'";
-								mysqli_query($con, $query);
-								
-								if (mysqli_errno($con)) {
-									$msg = '<div class="paste-alert alert6" style="text-align: center;">
-											' . mysqli_error($con) . '
-											</div>';
-								} else {
-									$msg = '<div class="paste-alert alert3" style="text-align: center;">
-									Site permissions saved.
-									</div>';
-								}
-							}
-
-						}
-
-						if (isset($_POST['smtp_code'])) {
-							$verification	= Trim($_POST['verification']);
-							$smtp_host		= Trim($_POST['smtp_host']);
-							$smtp_port		= Trim($_POST['smtp_port']);
-							$smtp_username	= Trim($_POST['smtp_user']);
-							$smtp_password	= Trim($_POST['smtp_pass']);
-							$socket			= Trim($_POST['socket']);
-							$auth			= Trim($_POST['auth']);
-							$protocol		= Trim($_POST['protocol']);
-							
-							$query = "UPDATE mail SET verification='$verification', smtp_host='$smtp_host', smtp_port='$smtp_port', smtp_username='$smtp_username', smtp_password='$smtp_password', socket='$socket', protocol='$protocol', auth='$auth' WHERE id='1'";
-							mysqli_query($con, $query);
-							
-							if (mysqli_errno($con)) {
-								$msg = '<div class="paste-alert alert6" style="text-align: center;">
-										' . mysqli_error($con) . '
-										</div>';
-								
-							} else {
-									$msg = '
-							<div class="paste-alert alert3" style="text-align: center;">
-							Mail settings updated
-							</div>';
-							}
-						}
-						if (isset($msg)) echo $msg;
-						?>
+						<?php if (isset($msg)) echo $msg; ?>
 						
 							<div role="tabpanel">
 							  <!-- Nav tabs -->

@@ -13,57 +13,15 @@
  * GNU General Public License in GPL.txt for more details.
  */
 
-session_start();
-
-if (!isset($_SESSION['login'])) {
-    header('Location: .');
-    exit();
-}
-
-if (isset($_GET['logout'])) {
-    if (isset($_SESSION['login']))
-        unset($_SESSION['login']);
-    
-    session_destroy();
-    header("Location: .");
-    exit();
-}
+define('IN_ADMIN', 1);
+require_once('common.php');
 
 $today_users_count  = 0;
 $today_pastes_count = 0;
 
-$date = date('jS F Y');
-$ip   = $_SERVER['REMOTE_ADDR'];
-require_once('../config.php');
 require_once('../includes/functions.php');
 
-$conn = new PDO(
-    "mysql:host=$db_host;dbname=$db_schema;charset=utf8",
-    $db_user,
-    $db_pass,
-    $db_opts
-);
-
-$query = $conn->query('SELECT @last_id := MAX(id) FROM admin_history');
-
-while ($row = $query->fetch()) {
-    $last_id = $row['@last_id := MAX(id)'];
-}
-
-$query = $conn->prepare('SELECT ip, last_date FROM admin_history WHERE id = ?');
-$query->execute([$last_id]);
-
-while ($row = $query->fetch()) {
-    $last_date = $row['last_date'];
-    $last_ip   = $row['ip'];
-}
-
-
-if ($last_ip !== $ip || $last_date !== $date) {
-    $conn->prepare('INSERT INTO admin_history (ip, last_date) VALUES (?, ?)')->execute([$date, $ip]);
-}
-
-
+updateAdminHistory($conn);
 
 $query = $conn->query("SELECT @last_id := MAX(id) FROM page_view");
 $row = $query->fetch(PDO::FETCH_NUM);
