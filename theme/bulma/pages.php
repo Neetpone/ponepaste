@@ -27,8 +27,11 @@
 						} else {
 							echo '<p class="help is-danger subtitle is-6">' . $lang['notfound'] . '</p>';
 						}
+
+						if (isset($site_ads)) {
+						    echo $site_ads['ads_2'];
+                        }
 						?>
-						<?php echo $ads_2; ?>
 			</div>
 			<?php require_once('theme/' . $default_theme . '/sidebar.php'); ?>
 		</div>

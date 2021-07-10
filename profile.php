@@ -18,7 +18,8 @@ require_once('includes/password.php');
 
 session_start();
 
-require_once('config.php');
+define('IN_PONEPASTE', 1);
+require_once('includes/common.php');
 require_once('includes/functions.php');
 
 // UTF-8
@@ -197,15 +198,6 @@ if ($last_date == $date) {
 }
 $total_pastes = getTotalPastes($con, $user_username);
 
-$query  = "SELECT * FROM ads WHERE id='1'";
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $text_ads = Trim($row['text_ads']);
-    $ads_1    = Trim($row['ads_1']);
-    $ads_2    = Trim($row['ads_2']);
-    
-}
 // Theme
 require_once('theme/' . $default_theme . '/header.php');
 require_once('theme/' . $default_theme . '/profile.php');

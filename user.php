@@ -14,7 +14,8 @@
  */
 session_start();
 
-require_once('config.php');
+define('IN_PONEPASTE', 1);
+require_once('includes/common.php');
 require_once('includes/functions.php');
 
 // UTF-8
@@ -222,13 +223,7 @@ if ($last_date == $date) {
     
 }
 
-$query  = "SELECT * FROM ads WHERE id='1'";
-$result = mysqli_query($con, $query);
-while ($row = mysqli_fetch_array($result)) {
-    $text_ads = Trim($row['text_ads']);
-    $ads_1    = Trim($row['ads_1']);
-    $ads_2    = Trim($row['ads_2']);
-}
+
 
 if ( isset($_GET['del']) ) {
     if ( $_SESSION['token'] ) { // Prevent unauthorized deletes

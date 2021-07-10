@@ -1,5 +1,5 @@
 <?php
-require_once('config.php');
+require_once('../config.php');
 // DB table to use
 $table = 'pastes';
 
@@ -27,10 +27,10 @@ $columns2 = array(
 
 // SQL server connection information
 $sql_details = array(
-	'user' => $dbuser,
-	'pass' => $dbpassword,
-	'db'   => $dbname,
-	'host' => $dbhost
+	'user' => $db_user,
+	'pass' => $db_pass,
+	'db'   => $db_schema,
+	'host' => $db_host
 );
 
 

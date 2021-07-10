@@ -133,18 +133,7 @@ if ($last_date == $date) {
     
 }
 
-$query  = "SELECT * FROM ads WHERE id='1'";
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $text_ads = Trim($row['text_ads']);
-    $ads_1    = Trim($row['ads_1']);
-    $ads_2    = Trim($row['ads_2']);
-    
-}
-
-
-if (isset($_GET{'page'})) {
+if (isset($_GET['page'])) {
     $page_name = trim($_GET['page']);
     $page_name = Trim(htmlspecialchars($page_name));
     $page_name   = mysqli_real_escape_string($con, $page_name);

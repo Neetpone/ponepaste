@@ -19,7 +19,7 @@ require_once('includes/password.php');
 session_start();
 
 // Required functions
-require_once('config.php');
+require_once('includes/common.php');
 require_once('includes/functions.php');
 require_once('mail/mail.php');
 
@@ -36,29 +36,7 @@ if (isset($_SESSION['token'])) {
    header("Location: ./");
 }
 
-// Database Connection
-$conn = new PDO(
-    "mysql:host=$db_host;dbname=$db_schema;charset=utf8",
-    $db_user,
-    $db_pass,
-    $db_opts
-);
 
-// Get site info
-$site_info_rows = $conn->query('SELECT * FROM site_info');
-while ($row = $site_info_rows->fetch()) {
-    $title				= Trim($row['title']);
-    $des				= Trim($row['des']);
-    $baseurl			= Trim($row['baseurl']);
-    $keyword			= Trim($row['keyword']);
-    $site_name			= Trim($row['site_name']);
-    $email				= Trim($row['email']);
-    $twit				= Trim($row['twit']);
-    $face				= Trim($row['face']);
-    $gplus				= Trim($row['gplus']);
-    $ga					= Trim($row['ga']);
-    $additional_scripts	= Trim($row['additional_scripts']);
-}
 
 $admin_mail = $email;
 $admin_name = $site_name;
@@ -78,92 +56,11 @@ while ($row = $email_info_rows->fetch()) {
 }
 $mail_type = $smtp_protocol;
 
-// Check if IP is banned
-if ( is_banned($conn, $ip) ) die($lang['banned']); // "You have been banned from ".$site_name;
-
-// Set theme and language
-$site_theme_rows = $conn->query('SELECT * FROM interface WHERE id="1"');
-while ($row = $site_theme_rows->fetch()) {
-    $default_lang  = Trim($row['lang']);
-    $default_theme = Trim($row['theme']);
-}
-require_once("langs/$default_lang");
-
-
 // Page title
-$p_title = $lang['login/register']; //"Login/Register";
+$p_title = $lang['login/register']; // "Login/Register";
 
-// Ads
-$site_ads_rows = $conn->query('SELECT * FROM ads WHERE id="1"');
-while ($row = $site_ads_rows->fetch()) {
-    $text_ads = Trim($row['text_ads']);
-    $ads_1    = Trim($row['ads_1']);
-    $ads_2    = Trim($row['ads_2']);
-}
+updatePageViews($conn);
 
-// Logout
-if (isset($_GET['logout'])) {
-	header('Location: ' . $_SERVER['HTTP_REFERER']);
-    unset($_SESSION['token']);
-    unset($_SESSION['oauth_uid']);
-    unset($_SESSION['username']);
-    session_destroy();
-}
-
-if (strpos($banned_ip, $ip) !== false) {
-    die($lang['banned']); //"You have been banned from ".$site_name
-}
-
-// Page views 
-$site_view_rows = $conn->query("SELECT @last_id := MAX(id) FROM page_view");
-while ($row = $site_view_rows->fetch()) {
-    $last_id = $row['@last_id := MAX(id)'];
-}
-
-while ($row = $site_view_rows->fetch()) {
-    $last_date = $row['date'];
-}
-
-if ($last_date == $date) {
-    if (str_contains($data_ip, $ip)) {
-        $statement = $conn->prepare('SELECT * FROM page_view WHERE id = ?');
-        $statement->execute([$last_id]);        
-        while ($row = $statement->fetch()) {
-            $last_tpage = Trim($row['tpage']);
-        }
-        $last_tpage = $last_tpage + 1;
-        
-        // IP already exists, Update view count
-        $statement = $conn->prepare('UPDATE page_view SET tpage=? WHERE id=?;');
-        $statement->execute([$last_tpage,$last_id]);  
-    } else {
-        $statement = $conn->prepare('SELECT * FROM page_view WHERE id = ?');
-        $statement->execute([$last_id]);  
-       
-        while ($row = mysqli_fetch_array($result)) {
-            $last_tpage  = Trim($row['tpage']);
-            $last_tvisit = Trim($row['tvisit']);
-        }
-        $last_tpage  = $last_tpage + 1;
-        $last_tvisit = $last_tvisit + 1;
-      
-        // Update both tpage and tvisit.
-        $statement = $conn->prepare('UPDATE page_view SET tpage=?,tvisit=? WHERE id = ?');
-        $statement->execute([$last_tpage,$last_tvisit,$last_id]); 
-        file_put_contents('tmp/temp.tdata', $data_ip . "\r\n" . $ip);
-    }
-} else {
-    // Delete the file and clear data_ip
-    unlink("tmp/temp.tdata");
-    $data_ip = "";
-    
-    // New date is created
-    $statement = $conn->prepare("INSERT INTO page_view (date,tpage,tvisit) VALUES ('?','1','1')");
-    $statement->execute([$date]); 
-    // Update the IP
-    file_put_contents('tmp/temp.tdata', $data_ip . "\r\n" . $ip);
-    
-}
 if (isset($_GET['resend'])) {
     if (isset($_POST['email'])) {
         $email  = htmlentities(trim($_POST['email']));
@@ -264,7 +161,7 @@ if (isset($_GET['forgot'])) {
     }
     
 }
-if ($_SERVER['REQUEST_METHOD'] == POST) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if logged in
     if (isset($_SESSION['token'])) {
         header("Location: ./");
@@ -274,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] == POST) {
             $username = htmlentities(trim($_POST['username']));
             $password = $_POST['password'];
             if ($username != null && $password != null) {
-                $query  = $conn->prepare("SELECT * FROM users WHERE username='?'");
+                $query  = $conn->prepare("SELECT * FROM users WHERE username=?");
                 $query->execute([$username]);
                 if ($query->fetchColumn() > 0) {
                     // Username found

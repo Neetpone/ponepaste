@@ -42,6 +42,14 @@ $db_schema = 'p0nepast3s';
 $db_user = 'P0nedbAcc0unt';
 $db_pass = '1NWO6Tp17IFz9lbl';
 
+// I'm sorry, I didn't want to edit this file and check it in, but I may need to make other changes to it, so I did this
+if (gethostname() === 'thunderlane') {
+    $db_host = 'localhost';
+    $db_schema = 'ponepaste';
+    $db_user = 'ponepaste';
+    $db_pass = 'ponepaste';
+}
+
 $db_opts = [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, /* throw a fatal exception on database errors */
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, /* Fetch rows as an associative array (hash table) by default */
@@ -71,7 +79,6 @@ $popular_formats=array(
 	'pastedown',
     'pastedown_old'
 );
-
 
 //Cookie 
 ?>

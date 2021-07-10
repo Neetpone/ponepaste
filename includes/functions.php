@@ -83,12 +83,11 @@ function checkFavorite($paste_id, $user_id, $conn) {
         }
       }
 
- function getreports($conn, $count = 10)
-{
-    $limit  = $count ? "limit $count" : "";
-    $query  = "SELECT * FROM user_reports $count";
-    $result = mysqli_query($conn, $query);
-    return $result;
+      function getreports($conn, $count = 10) {
+    $query = $conn->prepare('SELECT * FROM user_reports LIMIT ?');
+    $query->execute([$count]);
+
+    return $query->fetchAll();
 }   
   
   function sandwitch($str){
@@ -233,13 +232,10 @@ LIMIT ?");
 
 function getRecentadmin($conn, $count = 5)
 {
-    $limit  = $count ? "limit $count" : "";
-    $query  = "SELECT id, ip, title, date, now_time, s_date, views, member 
-FROM pastes
-ORDER BY id DESC
-LIMIT 0 , $count";
-    $result = mysqli_query($conn, $query);
-    return $result;
+    $query = $conn->prepare('SELECT id, ip title, date, now_time, s_date, views, member FROM pastes ORDER BY id DESC LIMIT 0, ?');
+    $query->execute([$count]);
+
+    return $query->fetchAll();
 }    
 function getpopular($conn, $count = 10)
 {
@@ -533,7 +529,7 @@ function embedView( $paste_id, $p_title, $p_conntent, $p_code, $title, $baseurl,
 function addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite)
 {
     $c_date    = date('Y-m-d');
-    $site_data = file_get_conntents("sitemap.xml");
+    $site_data = file_get_contents("sitemap.xml");
     $site_data = str_replace("</urlset>", "", $site_data);
 	// which protocol are we on
 	$protocol = paste_protocol();
@@ -554,7 +550,7 @@ function addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite)
 </urlset>';
 
     $full_map  = $site_data . $c_sitemap;
-    file_put_conntents("sitemap.xml", $full_map);
+    file_put_contents("sitemap.xml", $full_map);
 }
 function paste_protocol() {
 

@@ -74,10 +74,11 @@
 							<div class="column">
 							</div>
 							<div class="column">
-								<?php if (isset($_SESSION['username'])) { ?>
-								<?php } else { ?>
-									<?php echo $ads_2; ?>
-								<?php } ?>
+                                <?php
+                                if (isset($site_ads) && !isset($_SESSION['username'])) {
+                                    echo $site_ads['ads_2'];
+                                }
+                                ?>
 							</div>
 						</div>
 					</form>
@@ -165,10 +166,11 @@
 							<div class="column">
 							</div>
 							<div class="column">
-								<?php if (isset($_SESSION['username'])) { ?>
-								<?php } else { ?>
-									<?php echo $ads_2; ?>
-								<?php } ?>
+                                <?php
+                                if (isset($site_ads) && !isset($_SESSION['username'])) {
+                                    echo $site_ads['ads_2'];
+                                }
+                                ?>
 							</div>
 						</div>
                         <div class="field">
@@ -227,10 +229,11 @@
 							<div class="column">
 							</div>
 							<div class="column">
-								<?php if (isset($_SESSION['username'])) { ?>
-								<?php } else { ?>
-									<?php echo $ads_2; ?>
-								<?php } ?>
+                                <?php
+                                if (isset($site_ads) && !isset($_SESSION['username'])) {
+                                    echo $site_ads['ads_2'];
+                                }
+                                ?>
 							</div>
 						</div>
 					</form>
@@ -257,10 +260,11 @@
 							<div class="column">
 							</div>
 							<div class="column">
-								<?php if (isset($_SESSION['username'])) { ?>
-								<?php } else { ?>
-									<?php echo $ads_2; ?>
-								<?php } ?>
+                                <?php
+                                if (isset($site_ads) && !isset($_SESSION['username'])) {
+                                    echo $site_ads['ads_2'];
+                                }
+                                ?>
 							</div>
 						</div>
 					</form>
@@ -276,10 +280,11 @@
 						<div class="column">
 						</div>
 						<div class="column">
-							<?php if (isset($_SESSION['username'])) { ?>
-							<?php } else { ?>
-								<?php echo $ads_2; ?>
-							<?php } ?>
+                            <?php
+                            if (isset($site_ads) && !isset($_SESSION['username'])) {
+                                echo $site_ads['ads_2'];
+                            }
+                            ?>
 						</div>
 					</div>
 				<?php  } ?>

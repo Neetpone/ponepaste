@@ -14,72 +14,13 @@
  */
 
 // PHP <5.5 compatibility
-require_once('../includes/password.php'); 
+require_once('../includes/password.php');
+define('IN_ADMIN', 1);
+require_once('common.php');
 
-session_start();
+$query  = $conn->query('SELECT user FROM admin LIMIT 1');
+$adminid = $query->fetch()['user'];
 
-if (isset($_SESSION['login'])) {
-// Do nothing	
-} else {
-    header("Location: .");
-    exit();
-}
-
-if (isset($_GET['logout'])) {
-    if (isset($_SESSION['login']))
-        unset($_SESSION['login']);
-    
-    session_destroy();
-    header("Location: .");
-    exit();
-}
-
-$date = date('jS F Y');
-$ip   = $_SERVER['REMOTE_ADDR'];
-require_once('../config.php');
-$con = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
-
-if (mysqli_connect_errno()) {
-    $sql_error = mysqli_connect_error();
-    die("Unable connect to database");
-}
-
-$query = "SELECT @last_id := MAX(id) FROM admin_history";
-
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $last_id = $row['@last_id := MAX(id)'];
-}
-
-$query  = "SELECT * FROM admin_history WHERE id=" . Trim($last_id);
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $last_date = $row['last_date'];
-    $last_ip   = $row['ip'];
-}
-
-if ($last_ip == $ip) {
-    if ($last_date == $date) {
-        
-    } else {
-        $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
-        mysqli_query($con, $query);
-    }
-} else {
-    $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
-    mysqli_query($con, $query);
-}
-
-
-$query  = "SELECT * FROM admin";
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $adminid  = Trim($row['user']);
-    $password = Trim($row['pass']);
-}
 ?>
 
 <!DOCTYPE html>
@@ -183,24 +124,21 @@ while ($row = mysqli_fetch_array($result)) {
 													<th>IP</th>
 												</tr>
 												<?php
-												$rec_limit = 10;
-												$query     = "SELECT count(id) FROM admin_history";
-												$retval    = mysqli_query($con, $query);
+                                                $rec_limit = 10;
 
-												$row       = mysqli_fetch_array($retval);
-												$rec_count = Trim($row[0]);
+                                                $query = $conn->query('SELECT COUNT(*) FROM admin_history');
+												$row = $query->fetch(PDO::FETCH_NUM);
+												$rec_count = $row[0];
 
-												$sql      = "SELECT * FROM admin_history ORDER BY `id` DESC LIMIT $rec_limit";
-												$result   = mysqli_query($con, $sql);
+												$query = $conn->prepare('SELECT ip, last_date FROM admin_history ORDER BY `id` LIMIT ?');
+												$query->execute([$rec_limit]);
 
-												// Loop through each record
-												while ($row = mysqli_fetch_array($result)) {
-													// Populate and display result data in each row
+												while ($row = $query->fetch()) {
 													echo '<tr>';
 													echo '<td>' . $row['last_date'] . '</td>';
 													echo '<td>' . $row['ip'] . '</td>';
+													echo '</tr>';
 												}
-												echo '</tr>';
 												?>
 											</tbody>
 										</table>
