@@ -63,11 +63,25 @@ function getreports($conn, $count = 10) {
     return $query->fetchAll();
 }   
   
-  function sandwitch($str){
+function sandwitch($str){
    $output = "";
    $arr = explode(",", $str);
    foreach ($arr as $word){
-     $output .= '<span class="tag is-info">'.trim($word).'</span>';
+     $word = ucfirst($word);
+     if (stripos($word, 'nsfw') !== false) {
+     $word = strtoupper($word);
+     $tagcolor = "tag is-danger";
+     }
+     elseif (stripos($word, 'SAFE') !== false) {
+     $word = strtoupper($word);
+     $tagcolor = "tag is-success";
+     }
+     elseif (strstr($word, '/')){
+     $tagcolor = "tag is-primary";   
+     }else{
+     $tagcolor = "tag is-info";
+     }   
+     $output .= '<a href="/archive?q='.trim($word).'"><span class="' . $tagcolor . '">'.trim($word).'</span>';
    }
  return $output;
 }
