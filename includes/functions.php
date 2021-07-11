@@ -307,20 +307,14 @@ function isValidUsername($str) {
     return !preg_match('/[^A-Za-z0-9._\\-$]/', $str);
 }
 
-function existingUser( $conn, $username ) {
-    $query = "SELECT username FROM users WHERE username = '$username'";
-    $result = mysqli_query( $conn, $query );
-    $num_rows = mysqli_num_rows( $result );
-    if ( $num_rows == 0 ) {
-        // No records. User doesn't exist.
-        return false;
-    } else {
-        return true;
-    }
+function existingUser(PDO $conn, string $username) : bool {
+    $query = $conn->prepare('SELECT 1 FROM users WHERE username = ?');
+    $query->execute([$username]);
+
+    return (bool) $query->fetch();
 }
 
-function updateMyView($conn, $paste_id)
-{
+function updateMyView($conn, $paste_id) {
     $query = $conn->prepare("SELECT views, id FROM pastes WHERE id= ?");
     $query->execute([$paste_id]);
     if ($row = $query->fetch()) {

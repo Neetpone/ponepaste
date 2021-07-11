@@ -7,27 +7,27 @@ require_once('config.php');
 require_once('includes/functions.php');
 
 
-function getSiteInfo($conn) {
+function getSiteInfo(PDO $conn) : array {
     return $conn->query('SELECT * FROM site_info LIMIT 1')->fetch();
 }
 
-function getSiteLangAndTheme($conn) {
+function getSiteLangAndTheme(PDO $conn) : array {
     return $conn->query('SELECT lang, theme FROM interface LIMIT 1')->fetch();
 }
 
-function getSitePermissions($conn) {
+function getSitePermissions(PDO $conn) : array {
     return $conn->query('SELECT * FROM site_permissions LIMIT 1')->fetch();
 }
 
-function getSiteAds($conn) {
+function getSiteAds(PDO $conn) : array | bool {
     return $conn->query('SELECT text_ads, ads_1, ads_2 FROM ads LIMIT 1')->fetch();
 }
 
-function getSiteTotalPastes($conn) {
+function getSiteTotalPastes(PDO $conn) : int {
     return intval($conn->query('SELECT COUNT(*) FROM pastes')->fetch(PDO::FETCH_NUM)[0]);
 }
 
-function updatePageViews($conn) {
+function updatePageViews(PDO $conn) : void {
     $ip = $_SERVER['REMOTE_ADDR'];
     $date    = date('jS F Y');
     $data_ip = file_get_contents('tmp/temp.tdata');
