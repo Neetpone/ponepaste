@@ -16,7 +16,7 @@
 
 <main class="bd-main">
 <!-- START CONTAINER -->
-	<div class="bd-side-background"></div>
+<div class="bd-side-background"></div>
 <div class="bd-main-container container">
 	<div class="bd-duo">
 		<div class="bd-lead">
@@ -33,32 +33,15 @@
         </ul>
       </div>
     <!-- Start Panel -->
-    
-<?php if ($privatesite == "on") { // Site permissions ?>
-	<div class="col-md-12">
-		<div class="panel panel-default" style="padding-bottom: 100px;">
-			<div class="error-pages">
-				<i class="fa fa-lock fa-5x" aria-hidden="true"></i>
-				<h1><?php echo $lang['siteprivate']; ?></h1>
-			</div>
-		</div>
-	</div>
-	
-<?php } else { ?>
-      
-   <?php } 
-	if ( isset($privatesite) && $privatesite == "on") { // Remove 'recent pastes' if site is private
-	} else { ?>
-		
-        
-        <!-- Pop Pastes -->
+
+<!-- Pop Pastes -->
    <div class="tab-content" id="first-tab">
         		<div class="panel panel-default">
 		  <h1 class="title is-4"><?php echo $lang['popular']; ?><h1>
                 <div class="columns is-multiline">
 					<?php          
-							$res = getpopular($con,10);
-							while($row = mysqli_fetch_array($res)) {
+							$res = getpopular($conn,10);
+							foreach ($res as $index=>$row) {
 							$title =  Trim($row['title']);
                             $p_member =  Trim($row['member']);
 							$titlehov = ($row['title']);
@@ -93,31 +76,19 @@
                     
                     } else{
 						echo '<a href="'  . $p_id . '" title="' . $titlehov . '">' . ucfirst($title) . '</a>'; 
-                    }
+                            }}
 					?>
-					<?php }
-					// Display a message if the pastebin is empty
-					$query  = "SELECT count(*) as count FROM pastes";
-					$result = mysqli_query( $con, $query );
-					while ($row = mysqli_fetch_array($result)) {
-						$totalpastes = $row['count'];
-					}
-					
-					if ($totalpastes == '0') { echo $lang['emptypastebin']; } ?>
 				</div>
 		</div>
-        </div>
-     
-        
-        
-        <!-- mPop Pastes -->
+    </div>
+<!-- mPop Pastes -->
         <div class="tab-content" id="second-tab">
         		<div class="panel panel-default">
 		  <h1 class="title is-4"><?php echo $lang['monthpopular']; ?><h1>
                 <div class="columns is-multiline">
 					<?php          
-							$res = monthpop($con,10);
-							while($row = mysqli_fetch_array($res)) {
+							$res = monthpop($conn,10);
+							foreach ($res as $index=>$row) {
 							$title =  Trim($row['title']);
                             $p_member =  Trim($row['member']);
 							$titlehov = ($row['title']);
@@ -152,30 +123,20 @@
                     
                     } else{
 						echo '<a href="'  . $p_id . '" title="' . $titlehov . '">' . ucfirst($title) . '</a>'; 
-                    }
+                            }}
 					?>
-					<?php }
-					// Display a message if the pastebin is empty
-					$query  = "SELECT count(*) as count FROM pastes";
-					$result = mysqli_query( $con, $query );
-					while ($row = mysqli_fetch_array($result)) {
-						$totalpastes = $row['count'];
-					}
-					
-					if ($totalpastes == '0') { echo $lang['emptypastebin']; } ?>
 				</div>
             </div>
-        </div>
-     
-     
-        <!-- New Pastes -->
+        </div>     
+  
+  <!-- New Pastes -->
         <div class="tab-content" id="third-tab">
         		<div class="panel panel-default">
 		  <h1 class="title is-4"><?php echo $lang['recentpastes']; ?><h1>
                 <div class="columns is-multiline">
 					<?php          
-							$res = getRecent($con,10);
-							while($row = mysqli_fetch_array($res)) {
+							$res = getRecent($conn,10);
+							foreach ($res as $index=>$row) {
 							$title =  Trim($row['title']);
                             $p_member =  Trim($row['member']);
 							$titlehov = ($row['title']);
@@ -210,30 +171,20 @@
                     
                     } else{
 						echo '<a href="'  . $p_id . '" title="' . $titlehov . '">' . ucfirst($title) . '</a>'; 
-                    }
+                            }}
 					?>
-					<?php }
-					// Display a message if the pastebin is empty
-					$query  = "SELECT count(*) as count FROM pastes";
-					$result = mysqli_query( $con, $query );
-					while ($row = mysqli_fetch_array($result)) {
-						$totalpastes = $row['count'];
-					}
-					
-					if ($totalpastes == '0') { echo $lang['emptypastebin']; } ?>
 				</div>
             </div>
-        </div>     
-     
-     
-         <!-- Updated Pastes -->
+        </div>            
+        
+          <!-- Updated Pastes -->
         <div class="tab-content" id="forth-tab">
         		<div class="panel panel-default">
 		  <h1 class="title is-4"><?php echo $lang['updatedgreen']; ?><h1>
                 <div class="columns is-multiline">
 					<?php          
-							$res = recentupdate($con,10);
-							while($row = mysqli_fetch_array($res)) {
+							$res = recentupdate($conn,10);
+							foreach ($res as $index=>$row) {
 							$title =  Trim($row['title']);
                             $p_member =  Trim($row['member']);
 							$titlehov = ($row['title']);
@@ -268,29 +219,19 @@
                     
                     } else{
 						echo '<a href="'  . $p_id . '" title="' . $titlehov . '">' . ucfirst($title) . '</a>'; 
-                    }
+                            }}
 					?>
-					<?php }
-					// Display a message if the pastebin is empty
-					$query  = "SELECT count(*) as count FROM pastes";
-					$result = mysqli_query( $con, $query );
-					while ($row = mysqli_fetch_array($result)) {
-						$totalpastes = $row['count'];
-					}
-					
-					if ($totalpastes == '0') { echo $lang['emptypastebin']; } ?>
 				</div>
             </div>
         </div>     
-         
              <!-- Updated Pastes -->
         <div class="tab-content" id="fifth-tab">
         		<div class="panel panel-default">
 		  <h1 class="title is-4"><?php echo $lang['random']; ?><h1>
                 <div class="columns is-multiline">
 					<?php          
-							$res = getrandom($con,10);
-							while($row = mysqli_fetch_array($res)) {
+							$res = getrandom($conn,10);
+							foreach ($res as $index=>$row) {
 							$title =  Trim($row['title']);
                             $p_member =  Trim($row['member']);
 							$titlehov = ($row['title']);
@@ -325,36 +266,17 @@
                     
                     } else{
 						echo '<a href="'  . $p_id . '" title="' . $titlehov . '">' . ucfirst($title) . '</a>'; 
-                    }
+                            }}
 					?>
-					<?php }
-					// Display a message if the pastebin is empty
-					$query  = "SELECT count(*) as count FROM pastes";
-					$result = mysqli_query( $con, $query );
-					while ($row = mysqli_fetch_array($result)) {
-						$totalpastes = $row['count'];
-					}
-					
-					if ($totalpastes == '0') { echo $lang['emptypastebin']; } ?>
 				</div>
             </div>
-        </div>   
+        </div>            
      
 
      </div>   
     </div>     
+</div>
 </main>
-
-
-    <!-- End Panel -->
-<?php } if ($privatesite == "on") { // Remove sidebar if site is private
-	} else if (isset($site_ads)) {
-		echo $site_ads['ads_2'];
-	}	
-?>
-</div>
-</div>
-</div>
 <script>
 const tabSystem = {
     init(){
