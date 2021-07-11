@@ -41,7 +41,6 @@ define('G_Client_Secret', 'CHANGE THIS'); // What's your Secret key
 define('G_Redirect_Uri', 'http://ponepaste.org//oauth/google.php'); // Leave this as is
 define('G_Application_Name', 'Paste'); // Make sure this matches the name of your application
 
-
 $db_host = 'localhost';
 $db_schema = 'p0nepast3s';
 $db_user = 'P0nedbAcc0unt';
@@ -69,21 +68,19 @@ define('SECRET',md5($sec_key));
 $mod_rewrite = "1";
 
 // Available GeSHi formats
-$geshiformats =array(
-   
+$geshiformats = [
     'green' => 'Green Text',
     'text' => 'Plain Text',
     'pastedown' => 'pastedown',
-    'pastedown_old' => 'pastedown old',
-);
+    'pastedown_old' => 'pastedown old'
+];
 
 // Popular formats that are listed first.
-$popular_formats=array(
+$popular_formats = [
 	'green',
     'text',
 	'pastedown',
     'pastedown_old'
-);
+];
 
-//Cookie 
-?>
+// Cookie - I want a cookie, can I have one?

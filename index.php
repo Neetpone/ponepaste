@@ -13,8 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License in GPL.txt for more details.
  */
- 
-session_start();
 
 $directory = 'install';
 
@@ -24,12 +22,10 @@ if (file_exists($directory)) {
 }
 
 // Required functions
-require_once('includes/captcha.php');
-require_once('includes/functions.php');
 define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
-
-// PHP <5.5 compatibility
+require_once('includes/captcha.php');
+require_once('includes/functions.php');
 require_once('includes/password.php');
 
 function calculatePasteExpiry($p_expiry) {

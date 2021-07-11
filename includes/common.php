@@ -64,6 +64,8 @@ function updatePageViews($conn) {
     }
 }
 
+session_start();
+
 $conn = new PDO(
     "mysql:host=$db_host;dbname=$db_schema;charset=utf8",
     $db_user,

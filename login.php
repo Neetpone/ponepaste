@@ -12,21 +12,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License in GPL.txt for more details.
  */
- 
-// PHP <5.5 compatibility
-require_once('includes/password.php'); 
-
-session_start();
 
 // Required functions
 require_once('includes/common.php');
 require_once('includes/functions.php');
+require_once('includes/password.php');
 require_once('mail/mail.php');
 
 // Current Date & User IP
 $date    = date('jS F Y');
 $ip      = $_SERVER['REMOTE_ADDR'];
-$data_ip = file_get_contents('tmp/temp.tdata');
 
 // Mail
 $mail_type = "1";

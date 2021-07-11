@@ -12,17 +12,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License in GPL.txt for more details.
  */
-session_start();
 
 define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
-require_once('config.php');
 
 // UTF-8
 header('Content-Type: text/html; charset=utf-8');
 
 $date    = date('jS F Y');
-$data_ip = file_get_contents('tmp/temp.tdata');
 
 // Temp count for untagged pastes
 $total_untagged = intval($conn->query("SELECT COUNT(*) from pastes WHERE tagsys IS NULL")->fetch(PDO::FETCH_NUM)[0]);

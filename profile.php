@@ -12,15 +12,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License in GPL.txt for more details.
  */
- 
-// PHP <5.5 compatibility
-require_once('includes/password.php');
-
-session_start();
 
 define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/functions.php');
+require_once('includes/password.php');
+
 
 // UTF-8
 header('Content-Type: text/html; charset=utf-8');

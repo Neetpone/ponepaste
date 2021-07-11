@@ -230,7 +230,7 @@ overflow: hidden !important;
 					}} ?>
 				</div>
 				<!-- Guests -->
-                <?php if (strcasecmp($_SESSION['username'], $p_member)) { ?>
+                <?php if (!isset($_SESSION['username']) || strcasecmp($_SESSION['username'], $p_member)) { ?>
                  <hr> 
                 <label class="label">More from this Author </label>                 
 					<?php          

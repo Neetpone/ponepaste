@@ -1,6 +1,6 @@
 <?php
 // Turn off all error reporting
-error_reporting(0);
+//error_reporting(0);
 ?>
 <?php
 
@@ -219,7 +219,7 @@ class SSP {
 		// Build the SQL query string from the request 
 		$limit = self::limit( $request, $columns );
 		$order = self::order( $request, $columns );
-		$where = self::filter( $request, $columns, $bindings );
+		//$where = self::filter( $request, $columns, $bindings );
 
   		// Main query to actually get the data
 		$data = self::Ssql_exec($db, $bindings,
@@ -245,7 +245,7 @@ class SSP {
 		 * Output
 		 */   
 		return array(
-			"draw"            => intval( $request['draw'] ),
+			"draw"            => isset($request['draw']) ? intval( $request['draw'] ) : 0,
 			"recordsTotal"    => intval( $recordsTotal ),
 			"recordsFiltered" => intval( $recordsFiltered ),
 			"data"            => self::data_output( $columns2, $data )
@@ -262,7 +262,7 @@ class SSP {
 	 *     * db   - database name
 	 *     * user - user name
 	 *     * pass - user password
-	 * @return resource Database connection handle
+	 * @return PDO Database connection handle
 	 */
 	static function sql_connect ( $sql_details )
 	{
@@ -355,7 +355,7 @@ class SSP {
         $result[$loop]['id']= $arr['id'];
         $result[$loop]['member']= $arr['member'];
         $result[$loop]['tagsys']= sandwitch( $arr['tagsys']);
-        $date_time = strtotime($arr['date']);
+        $date_time = strtotime(isset($arr['date']) ? $arr['date'] : '0');
 		$result[$loop]['date']= date("d F Y", $date_time);
         $myid = $arr['id'];
         $mytitle = $arr['title'];

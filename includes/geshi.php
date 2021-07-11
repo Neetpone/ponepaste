@@ -2370,7 +2370,7 @@ class GeSHi {
         unset($code);
 
         //Preload some repeatedly used values regarding hardquotes ...
-        $hq = isset($this->language_data['HARDQUOTE']) ? $this->language_data['HARDQUOTE'][0] : false;
+        $hq = !empty($this->language_data['HARDQUOTE']) ? $this->language_data['HARDQUOTE'][0] : false;
         $hq_strlen = strlen($hq);
 
         //Preload if line numbers are to be generated afterwards
@@ -4479,11 +4479,14 @@ class GeSHi {
                 $stylesheet .= "$selector.st$group {{$styles}}\n";
             }
         }
-        foreach ($this->language_data['STYLES']['NUMBERS'] as $group => $styles) {
-            if ($styles != '' && (!$economy_mode || $this->lexic_permissions['NUMBERS'])) {
-                $stylesheet .= "$selector.nu$group {{$styles}}\n";
+        if (isset($this->language_data['STYLES']['NUMBERS'])) {
+            foreach ($this->language_data['STYLES']['NUMBERS'] as $group => $styles) {
+                if ($styles != '' && (!$economy_mode || $this->lexic_permissions['NUMBERS'])) {
+                    $stylesheet .= "$selector.nu$group {{$styles}}\n";
+                }
             }
         }
+
         foreach ($this->language_data['STYLES']['METHODS'] as $group => $styles) {
             if ($styles != '' && (!$economy_mode || $this->lexic_permissions['METHODS'])) {
                 $stylesheet .= "$selector.me$group {{$styles}}\n";

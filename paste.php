@@ -13,11 +13,6 @@
  * GNU General Public License in GPL.txt for more details.
  */
 
-// PHP <5.5 compatibility
-require_once('includes/password.php'); 
- 
-session_start();
-
 // UTF-8
 header('Content-Type: text/html; charset=utf-8');
 
@@ -26,14 +21,11 @@ define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/geshi.php');
 require_once('includes/functions.php');
+require_once('includes/password.php');
 
-// Path of GeSHi object
-$path = 'includes/geshi/';
-
-// Path of Parsedown object
-$parsedown_path = 'includes/Parsedown/Parsedown.php';
-$parsedownextra_path  = 'includes/Parsedown/ParsedownExtra.php';
-$parsedownsec_path = 'includes/Parsedown/SecureParsedown.php';
+require_once('includes/Parsedown/Parsedown.php');
+require_once('includes/Parsedown/ParsedownExtra.php');
+require_once('includes/Parsedown/SecureParsedown.php');
 
 $paste_id = intval(trim($_REQUEST['id']));
 
@@ -159,15 +151,12 @@ if (!$row) {
 
     // Apply syntax highlight
     $p_content = htmlspecialchars_decode($p_content);
-    if ( $p_code == "pastedown" ) {
-        include( $parsedown_path );
-        include ($parsedownextra_path);
-        include ($parsedownsec_path);
+    if ($p_code === "pastedown") {
         $Parsedown = new Parsedown();
         $Parsedown->setSafeMode(true);
         $p_content = $Parsedown->text( $p_content );
     } else {
-        $geshi     = new GeSHi($p_content, $p_code, $path);
+        $geshi = new GeSHi($p_content, $p_code, 'includes/geshi/');
 
         $geshi->enable_classes();
         $geshi->set_header_type(GESHI_HEADER_DIV);
