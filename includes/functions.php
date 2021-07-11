@@ -136,13 +136,12 @@ function recentupdate($conn, $count) {
     return $query->fetchAll();
 }
  
-
-function monthpop($conn, $count = 10) {
-    $limit  = $count ? "limit $count" : "";
+//Cannot get this to work.
+function monthpop($conn, $count) {
     $p_month = date('F');
-    $query  = "SELECT s_date, views, title, id, now_time, visible, tagsys, member FROM pastes WHERE s_date LIKE '% $p_month %' AND visible = '0' ORDER BY views + 0 DESC LIMIT 10, $count";
-    $result = mysqli_query($conn, $query);
-    return $result;
+    $query = $conn->prepare("SELECT s_date, views, title, id, now_time, visible, tagsys, member FROM pastes WHERE s_date LIKE ? AND visible = '0' ORDER BY views + 0 DESC LIMIT 10, ?");
+    $query->execute([$p_month,$count]);
+    return $query->fetchAll();
 }
  
  
