@@ -255,14 +255,12 @@ overflow: hidden !important;
                     } else {
 						echo '<a href="'  . $p_id . '" title="' . $titlehov . '">' . ucfirst($title) . '</a>'; 
                     }}
+
+
 					// Display a message if the pastebin is empty
-					$query  = "SELECT count(*) as count FROM pastes";
-					$result = mysqli_query( $con, $query );
-					while ($row = mysqli_fetch_array($result)) {
-						$totalpastes = $row['count'];
-					}
-					
-					if ($totalpastes == '0') { echo $lang['emptypastebin']; } ?>
+                    if ($totalpastes === 0) {
+                        echo $lang['emptypastebin'];
+                    } ?>
 					</p>   
                                         
 						<?php } else { ?>

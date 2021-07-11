@@ -37,7 +37,7 @@ $language_data = array(
     'HARDQUOTE' => array(),
     'HARDESCAPE' => array(),
     'HARDCHAR' => '',
-    'KEYWRODS' => array(
+    'KEYWORDS' => array(
         1 => array(
             ''
             )
@@ -51,7 +51,7 @@ $language_data = array(
             )
         ),
     'STYLES' => array(
-        'KEYWRODS' => array(
+        'KEYWORDS' => array(
             1 => 'color: #0000FF; font-weight: bold;'
             ),
         'COMMENTS' => array(

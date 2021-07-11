@@ -19,7 +19,7 @@ $(document).ready(function () {
   $("#archive").dataTable({
     processing: true,
     autoWidth: false,
-    ajax:"../api/ajax_pastes.php",
+    ajax:"api/ajax_pastes.php",
     initComplete: function () {
       var search = new URLSearchParams(window.location.search);
       var query = search.get('q');

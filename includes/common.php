@@ -23,6 +23,10 @@ function getSiteAds($conn) {
     return $conn->query('SELECT text_ads, ads_1, ads_2 FROM ads LIMIT 1')->fetch();
 }
 
+function getSiteTotalPastes($conn) {
+    return intval($conn->query('SELECT COUNT(*) FROM pastes')->fetch(PDO::FETCH_NUM)[0]);
+}
+
 function updatePageViews($conn) {
     $ip = $_SERVER['REMOTE_ADDR'];
     $date    = date('jS F Y');

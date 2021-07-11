@@ -22,6 +22,7 @@ session_start();
 header('Content-Type: text/html; charset=utf-8');
 
 // Required functions
+define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/geshi.php');
 require_once('includes/functions.php');
@@ -34,54 +35,42 @@ $parsedown_path = 'includes/Parsedown/Parsedown.php';
 $parsedownextra_path  = 'includes/Parsedown/ParsedownExtra.php';
 $parsedownsec_path = 'includes/Parsedown/SecureParsedown.php';
 
-// GET Paste ID
-if (isset($_GET['id'])) {
-    $paste_id = Trim(htmlspecialchars($_GET['id']));
-    $paste_id = preg_replace( '/[^0-9]/', '', $paste_id );
-    $paste_id = (int) filter_var($paste_id, FILTER_SANITIZE_NUMBER_INT);    
-} elseif (isset($_POST['id'])) {
-    $paste_id = Trim(htmlspecialchars($_POST['id']));
-    $paste_id = preg_replace( '/[^0-9]/', '', $paste_id );
-    $paste_id = (int) filter_var($paste_id, FILTER_SANITIZE_NUMBER_INT);    
-}
-
-// Prevent SQLInjection
-settype($paste_id, 'integer');
+$paste_id = intval(trim($_REQUEST['id']));
 
 updatePageViews($conn);
 
-//Get fav count
-$get_fav_count =  $conn->prepare("SELECT count(f_paste) as total FROM pins WHERE f_paste=?");
-$get_fav_count->execute([$paste_id]); 
-while ($row = $get_fav_count->fetch()) {
-    $fav_count = $row['total'];
-}
-
+// Get paste favorite count
+$query = $conn->prepare('SELECT COUNT(*) FROM pins WHERE f_paste = ?');
+$query->execute([$paste_id]);
+$fav_count = intval($query->fetch(PDO::FETCH_NUM)[0]);
 
 // Get paste info
-$get_paste_details = $conn->prepare("SELECT * FROM pastes WHERE id=?");
-$get_paste_details->execute([$paste_id]); 
-    if ($get_paste_details->fetchColumn() > 0) {
-    $get_paste_details = $conn->prepare("SELECT * FROM pastes WHERE id=?");
-    $get_paste_details->execute([$paste_id]); 
-    while ($row = $get_paste_details->fetch()) {
-        $p_title    = $row['title'];
-        $p_content  = $row['content'];
-        $p_visible  = $row['visible'];
-        $p_code     = $row['code'];
-        $p_expiry   = Trim($row['expiry']);
-        $p_password = $row['password'];
-        $p_member   = $row['member'];
-        $p_date     = $row['date'];
-        $now_time   = $row['now_time'];
-        $p_encrypt  = $row['encrypt'];
-        $p_views    = $row['views'];
-		$p_tagsys	= $row['tagsys'];
-    }
-    
-    
+$query = $conn->prepare('SELECT * FROM pastes WHERE id = ?');
+$query->execute([$paste_id]);
+$row = $query->fetch();
+
+// This is used in the theme files.
+$totalpastes = getSiteTotalPastes($conn);
+
+if (!$row) {
+    header('HTTP/1.1 404 Not Found');
+    $notfound = $lang['notfound']; // "Not found";
+} else {
+    $p_title    = $row['title'];
+    $p_content  = $row['content'];
+    $p_visible  = $row['visible'];
+    $p_code     = $row['code'];
+    $p_expiry   = Trim($row['expiry']);
+    $p_password = $row['password'];
+    $p_member   = $row['member'];
+    $p_date     = $row['date'];
+    $now_time   = $row['now_time'];
+    $p_encrypt  = $row['encrypt'];
+    $p_views    = $row['views'];
+    $p_tagsys	= $row['tagsys'];
+
     $mod_date = date("jS F Y h:i:s A", $now_time);
-    
+
     $p_private_error = '0';
     if ($p_visible == "2") {
         if (isset($_SESSION['username'])) {
@@ -97,8 +86,8 @@ $get_paste_details->execute([$paste_id]);
             goto Not_Valid_Paste;
         }
     }
-    if ($p_expiry == "NULL" || $p_expiry == "SELF") {
-    } else {
+
+    if (!empty($p_expiry) && $p_expiry !== 'SELF') {
         $input_time   = $p_expiry;
         $current_time = mktime(date("H"), date("i"), date("s"), date("n"), date("j"), date("Y"));
         if ($input_time < $current_time) {
@@ -107,13 +96,14 @@ $get_paste_details->execute([$paste_id]);
             goto Not_Valid_Paste;
         }
     }
-    if ($p_encrypt == "" || $p_encrypt == null || $p_encrypt == '0') {
-    } else {
+
+    if (!empty($p_encrypt)) {
         $p_content = decrypt($p_content);
     }
+
     $op_content = Trim(htmlspecialchars_decode($p_content));
-    
-    // Download the paste   
+
+    // Download the paste
     if (isset($_GET['download'])) {
         if ($p_password == "NONE") {
             doDownload($paste_id, $p_title, $p_member, $op_content, $p_code);
@@ -131,8 +121,8 @@ $get_paste_details->execute([$paste_id]);
             }
         }
     }
-	
-    // Raw view   
+
+    // Raw view
     if (isset($_GET['raw'])) {
         if ($p_password == "NONE") {
             rawView($paste_id, $p_title, $op_content, $p_code);
@@ -149,8 +139,8 @@ $get_paste_details->execute([$paste_id]);
                 $error = $lang['pwdprotected']; // 'Password protected paste';
             }
         }
-    } 
-    
+    }
+
     // Preprocess
     $highlight   = array();
     $prefix_size = strlen('!highlight!');
@@ -165,8 +155,8 @@ $get_paste_details->execute([$paste_id]);
             $p_content .= $line . "\n";
         }
         $p_content = rtrim($p_content);
-    } 
-    
+    }
+
     // Apply syntax highlight
     $p_content = htmlspecialchars_decode($p_content);
     if ( $p_code == "pastedown" ) {
@@ -178,6 +168,7 @@ $get_paste_details->execute([$paste_id]);
         $p_content = $Parsedown->text( $p_content );
     } else {
         $geshi     = new GeSHi($p_content, $p_code, $path);
+
         $geshi->enable_classes();
         $geshi->set_header_type(GESHI_HEADER_DIV);
         $geshi->set_line_style('color: #aaaaaa; width:auto;');
@@ -193,8 +184,8 @@ $get_paste_details->execute([$paste_id]);
         $style     = $geshi->get_stylesheet();
         $ges_style = '<style>' . $style . '</style>';
     }
-    
-    // Embed view after GeSHI is applied so that $p_code is syntax highlighted as it should be. 
+
+    // Embed view after GeSHI is applied so that $p_code is syntax highlighted as it should be.
     if (isset($_GET['embed'])) {
         if ( $p_password == "NONE" ) {
             embedView( $paste_id, $p_title, $p_content, $p_code, $title, $baseurl, $ges_style, $lang );
@@ -211,10 +202,7 @@ $get_paste_details->execute([$paste_id]);
                 $error = $lang['pwdprotected']; // 'Password protected paste';
             }
         }
-    } 
-} else {
-	header("HTTP/1.1 404 Not Found");
-    $notfound = $lang['notfound']; // "Not found";
+    }
 }
 
 require_once('theme/' . $default_theme . '/header.php');

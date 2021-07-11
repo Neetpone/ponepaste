@@ -12,7 +12,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License in LIC.txt for more details.
  */
- 
+
+if (gethostname() === 'thunderlane') {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+}
+
 $currentversion = 2.2;
 
 // Max paste size in MB. This value should always be below the value of

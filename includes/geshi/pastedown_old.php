@@ -71,7 +71,7 @@ $language_data = array(
     'NUMBERS' =>
         GESHI_NUMBER_INT_BASIC | GESHI_NUMBER_OCT_PREFIX | GESHI_NUMBER_HEX_PREFIX |
         GESHI_NUMBER_FLT_SCI_ZERO,
-    'KEYWRODS' => array(
+    'KEYWORDS' => array(
         1 => array(
             ''
             )
@@ -85,7 +85,7 @@ $language_data = array(
             )
         ),
     'STYLES' => array(
-        'KEYWRODS' => array(
+        'KEYWORDS' => array(
             1 => ''
             ),
         'COMMENTS' => array(

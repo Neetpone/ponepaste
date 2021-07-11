@@ -40,7 +40,6 @@ $sql_details = array(
  */
 
 require( 'ssp.pastes.php' );
-
 echo json_encode(
 	SSP::simple( $_GET, $sql_details, $table, $primaryKey, $columns, $columns2 )
 );
