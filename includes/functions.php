@@ -13,33 +13,6 @@
  * GNU General Public License in GPL.txt for more details.
  */
   
-    /**
-     * Turn all URLs in clickable links.
-     * 
-     * @param string $value
-     * @param array  $protocols  http/https, ftp, mail, twitter
-     * @param array  $attributes
-     * @return string
-     */
-    
-  
-  
-  
-/* function pinpaste($conn, $paste_id)
-{
-    $query  = "SELECT views, id FROM pastes WHERE id=" . Trim($paste_id); 
-    $result = mysqli_query($conn, $query);
-
-    while ($row = mysqli_fetch_array($result)) {
-        $p_view = Trim($row['views']);
-    }
-    $p_view = $p_view + 1;
-    $query  = "UPDATE pastes SET views='$p_view' where id='$paste_id'";
-    $result = mysqli_query($conn, $query);
-}
-
-
-  */ 
 
 function timer()
 {
@@ -59,16 +32,16 @@ function timer()
   
 function getUserFavs($conn, $username)
 {
-    $query  = "SELECT pins.f_time, pins.m_fav, pins.f_paste, pastes.id, pastes.title, pastes.now_time, pastes.tagsys FROM pins, pastes WHERE pins.f_paste = pastes.id AND pins.m_fav='$username'";
-    $result = mysqli_query($conn, $query);
-    return $result;
+    $query = $conn->prepare("SELECT pins.f_time, pins.m_fav, pins.f_paste, pastes.id, pastes.title, pastes.now_time, pastes.tagsys FROM pins, pastes WHERE pins.f_paste = pastes.id AND pins.m_fav=?'");
+    $query->execute([$username]);
+    return $query->fetchAll();
 }
 
 function CountPasteFavs($conn, $fav_id)
 {
-    $query  = "SELECT COUNT(f_paste) FROM pins WHERE f_paste='$fav_id'";
-    $result = mysqli_query($conn, $query);
-    return $result;
+    $query = $conn->prepare("SELECT COUNT(f_paste) FROM pins WHERE f_paste=?");
+    $query->execute([$fav_id]);
+    return $query->fetchAll();
 }
 
 
@@ -83,7 +56,7 @@ function checkFavorite($paste_id, $user_id, $conn) {
         }
       }
 
-      function getreports($conn, $count = 10) {
+function getreports($conn, $count = 10) {
     $query = $conn->prepare('SELECT * FROM user_reports LIMIT ?');
     $query->execute([$count]);
 
@@ -100,13 +73,12 @@ function checkFavorite($paste_id, $user_id, $conn) {
 }
 
   
- function getevent($conn, $count = 10)
+ function getevent($conn, $event_name, $count)
 {
-    $limit  = $count ? "limit $count" : "";
-    $query  = "SELECT id, visible, title, date, now_time, views, member, tagsys FROM pastes WHERE visible='1' AND tagsys LIKE '%/pj50kb/%' AND tagsys LIKE '%/pj50kb/%' 
- ORDER BY RAND () LIMIT 0, $count";
-    $result = mysqli_query($conn, $query);
-    return $result;
+    $query = $conn->prepare("SELECT id, visible, title, date, now_time, views, member, tagsys FROM pastes WHERE visible='1' AND tagsys LIKE '%?%' 
+ ORDER BY RAND () LIMIT 0, ?");
+    $query->execute([$event_name,$count]);
+    return $query->fetchAll();    
 }
 
 function linkify($value, $protocols = array('http', 'mail'), array $attributes = array())
@@ -137,14 +109,13 @@ function linkify($value, $protocols = array('http', 'mail'), array $attributes =
 
 
 
-function getRecentreport($conn, $count = 20)
+function getRecentreport($conn, $count)
 {
-    $limit  = $count ? "limit $count" : "";
-    $query  = "SELECT id, m_report, p_report, rep_reason, t_report FROM user_reports
-ORDER BY id DESC
-LIMIT 0 , $count";
-    $result = mysqli_query($conn, $query);
-    return $result;
+    $query = $conn->prepare("SELECT id, m_report, p_report, rep_reason, t_report FROM user_reports
+    ORDER BY id DESC
+    LIMIT 0 , ?");
+    $query->execute([$count]);
+    return $query->fetchAll();
 } 
 
 
@@ -228,8 +199,6 @@ LIMIT ?");
     return $query->fetchAll();
 }
 
-
-
 function getRecentadmin($conn, $count = 5)
 {
     $query = $conn->prepare('SELECT id, ip title, date, now_time, s_date, views, member FROM pastes ORDER BY id DESC LIMIT 0, ?');
@@ -237,15 +206,14 @@ function getRecentadmin($conn, $count = 5)
 
     return $query->fetchAll();
 }    
-function getpopular($conn, $count = 10)
+function getpopular($conn, $count)
 {
-    $limit  = $count ? "limit $count" : "";
-    $query  = "SELECT id, visible, title, date, now_time, views, member, tagsys
-FROM pastes where visible='0' AND NOT title LIKE '%/pj50kb/%'
+$query = $conn->prepare("SELECT id, visible, title, date, now_time, views, member, tagsys
+FROM pastes WHERE visible='0'
 ORDER BY views + 0 DESC
-LIMIT 0, $count";
-    $result = mysqli_query($conn, $query);
-    return $result;
+LIMIT 0, ?");
+    $query->execute([$count]);
+    return $query->fetchAll();
 }
 
 function getrandom($conn, $count)
@@ -268,11 +236,12 @@ LIMIT 0 , ?");
     return $query->fetchAll();
 }
 
+
 function getUserPastes($conn, $username)
 {
-    $query  = "SELECT id, title, code, views, s_date, now_time, visible, date, tagsys, member FROM pastes where member='$username' ORDER by id DESC";
-    $result = mysqli_query($conn, $query);
-    return $result;
+    $query = $conn->prepare("SELECT id, title, code, views, s_date, now_time, visible, date, tagsys, member FROM pastes where member=? ORDER by id DESC");
+    $query->execute([$username]);
+    return $query->fetchAll();
 }
 
 function jsonView($paste_id, $p_title, $p_conntent, $p_code)
@@ -294,10 +263,10 @@ function jsonView($paste_id, $p_title, $p_conntent, $p_code)
 
 function getTotalPastes($conn, $username)
 {
-    $query  = "SELECT member FROM pastes WHERE member='$username'";
-    $result = mysqli_query($conn, $query);
     $count  = 0;
-    while ($row = mysqli_fetch_array($result)) {
+    $query = $conn->prepare("SELECT member FROM pastes WHERE member=?");
+    $query->execute([$username]);
+    while ($row = $site_info_rows->fetch()) {
         $count = $count + 1;
     }
     return $count;
@@ -314,7 +283,8 @@ function existingUser(PDO $conn, string $username) : bool {
     return (bool) $query->fetch();
 }
 
-function updateMyView($conn, $paste_id) {
+function updateMyView($conn, $paste_id) 
+{
     $query = $conn->prepare("SELECT views, id FROM pastes WHERE id= ?");
     $query->execute([$paste_id]);
     if ($row = $query->fetch()) {
