@@ -38,16 +38,18 @@ function CountPasteFavs($conn, $fav_id) {
     return $query->fetchAll();
 }
 
-
-function checkFavorite($paste_id, $user_id, $conn) {
-    $result = $conn->query("SELECT * FROM pins WHERE m_fav = '" . $user_id . "' AND f_paste = '" . $paste_id . "'");
+//Can't seem to get working.
+function checkFavorite($conn,$paste_id, $user_id) {
+    $result = $conn->query("SELECT * FROM pins WHERE m_fav = ? AND f_paste = ?");
+    $query->execute([$user_id,$paste_id]);
     $numrows = $result->num_rows;
-    if ($numrows == 0) {
-        echo "<a  href='#' id='favorite' class='iconn tool-iconn' data-fid='" . $paste_id . "'><i class='far fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
+    if ($numrows) {
+        return "<a  href='#' id='favorite' class='iconn tool-iconn' data-fid='" . $paste_id . "'><i class='far fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
     } else {
-        echo "<a  href='#' id='favorite' class='iconn tool-iconn' data-fid='" . $paste_id . "'><i class='fas fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
+        return "<a  href='#' id='favorite' class='iconn tool-iconn' data-fid='" . $paste_id . "'><i class='fas fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
     }
 }
+
 
 function getreports($conn, $count = 10) {
     $query = $conn->prepare('SELECT * FROM user_reports LIMIT ?');
