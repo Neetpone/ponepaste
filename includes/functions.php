@@ -33,10 +33,11 @@ function getUserFavs($conn, $username) {
 }
 
 function CountPasteFavs($conn, $fav_id) {
-    $query = intval($conn->prepare("SELECT COUNT(f_paste) FROM pins WHERE f_paste=?"))->fetch(PDO::FETCH_NUM)[0]);
+$query = intval($conn->prepare("SELECT COUNT(f_paste) FROM pins WHERE f_paste=?")->fetch(PDO::FETCH_NUM)[0]);
     $query->execute([$fav_id]);
     return $query->fetchAll();
 }
+
 
 //Can't seem to get working.
 function checkFavorite($conn,$paste_id, $user_id) {
