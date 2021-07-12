@@ -1,15 +1,3 @@
-<?php
-			$get_view_count = $conn->query("SELECT * FROM page_view");
-            while ($row = $get_view_count->fetch()) {
-				$total_page = Trim($row['tpage']);
-				$total_un   = Trim($row['tvisit']);
-			}
-           
-            $paste_counter = $conn->query("SELECT COUNT(id) from pastes");
-            while ($row = $paste_counter->fetch()) {
-            $get_paste_count = $row['COUNT(id)'];
-            }
-?>
 
 <footer class="footer has-background-white" style="border-top: 1px solid #ebeaeb">
  
@@ -66,13 +54,13 @@
             ?>
          </li>
          <li>
-         <?php echo 'Page Hits Today: '. $total_page .''; ?>
+         <?php echo 'Page Hits Today: '. $total_page_views .''; ?>
          </li>
          <li>
-          <?php echo 'Unique Visitors Today: '. $total_un .''; ?>
+          <?php echo 'Unique Visitors Today: '. $total_unique_views .''; ?>
          </li>
          <li>
-         <?php echo 'Total Pastes: ' . $get_paste_count . ''; ?>
+         <?php echo 'Total Pastes: ' . $total_pastes . ''; ?>
          </li>
         </ul>
         </div>

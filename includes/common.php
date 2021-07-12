@@ -26,6 +26,12 @@ function getSiteAds(PDO $conn) : array | bool {
 function getSiteTotalPastes(PDO $conn) : int {
     return intval($conn->query('SELECT COUNT(*) FROM pastes')->fetch(PDO::FETCH_NUM)[0]);
 }
+function getSiteTotalviews(PDO $conn) : int {
+    return intval($conn->query('SELECT tpage FROM page_view ORDER BY id DESC LIMIT 1')->fetch(PDO::FETCH_NUM)[0]);
+}
+function getSiteTotal_unique_views(PDO $conn) : int {
+    return intval($conn->query('SELECT tvisit FROM page_view ORDER BY id DESC LIMIT 1')->fetch(PDO::FETCH_NUM)[0]);
+}
 
 function updatePageViews(PDO $conn) : void {
     $ip = $_SERVER['REMOTE_ADDR'];
@@ -132,3 +138,6 @@ if (isset($_GET['logout'])) {
 }
 
 $site_ads = getSiteAds($conn);
+$total_pastes = getSiteTotalPastes($conn);
+$total_page_views = getSiteTotalviews($conn);
+$total_unique_views= getSiteTotal_unique_views($conn);
