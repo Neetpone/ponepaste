@@ -22,8 +22,8 @@ require_once('includes/password.php');
 // UTF-8
 header('Content-Type: text/html; charset=utf-8');
 
-$date    = date('jS F Y');
-$ip      = $_SERVER['REMOTE_ADDR'];
+$date = date('jS F Y');
+$ip = $_SERVER['REMOTE_ADDR'];
 
 
 $p_title = $lang['myprofile']; //"My Profile";
@@ -32,7 +32,7 @@ $p_title = $lang['myprofile']; //"My Profile";
 // Check if already logged in
 if (isset($_SESSION['token'])) {
 } else {
-   header("Location: ./login.php");
+    header("Location: ./login.php");
 }
 $user_username = htmlentities(trim($_SESSION['username']));
 
@@ -40,14 +40,14 @@ $query = $conn->prepare('SELECT * FROM users WHERE username = ?');
 $query->execute([$user_username]);
 $row = $query->fetch();
 $user_oauth_uid = $row['oauth_uid'];
-$user_id        = $row['id'];
-$user_email_id  = $row['email_id'];
+$user_id = $row['id'];
+$user_email_id = $row['email_id'];
 $user_full_name = $row['full_name'];
-$user_platform  = Trim($row['platform']);
-$user_verified  = $row['verified'];
-$user_date      = $row['date'];
-$user_ip        = $row['ip'];
-$user_password  = $row['password'];
+$user_platform = Trim($row['platform']);
+$user_verified = $row['verified'];
+$user_date = $row['date'];
+$user_ip = $row['ip'];
+$user_password = $row['password'];
 
 if ($user_oauth_uid == '0') {
     $user_oauth_uid = "None";
@@ -55,8 +55,8 @@ if ($user_oauth_uid == '0') {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['cpassword'])) {
-        $user_new_full  = trim(htmlspecialchars($_POST['full']));
-        $user_old_pass  = $_POST['old_password'];
+        $user_new_full = trim(htmlspecialchars($_POST['full']));
+        $user_old_pass = $_POST['old_password'];
         if (password_verify($user_old_pass, $user_password)) {
             $user_new_cpass = password_hash($_POST['password'], PASSWORD_DEFAULT);
 

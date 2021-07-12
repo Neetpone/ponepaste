@@ -42,29 +42,29 @@ $language_data = array(
     'COMMENT_SINGLE' => array(
         1 => '>',
         2 => '<',
-		3 => '**',
-		4 => '###',
-		5 => '##',
-		6 => '@',
-		7 => '++',
-		
-        ),
+        3 => '**',
+        4 => '###',
+        5 => '##',
+        6 => '@',
+        7 => '++',
+
+    ),
     'COMMENT_MULTI' => array(
         '_' => '_'
-        ),
+    ),
     'COMMENT_REGEXP' => array(
         1 => ''
-        ),
+    ),
     'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,
     'QUOTEMARKS' => array(
         1 => '',
         2 => ''
-        ),
+    ),
     'ESCAPE_CHAR' => '',
     'ESCAPE_REGEXP' => array(
         1 => '',
         2 => ''
-        ),
+    ),
     'HARDQUOTE' => array(),
     'HARDESCAPE' => array(),
     'HARDCHAR' => '',
@@ -74,50 +74,50 @@ $language_data = array(
     'KEYWORDS' => array(
         1 => array(
             ''
-            )
-        ),
+        )
+    ),
     'CASE_SENSITIVE' => array(
         1 => false
-        ),
+    ),
     'SYMBOLS' => array(
         0 => array(
             '>'
-            )
-        ),
+        )
+    ),
     'STYLES' => array(
         'KEYWORDS' => array(
             1 => ''
-            ),
+        ),
         'COMMENTS' => array(
             1 => 'font-style: normal; color: #789922;',
             2 => 'font-weight: normal; color: #991111;',
             3 => 'font-weight: bold; color: #000;',
-			4 => 'font-size: 25px; font-weight: bold; color: #000;',
-			5 => 'font-size: 35px; font-weight: bold; color: #000;',
-			6 => 'color: #440088;',
-			7 => 'border: 3px dotted #000;',
+            4 => 'font-size: 25px; font-weight: bold; color: #000;',
+            5 => 'font-size: 35px; font-weight: bold; color: #000;',
+            6 => 'color: #440088;',
+            7 => 'border: 3px dotted #000;',
             'MULTI' => 'text-decoration: underline;color: #000;'
-            ),
+        ),
         'ESCAPE_CHAR' => array(
             1 => '',
             2 => ''
-            ),
+        ),
         'BRACKETS' => array(),
         'STRINGS' => array(
             1 => '',
             2 => ''
-            ),
+        ),
         'NUMBERS' => array(),
         'METHODS' => array(),
         'SYMBOLS' => array(
             0 => 'font-style: italic; color: #789922;'
-            ),
+        ),
         'REGEXPS' => array(),
         'SCRIPT' => array()
-        ),
+    ),
     'URLS' => array(
         1 => ''
-        ),
+    ),
     'OOLANG' => false,
     'OBJECT_SPLITTERS' => array(),
     'REGEXPS' => array(),

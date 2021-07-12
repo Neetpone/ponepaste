@@ -43,7 +43,7 @@
  *
  ************************************************************************************/
 
-$language_data = array (
+$language_data = array(
     'LANG_NAME' => 'Text',
     'COMMENT_SINGLE' => array(),
     'COMMENT_MULTI' => array(),
@@ -54,7 +54,7 @@ $language_data = array (
     'SYMBOLS' => array(),
     'CASE_SENSITIVE' => array(
         GESHI_COMMENTS => false
-        ),
+    ),
     'STYLES' => array(
         'KEYWORDS' => array(),
         'COMMENTS' => array(),
@@ -66,7 +66,7 @@ $language_data = array (
         'SYMBOLS' => array(),
         'SCRIPT' => array(),
         'REGEXPS' => array()
-        ),
+    ),
     'URLS' => array(),
     'OOLANG' => false,
     'OBJECT_SPLITTERS' => array(),
@@ -77,6 +77,6 @@ $language_data = array (
     'PARSER_CONTROL' => array(
         'ENABLE_FLAGS' => array(
             'ALL' => GESHI_NEVER
-            )
         )
+    )
 );

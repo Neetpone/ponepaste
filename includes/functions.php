@@ -12,33 +12,27 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License in GPL.txt for more details.
  */
-  
 
-function timer()
-{
+
+function timer() {
     static $start;
 
-    if (is_null($start))
-    {
+    if (is_null($start)) {
         $start = microtime(true);
-    }
-    else
-    {
+    } else {
         $diff = round((microtime(true) - $start), 4);
         $start = null;
         return $diff;
     }
 }
-  
-function getUserFavs($conn, $username)
-{
+
+function getUserFavs($conn, $username) {
     $query = $conn->prepare("SELECT pins.f_time, pins.m_fav, pins.f_paste, pastes.id, pastes.title, pastes.now_time, pastes.tagsys FROM pins, pastes WHERE pins.f_paste = pastes.id AND pins.m_fav=?'");
     $query->execute([$username]);
     return $query->fetchAll();
 }
 
-function CountPasteFavs($conn, $fav_id)
-{
+function CountPasteFavs($conn, $fav_id) {
     $query = $conn->prepare("SELECT COUNT(f_paste) FROM pins WHERE f_paste=?");
     $query->execute([$fav_id]);
     return $query->fetchAll();
@@ -46,95 +40,101 @@ function CountPasteFavs($conn, $fav_id)
 
 
 function checkFavorite($paste_id, $user_id, $conn) {
-        $result = $conn->query("SELECT * FROM pins WHERE m_fav = '". $user_id."' AND f_paste = '". $paste_id."'");
-        $numrows =  $result->num_rows;
-        if ($numrows == 0) {
-         echo "<a  href='#' id='favorite' class='iconn tool-iconn' data-fid='". $paste_id."'><i class='far fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
-        }
-        else {
-          echo  "<a  href='#' id='favorite' class='iconn tool-iconn' data-fid='". $paste_id."'><i class='fas fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
-        }
-      }
+    $result = $conn->query("SELECT * FROM pins WHERE m_fav = '" . $user_id . "' AND f_paste = '" . $paste_id . "'");
+    $numrows = $result->num_rows;
+    if ($numrows == 0) {
+        echo "<a  href='#' id='favorite' class='iconn tool-iconn' data-fid='" . $paste_id . "'><i class='far fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
+    } else {
+        echo "<a  href='#' id='favorite' class='iconn tool-iconn' data-fid='" . $paste_id . "'><i class='fas fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
+    }
+}
 
 function getreports($conn, $count = 10) {
     $query = $conn->prepare('SELECT * FROM user_reports LIMIT ?');
     $query->execute([$count]);
 
     return $query->fetchAll();
-}   
-  
-function sandwitch($str){
-   $output = "";
-   $arr = explode(",", $str);
-   foreach ($arr as $word){
-     $word = ucfirst($word);
-     if (stripos($word, 'nsfw') !== false) {
-     $word = strtoupper($word);
-     $tagcolor = "tag is-danger";
-     }
-     elseif (stripos($word, 'SAFE') !== false) {
-     $word = strtoupper($word);
-     $tagcolor = "tag is-success";
-     }
-     elseif (strstr($word, '/')){
-     $tagcolor = "tag is-primary";   
-     }else{
-     $tagcolor = "tag is-info";
-     }   
-     $output .= '<a href="/archive?q='.trim($word).'"><span class="' . $tagcolor . '">'.trim($word).'</span>';
-   }
- return $output;
 }
 
-  
- function getevent($conn, $event_name, $count)
-{
+function sandwitch($str) {
+    $output = "";
+    $arr = explode(",", $str);
+    foreach ($arr as $word) {
+        $word = ucfirst($word);
+        if (stripos($word, 'nsfw') !== false) {
+            $word = strtoupper($word);
+            $tagcolor = "tag is-danger";
+        } elseif (stripos($word, 'SAFE') !== false) {
+            $word = strtoupper($word);
+            $tagcolor = "tag is-success";
+        } elseif (strstr($word, '/')) {
+            $tagcolor = "tag is-primary";
+        } else {
+            $tagcolor = "tag is-info";
+        }
+        $output .= '<a href="/archive?q=' . trim($word) . '"><span class="' . $tagcolor . '">' . trim($word) . '</span>';
+    }
+    return $output;
+}
+
+
+function getevent($conn, $event_name, $count) {
     $query = $conn->prepare("SELECT id, visible, title, date, now_time, views, member, tagsys FROM pastes WHERE visible='1' AND tagsys LIKE '%?%' 
  ORDER BY RAND () LIMIT 0, ?");
-    $query->execute([$event_name,$count]);
-    return $query->fetchAll();    
+    $query->execute([$event_name, $count]);
+    return $query->fetchAll();
 }
 
-function linkify($value, $protocols = array('http', 'mail'), array $attributes = array())
-    {
-        // Link attributes
-        $attr = '';
-        foreach ($attributes as $key => $val) {
-            $attr .= ' ' . $key . '="' . htmlentities($val) . '"';
-        }
-        
-        $links = array();
-        
-        // Extract existing links and tags
-        $value = preg_replace_callback('~(<a .*?>.*?</a>|<.*?>)~i', function ($match) use (&$links) { return '<' . array_push($links, $match[1]) . '>'; }, $value);
-        
-        // Extract text links for each protocol
-        foreach ((array)$protocols as $protocol) {
-            switch ($protocol) {
-                case 'http':
-                case 'https':   $value = preg_replace_callback('~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) { if ($match[1]) $protocol = $match[1]; $link = $match[2] ?: $match[3]; return '<' . array_push($links, "<a $attr href=\"$protocol://$link\">$protocol://$link</a>") . '>'; }, $value); break;
-                default:        $value = preg_replace_callback('~' . preg_quote($protocol, '~') . '://([^\s<]+?)(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) { return '<' . array_push($links, "<a $attr href=\"$protocol://{$match[1]}\">$protocol://{$match[1]}</a>") . '>'; }, $value); break;
-            }
-        }
-        
-        // Insert all link
-        return preg_replace_callback('/<(\d+)>/', function ($match) use (&$links) { return $links[$match[1] - 1]; }, $value);
+function linkify($value, $protocols = array('http', 'mail'), array $attributes = array()) {
+    // Link attributes
+    $attr = '';
+    foreach ($attributes as $key => $val) {
+        $attr .= ' ' . $key . '="' . htmlentities($val) . '"';
     }
 
+    $links = array();
+
+    // Extract existing links and tags
+    $value = preg_replace_callback('~(<a .*?>.*?</a>|<.*?>)~i', function ($match) use (&$links) {
+        return '<' . array_push($links, $match[1]) . '>';
+    }, $value);
+
+    // Extract text links for each protocol
+    foreach ((array)$protocols as $protocol) {
+        switch ($protocol) {
+            case 'http':
+            case 'https':
+                $value = preg_replace_callback('~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) {
+                    if ($match[1]) $protocol = $match[1];
+                    $link = $match[2] ?: $match[3];
+                    return '<' . array_push($links, "<a $attr href=\"$protocol://$link\">$protocol://$link</a>") . '>';
+                }, $value);
+                break;
+            default:
+                $value = preg_replace_callback('~' . preg_quote($protocol, '~') . '://([^\s<]+?)(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) {
+                    return '<' . array_push($links, "<a $attr href=\"$protocol://{$match[1]}\">$protocol://{$match[1]}</a>") . '>';
+                }, $value);
+                break;
+        }
+    }
+
+    // Insert all link
+    return preg_replace_callback('/<(\d+)>/', function ($match) use (&$links) {
+        return $links[$match[1] - 1];
+    }, $value);
+}
 
 
-function getRecentreport($conn, $count)
-{
+function getRecentreport($conn, $count) {
     $query = $conn->prepare("SELECT id, m_report, p_report, rep_reason, t_report FROM user_reports
     ORDER BY id DESC
     LIMIT 0 , ?");
     $query->execute([$count]);
     return $query->fetchAll();
-} 
+}
 
 
-function getUserRecom($conn,$p_member)
-{
+function getUserRecom($conn, $p_member) {
     $query = $conn->prepare("SELECT id, member, title, visible
 FROM pastes where member= ? AND visible = '0'
 ORDER BY id DESC
@@ -149,61 +149,56 @@ function recentupdate($conn, $count) {
     $query->execute([$count]);
     return $query->fetchAll();
 }
- 
+
 //Cannot get this to work.
 function monthpop($conn, $count) {
     $p_month = date('F');
     $query = $conn->prepare("SELECT s_date, views, title, id, now_time, visible, tagsys, member FROM pastes WHERE s_date LIKE ? AND visible = '0' ORDER BY views + 0 DESC LIMIT 10, ?");
-    $query->execute([$p_month,$count]);
+    $query->execute([$p_month, $count]);
     return $query->fetchAll();
 }
- 
- 
+
+
 function isValidEmail($email) {
-    return filter_var($email, FILTER_VALIDATE_EMAIL) 
+    return filter_var($email, FILTER_VALIDATE_EMAIL)
         && preg_match('/@.+\./', $email);
 }
-function formatBytes($size, $precision = 2)
-{
-    $base = log($size, 1024);
-    $suffixes = array('B', 'KB', 'MB', 'GB', 'TB');   
 
-    return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
+function formatBytes($size, $precision = 2) {
+    $base = log($size, 1024);
+    $suffixes = array('B', 'KB', 'MB', 'GB', 'TB');
+
+    return round(pow(1024, $base - floor($base)), $precision) . ' ' . $suffixes[floor($base)];
 }
 
-function str_conntains($haystack, $needle, $ignoreCase = false)
-{
+function str_conntains($haystack, $needle, $ignoreCase = false) {
     if ($ignoreCase) {
         $haystack = strtolower($haystack);
-        $needle   = strtolower($needle);
+        $needle = strtolower($needle);
     }
     $needlePos = strpos($haystack, $needle);
     return ($needlePos === false ? false : ($needlePos + 1));
 }
 
-function encrypt($value)
-{
-	$salt = $sec_key;
-	$encrypted_string=openssl_encrypt($value,"AES-256-CBC",$salt);
-	return $encrypted_string;
+function encrypt($value) {
+    $salt = $sec_key;
+    $encrypted_string = openssl_encrypt($value, "AES-256-CBC", $salt);
+    return $encrypted_string;
 }
 
-function decrypt($value)
-{
-	$salt = $sec_key;
-	$decrypted_string=openssl_decrypt($value,"AES-256-CBC",$salt);
-	return $decrypted_string;
+function decrypt($value) {
+    $salt = $sec_key;
+    $decrypted_string = openssl_decrypt($value, "AES-256-CBC", $salt);
+    return $decrypted_string;
 }
 
-function deleteMyPaste($conn, $paste_id)
-{
-    $query  = "DELETE FROM pastes where id='$paste_id'";
+function deleteMyPaste($conn, $paste_id) {
+    $query = "DELETE FROM pastes where id='$paste_id'";
     $result = mysqli_query($conn, $query);
 }
 
 
-function getRecent($conn, $count)
-{
+function getRecent($conn, $count) {
     $query = $conn->prepare("SELECT id, visible, title, date, now_time, member, tagsys 
 FROM pastes where visible='0'
 ORDER BY id DESC
@@ -212,16 +207,15 @@ LIMIT ?");
     return $query->fetchAll();
 }
 
-function getRecentadmin($conn, $count = 5)
-{
+function getRecentadmin($conn, $count = 5) {
     $query = $conn->prepare('SELECT id, ip title, date, now_time, s_date, views, member FROM pastes ORDER BY id DESC LIMIT 0, ?');
     $query->execute([$count]);
 
     return $query->fetchAll();
-}    
-function getpopular($conn, $count)
-{
-$query = $conn->prepare("SELECT id, visible, title, date, now_time, views, member, tagsys
+}
+
+function getpopular($conn, $count) {
+    $query = $conn->prepare("SELECT id, visible, title, date, now_time, views, member, tagsys
 FROM pastes WHERE visible='0'
 ORDER BY views + 0 DESC
 LIMIT 0, ?");
@@ -229,8 +223,7 @@ LIMIT 0, ?");
     return $query->fetchAll();
 }
 
-function getrandom($conn, $count)
-{
+function getrandom($conn, $count) {
     $query = $conn->prepare("SELECT id, visible, title, date, now_time, views, member, tagsys
 FROM pastes where visible='0'
 ORDER BY RAND()
@@ -239,26 +232,23 @@ LIMIT ?");
     return $query->fetchAll();
 }
 
-function getUserRecent($conn, $count, $username)
-{  
-$query = $conn->prepare("SELECT id, member, title, date, now_time
+function getUserRecent($conn, $count, $username) {
+    $query = $conn->prepare("SELECT id, member, title, date, now_time
 FROM pastes where member=? 
 ORDER BY id DESC
 LIMIT 0 , ?");
-    $query->execute([$username,$count]);
+    $query->execute([$username, $count]);
     return $query->fetchAll();
 }
 
 
-function getUserPastes($conn, $username)
-{
+function getUserPastes($conn, $username) {
     $query = $conn->prepare("SELECT id, title, code, views, s_date, now_time, visible, date, tagsys, member FROM pastes where member=? ORDER by id DESC");
     $query->execute([$username]);
     return $query->fetchAll();
 }
 
-function jsonView($paste_id, $p_title, $p_conntent, $p_code)
-{ 
+function jsonView($paste_id, $p_title, $p_conntent, $p_code) {
     $stats = false;
     if ($p_code) {
         // Raw
@@ -273,10 +263,8 @@ function jsonView($paste_id, $p_title, $p_conntent, $p_code)
 }
 
 
-
-function getTotalPastes($conn, $username)
-{
-    $count  = 0;
+function getTotalPastes($conn, $username) {
+    $count = 0;
     $query = $conn->prepare("SELECT member FROM pastes WHERE member=?");
     $query->execute([$username]);
     while ($row = $site_info_rows->fetch()) {
@@ -293,11 +281,10 @@ function existingUser(PDO $conn, string $username) : bool {
     $query = $conn->prepare('SELECT 1 FROM users WHERE username = ?');
     $query->execute([$username]);
 
-    return (bool) $query->fetch();
+    return (bool)$query->fetch();
 }
 
-function updateMyView($conn, $paste_id) 
-{
+function updateMyView($conn, $paste_id) {
     $query = $conn->prepare("SELECT views, id FROM pastes WHERE id= ?");
     $query->execute([$paste_id]);
     if ($row = $query->fetch()) {
@@ -344,13 +331,12 @@ function conTime($secs) {
     return $val;
 }
 
-function truncate($input, $maxWords, $maxChars)
-{
+function truncate($input, $maxWords, $maxChars) {
     $words = preg_split('/\s+/', $input);
     $words = array_slice($words, 0, $maxWords);
     $words = array_reverse($words);
 
-    $chars     = 0;
+    $chars = 0;
     $truncated = array();
 
     while (count($words) > 0) {
@@ -367,15 +353,16 @@ function truncate($input, $maxWords, $maxChars)
 
     return $result . ($input == $result ? '' : '[...]');
 }
-function truncatetag($input, $maxWords, $maxChars)
-	{$str = $input;
-	$pattern = '/,/i';
-	$words = preg_replace($pattern, ' ', $str);
+
+function truncatetag($input, $maxWords, $maxChars) {
+    $str = $input;
+    $pattern = '/,/i';
+    $words = preg_replace($pattern, ' ', $str);
     $words = preg_split('/\s+/', $input);
     $words = array_slice($words, 0, $maxWords);
     $words = array_reverse($words);
 
-    $chars     = 0;
+    $chars = 0;
     $truncated1 = array();
 
     while (count($words) > 0) {
@@ -392,8 +379,8 @@ function truncatetag($input, $maxWords, $maxChars)
 
     return $result . ($input == $result ? '' : '...');
 }
-function doDownload($paste_id, $p_title, $p_member, $p_conntent, $p_code)
-{
+
+function doDownload($paste_id, $p_title, $p_member, $p_conntent, $p_code) {
     $stats = false;
     if ($p_code) {
         // Figure out extensions.
@@ -417,8 +404,7 @@ function doDownload($paste_id, $p_title, $p_member, $p_conntent, $p_code)
     return $stats;
 }
 
-function rawView($paste_id, $p_title, $p_conntent, $p_code)
-{ 
+function rawView($paste_id, $p_title, $p_conntent, $p_code) {
     $stats = false;
     if ($p_code) {
         // Raw
@@ -433,14 +419,13 @@ function rawView($paste_id, $p_title, $p_conntent, $p_code)
 }
 
 
-
-function embedView( $paste_id, $p_title, $p_conntent, $p_code, $title, $baseurl, $ges_style, $lang ) {
+function embedView($paste_id, $p_title, $p_conntent, $p_code, $title, $baseurl, $ges_style, $lang) {
     $stats = false;
-    if ( $p_conntent ) {
+    if ($p_conntent) {
         // Build the output
         $output = "<div class='paste_embed_conntainer'>";
-            $output .= "<style>"; // Add our own styles
-            $output .= "
+        $output .= "<style>"; // Add our own styles
+        $output .= "
             .paste_embed_conntainer {
                 font-size: 12px;
                 color: #333;
@@ -483,33 +468,32 @@ function embedView( $paste_id, $p_title, $p_conntent, $p_code, $title, $baseurl,
                 background: #ffffff;
                 line-height:20px;
             }";
-            $output .= "</style>";
-            $output .= "$ges_style"; // Dynamic GeSHI Style
-            $output .= $p_conntent; // Paste conntent
-            $output .= "<div class='paste_embed_footer'>";
-			$output .= "<a href='https://ponepaste.org/$paste_id'>$p_title</a> " . $lang['embed-hosted-by'] . " <a href='https://ponepaste.org'>$title</a> | <a href='https://ponepaste.org/raw/$paste_id'>" . strtolower( $lang['view-raw'] ) . "</a>";
-			$output .= "</div>";
-			$output .= "</div>";
+        $output .= "</style>";
+        $output .= "$ges_style"; // Dynamic GeSHI Style
+        $output .= $p_conntent; // Paste conntent
+        $output .= "<div class='paste_embed_footer'>";
+        $output .= "<a href='https://ponepaste.org/$paste_id'>$p_title</a> " . $lang['embed-hosted-by'] . " <a href='https://ponepaste.org'>$title</a> | <a href='https://ponepaste.org/raw/$paste_id'>" . strtolower($lang['view-raw']) . "</a>";
+        $output .= "</div>";
+        $output .= "</div>";
 
         // Display embed conntent using json_encode since that escapes
         // characters well enough to satisfy javascript. http://stackoverflow.com/a/169035
-        header( 'conntent-type: text/javascript; charset=utf-8;' );
-        echo 'document.write(' . json_encode( $output ) . ')';
+        header('conntent-type: text/javascript; charset=utf-8;');
+        echo 'document.write(' . json_encode($output) . ')';
         $stats = true;
     } else {
         // 404
-        header( 'HTTP/1.1 404 Not Found' );
+        header('HTTP/1.1 404 Not Found');
     }
     return $stats;
 }
 
-function addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite)
-{
-    $c_date    = date('Y-m-d');
+function addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite) {
+    $c_date = date('Y-m-d');
     $site_data = file_get_contents("sitemap.xml");
     $site_data = str_replace("</urlset>", "", $site_data);
-	// which protocol are we on
-	$protocol = paste_protocol();
+    // which protocol are we on
+    $protocol = paste_protocol();
 
     if ($mod_rewrite == "1") {
         $server_name = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/" . $paste_id;
@@ -517,8 +501,8 @@ function addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite)
         $server_name = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/paste.php?id=" . $paste_id;
     }
 
-	$c_sitemap =
-'	<url>
+    $c_sitemap =
+        '	<url>
 		<loc>' . $server_name . '</loc>
 		<priority>' . $priority . '</priority>
 		<changefreq>' . $changefreq . '</changefreq>
@@ -526,20 +510,22 @@ function addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite)
 	</url>
 </urlset>';
 
-    $full_map  = $site_data . $c_sitemap;
+    $full_map = $site_data . $c_sitemap;
     file_put_contents("sitemap.xml", $full_map);
 }
+
 function paste_protocol() {
 
-  $protocol = ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] == "on" ) ? 'https://' : 'http://';
+    $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? 'https://' : 'http://';
 
-  return $protocol;
+    return $protocol;
 }
 
 function is_banned($conn, $ip) {
-        $query = $conn->prepare('SELECT 1 FROM ban_user WHERE ip = ?');
-        $query->execute([$ip]);
+    $query = $conn->prepare('SELECT 1 FROM ban_user WHERE ip = ?');
+    $query->execute([$ip]);
 
-        return (bool) $query->fetch();
+    return (bool)$query->fetch();
 }
+
 ?>

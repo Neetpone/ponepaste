@@ -17,53 +17,53 @@ require_once('common.php');
 
 updateAdminHistory($conn);
 
-$query  = $conn->query('SELECT * FROM site_info');
+$query = $conn->query('SELECT * FROM site_info');
 
 if ($row = $query->fetch()) {
-    $title				= Trim($row['title']);
-    $des				= Trim($row['des']);
-    $baseurl		    = Trim($row['baseurl']);
-    $keyword			= Trim($row['keyword']);
-    $site_name			= Trim($row['site_name']);
-    $email				= Trim($row['email']);
-    $twit				= Trim($row['twit']);
-    $face				= Trim($row['face']);
-    $gplus				= Trim($row['gplus']);
-    $ga					= Trim($row['ga']);
+    $title = Trim($row['title']);
+    $des = Trim($row['des']);
+    $baseurl = Trim($row['baseurl']);
+    $keyword = Trim($row['keyword']);
+    $site_name = Trim($row['site_name']);
+    $email = Trim($row['email']);
+    $twit = Trim($row['twit']);
+    $face = Trim($row['face']);
+    $gplus = Trim($row['gplus']);
+    $ga = Trim($row['ga']);
     $additional_scripts = Trim($row['additional_scripts']);
 }
 
-$query  = "SELECT * FROM captcha WHERE id = '1'";
+$query = "SELECT * FROM captcha WHERE id = '1'";
 $result = $conn->query('SELECT * FROM captcha WHERE id = 1');
 
 if ($row = $result->fetch()) {
-    $cap_e					= $row['cap_e'];
-    $mode					= $row['mode'];
-    $mul					= $row['mul'];
-    $allowed				= $row['allowed'];
-    $color					= $row['color'];    
-    $recaptcha_sitekey		= $row['recaptcha_sitekey'];
-    $recaptcha_secretkey	= $row['recaptcha_secretkey'];
+    $cap_e = $row['cap_e'];
+    $mode = $row['mode'];
+    $mul = $row['mul'];
+    $allowed = $row['allowed'];
+    $color = $row['color'];
+    $recaptcha_sitekey = $row['recaptcha_sitekey'];
+    $recaptcha_secretkey = $row['recaptcha_secretkey'];
 }
 
 $result = $conn->query("SELECT * FROM site_permissions WHERE id='1'");
 
 if ($row = $result->fetch()) {
-    $disableguest   = Trim($row['disableguest']);
-    $siteprivate	= Trim($row['siteprivate']);
+    $disableguest = Trim($row['disableguest']);
+    $siteprivate = Trim($row['siteprivate']);
 }
 
 $result = $conn->query("SELECT * FROM mail WHERE id='1'");
 
 if ($row = $result->fetch()) {
-	$verification	= Trim($row['verification']);
-    $smtp_host		= Trim($row['smtp_host']);
-    $smtp_username	= Trim($row['smtp_username']);
-    $smtp_password	= Trim($row['smtp_password']);
-    $smtp_port		= Trim($row['smtp_port']);
-    $protocol		= Trim($row['protocol']);
-    $auth			= Trim($row['auth']);
-    $socket			= Trim($row['socket']);
+    $verification = Trim($row['verification']);
+    $smtp_host = Trim($row['smtp_host']);
+    $smtp_username = Trim($row['smtp_username']);
+    $smtp_password = Trim($row['smtp_password']);
+    $smtp_port = Trim($row['smtp_port']);
+    $protocol = Trim($row['protocol']);
+    $auth = Trim($row['auth']);
+    $socket = Trim($row['socket']);
 }
 
 /* Update the configuration if necessary */
@@ -71,20 +71,20 @@ if ($row = $result->fetch()) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['manage'])) {
         $query = $conn->prepare(
-                'UPDATE site_info SET title = ?, des = ?, baseurl = ?, keyword = ?, site_name = ?, email = ?, twit = ?, face = ?, gplus = ?, ga = ?, additional_scripts = ? WHERE id = 1'
+            'UPDATE site_info SET title = ?, des = ?, baseurl = ?, keyword = ?, site_name = ?, email = ?, twit = ?, face = ?, gplus = ?, ga = ?, additional_scripts = ? WHERE id = 1'
         );
         $query->execute([
-                trim($_POST['title']),
-                trim($_POST['des']),
-                trim($_POST['baseurl']),
-                trim($_POST['keyword']),
-                trim($_POST['site_name']),
-                trim($_POST['email']),
-                trim($_POST['twit']),
-                trim($_POST['face']),
-                trim($_POST['gplus']),
-                trim($_POST['ga']),
-                trim($_POST['additional_scripts'])
+            trim($_POST['title']),
+            trim($_POST['des']),
+            trim($_POST['baseurl']),
+            trim($_POST['keyword']),
+            trim($_POST['site_name']),
+            trim($_POST['email']),
+            trim($_POST['twit']),
+            trim($_POST['face']),
+            trim($_POST['gplus']),
+            trim($_POST['ga']),
+            trim($_POST['additional_scripts'])
         ]);
 
         $msg = '<div class="paste-alert alert3" style="text-align: center;">
@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($_POST['cap'])) {
         $query = $conn->prepare(
-                'UPDATE captcha SET cap_e = ?, mode = ?, mul = ?, allowed = ?, color = ?, recaptcha_sitekey = ?, recaptcha_secretkey = ? WHERE id = 1'
+            'UPDATE captcha SET cap_e = ?, mode = ?, mul = ?, allowed = ?, color = ?, recaptcha_sitekey = ?, recaptcha_secretkey = ? WHERE id = 1'
         );
         $query->execute([
             trim($_POST['cap_e']),
@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 if (isset($_POST['smtp_code'])) {
     $query = $conn->prepare(
-            'UPDATE mail SET verification = ?, smtp_host = ?, smtp_port = ?, smtp_username = ?, smtp_password = ?, socket = ?, protocol = ?, auth = ? WHERE id = 1'
+        'UPDATE mail SET verification = ?, smtp_host = ?, smtp_port = ?, smtp_username = ?, smtp_password = ?, socket = ?, protocol = ?, auth = ? WHERE id = 1'
     );
 
     $query->execute([
@@ -148,440 +148,495 @@ if (isset($_POST['smtp_code'])) {
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Paste - Configuration</title>
-	<link rel="shortcut icon" href="favicon.ico">
-    <link href="css/paste.css" rel="stylesheet" type="text/css" />
-  </head>
-  <body>
-  
-	<div id="top" class="clearfix">
-		<!-- Start App Logo -->
-		<div class="applogo">
-		  <a href="../" class="logo">Paste</a>
-		</div>
-		<!-- End App Logo -->
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="css/paste.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
 
-		<!-- Start Top Right -->
-		<ul class="top-right">
-			<li class="dropdown link">
-				<a href="#" data-toggle="dropdown" class="dropdown-toggle profilebox"><b>Admin</b><span class="caret"></span></a>
-				<ul class="dropdown-menu dropdown-menu-list dropdown-menu-right">
-				  <li><a href="admin.php">Settings</a></li>
-				  <li><a href="?logout">Logout</a></li>
-				</ul>
-			</li>
-		</ul>
-		<!-- End Top Right -->
-	</div>
-	<!-- END TOP -->	
+<div id="top" class="clearfix">
+    <!-- Start App Logo -->
+    <div class="applogo">
+        <a href="../" class="logo">Paste</a>
+    </div>
+    <!-- End App Logo -->
 
-	<div class="content">
-		  <!-- START CONTAINER -->
-		<div class="container-widget">
-			<!-- Start Menu -->
-        <?php include 'menu.php';?>
-			<!-- End Menu -->
-    
-			<!-- Start Configuration Panel -->
-			<div class="row">
-				<div class="col-md-12">
-				  <div class="panel panel-widget">
-						<div class="panel-body">
-						<?php if (isset($msg)) echo $msg; ?>
-						
-							<div role="tabpanel">
-							  <!-- Nav tabs -->
-							  <ul class="nav nav-tabs nav-line" role="tablist" style="text-align: center;">
-								<li role="presentation" class="active"><a href="#siteinfo" aria-controls="siteinfo" role="tab" data-toggle="tab">Site Info</a></li>
-								<li role="presentation"><a href="#permissions" aria-controls="permissions" role="tab" data-toggle="tab">Permissions</a></li>
-								<li role="presentation"><a href="#captcha" aria-controls="captcha" role="tab" data-toggle="tab">Captcha Settings</a></li>
-								<li role="presentation"><a href="#mail" aria-controls="mail" role="tab" data-toggle="tab">Mail Settings</a></li>
-							  </ul>
+    <!-- Start Top Right -->
+    <ul class="top-right">
+        <li class="dropdown link">
+            <a href="#" data-toggle="dropdown" class="dropdown-toggle profilebox"><b>Admin</b><span
+                        class="caret"></span></a>
+            <ul class="dropdown-menu dropdown-menu-list dropdown-menu-right">
+                <li><a href="admin.php">Settings</a></li>
+                <li><a href="?logout">Logout</a></li>
+            </ul>
+        </li>
+    </ul>
+    <!-- End Top Right -->
+</div>
+<!-- END TOP -->
 
-							  <!-- Tab panes -->		
-								<div class="tab-content">
-									<div role="tabpanel" class="tab-pane active" id="siteinfo">
-										<form class="form-horizontal" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-										
-											<div class="form-group">
-											  <label class="col-sm-2 control-label form-label">Site Name</label>
-											  <div class="col-sm-10">
-												<input type="text" class="form-control" name="site_name" placeholder="The name of your site" value="<?php echo (isset($_POST['site_name']))?$_POST['site_name']:$site_name; // Prevent special characters on $_POST ?>">
-											  </div>
-											</div>
+<div class="content">
+    <!-- START CONTAINER -->
+    <div class="container-widget">
+        <!-- Start Menu -->
+        <?php include 'menu.php'; ?>
+        <!-- End Menu -->
 
-											<div class="form-group">
-											  <label class="col-sm-2 control-label form-label">Site Title</label>
-											  <div class="col-sm-10">
-												<input type="text" class="form-control" name="title" placeholder="Site title tag" value="<?php echo (isset($_POST['title']))?$_POST['title']:$title; // Prevent special characters on $_POST ?>">
-											  </div>
-											</div>
+        <!-- Start Configuration Panel -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-widget">
+                    <div class="panel-body">
+                        <?php if (isset($msg)) echo $msg; ?>
 
-											<div class="form-group">
-											  <label class="col-sm-2 control-label form-label">Domain name</label>
-												<div class="col-sm-1" style="padding:5px;">
+                        <div role="tabpanel">
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs nav-line" role="tablist" style="text-align: center;">
+                                <li role="presentation" class="active"><a href="#siteinfo" aria-controls="siteinfo"
+                                                                          role="tab" data-toggle="tab">Site Info</a>
+                                </li>
+                                <li role="presentation"><a href="#permissions" aria-controls="permissions" role="tab"
+                                                           data-toggle="tab">Permissions</a></li>
+                                <li role="presentation"><a href="#captcha" aria-controls="captcha" role="tab"
+                                                           data-toggle="tab">Captcha Settings</a></li>
+                                <li role="presentation"><a href="#mail" aria-controls="mail" role="tab"
+                                                           data-toggle="tab">Mail Settings</a></li>
+                            </ul>
+
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane active" id="siteinfo">
+                                    <form class="form-horizontal" method="POST"
+                                          action="<?php echo $_SERVER['PHP_SELF']; ?>">
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label form-label">Site Name</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="site_name"
+                                                       placeholder="The name of your site"
+                                                       value="<?php echo (isset($_POST['site_name'])) ? $_POST['site_name'] : $site_name; // Prevent special characters on $_POST ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label form-label">Site Title</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="title"
+                                                       placeholder="Site title tag"
+                                                       value="<?php echo (isset($_POST['title'])) ? $_POST['title'] : $title; // Prevent special characters on $_POST ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label form-label">Domain name</label>
+                                            <div class="col-sm-1" style="padding:5px;">
 												<span class="badge">
 												<?php if ($_SERVER['HTTPS'] == "on") {
-													echo "https://";
-												} else {
-													echo "http://";
-												}?>
+                                                    echo "https://";
+                                                } else {
+                                                    echo "http://";
+                                                } ?>
 												</span>
-												</div>
-												<div class="col-sm-5">
-												<input type="text" class="form-control" name="baseurl" placeholder="eg: pastethis.in (no trailing slash)" value="<?php echo (isset($_POST['baseurl']))?$_POST['baseurl']:$baseurl; // Prevent special characters on $_POST ?>">
-											  </div>
-											</div>
-
-											<div class="form-group">
-											  <label class="col-sm-2 control-label form-label">Site Description</label>
-											  <div class="col-sm-10">
-												<input type="text" class="form-control" name="des" placeholder="Site description" value="<?php echo (isset($_POST['des']))?$_POST['des']:$des; // Prevent special characters on $_POST ?>">
-											  </div>
-											</div>
-
-											<div class="form-group">
-											  <label class="col-sm-2 control-label form-label">Site Keywords</label>
-											  <div class="col-sm-10">
-												<input type="text" class="form-control" name="keyword" placeholder="Keywords (separated by a comma)" value="<?php echo $keyword; ?>">
-											  </div>
-											</div>
-											
-											<div class="form-group">
-											  <label class="col-sm-2 control-label form-label">Google Analytics</label>
-											  <div class="col-sm-10">
-												<input type="text" class="form-control" name="ga" placeholder="Google Analytics ID" value="<?php echo $ga; ?>">
-											  </div>
-											</div>
-
-											<div class="form-group">
-											  <label class="col-sm-2 control-label form-label">Admin Email</label>
-											  <div class="col-sm-10">
-												<input type="text" class="form-control" name="email" placeholder="Email" value="<?php echo (isset($_POST['email']))?$_POST['email']:$email; // Prevent special characters on $_POST ?>">
-											  </div>
-											</div>
-											
-											<div class="form-group">
-											  <label class="col-sm-2 control-label form-label">Facebook URL</label>
-											  <div class="col-sm-10">
-												<input type="text" class="form-control" name="face" placeholder="Facebook URL" value="<?php echo $face; ?>">
-											  </div>
-											</div>
-											
-											<div class="form-group">
-											  <label class="col-sm-2 control-label form-label">Twitter URL</label>
-											  <div class="col-sm-10">
-												<input type="text" class="form-control" name="twit" placeholder="Twitter URL" value="<?php echo $twit; ?>">
-											  </div>
-											</div>
-											
-											<div class="form-group">
-											  <label class="col-sm-2 control-label form-label">Google+ URL</label>
-											  <div class="col-sm-10">
-												<input type="text" class="form-control" name="gplus" placeholder="Google+ URL" value="<?php echo $gplus; ?>">
-											  </div>
-											</div>
-											
-											<div class="form-group">
-											  <label class="col-sm-2 control-label form-label">Additional Site Scripts</label>
-											  <div class="col-sm-10">
-												<textarea class="form-control" id="additional_scripts" name="additional_scripts" rows="8"><?php echo (isset($_POST['additional_scripts']))?$_POST['additional_scripts']:$additional_scripts; // Prevent special characters on $_POST ?></textarea>
-											  </div>
-											</div>
-											
-											<input type="hidden" name="manage" value="manage" />
-
-											<div class="form-group">
-											  <div class="col-sm-offset-2 col-sm-10">
-												<button type="submit" class="btn btn-default">Save</button>
-											  </div>
-											</div>
-										</form>
-									</div>
-									
-									<!-- Permissions -->
-									
-									<div role="tabpanel" class="tab-pane" id="permissions">
-										<form class="form-horizontal" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-										
-											<div class="checkbox checkbox-primary">
-												<input <?php if ($disableguest == "on") echo 'checked="true"'; ?> type="checkbox" name="disableguest" id="disableguest">
-												<label for="disableguest">
-													Only allow registered users to paste
-												</label>
-											</div>
-											
-											<div class="checkbox checkbox-primary">
-												<input <?php if ($siteprivate == "on") echo 'checked="true"'; ?> type="checkbox" name="siteprivate" id="siteprivate">
-												<label for="siteprivate">
-													Make site private (no Recent Pastes or Archives)
-												</label>
-											</div>
-											
-											<br />
-																						
-											<input type="hidden" name="permissions" value="permissions" />
-
-											<div class="form-group">
-											  <div class="col-sm-offset-2 col-sm-10">
-												<button type="submit" class="btn btn-default">Save</button>
-											  </div>
-											</div>
-										</form>
-									</div>
-								
-									<!-- Captcha pane -->
-									
-									<div role="tabpanel" class="tab-pane" id="captcha">
-										<form class="form-horizontal" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-
-											<div class="checkbox checkbox-primary">
-												<input <?php if ( $cap_e == "on" ) echo 'checked="true"'; ?> type="checkbox" name="cap_e" id="cap_e">
-												<label for="cap_e">Enable Captcha</label>
-											</div>
-                                            <br />
-
-                                            <div class="form-group row">
-                                                <label for="mode" class="col-sm-1 col-form-label">Captcha Type</label>
-                                                <select class="selectpicker" name="mode">
-                                                    <?php
-                                                    if ( $mode == "reCAPTCHA" ) {
-                                                        echo '<option selected="">reCAPTCHA</option>';
-                                                    } else {
-                                                        echo '<option>reCAPTCHA</option>';
-                                                    }
-                                                    if ( $mode == "Easy" ) {
-                                                        echo '<option selected="">Easy</option>';
-                                                    } else {
-                                                        echo '<option>Easy</option>';
-                                                    }
-                                                    if ( $mode == "Normal" ) {
-                                                        echo '<option selected="">Normal</option>';
-                                                    } else {
-                                                        echo '<option>Normal</option>';
-                                                    }
-                                                    if ( $mode == "Tough" ) {
-                                                        echo '<option selected="">Tough</option>';
-                                                    } else {
-                                                        echo '<option>Tough</option>';
-                                                    }
-                                                    ?>
-                                                </select>
                                             </div>
-                                            
-											<hr />
-											<div class="panel-title">
-                                                Internal Captcha Settings:
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="baseurl"
+                                                       placeholder="eg: pastethis.in (no trailing slash)"
+                                                       value="<?php echo (isset($_POST['baseurl'])) ? $_POST['baseurl'] : $baseurl; // Prevent special characters on $_POST ?>">
                                             </div>
-											<div class="checkbox checkbox-primary">
-												<input <?php if ( $mul == "on" ) echo 'checked="true"'; ?> type="checkbox" name="mul" id="mul">
-												<label for="mul">Enable multiple backgrounds</label>
-											</div>
-                                            <br />
-                                            <div class="form-group row">
-												<label for="allowed" class="col-sm-1 col-form-label">Captcha Characters</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" id="allowed" name="allowed" placeholder="Allowed Characters" value="<?php echo $allowed; ?>">
-                                                </div>
-											</div>
-                                            
-                                            <div class="form-group row">
-												<label for="color" class="col-sm-1 col-form-label">Captcha Text Colour</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" id="color" name="color" placeholder="Captcha Text Colour" value="<?php echo $color; ?>">
-                                                </div>
-											</div>
-                                            
-                                            <hr />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label form-label">Site Description</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="des"
+                                                       placeholder="Site description"
+                                                       value="<?php echo (isset($_POST['des'])) ? $_POST['des'] : $des; // Prevent special characters on $_POST ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label form-label">Site Keywords</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="keyword"
+                                                       placeholder="Keywords (separated by a comma)"
+                                                       value="<?php echo $keyword; ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label form-label">Google Analytics</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="ga"
+                                                       placeholder="Google Analytics ID" value="<?php echo $ga; ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label form-label">Admin Email</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="email" placeholder="Email"
+                                                       value="<?php echo (isset($_POST['email'])) ? $_POST['email'] : $email; // Prevent special characters on $_POST ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label form-label">Facebook URL</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="face"
+                                                       placeholder="Facebook URL" value="<?php echo $face; ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label form-label">Twitter URL</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="twit"
+                                                       placeholder="Twitter URL" value="<?php echo $twit; ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label form-label">Google+ URL</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="gplus"
+                                                       placeholder="Google+ URL" value="<?php echo $gplus; ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label form-label">Additional Site
+                                                Scripts</label>
+                                            <div class="col-sm-10">
+                                                <textarea class="form-control" id="additional_scripts"
+                                                          name="additional_scripts"
+                                                          rows="8"><?php echo (isset($_POST['additional_scripts'])) ? $_POST['additional_scripts'] : $additional_scripts; // Prevent special characters on $_POST ?></textarea>
+                                            </div>
+                                        </div>
+
+                                        <input type="hidden" name="manage" value="manage"/>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-10">
+                                                <button type="submit" class="btn btn-default">Save</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- Permissions -->
+
+                                <div role="tabpanel" class="tab-pane" id="permissions">
+                                    <form class="form-horizontal" method="POST"
+                                          action="<?php echo $_SERVER['PHP_SELF']; ?>">
+
+                                        <div class="checkbox checkbox-primary">
+                                            <input <?php if ($disableguest == "on") echo 'checked="true"'; ?>
+                                                    type="checkbox" name="disableguest" id="disableguest">
+                                            <label for="disableguest">
+                                                Only allow registered users to paste
+                                            </label>
+                                        </div>
+
+                                        <div class="checkbox checkbox-primary">
+                                            <input <?php if ($siteprivate == "on") echo 'checked="true"'; ?>
+                                                    type="checkbox" name="siteprivate" id="siteprivate">
+                                            <label for="siteprivate">
+                                                Make site private (no Recent Pastes or Archives)
+                                            </label>
+                                        </div>
+
+                                        <br/>
+
+                                        <input type="hidden" name="permissions" value="permissions"/>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-10">
+                                                <button type="submit" class="btn btn-default">Save</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- Captcha pane -->
+
+                                <div role="tabpanel" class="tab-pane" id="captcha">
+                                    <form class="form-horizontal" method="POST"
+                                          action="<?php echo $_SERVER['PHP_SELF']; ?>">
+
+                                        <div class="checkbox checkbox-primary">
+                                            <input <?php if ($cap_e == "on") echo 'checked="true"'; ?> type="checkbox"
+                                                                                                       name="cap_e"
+                                                                                                       id="cap_e">
+                                            <label for="cap_e">Enable Captcha</label>
+                                        </div>
+                                        <br/>
+
+                                        <div class="form-group row">
+                                            <label for="mode" class="col-sm-1 col-form-label">Captcha Type</label>
+                                            <select class="selectpicker" name="mode">
+                                                <?php
+                                                if ($mode == "reCAPTCHA") {
+                                                    echo '<option selected="">reCAPTCHA</option>';
+                                                } else {
+                                                    echo '<option>reCAPTCHA</option>';
+                                                }
+                                                if ($mode == "Easy") {
+                                                    echo '<option selected="">Easy</option>';
+                                                } else {
+                                                    echo '<option>Easy</option>';
+                                                }
+                                                if ($mode == "Normal") {
+                                                    echo '<option selected="">Normal</option>';
+                                                } else {
+                                                    echo '<option>Normal</option>';
+                                                }
+                                                if ($mode == "Tough") {
+                                                    echo '<option selected="">Tough</option>';
+                                                } else {
+                                                    echo '<option>Tough</option>';
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+
+                                        <hr/>
+                                        <div class="panel-title">
+                                            Internal Captcha Settings:
+                                        </div>
+                                        <div class="checkbox checkbox-primary">
+                                            <input <?php if ($mul == "on") echo 'checked="true"'; ?> type="checkbox"
+                                                                                                     name="mul"
+                                                                                                     id="mul">
+                                            <label for="mul">Enable multiple backgrounds</label>
+                                        </div>
+                                        <br/>
+                                        <div class="form-group row">
+                                            <label for="allowed" class="col-sm-1 col-form-label">Captcha
+                                                Characters</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" id="allowed" name="allowed"
+                                                       placeholder="Allowed Characters" value="<?php echo $allowed; ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="color" class="col-sm-1 col-form-label">Captcha Text
+                                                Colour</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" id="color" name="color"
+                                                       placeholder="Captcha Text Colour" value="<?php echo $color; ?>">
+                                            </div>
+                                        </div>
+
+                                        <hr/>
+                                        <div class="panel-title">
+                                            reCAPTCHA Settings:
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="recaptcha_sitekey" class="col-sm-1 col-form-label">Site
+                                                Key</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" id="recaptcha_sitekey" name="recaptcha_sitekey"
+                                                       placeholder="Site Key" value="<?php echo $recaptcha_sitekey; ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="recaptcha_secretkey" class="col-sm-1 col-form-label">Secret
+                                                Key</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" id="recaptcha_secretkey" name="recaptcha_secretkey"
+                                                       placeholder="Site Key"
+                                                       value="<?php echo $recaptcha_secretkey; ?>">
+                                            </div>
+                                        </div>
+
+                                        <input type="hidden" name="cap" value="cap"/>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-10">
+                                                <button type="submit" class="btn btn-default">Save</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- Mail Settings -->
+
+                                <div role="tabpanel" class="tab-pane" id="mail">
+                                    <form class="form-horizontal" method="POST"
+                                          action="<?php echo $_SERVER['PHP_SELF']; ?>">
+
+                                        <div class="form-group">
                                             <div class="panel-title">
-                                                reCAPTCHA Settings:
+                                                Registration Settings
                                             </div>
-											<div class="form-group row">
-												<label for="recaptcha_sitekey" class="col-sm-1 col-form-label">Site Key</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" id="recaptcha_sitekey" name="recaptcha_sitekey" placeholder="Site Key" value="<?php echo $recaptcha_sitekey; ?>">
-                                                </div>
-											</div>
-											
-                                            <div class="form-group row">
-												<label for="recaptcha_secretkey" class="col-sm-1 col-form-label">Secret Key</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" id="recaptcha_secretkey" name="recaptcha_secretkey" placeholder="Site Key" value="<?php echo $recaptcha_secretkey; ?>">
-                                                </div>
-											</div>
-                                          
-											<input type="hidden" name="cap" value="cap" />
-											
-											<div class="form-group">
-											  <div class="col-sm-offset-2 col-sm-10">
-												<button type="submit" class="btn btn-default">Save</button>
-											  </div>
-											</div>
-										</form>
-									</div>
-								
-									<!-- Mail Settings -->
-								
-									<div role="tabpanel" class="tab-pane" id="mail">
-										<form class="form-horizontal" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-										
-											<div class="form-group">
-												<div class="panel-title">
-														  Registration Settings
-												</div>
-												<label class="col-sm-2 control-label form-label">Email Verification</label>
-													<select class="selectpicker" name="verification">
-													<?php
-													if ($verification == 'enabled') {
-														echo '<option selected value="enabled">Enabled</option>';
-														echo '<option value="disabled">Disabled</option>';
-													} else {
-														echo '<option value="enabled">Enabled</option>';
-														echo '<option selected value="disabled">Disabled</option>';
-													}
-													?>
-													</select> 
-											</div>
-											
-											<div class="form-group">
-												<div class="panel-title">
-														  Mail Settings
-												</div>
-												<label class="col-sm-2 control-label form-label">Mail Protocol</label>
-													<select class="selectpicker" name="protocol">
-													<?php
-													if ($protocol == '1') {
-														echo '<option selected value="1">PHP Mail</option>';
-														echo '<option value="2">SMTP</option>';
-													} else {
-														echo '<option value="1">PHP Mail</option>';
-														echo '<option selected value="2">SMTP</option>';
-													}
-													?>
-													</select>  
-											</div>
-											
-											<div class="form-group">
-												<label class="col-sm-2 control-label form-label">SMTP Auth</label>
-													<select class="selectpicker" name="auth"> 
-														<?php
-														if ($auth == 'true') {
-															echo '<option selected value="true">True</option>
+                                            <label class="col-sm-2 control-label form-label">Email Verification</label>
+                                            <select class="selectpicker" name="verification">
+                                                <?php
+                                                if ($verification == 'enabled') {
+                                                    echo '<option selected value="enabled">Enabled</option>';
+                                                    echo '<option value="disabled">Disabled</option>';
+                                                } else {
+                                                    echo '<option value="enabled">Enabled</option>';
+                                                    echo '<option selected value="disabled">Disabled</option>';
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="panel-title">
+                                                Mail Settings
+                                            </div>
+                                            <label class="col-sm-2 control-label form-label">Mail Protocol</label>
+                                            <select class="selectpicker" name="protocol">
+                                                <?php
+                                                if ($protocol == '1') {
+                                                    echo '<option selected value="1">PHP Mail</option>';
+                                                    echo '<option value="2">SMTP</option>';
+                                                } else {
+                                                    echo '<option value="1">PHP Mail</option>';
+                                                    echo '<option selected value="2">SMTP</option>';
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label form-label">SMTP Auth</label>
+                                            <select class="selectpicker" name="auth">
+                                                <?php
+                                                if ($auth == 'true') {
+                                                    echo '<option selected value="true">True</option>
 																  <option value="false">False</option>';
-														} else {
-															echo '<option value="true">True</option>
+                                                } else {
+                                                    echo '<option value="true">True</option>
 															<option selected value="false">False</option>';
-														}
-														?>
-													</select>
-											</div>
-											
-											<div class="form-group">											
-												<label class="col-sm-2 control-label form-label">SMTP Protocol</label>
-													<select class="selectpicker" name="socket"> 
-														<?php
-															if ($socket == 'tls') {
-															echo '   
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label form-label">SMTP Protocol</label>
+                                            <select class="selectpicker" name="socket">
+                                                <?php
+                                                if ($socket == 'tls') {
+                                                    echo '   
 														   <option selected value="tls">TLS</option>
 														   <option value="ssl">SSL</option>';
-															} else {
-															echo '   
+                                                } else {
+                                                    echo '   
 														   <option value="tls">TLS</option>
 														   <option selected value="ssl">SSL</option>';
-															}
-														?>
-													</select>
-											</div>
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
 
-											<div class="form-group">
-											  <label class="col-sm-2 control-label form-label">SMTP Host</label>
-											  <div class="col-sm-10">
-												<input type="text" class="form-control" placeholder="eg smtp.gmail.com" name="smtp_host" value="<?php echo $smtp_host; ?>">
-											  </div>
-											</div>
-											
-											<div class="form-group">
-											  <label class="col-sm-2 control-label form-label">SMTP Port</label>
-											  <div class="col-sm-10">
-												<input type="text" class="form-control" name="smtp_port" placeholder="eg 465 for SSL or 587 for TLS" value="<?php echo $smtp_port; ?>">
-											  </div>
-											</div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label form-label">SMTP Host</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" placeholder="eg smtp.gmail.com"
+                                                       name="smtp_host" value="<?php echo $smtp_host; ?>">
+                                            </div>
+                                        </div>
 
-											<div class="form-group">
-											  <label class="col-sm-2 control-label form-label">SMTP User</label>
-											  <div class="col-sm-10">
-												<input type="text" class="form-control" name="smtp_user" placeholder="eg user@gmail.com" value="<?php echo $smtp_username; ?>">
-											  </div>
-											</div>
-											
-											<div class="form-group">
-											  <label class="col-sm-2 control-label form-label">SMTP Password</label>
-											  <div class="col-sm-10">
-												<input type="password" class="form-control" id="smtp_pass" name="smtp_pass" placeholder="Email password" value="<?php echo($smtp_password); ?>">
-											  </div>
-											</div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label form-label">SMTP Port</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="smtp_port"
+                                                       placeholder="eg 465 for SSL or 587 for TLS"
+                                                       value="<?php echo $smtp_port; ?>">
+                                            </div>
+                                        </div>
 
-											<div class="form-group">
-											  <div class="col-sm-offset-2 col-sm-10">
-												<button style="margin-bottom: 2%;" id="smtppasstoggle" type="button" class="btn btn-default" onclick="if (smtp_pass.type == 'text') {smtp_pass.type = 'password';} else {smtp_pass.type = 'text';}">Toggle password</button>
-											</div>
-											
-											<input type="hidden" name="smtp_code" value="smtp">
-											
-											<div class="form-group">
-											  <div class="col-sm-offset-2 col-sm-10">
-												<button type="submit" class="btn btn-default">Save</button>
-											  </div>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- End Configuration Panel -->
-		</div>
-		<!-- END CONTAINER -->
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label form-label">SMTP User</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="smtp_user"
+                                                       placeholder="eg user@gmail.com"
+                                                       value="<?php echo $smtp_username; ?>">
+                                            </div>
+                                        </div>
 
-		<!-- Start Footer -->
-		<div class="row footer">
-		  <div class="col-md-6 text-left">
-		   <a href="https://github.com/jordansamuel/PASTE" target="_blank">Updates</a> &mdash; <a href="https://github.com/jordansamuel/PASTE/issues" target="_blank">Bugs</a>
-		  </div>
-		  <div class="col-md-6 text-right">
-			Powered by <a href="https://phpaste.sourceforge.io" target="_blank">Paste</a>
-		  </div> 
-		</div>
-		<!-- End Footer -->
-	</div>
-	<!-- End content -->
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label form-label">SMTP Password</label>
+                                            <div class="col-sm-10">
+                                                <input type="password" class="form-control" id="smtp_pass"
+                                                       name="smtp_pass" placeholder="Email password"
+                                                       value="<?php echo($smtp_password); ?>">
+                                            </div>
+                                        </div>
 
-	<script type="text/javascript" src="js/jquery.min.js"></script>
-	<script type="text/javascript" src="js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="js/bootstrap-select.js"></script>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-10">
+                                                <button style="margin-bottom: 2%;" id="smtppasstoggle" type="button"
+                                                        class="btn btn-default"
+                                                        onclick="if (smtp_pass.type == 'text') {smtp_pass.type = 'password';} else {smtp_pass.type = 'text';}">
+                                                    Toggle password
+                                                </button>
+                                            </div>
 
-	<script>
-		function show() {
-    	var smtppassword = document.getElementById('smtp_pass');
-    	smtppassword.setAttribute('type', 'text');
-		}
+                                            <input type="hidden" name="smtp_code" value="smtp">
 
-		function hide() {
-				var smtppassword = document.getElementById('smtp_pass');
-				smtppassword.setAttribute('type', 'password');
-		}
+                                            <div class="form-group">
+                                                <div class="col-sm-offset-2 col-sm-10">
+                                                    <button type="submit" class="btn btn-default">Save</button>
+                                                </div>
+                                            </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Configuration Panel -->
+    </div>
+    <!-- END CONTAINER -->
 
-		if($('#smtppasstoggle').is(':checked')) {
-			show();
-		} else {
-			hide();
-		}
-	</script>
+    <!-- Start Footer -->
+    <div class="row footer">
+        <div class="col-md-6 text-left">
+            <a href="https://github.com/jordansamuel/PASTE" target="_blank">Updates</a> &mdash; <a
+                    href="https://github.com/jordansamuel/PASTE/issues" target="_blank">Bugs</a>
+        </div>
+        <div class="col-md-6 text-right">
+            Powered by <a href="https://phpaste.sourceforge.io" target="_blank">Paste</a>
+        </div>
+    </div>
+    <!-- End Footer -->
+</div>
+<!-- End content -->
 
-  </body>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/bootstrap-select.js"></script>
+
+<script>
+    function show() {
+        var smtppassword = document.getElementById('smtp_pass');
+        smtppassword.setAttribute('type', 'text');
+    }
+
+    function hide() {
+        var smtppassword = document.getElementById('smtp_pass');
+        smtppassword.setAttribute('type', 'password');
+    }
+
+    if ($('#smtppasstoggle').is(':checked')) {
+        show();
+    } else {
+        hide();
+    }
+</script>
+
+</body>
 </html>

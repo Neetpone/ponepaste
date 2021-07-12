@@ -29,45 +29,43 @@
  *
  * @author Google, Inc.
  */
-class Google_Service_Webfonts extends Google_Service
-{
+class Google_Service_Webfonts extends Google_Service {
 
 
-  public $webfonts;
-  
+    public $webfonts;
 
-  /**
-   * Constructs the internal representation of the Webfonts service.
-   *
-   * @param Google_Client $client
-   */
-  public function __construct(Google_Client $client)
-  {
-    parent::__construct($client);
-    $this->servicePath = 'webfonts/v1/';
-    $this->version = 'v1';
-    $this->serviceName = 'webfonts';
 
-    $this->webfonts = new Google_Service_Webfonts_Webfonts_Resource(
-        $this,
-        $this->serviceName,
-        'webfonts',
-        array(
-          'methods' => array(
-            'list' => array(
-              'path' => 'webfonts',
-              'httpMethod' => 'GET',
-              'parameters' => array(
-                'sort' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
-              ),
-            ),
-          )
-        )
-    );
-  }
+    /**
+     * Constructs the internal representation of the Webfonts service.
+     *
+     * @param Google_Client $client
+     */
+    public function __construct(Google_Client $client) {
+        parent::__construct($client);
+        $this->servicePath = 'webfonts/v1/';
+        $this->version = 'v1';
+        $this->serviceName = 'webfonts';
+
+        $this->webfonts = new Google_Service_Webfonts_Webfonts_Resource(
+            $this,
+            $this->serviceName,
+            'webfonts',
+            array(
+                'methods' => array(
+                    'list' => array(
+                        'path' => 'webfonts',
+                        'httpMethod' => 'GET',
+                        'parameters' => array(
+                            'sort' => array(
+                                'location' => 'query',
+                                'type' => 'string',
+                            ),
+                        ),
+                    ),
+                )
+            )
+        );
+    }
 }
 
 
@@ -79,150 +77,123 @@ class Google_Service_Webfonts extends Google_Service
  *   $webfonts = $webfontsService->webfonts;
  *  </code>
  */
-class Google_Service_Webfonts_Webfonts_Resource extends Google_Service_Resource
-{
+class Google_Service_Webfonts_Webfonts_Resource extends Google_Service_Resource {
 
-  /**
-   * Retrieves the list of fonts currently served by the Google Fonts Developer
-   * API (webfonts.listWebfonts)
-   *
-   * @param array $optParams Optional parameters.
-   *
-   * @opt_param string sort
-   * Enables sorting of the list
-   * @return Google_Service_Webfonts_WebfontList
-   */
-  public function listWebfonts($optParams = array())
-  {
-    $params = array();
-    $params = array_merge($params, $optParams);
-    return $this->call('list', array($params), "Google_Service_Webfonts_WebfontList");
-  }
+    /**
+     * Retrieves the list of fonts currently served by the Google Fonts Developer
+     * API (webfonts.listWebfonts)
+     *
+     * @param array $optParams Optional parameters.
+     *
+     * @opt_param string sort
+     * Enables sorting of the list
+     * @return Google_Service_Webfonts_WebfontList
+     */
+    public function listWebfonts($optParams = array()) {
+        $params = array();
+        $params = array_merge($params, $optParams);
+        return $this->call('list', array($params), "Google_Service_Webfonts_WebfontList");
+    }
 }
 
 
+class Google_Service_Webfonts_Webfont extends Google_Collection {
+    public $category;
+    public $family;
+    public $files;
+    public $kind;
+    public $lastModified;
+    public $subsets;
+    public $variants;
+    public $version;
 
+    public function setCategory($category) {
+        $this->category = $category;
+    }
 
-class Google_Service_Webfonts_Webfont extends Google_Collection
-{
-  public $category;
-  public $family;
-  public $files;
-  public $kind;
-  public $lastModified;
-  public $subsets;
-  public $variants;
-  public $version;
+    public function getCategory() {
+        return $this->category;
+    }
 
-  public function setCategory($category)
-  {
-    $this->category = $category;
-  }
+    public function setFamily($family) {
+        $this->family = $family;
+    }
 
-  public function getCategory()
-  {
-    return $this->category;
-  }
+    public function getFamily() {
+        return $this->family;
+    }
 
-  public function setFamily($family)
-  {
-    $this->family = $family;
-  }
+    public function setFiles($files) {
+        $this->files = $files;
+    }
 
-  public function getFamily()
-  {
-    return $this->family;
-  }
+    public function getFiles() {
+        return $this->files;
+    }
 
-  public function setFiles($files)
-  {
-    $this->files = $files;
-  }
+    public function setKind($kind) {
+        $this->kind = $kind;
+    }
 
-  public function getFiles()
-  {
-    return $this->files;
-  }
+    public function getKind() {
+        return $this->kind;
+    }
 
-  public function setKind($kind)
-  {
-    $this->kind = $kind;
-  }
+    public function setLastModified($lastModified) {
+        $this->lastModified = $lastModified;
+    }
 
-  public function getKind()
-  {
-    return $this->kind;
-  }
+    public function getLastModified() {
+        return $this->lastModified;
+    }
 
-  public function setLastModified($lastModified)
-  {
-    $this->lastModified = $lastModified;
-  }
+    public function setSubsets($subsets) {
+        $this->subsets = $subsets;
+    }
 
-  public function getLastModified()
-  {
-    return $this->lastModified;
-  }
+    public function getSubsets() {
+        return $this->subsets;
+    }
 
-  public function setSubsets($subsets)
-  {
-    $this->subsets = $subsets;
-  }
+    public function setVariants($variants) {
+        $this->variants = $variants;
+    }
 
-  public function getSubsets()
-  {
-    return $this->subsets;
-  }
+    public function getVariants() {
+        return $this->variants;
+    }
 
-  public function setVariants($variants)
-  {
-    $this->variants = $variants;
-  }
+    public function setVersion($version) {
+        $this->version = $version;
+    }
 
-  public function getVariants()
-  {
-    return $this->variants;
-  }
-
-  public function setVersion($version)
-  {
-    $this->version = $version;
-  }
-
-  public function getVersion()
-  {
-    return $this->version;
-  }
+    public function getVersion() {
+        return $this->version;
+    }
 }
 
-class Google_Service_Webfonts_WebfontFiles extends Google_Model
-{
+class Google_Service_Webfonts_WebfontFiles extends Google_Model {
 
 }
 
-class Google_Service_Webfonts_WebfontList extends Google_Collection
-{
-  protected $itemsType = 'Google_Service_Webfonts_Webfont';
-  protected $itemsDataType = 'array';
-  public $kind;
+class Google_Service_Webfonts_WebfontList extends Google_Collection {
+    protected $itemsType = 'Google_Service_Webfonts_Webfont';
+    protected $itemsDataType = 'array';
+    public $kind;
 
-  public function setItems($items)
-  {
-    $this->items = $items;
-  }
+    public function setItems($items) {
+        $this->items = $items;
+    }
 
-  public function getItems()
-  {
-    return $this->items;
-  }
+    public function getItems() {
+        return $this->items;
+    }
 
-  public function setKind($kind)
-  {
-    $this->kind = $kind;
-  }
+    public function setKind($kind) {
+        $this->kind = $kind;
+    }
 
-  public function getKind()
-  {
-    return $this->kind;
-  }
+    public function getKind() {
+        return $this->kind;
+    }
 }

@@ -20,8 +20,8 @@ require_once('includes/functions.php');
 // UTF-8
 header('Content-Type: text/html; charset=utf-8');
 
-$date    = date('jS F Y');
-$ip      = $_SERVER['REMOTE_ADDR'];
+$date = date('jS F Y');
+$ip = $_SERVER['REMOTE_ADDR'];
 
 $p_title = $lang['archive']; // "Pastes Archive";
 

@@ -22,35 +22,30 @@ require_once "Google/Cache/Exception.php";
  * A blank storage class, for cases where caching is not
  * required.
  */
-class Google_Cache_Null extends Google_Cache_Abstract
-{
-  public function __construct(Google_Client $client)
-  {
+class Google_Cache_Null extends Google_Cache_Abstract {
+    public function __construct(Google_Client $client) {
 
-  }
+    }
 
-   /**
-   * @inheritDoc
-   */
-  public function get($key, $expiration = false)
-  {
-    return false;
-  }
+    /**
+     * @inheritDoc
+     */
+    public function get($key, $expiration = false) {
+        return false;
+    }
 
-  /**
-   * @inheritDoc
-   */
-  public function set($key, $value)
-  {
-    // Nop.
-  }
+    /**
+     * @inheritDoc
+     */
+    public function set($key, $value) {
+        // Nop.
+    }
 
-  /**
-   * @inheritDoc
-   * @param String $key
-   */
-  public function delete($key)
-  {
-    // Nop.
-  }
+    /**
+     * @inheritDoc
+     * @param String $key
+     */
+    public function delete($key) {
+        // Nop.
+    }
 }

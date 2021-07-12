@@ -25,7 +25,7 @@ $currentversion = 2.2;
 // The value we got on installation of Paste was: post_max_size = 128M
 // Otherwise, the maximum value that can be set is 4000 (4GB)
 $pastelimit = "1"; // 0.5 = 512 kilobytes, 1 = 1MB
- 
+
 // OAUTH (to enable, change to yes and edit)
 $enablefb = "no";
 $enablegoog = "no";
@@ -57,12 +57,12 @@ if (gethostname() === 'thunderlane') {
 $db_opts = [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, /* throw a fatal exception on database errors */
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, /* Fetch rows as an associative array (hash table) by default */
-    PDO::ATTR_EMULATE_PREPARES => false    
+    PDO::ATTR_EMULATE_PREPARES => false
 ];
 
 // Secret key for paste encryption
-$sec_key  = "8ac67343e7980b16b31e8311d4377bbb";
-define('SECRET',md5($sec_key));
+$sec_key = "8ac67343e7980b16b31e8311d4377bbb";
+define('SECRET', md5($sec_key));
 
 // Set to 1 to enable Apache's mod_rewrite
 $mod_rewrite = "1";
@@ -77,9 +77,9 @@ $geshiformats = [
 
 // Popular formats that are listed first.
 $popular_formats = [
-	'green',
+    'green',
     'text',
-	'pastedown',
+    'pastedown',
     'pastedown_old'
 ];
 

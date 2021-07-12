@@ -48,18 +48,18 @@ if (!$row) {
     header('HTTP/1.1 404 Not Found');
     $notfound = $lang['notfound']; // "Not found";
 } else {
-    $p_title    = $row['title'];
-    $p_content  = $row['content'];
-    $p_visible  = $row['visible'];
-    $p_code     = $row['code'];
-    $p_expiry   = Trim($row['expiry']);
+    $p_title = $row['title'];
+    $p_content = $row['content'];
+    $p_visible = $row['visible'];
+    $p_code = $row['code'];
+    $p_expiry = Trim($row['expiry']);
     $p_password = $row['password'];
-    $p_member   = $row['member'];
-    $p_date     = $row['date'];
-    $now_time   = $row['now_time'];
-    $p_encrypt  = $row['encrypt'];
-    $p_views    = $row['views'];
-    $p_tagsys	= $row['tagsys'];
+    $p_member = $row['member'];
+    $p_date = $row['date'];
+    $now_time = $row['now_time'];
+    $p_encrypt = $row['encrypt'];
+    $p_views = $row['views'];
+    $p_tagsys = $row['tagsys'];
 
     $mod_date = date("jS F Y h:i:s A", $now_time);
 
@@ -68,22 +68,22 @@ if (!$row) {
         if (isset($_SESSION['username'])) {
             if ($p_member == Trim($_SESSION['username'])) {
             } else {
-                $notfound           = $lang['privatepaste']; //" This is a private paste.";
+                $notfound = $lang['privatepaste']; //" This is a private paste.";
                 $p_private_error = '1';
                 goto Not_Valid_Paste;
             }
         } else {
-            $notfound           = $lang['privatepaste']; //" This is a private paste. If you created this paste, please login to view it.";
+            $notfound = $lang['privatepaste']; //" This is a private paste. If you created this paste, please login to view it.";
             $p_private_error = '1';
             goto Not_Valid_Paste;
         }
     }
 
     if (!empty($p_expiry) && $p_expiry !== 'SELF') {
-        $input_time   = $p_expiry;
+        $input_time = $p_expiry;
         $current_time = mktime(date("H"), date("i"), date("s"), date("n"), date("j"), date("Y"));
         if ($input_time < $current_time) {
-            $notfound       = $lang['expired'];
+            $notfound = $lang['expired'];
             $p_private_error = 1;
             goto Not_Valid_Paste;
         }
@@ -102,7 +102,7 @@ if (!$row) {
             exit();
         } else {
             if (isset($_GET['password'])) {
-                if (password_verify($_GET['password'],$p_password)) {
+                if (password_verify($_GET['password'], $p_password)) {
                     doDownload($paste_id, $p_title, $p_member, $op_content, $p_code);
                     exit();
                 } else {
@@ -121,7 +121,7 @@ if (!$row) {
             exit();
         } else {
             if (isset($_GET['password'])) {
-                if (password_verify($_GET['password'],$p_password)) {
+                if (password_verify($_GET['password'], $p_password)) {
                     rawView($paste_id, $p_title, $op_content, $p_code);
                     exit();
                 } else {
@@ -134,15 +134,15 @@ if (!$row) {
     }
 
     // Preprocess
-    $highlight   = array();
+    $highlight = array();
     $prefix_size = strlen('!highlight!');
     if ($prefix_size) {
-        $lines     = explode("\n", $p_content);
+        $lines = explode("\n", $p_content);
         $p_content = "";
         foreach ($lines as $idx => $line) {
             if (substr($line, 0, $prefix_size) == '!highlight!') {
                 $highlight[] = $idx + 1;
-                $line        = substr($line, $prefix_size);
+                $line = substr($line, $prefix_size);
             }
             $p_content .= $line . "\n";
         }
@@ -154,7 +154,7 @@ if (!$row) {
     if ($p_code === "pastedown") {
         $Parsedown = new Parsedown();
         $Parsedown->setSafeMode(true);
-        $p_content = $Parsedown->text( $p_content );
+        $p_content = $Parsedown->text($p_content);
     } else {
         $geshi = new GeSHi($p_content, $p_code, 'includes/geshi/');
 
@@ -170,19 +170,19 @@ if (!$row) {
             $geshi->enable_line_numbers(GESHI_FANCY_LINE_NUMBERS, 2);
         }
         $p_content = $geshi->parse_code();
-        $style     = $geshi->get_stylesheet();
+        $style = $geshi->get_stylesheet();
         $ges_style = '<style>' . $style . '</style>';
     }
 
     // Embed view after GeSHI is applied so that $p_code is syntax highlighted as it should be.
     if (isset($_GET['embed'])) {
-        if ( $p_password == "NONE" ) {
-            embedView( $paste_id, $p_title, $p_content, $p_code, $title, $baseurl, $ges_style, $lang );
+        if ($p_password == "NONE") {
+            embedView($paste_id, $p_title, $p_content, $p_code, $title, $baseurl, $ges_style, $lang);
             exit();
         } else {
-            if ( isset( $_GET['password'] ) ) {
-                if ( password_verify( $_GET['password'], $p_password ) ) {
-                    embedView( $paste_id, $p_title, $p_content, $p_code, $title, $p_baseurl, $ges_style, $lang );
+            if (isset($_GET['password'])) {
+                if (password_verify($_GET['password'], $p_password)) {
+                    embedView($paste_id, $p_title, $p_content, $p_code, $title, $p_baseurl, $ges_style, $lang);
                     exit();
                 } else {
                     $error = $lang['wrongpassword']; // 'Wrong password';
@@ -196,36 +196,36 @@ if (!$row) {
 
 require_once('theme/' . $default_theme . '/header.php');
 if ($p_password == "NONE") {
-    
-    // No password & diplay the paste
-    
-    // Set download URL
-	if ($mod_rewrite == '1') {
-		$p_download = "download/$paste_id";
-	} else {
-		$p_download = "paste.php?download&id=$paste_id";
-	}
-	
-	// Set raw URL
-	if ($mod_rewrite == '1') {
-		$p_raw = "raw/$paste_id";
-	} else {
-		$p_raw = "paste.php?raw&id=$paste_id";
-	}
 
-	// Set embed URL
-	if ( $mod_rewrite == '1' ) {
-		$p_embed = "embed/$paste_id";
-	} else {
-		$p_embed = "paste.php?embed&id=$paste_id";
-	}
-    
-        //pasteviews
-    if($_SESSION['not_unique'] !== $paste_id) {
-    $_SESSION['not_unique'] = $paste_id;
-    updateMyView($conn, $paste_id);
-}
-    
+    // No password & diplay the paste
+
+    // Set download URL
+    if ($mod_rewrite == '1') {
+        $p_download = "download/$paste_id";
+    } else {
+        $p_download = "paste.php?download&id=$paste_id";
+    }
+
+    // Set raw URL
+    if ($mod_rewrite == '1') {
+        $p_raw = "raw/$paste_id";
+    } else {
+        $p_raw = "paste.php?raw&id=$paste_id";
+    }
+
+    // Set embed URL
+    if ($mod_rewrite == '1') {
+        $p_embed = "embed/$paste_id";
+    } else {
+        $p_embed = "paste.php?embed&id=$paste_id";
+    }
+
+    //pasteviews
+    if ($_SESSION['not_unique'] !== $paste_id) {
+        $_SESSION['not_unique'] = $paste_id;
+        updateMyView($conn, $paste_id);
+    }
+
     // Theme
     require_once('theme/' . $default_theme . '/view.php');
     if ($p_expiry == "SELF") {

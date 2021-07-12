@@ -11,7 +11,7 @@ if (isset($_SESSION['login'])) {
 if (isset($_GET['logout'])) {
     if (isset($_SESSION['login']))
         unset($_SESSION['login']);
-    
+
     session_destroy();
     header("Location: .");
     exit();
@@ -29,29 +29,29 @@ $primaryKey = 'id';
 // parameter represents the DataTables column identifier. In this case simple
 // indexes
 $columns = array(
-	array( 'db' => 'id', 'dt' => 0 ),
-	array( 'db' => 'member',  'dt' => 1 ),
-	array( 'db' => 'ip',   'dt' => 2 ),
-	array( 'db' => 'visible',   'dt' => 3 )
+    array('db' => 'id', 'dt' => 0),
+    array('db' => 'member', 'dt' => 1),
+    array('db' => 'ip', 'dt' => 2),
+    array('db' => 'visible', 'dt' => 3)
 );
 
 $columns2 = array(
-	array( 'db' => 'id', 'dt' => 0 ),
-	array( 'db' => 'member',  'dt' => 1 ),
-	array( 'db' => 'ip',   'dt' => 2 ),
-	array( 'db' => 'visible',   'dt' => 3 ),
-	array( 'db' => 'details',  'dt' => 4 ),
-	array( 'db' => 'view',  'dt' => 5 ),
-	array( 'db' => 'delete',   'dt' => 6)
+    array('db' => 'id', 'dt' => 0),
+    array('db' => 'member', 'dt' => 1),
+    array('db' => 'ip', 'dt' => 2),
+    array('db' => 'visible', 'dt' => 3),
+    array('db' => 'details', 'dt' => 4),
+    array('db' => 'view', 'dt' => 5),
+    array('db' => 'delete', 'dt' => 6)
 );
 
 
 // SQL server connection information
 $sql_details = array(
-	'user' => $dbuser,
-	'pass' => $dbpassword,
-	'db'   => $dbname,
-	'host' => $dbhost
+    'user' => $dbuser,
+    'pass' => $dbpassword,
+    'db' => $dbname,
+    'host' => $dbhost
 );
 
 
@@ -60,9 +60,9 @@ $sql_details = array(
  * server-side, there is no need to edit below this line.
  */
 
-require( 'ssp.pastes.php' );
+require('ssp.pastes.php');
 
 echo json_encode(
-	SSP::simple( $_GET, $sql_details, $table, $primaryKey, $columns, $columns2 )
+    SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns, $columns2)
 );
 ?>

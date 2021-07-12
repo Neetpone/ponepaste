@@ -20,25 +20,25 @@ require_once('includes/functions.php');
 // UTF-8
 header('Content-Type: text/html; charset=utf-8');
 
-$date    = date('jS F Y');
-$ip      = $_SERVER['REMOTE_ADDR'];
+$date = date('jS F Y');
+$ip = $_SERVER['REMOTE_ADDR'];
 
 // If username defined in URL, then check if it's exists in database. If invalid, redirect to main site.
 $user_username = trim($_SESSION['username']);
 if (isset($_GET['user'])) {
     $profile_username = trim($_GET['user']);
 
-    if (!existingUser( $con, $profile_username ) ) {
+    if (!existingUser($con, $profile_username)) {
         // Invalid username
         header("Location: ../error.php");
         die();
     }
-} else { 
-		// No access to user.php
-        header("Location: ../error.php");
-        die();
+} else {
+    // No access to user.php
+    header("Location: ../error.php");
+    die();
 }
- 
+
 $p_title = $profile_username . $lang['user_public_pastes']; // "Username's Public Pastes"
 
 // Favorite Counts

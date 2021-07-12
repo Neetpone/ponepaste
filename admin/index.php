@@ -14,11 +14,11 @@
  */
 
 // PHP <5.5 compatibility
-require_once('../includes/password.php'); 
+require_once('../includes/password.php');
 
 session_start();
 
-require_once ('../config.php');
+require_once('../config.php');
 
 $conn = new PDO(
     "mysql:host=$db_host;dbname=$db_schema;charset=utf8",
@@ -27,73 +27,76 @@ $conn = new PDO(
     $db_opts
 );
 
-$query  = $conn->query('SELECT user, pass FROM admin');
+$query = $conn->query('SELECT user, pass FROM admin');
 
 while ($row = $query->fetch()) {
-    $adminid  = Trim($row['user']);
+    $adminid = Trim($row['user']);
     $password = Trim($row['pass']);
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	if ($adminid == htmlentities(trim($_POST['username']))) {
-		if (password_verify($_POST['password'], $password)) {
-			header("Location: dashboard.php");
-			$_SESSION['login'] = true;
-		} else {
-			$msg = '<div class="paste-alert alert6" style="text-align:center;">
+    if ($adminid == htmlentities(trim($_POST['username']))) {
+        if (password_verify($_POST['password'], $password)) {
+            header("Location: dashboard.php");
+            $_SESSION['login'] = true;
+        } else {
+            $msg = '<div class="paste-alert alert6" style="text-align:center;">
 						Wrong User/Password
 					</div>';
-		}
-	} else {
-			$msg = '<div class="paste-alert alert6" style="text-align:center;">
+        }
+    } else {
+        $msg = '<div class="paste-alert alert6" style="text-align:center;">
 						Wrong User/Password
 					</div>';
-		
-	}
+
+    }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Paste - Login</title>
-  <link href="css/paste.css" rel="stylesheet">
-  <style type="text/css">
-    body{background: #F5F5F5;}
-  </style>
-  </head>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Paste - Login</title>
+    <link href="css/paste.css" rel="stylesheet">
+    <style type="text/css">
+        body {
+            background: #F5F5F5;
+        }
+    </style>
+</head>
 <body>
-    <div class="login-form">
-	<?php
-	if (isset($msg)) {
-		echo $msg;
-	}
-	?>
-      <form action="." method="post">
+<div class="login-form">
+    <?php
+    if (isset($msg)) {
+        echo $msg;
+    }
+    ?>
+    <form action="." method="post">
         <div class="top">
-          <h1>Paste</h1>
+            <h1>Paste</h1>
         </div>
         <div class="form-area">
-          <div class="group">
-            <input type="text" class="form-control" id="username" name="username" placeholder="Username" value="">
-            <i class="fa fa-user"></i>
-          </div>
-          <div class="group">
-            <input type="password" class="form-control" id="password" name="password" placeholder="Password" value="">
-            <i class="fa fa-key"></i>
-          </div>
-		  <!-- Not yet implemented
-			<div class="checkbox checkbox-primary">
-					<input id="rememberme" type="checkbox" checked="">
-					<label for="rememberme"> Remember Me</label>
-			</div>
-		  -->
-          <button type="submit" class="btn btn-default btn-block">LOGIN</button>
+            <div class="group">
+                <input type="text" class="form-control" id="username" name="username" placeholder="Username" value="">
+                <i class="fa fa-user"></i>
+            </div>
+            <div class="group">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                       value="">
+                <i class="fa fa-key"></i>
+            </div>
+            <!-- Not yet implemented
+              <div class="checkbox checkbox-primary">
+                      <input id="rememberme" type="checkbox" checked="">
+                      <label for="rememberme"> Remember Me</label>
+              </div>
+            -->
+            <button type="submit" class="btn btn-default btn-block">LOGIN</button>
         </div>
-      </form>
-    </div>
+    </form>
+</div>
 </body>
 </html>

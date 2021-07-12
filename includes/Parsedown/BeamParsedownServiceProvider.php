@@ -4,15 +4,13 @@ namespace ArdiSSoebrata\BeamParsedown;
 
 use Illuminate\Support\ServiceProvider;
 
-class BeamParsedownServiceProvider extends ServiceProvider
-{
+class BeamParsedownServiceProvider extends ServiceProvider {
     /**
      * Perform post-registration booting of services.
      *
      * @return void
      */
-    public function boot(): void
-    {
+    public function boot() : void {
         // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', ':lc:vendor');
         // $this->loadViewsFrom(__DIR__.'/../resources/views', ':lc:vendor');
         // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
@@ -29,14 +27,13 @@ class BeamParsedownServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register(): void
-    {
-        $this->mergeConfigFrom(__DIR__.'/../config/beam-parsedown.php', 'beam-parsedown');
+    public function register() : void {
+        $this->mergeConfigFrom(__DIR__ . '/../config/beam-parsedown.php', 'beam-parsedown');
 
         // Register the service the package provides.
         $this->app->singleton('beam-parsedown', function ($app) {
             $parse = new BeamParsedown();
-            
+
             // Set from config.
             $parse->setBreaksEnabled(config('beam-parsedown.breaks_enabled', false));
             $parse->setMarkupEscaped(config('beam-parsedown.markup_escaped', false));
@@ -52,8 +49,7 @@ class BeamParsedownServiceProvider extends ServiceProvider
      *
      * @return array
      */
-    public function provides()
-    {
+    public function provides() {
         // @codeCoverageIgnoreStart
         return ['beam-parsedown'];
         // @codeCoverageIgnoreEnd
@@ -64,11 +60,10 @@ class BeamParsedownServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function bootForConsole(): void
-    {
+    protected function bootForConsole() : void {
         // Publishing the configuration file.
         $this->publishes([
-            __DIR__.'/../config/beam-parsedown.php' => config_path('beam-parsedown.php'),
+            __DIR__ . '/../config/beam-parsedown.php' => config_path('beam-parsedown.php'),
         ], 'beam-parsedown.config');
 
         // Publishing the views.

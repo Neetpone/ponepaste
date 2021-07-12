@@ -19,23 +19,25 @@ function getSitePermissions(PDO $conn) : array {
     return $conn->query('SELECT * FROM site_permissions LIMIT 1')->fetch();
 }
 
-function getSiteAds(PDO $conn) : array | bool {
+function getSiteAds(PDO $conn) : array|bool {
     return $conn->query('SELECT text_ads, ads_1, ads_2 FROM ads LIMIT 1')->fetch();
 }
 
 function getSiteTotalPastes(PDO $conn) : int {
     return intval($conn->query('SELECT COUNT(*) FROM pastes')->fetch(PDO::FETCH_NUM)[0]);
 }
+
 function getSiteTotalviews(PDO $conn) : int {
     return intval($conn->query('SELECT tpage FROM page_view ORDER BY id DESC LIMIT 1')->fetch(PDO::FETCH_NUM)[0]);
 }
+
 function getSiteTotal_unique_views(PDO $conn) : int {
     return intval($conn->query('SELECT tvisit FROM page_view ORDER BY id DESC LIMIT 1')->fetch(PDO::FETCH_NUM)[0]);
 }
 
 function updatePageViews(PDO $conn) : void {
     $ip = $_SERVER['REMOTE_ADDR'];
-    $date    = date('jS F Y');
+    $date = date('jS F Y');
     $data_ip = file_get_contents('tmp/temp.tdata');
 
     $last_page_view = $conn->query('SELECT * FROM page_view ORDER BY id DESC LIMIT 1')->fetch();
@@ -49,7 +51,7 @@ function updatePageViews(PDO $conn) : void {
             $statement = $conn->prepare("UPDATE page_view SET tpage = ? WHERE id = ?");
             $statement->execute([$last_tpage, $last_page_view['id']]);
         } else {
-            $last_tpage  = intval($last_page_view['tpage']) + 1;
+            $last_tpage = intval($last_page_view['tpage']) + 1;
             $last_tvisit = intval($last_page_view['tvisit']) + 1;
 
             // Update both tpage and tvisit.
@@ -81,17 +83,17 @@ $conn = new PDO(
 
 // Setup site info
 $row = getSiteInfo($conn);
-$title				= Trim($row['title']);
-$des				= Trim($row['des']);
-$baseurl    		= Trim($row['baseurl']);
-$keyword			= Trim($row['keyword']);
-$site_name			= Trim($row['site_name']);
-$email				= Trim($row['email']);
-$twit				= Trim($row['twit']);
-$face				= Trim($row['face']);
-$gplus				= Trim($row['gplus']);
-$ga					= Trim($row['ga']);
-$additional_scripts	= Trim($row['additional_scripts']);
+$title = Trim($row['title']);
+$des = Trim($row['des']);
+$baseurl = Trim($row['baseurl']);
+$keyword = Trim($row['keyword']);
+$site_name = Trim($row['site_name']);
+$email = Trim($row['email']);
+$twit = Trim($row['twit']);
+$face = Trim($row['face']);
+$gplus = Trim($row['gplus']);
+$ga = Trim($row['ga']);
+$additional_scripts = Trim($row['additional_scripts']);
 
 
 // Setup theme and language
@@ -131,8 +133,8 @@ if (in_array($default_lang, scandir('langs/'))) {
 }
 
 // Check if IP is banned
-$ip      = $_SERVER['REMOTE_ADDR'];
-if ( is_banned($conn, $ip) ) die($lang['banned']); // "You have been banned from ".$site_name;
+$ip = $_SERVER['REMOTE_ADDR'];
+if (is_banned($conn, $ip)) die($lang['banned']); // "You have been banned from ".$site_name;
 
 // Logout
 if (isset($_GET['logout'])) {
@@ -147,4 +149,4 @@ if (isset($_GET['logout'])) {
 $site_ads = getSiteAds($conn);
 $total_pastes = getSiteTotalPastes($conn);
 $total_page_views = getSiteTotalviews($conn);
-$total_unique_views= getSiteTotal_unique_views($conn);
+$total_unique_views = getSiteTotal_unique_views($conn);

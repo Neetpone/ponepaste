@@ -16,35 +16,35 @@
 $protocol = paste_protocol();
 ?>
 <script>
-$(document).ready(function () {
-  $("#archive").dataTable({
-    pageLength: 50,
-    autoWidth: false,
-    initComplete: function () {
-      var search = new URLSearchParams(window.location.search);
-      var query = search.get('q');
-      if (query) {
-        $("#archive_filter input")
-          .val(query)
-          .trigger("input");
-      }
-    }
-  })
-});
+    $(document).ready(function () {
+        $("#archive").dataTable({
+            pageLength: 50,
+            autoWidth: false,
+            initComplete: function () {
+                var search = new URLSearchParams(window.location.search);
+                var query = search.get('q');
+                if (query) {
+                    $("#archive_filter input")
+                        .val(query)
+                        .trigger("input");
+                }
+            }
+        })
+    });
 </script>
 <?php if (isset($_SESSION['token'])) { ?>
-<script>
-  $(document).ready(function() {
-    $('#favs').DataTable({
-      "autoWidth": false,
-      "pageLength": 50,
-      "order": [
-        [1, "desc"]
-      ]
-    });
-  });
-  
-</script>
+    <script>
+        $(document).ready(function () {
+            $('#favs').DataTable({
+                "autoWidth": false,
+                "pageLength": 50,
+                "order": [
+                    [1, "desc"]
+                ]
+            });
+        });
+
+    </script>
 <?php } ?>
 <main class="bd-main">
     <div class="bd-side-background"></div>
@@ -53,66 +53,65 @@ $(document).ready(function () {
             <div class="bd-lead">
                 <h1 class="title is-5"><?php echo $profile_username . $lang['user_public_pastes']; ?></h1>
                 <h1 class="subtitle is-6"><?php echo $lang['membersince'] . $profile_join_date; ?></h1>
-                <!-- Badges system -->             
+                <!-- Badges system -->
                 <div class="box">
                     <h2 class="title is-5">Badges</h2>
-                    <?php 
-                    if (strtotime($profile_join_date) <= 1604188800){
-                      echo '<img src = "/img/badges/adopter.png" title="[EarlyAdopter] Joined during the first wave " style="margin:5px">';
-                         }elseif (strtotime($profile_join_date) <= 1608422400){
-                      echo '<img src = "/img/badges/pioneer.png" title="[EarlyPioneer] Joined during the Second wave " style="margin:5px">';
-                         }elseif (strtotime($profile_join_date) <= 1609459200){
-                      echo '<img src = "/img/badges/strag.png" title="[EarlyStraggeler] Joined after the Second wave " style="margin:5px">';
-                         }
+                    <?php
+                    if (strtotime($profile_join_date) <= 1604188800) {
+                        echo '<img src = "/img/badges/adopter.png" title="[EarlyAdopter] Joined during the first wave " style="margin:5px">';
+                    } elseif (strtotime($profile_join_date) <= 1608422400) {
+                        echo '<img src = "/img/badges/pioneer.png" title="[EarlyPioneer] Joined during the Second wave " style="margin:5px">';
+                    } elseif (strtotime($profile_join_date) <= 1609459200) {
+                        echo '<img src = "/img/badges/strag.png" title="[EarlyStraggeler] Joined after the Second wave " style="margin:5px">';
+                    }
                     if (strpos($profile_badge, '0') !== false) {
-                    }else{
-                    echo  $profile_badge;
-                    }    
-                        
-                    
+                    } else {
+                        echo $profile_badge;
+                    }
+
+
                     //Paste count badges
-                    if   ($profile_total_public <= 4){
+                    if ($profile_total_public <= 4) {
                         echo '<img src = "/img/badges/totpastes.png" title="[NewFriend] Have less than Five pastes" style="margin:5px">';
-                    }elseif (($profile_total_public >= 5) && ($profile_total_public <= 24)){
+                    } elseif (($profile_total_public >= 5) && ($profile_total_public <= 24)) {
                         echo '<img src = "/img/badges/totpastes2.png" title="[NewWritefag] Have Five or more pastes" style="margin:5px">';
-                    }elseif (($profile_total_public >= 25) && ($profile_total_public <= 49)){
+                    } elseif (($profile_total_public >= 25) && ($profile_total_public <= 49)) {
                         echo '<img src = "/img/badges/totpastes3.png" title="[Writefag] Have more than Twenty Five pastes" style="margin:5px">';
-                    }elseif (($profile_total_public >= 50) && ($profile_total_public)){
+                    } elseif (($profile_total_public >= 50) && ($profile_total_public)) {
                         echo '<img src = "/img/badges/totpastes4.png" title="[ProbablyAutistic] Have more than Fifty pastes" style="margin:5px">';
                     }
-                    
+
                     //Pasteviews badges
-                    
-                    if   (($profile_total_paste_views >= 1000) && ($profile_total_paste_views <= 2999)){
-                     echo '<img src = "/img/badges/pasteviews.png" title="[HorseWriter] Have more than 1000 total views" style="margin:5px">';
-                    }else if  (($profile_total_paste_views >= 2000) && ($profile_total_paste_views <= 2999)){
-                    echo '<img src = "/img/badges/pasteviews2.png" title="[HorseFamous] Have more than 2000 total views" style="margin:5px">';  
-                    }else if  (($profile_total_paste_views >= 3000) && ($profile_total_paste_views <= 4999)){
-                    echo '<img src = "/img/badges/pasteviews3.png" title="[Horseidol] Have more than 3000 total views" style="margin:5px">';  
-                    }else if  (($profile_total_paste_views >= 5000) && ($profile_total_paste_views <= 9999)){
-                    echo '<img src = "/img/badges/pasteviews4.png" title="[HorseMaster] Have more than 5000 total views" style="margin:5px">';  
-                    }else if  (($profile_total_paste_views >= 10000) && ($profile_total_paste_views <= 49999)){
-                    echo '<img src = "/img/badges/pasteviews5.png" title="[HorseIlluminatii] Have more than 10,000 total views" style="margin:5px">';  
-                    }else if  ($profile_total_paste_views >= 50000){
-                    echo '<img src = "/img/badges/pasteviews6.png" title="[HorseAyylmao] Have more than 50,000 total views" style="margin:5px">';  
+
+                    if (($profile_total_paste_views >= 1000) && ($profile_total_paste_views <= 2999)) {
+                        echo '<img src = "/img/badges/pasteviews.png" title="[HorseWriter] Have more than 1000 total views" style="margin:5px">';
+                    } elseif (($profile_total_paste_views >= 2000) && ($profile_total_paste_views <= 2999)) {
+                        echo '<img src = "/img/badges/pasteviews2.png" title="[HorseFamous] Have more than 2000 total views" style="margin:5px">';
+                    } elseif (($profile_total_paste_views >= 3000) && ($profile_total_paste_views <= 4999)) {
+                        echo '<img src = "/img/badges/pasteviews3.png" title="[Horseidol] Have more than 3000 total views" style="margin:5px">';
+                    } elseif (($profile_total_paste_views >= 5000) && ($profile_total_paste_views <= 9999)) {
+                        echo '<img src = "/img/badges/pasteviews4.png" title="[HorseMaster] Have more than 5000 total views" style="margin:5px">';
+                    } elseif (($profile_total_paste_views >= 10000) && ($profile_total_paste_views <= 49999)) {
+                        echo '<img src = "/img/badges/pasteviews5.png" title="[HorseIlluminatii] Have more than 10,000 total views" style="margin:5px">';
+                    } elseif ($profile_total_paste_views >= 50000) {
+                        echo '<img src = "/img/badges/pasteviews6.png" title="[HorseAyylmao] Have more than 50,000 total views" style="margin:5px">';
                     }
-                  
-                  if  (($profile_total_unlisted >= 5) && ($profile_total_unlisted <= 9)){
-                    echo '<img src = "/img/badges/pastehidden.png" title="[ShadowWriter] Have more than Five unlisted pastes" style="margin:5px">';  
-                    }else if  ($profile_total_unlisted >= 10){
-                    echo '<img src = "/img/badges/pastehidden.png" title="[Ghostwriter]  Have more than Ten unlisted pastes" style="margin:5px">';  
-                    } 
-                    
+
+                    if (($profile_total_unlisted >= 5) && ($profile_total_unlisted <= 9)) {
+                        echo '<img src = "/img/badges/pastehidden.png" title="[ShadowWriter] Have more than Five unlisted pastes" style="margin:5px">';
+                    } elseif ($profile_total_unlisted >= 10) {
+                        echo '<img src = "/img/badges/pastehidden.png" title="[Ghostwriter]  Have more than Ten unlisted pastes" style="margin:5px">';
+                    }
+
                     ?>
                 </div>
 
-               <?php
+                <?php
                 if (isset($_GET['del'])) {
                     if (isset($success)) {
                         // Deleted
                         echo '<p class="help is-success subtitle is-6">' . $success . '</p>';
-                    }
-                    // Errors
+                    } // Errors
                     elseif (isset($error)) {
                         echo '<p class="help is-danger subtitle is-6">' . $error . '</p>';
                     }
@@ -121,8 +120,8 @@ $(document).ready(function () {
 
                 <?php
                 if ($_SESSION['username'] == $profile_username) {
-                ?>
-                    <?php echo $lang['profile-stats']; ?><br />
+                    ?>
+                    <?php echo $lang['profile-stats']; ?><br/>
                     <?php echo $lang['totalpastes'] . ' ' . $profile_total_pastes; ?> &mdash;
                     <?php echo $lang['profile-total-pub'] . ' ' . $profile_total_public; ?> &mdash;
                     <?php echo $lang['profile-total-unl'] . ' ' . $profile_total_unlisted; ?> &mdash;
@@ -132,18 +131,18 @@ $(document).ready(function () {
                     <?php echo $lang['pastfavs-total'] . ' ' . $total_pfav; ?> &mdash;
                     <?php echo $lang['yourfavs-total'] . ' ' . $total_yfav; ?><br>
                     <br>
-                <div class="tabs">
-                    <ul class="tabs-menu">
-                        <li class="is-active" data-target="first-tab"><a>My Pastes</a></li>
-                        <li data-target="second-tab"><a>Favorites</a></li>
-                    </ul>
-                </div>
-                <?php
+                    <div class="tabs">
+                        <ul class="tabs-menu">
+                            <li class="is-active" data-target="first-tab"><a>My Pastes</a></li>
+                            <li data-target="second-tab"><a>Favorites</a></li>
+                        </ul>
+                    </div>
+                    <?php
                 }
                 ?>
                 <div class="tab-content" id="first-tab">
-                <table id="archive" class="table is-fullwidth is-hoverable">
-                    <thead>
+                    <table id="archive" class="table is-fullwidth is-hoverable">
+                        <thead>
                         <tr>
                             <td><?php echo $lang['pastetitle']; ?></td>
                             <td><?php echo $lang['pastetime']; ?></td>
@@ -156,8 +155,8 @@ $(document).ready(function () {
                                 echo "<td>" . $lang['delete'] . "</td>";
                             } ?>
                         </tr>
-                    </thead>
-                    <tfoot>
+                        </thead>
+                        <tfoot>
                         <tr>
                             <td><?php echo $lang['pastetitle']; ?></td>
                             <td><?php echo $lang['pastedate']; ?></td>
@@ -170,23 +169,22 @@ $(document).ready(function () {
                                 echo "<td>" . $lang['delete'] . "</td>";
                             } ?>
                         </tr>
-                    </tfoot>
-                    <tbody>
+                        </tfoot>
+                        <tbody>
                         <?php
                         $res = getUserPastes($con, $profile_username);
                         while ($row = mysqli_fetch_array($res)) {
-                            $title =  Trim($row['title']);
-                            $p_id =  Trim($row['id']);
-                            $p_code =  Trim($row['code']);
+                            $title = Trim($row['title']);
+                            $p_id = Trim($row['id']);
+                            $p_code = Trim($row['code']);
                             $p_date = strtotime(Trim($row['date']));
-                            $p_dateui =  date("d F Y", $p_date);
+                            $p_dateui = date("d F Y", $p_date);
                             $p_views = Trim($row['views']);
                             $p_visible = Trim($row['visible']);
                             $p_tags = Trim($row['tagsys']);
                             $tagArray = explode(',', $p_tags);
                             $tagArray = array_filter($tagArray);
-                           
-                            
+
 
                             switch ($p_visible) {
                                 case 0:
@@ -211,20 +209,23 @@ $(document).ready(function () {
                                                 <td>
                                                     <a href="' . $protocol . $baseurl . '/' . $p_link . '" title="' . $title . '">' . ($title) . '</a>
                                                 </td>    
-                                                <td data-sort="'. $p_date .'" class="td-center">
+                                                <td data-sort="' . $p_date . '" class="td-center">
                                                 <span>' . $p_dateui . '</span>
                                                 </td>
                                                 <td class="td-center">
                                                     ' . $p_views . '
                                                 </td>
                                                 <td class="td-left">';
-                                                 if (strlen($p_tags) > 0) {
-                                                   foreach($tagArray as $key=>$tags){ echo '<a href="' . $protocol . $baseurl . '/user.php?user=' . $profile_username . '&q=' . $tags . '"><span class="tag is-info">' . trim($tags) . '</span></a>';};
-                                                 }else{
-                                                 echo ' <span class="tag is-warning">No tags</span>';};
-                                    
-                                    
-                                    echo             '</td> 
+                                    if (strlen($p_tags) > 0) {
+                                        foreach ($tagArray as $key => $tags) {
+                                            echo '<a href="' . $protocol . $baseurl . '/user.php?user=' . $profile_username . '&q=' . $tags . '"><span class="tag is-info">' . trim($tags) . '</span></a>';
+                                        };
+                                    } else {
+                                        echo ' <span class="tag is-warning">No tags</span>';
+                                    };
+
+
+                                    echo '</td> 
                                                  </tr>';
                                 }
                             } else {
@@ -232,7 +233,7 @@ $(document).ready(function () {
                                                 <td>
                                                     <a href="' . $protocol . $baseurl . '/' . $p_link . '" title="' . $title . '">' . ($title) . '</a>
                                                 </td>    
-                                                <td data-sort="'. $p_date .'" class="td-center">
+                                                <td data-sort="' . $p_date . '" class="td-center">
                                                 <span>' . $p_dateui . '</span>
                                                 </td>
                                                 <td class="td-center">
@@ -251,31 +252,31 @@ $(document).ready(function () {
                             }
                         }
                         ?>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
                 </div>
                 <?php if ($_SESSION['username'] == $profile_username) { ?>
                 <div class="tab-content" id="second-tab">
-                <table id="favs" class="table is-fullwidth is-hoverable">
-                    <thead>
+                    <table id="favs" class="table is-fullwidth is-hoverable">
+                        <thead>
                         <tr>
                             <td><?php echo $lang['pastetitle']; ?></td>
                             <td><?php echo "Favorited"; ?></td>
                             <td><?php echo "Updated (48hrs)"; ?></td>
                             <td><?php echo $lang['tags']; ?></td>
                             <?php //if (isset($_SESSION) && $_SESSION['username'] == $profile_username) {
-                                //echo "<td>" . $lang['delete'] . "</td>";
+                            //echo "<td>" . $lang['delete'] . "</td>";
                             //} ?>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody>
                         <?php
                         $res = getUserFavs($con, $profile_username);
                         while ($row = mysqli_fetch_array($res)) {
-                            $ftitle =  Trim($row['title']);
-                            $f_id =  Trim($row['f_paste']);
+                            $ftitle = Trim($row['title']);
+                            $f_id = Trim($row['f_paste']);
                             $f_date = Trim($row['f_time']);
-                            $Recent_update =  Trim($row['now_time']);
+                            $Recent_update = Trim($row['now_time']);
                             $f_tags = Trim($row['tagsys']);
                             $ftagArray = explode(',', $f_tags);
                             $ftagArray = array_filter($ftagArray);
@@ -284,36 +285,40 @@ $(document).ready(function () {
                             $title = truncate($title, 20, 50);
                             $current_time = time();
                             $past = strtotime('-2 day', $current_time);
-                            if ($past <= $Recent_update && $Recent_update <= $current_time){
-                            $updatenote = "<i class='far fa-check-square fa-lg' aria-hidden='true'></i>";
-                            }else{
-                            $updatenote = "<i class='far fa-minus-square fa-lg' aria-hidden='true'></i>";}    
+                            if ($past <= $Recent_update && $Recent_update <= $current_time) {
+                                $updatenote = "<i class='far fa-check-square fa-lg' aria-hidden='true'></i>";
+                            } else {
+                                $updatenote = "<i class='far fa-minus-square fa-lg' aria-hidden='true'></i>";
+                            }
 
-                                echo '<tr> 
+                            echo '<tr> 
                                                 <td>
                                                     <a href="' . $protocol . $baseurl . '/' . $p_link . '" title="' . $ftitle . '">' . ($ftitle) . '</a>
                                                 </td>    
-                                                <td  data-sort="'. $f_date .'" class="td-left">
-                                                <span>' . date("d F Y",$f_date) . '</span>
+                                                <td  data-sort="' . $f_date . '" class="td-left">
+                                                <span>' . date("d F Y", $f_date) . '</span>
                                                 </td>
                                                <td class="td-center">
                                                 <span style="display:none;">' . $Recent_update . '</span>
                                                 ' . $updatenote . '
                                                 </td>
                                                 <td class="td-left">';
-                                                 if (strlen($f_tags) > 0) {
-                                                   foreach($ftagArray as $key=>$ftags){ echo '<span class="tag is-info">' . trim($ftags) . '</span>';};
-                                                 }else{
-                                                 echo ' <span class="tag is-warning">No tags</span>';};
-                                    
-                                    
-                                    echo             '</td> 
+                            if (strlen($f_tags) > 0) {
+                                foreach ($ftagArray as $key => $ftags) {
+                                    echo '<span class="tag is-info">' . trim($ftags) . '</span>';
+                                };
+                            } else {
+                                echo ' <span class="tag is-warning">No tags</span>';
+                            };
+
+
+                            echo '</td> 
 						            </tr>';
-                            }
+                        }
                         }
                         ?>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
                 </div>
                 <?php
                 if (isset($site_ads)) {
@@ -326,26 +331,26 @@ $(document).ready(function () {
     </div>
 </main>
 <script>
-const tabSystem = {
-    init(){
-        document.querySelectorAll('.tabs-menu').forEach(tabMenu => {
-            Array.from(tabMenu.children).forEach((child, ind) => {
-                child.addEventListener('click', () => {
-                    tabSystem.toggle(child.dataset.target);
+    const tabSystem = {
+        init() {
+            document.querySelectorAll('.tabs-menu').forEach(tabMenu => {
+                Array.from(tabMenu.children).forEach((child, ind) => {
+                    child.addEventListener('click', () => {
+                        tabSystem.toggle(child.dataset.target);
+                    });
+                    if (child.className.includes('is-active')) {
+                        tabSystem.toggle(child.dataset.target);
+                    }
                 });
-                if(child.className.includes('is-active')){
-                    tabSystem.toggle(child.dataset.target);
-                }
             });
-        });
-    },
-    toggle(targetId){
-        document.querySelectorAll('.tab-content').forEach(contentElement=>{
-            contentElement.style.display = contentElement.id === targetId ? 'block' : 'none';
-            document.querySelector(`[data-target="${contentElement.id}"]`).classList[contentElement.id === targetId ? 'add' : 'remove']('is-active');
-        })
-    },
-};
-// use it
-tabSystem.init()
+        },
+        toggle(targetId) {
+            document.querySelectorAll('.tab-content').forEach(contentElement => {
+                contentElement.style.display = contentElement.id === targetId ? 'block' : 'none';
+                document.querySelector(`[data-target="${contentElement.id}"]`).classList[contentElement.id === targetId ? 'add' : 'remove']('is-active');
+            })
+        },
+    };
+    // use it
+    tabSystem.init()
 </script>

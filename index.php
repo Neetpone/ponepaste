@@ -1,4 +1,3 @@
-
 <?php
 /*
  * Paste <https://github.com/jordansamuel/PASTE>
@@ -28,7 +27,7 @@ require_once('includes/captcha.php');
 require_once('includes/functions.php');
 require_once('includes/password.php');
 
-function verifyCaptcha() : string | bool {
+function verifyCaptcha() : string|bool {
     global $cap_e;
     global $mode;
     global $recaptcha_secretkey;
@@ -36,7 +35,7 @@ function verifyCaptcha() : string | bool {
 
     if ($cap_e == "on" && !isset($_SESSION['username'])) {
         if ($mode == "reCAPTCHA") {
-            $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=".$recaptcha_secretkey."&response=".$_POST['g-recaptcha-response']);
+            $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=" . $recaptcha_secretkey . "&response=" . $_POST['g-recaptcha-response']);
             $response = json_decode($response, true);
             if ($response["success"] == false) {
                 // reCAPTCHA Errors
@@ -48,7 +47,7 @@ function verifyCaptcha() : string | bool {
                 };
             }
         } else {
-            $scode    = strtolower(htmlentities(Trim($_POST['scode'])));
+            $scode = strtolower(htmlentities(Trim($_POST['scode'])));
             $cap_code = strtolower($_SESSION['captcha']['code']);
             if ($cap_code !== $scode) {
                 return $lang['image_wrong']; // Wrong captcha.
@@ -80,19 +79,19 @@ function calculatePasteExpiry(string $expiry) {
         : null;
 }
 
-function validatePasteFields() : string | null {
+function validatePasteFields() : string|null {
     global $lang;
     global $pastelimit;
 
     if (empty($_POST["paste_data"]) || trim($_POST['paste_data'] === '')) { /* Empty paste input */
         return $lang['empty_paste'];
-    } elseif(!isset($_POST['title'])) { /* No paste title POSTed */
+    } elseif (!isset($_POST['title'])) { /* No paste title POSTed */
         return $lang['error'];
     } elseif (empty($_POST["tags"])) { /* No tags provided */
         return $lang['notags'];
     } elseif (strlen($_POST["title"]) > 70) { /* Paste title too long */
         return $lang['titlelen'];
-    } elseif (mb_strlen($_POST["paste_data"], '8bit') >  1024 * 1024 * $pastelimit) { /* Paste size too big */
+    } elseif (mb_strlen($_POST["paste_data"], '8bit') > 1024 * 1024 * $pastelimit) { /* Paste size too big */
         return $lang['large_paste'];
     }
 
@@ -103,26 +102,26 @@ function validatePasteFields() : string | null {
 header('Content-Type: text/html; charset=utf-8');
 
 // Current date & user IP
-$date    = date('jS F Y');
-$ip      = $_SERVER['REMOTE_ADDR'];
+$date = date('jS F Y');
+$ip = $_SERVER['REMOTE_ADDR'];
 
 // Sitemap
 $site_sitemap_rows = $conn->query('SELECT * FROM sitemap_options LIMIT 1');
 if ($row = $site_sitemap_rows->fetch()) {
-    $priority   = $row['priority'];
+    $priority = $row['priority'];
     $changefreq = $row['changefreq'];
 }
 
 // Captcha
 $site_captcha_rows = $conn->query("SELECT * FROM captcha LIMIT 1");
 if ($row = $site_captcha_rows->fetch()) {
-    $color   = Trim($row['color']);
-    $mode    = Trim($row['mode']);
-    $mul     = Trim($row['mul']);
+    $color = Trim($row['color']);
+    $mode = Trim($row['mode']);
+    $mul = Trim($row['mul']);
     $allowed = Trim($row['allowed']);
-    $cap_e   = Trim($row['cap_e']);
-    $recaptcha_sitekey   = Trim($row['recaptcha_sitekey']);
-    $recaptcha_secretkey   = Trim($row['recaptcha_secretkey']);
+    $cap_e = Trim($row['cap_e']);
+    $recaptcha_sitekey = Trim($row['recaptcha_sitekey']);
+    $recaptcha_secretkey = Trim($row['recaptcha_secretkey']);
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -158,18 +157,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $editing = isset($_POST['edit']);
 
-    $p_title    = Trim(htmlspecialchars($_POST['title']));
+    $p_title = Trim(htmlspecialchars($_POST['title']));
 
     if (empty($p_title)) {
         $p_title = 'Untitled';
     }
 
-    $p_content  = htmlspecialchars($_POST['paste_data']);
-    $p_visible  = Trim(htmlspecialchars($_POST['visibility']));
-    $p_code     = Trim(htmlspecialchars($_POST['format']));
-    $p_expiry   = Trim(htmlspecialchars($_POST['paste_expire_date']));
-    $p_tagsys  = Trim(htmlspecialchars($_POST['tags']));
-    $p_tagsys =  rtrim($p_tagsys, ',');
+    $p_content = htmlspecialchars($_POST['paste_data']);
+    $p_visible = Trim(htmlspecialchars($_POST['visibility']));
+    $p_code = Trim(htmlspecialchars($_POST['format']));
+    $p_expiry = Trim(htmlspecialchars($_POST['paste_expire_date']));
+    $p_tagsys = Trim(htmlspecialchars($_POST['tags']));
+    $p_tagsys = rtrim($p_tagsys, ',');
     $p_password = $_POST['pass'];
     if ($p_password == "" || $p_password == null) {
         $p_password = "NONE";
@@ -195,10 +194,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Set expiry time
     $expires = calculatePasteExpiry($p_expiry);
 
-    $p_date    = date('jS F Y h:i:s A');
-    $date      = date('jS F Y');
-    $now_time  = mktime(date("H"), date("i"), date("s"), date("n"), date("j"), date("Y"));
-    $timeedit  = gmmktime(date("H"), date("i"), date("s"), date("n"), date("j"), date("Y"));
+    $p_date = date('jS F Y h:i:s A');
+    $date = date('jS F Y');
+    $now_time = mktime(date("H"), date("i"), date("s"), date("n"), date("j"), date("Y"));
+    $timeedit = gmmktime(date("H"), date("i"), date("s"), date("n"), date("j"), date("Y"));
 
     // Edit existing paste or create new?
     if ($editing) {
@@ -221,7 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             "INSERT INTO pastes (title, content, visible, code, expiry, password, encrypt, member, date, ip, now_time, views, s_date, tagsys) VALUES 
                                 (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '0', ?, ?)"
         );
-        $statement->execute([$p_title,$p_content,$p_visible,$p_code,$expires,$p_password,$p_encrypt,$p_member,$p_date,$ip,$now_time,$date,$p_tagsys]);
+        $statement->execute([$p_title, $p_content, $p_visible, $p_code, $expires, $p_password, $p_encrypt, $p_member, $p_date, $ip, $now_time, $date, $p_tagsys]);
         $paste_id = intval($conn->lastInsertId()); /* returns the last inserted ID as per the query above */
         if ($p_visible == '0') {
             addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite);

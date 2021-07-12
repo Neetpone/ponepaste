@@ -19,7 +19,7 @@ require_once('includes/common.php');
 // UTF-8
 header('Content-Type: text/html; charset=utf-8');
 
-$date    = date('jS F Y');
+$date = date('jS F Y');
 
 // Temp count for untagged pastes
 $total_untagged = intval($conn->query("SELECT COUNT(*) from pastes WHERE tagsys IS NULL")->fetch(PDO::FETCH_NUM)[0]);

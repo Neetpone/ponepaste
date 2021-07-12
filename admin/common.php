@@ -15,7 +15,7 @@ function updateAdminHistory($conn) {
 
     if ($row = $query->fetch()) {
         $last_date = $row['last_date'];
-        $last_ip   = $row['ip'];
+        $last_ip = $row['ip'];
     }
 
     if ($last_ip !== $ip || $last_date !== $date) {

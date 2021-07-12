@@ -19,8 +19,8 @@ require_once('includes/functions.php');
 // UTF-8
 header('Content-Type: text/html; charset=utf-8');
 
-$date    = date('jS F Y');
-$ip      = $_SERVER['REMOTE_ADDR'];
+$date = date('jS F Y');
+$ip = $_SERVER['REMOTE_ADDR'];
 
 updatePageViews($conn);
 
@@ -30,11 +30,11 @@ if (isset($_GET['page'])) {
     $query = $conn->prepare('SELECT page_title, page_content, last_date FROM pages WHERE page_name = ?');
     $query->execute([$page_name]);
     if ($row = $query->fetch()) {
-        $page_title   = $row['page_title'];
+        $page_title = $row['page_title'];
         $page_content = $row['page_content'];
-        $last_date    = $row['last_date'];
-        $stats        = "OK";
-        $p_title      = $page_title;
+        $last_date = $row['last_date'];
+        $stats = "OK";
+        $p_title = $page_title;
     }
 }
 // Theme

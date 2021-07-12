@@ -27,7 +27,7 @@ $language_data = array(
     'COMMENT_SINGLE' => array(
         1 => '>',
         2 => '>'
-        ),
+    ),
     'COMMENT_MULTI' => array(),
     'COMMENT_REGEXP' => array(),
     'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,
@@ -40,26 +40,26 @@ $language_data = array(
     'KEYWORDS' => array(
         1 => array(
             ''
-            )
-        ),
+        )
+    ),
     'CASE_SENSITIVE' => array(
         1 => false
-        ),
+    ),
     'SYMBOLS' => array(
         0 => array(
             ''
-            )
-        ),
+        )
+    ),
     'STYLES' => array(
         'KEYWORDS' => array(
             1 => 'color: #0000FF; font-weight: bold;'
-            ),
+        ),
         'COMMENTS' => array(
             1 => 'font-style: normal; color: #789922; line-height: 1.2;',
             2 => 'font-style: normal color: #789922; line-height: 1.2;',
             1 => 'font-style: normal; color: #789922; line-height: 1.2;',
             'MULTI' => 'font-style: normal; color: #666666; line-height: 1.2;'
-            ),
+        ),
         'ESCAPE_CHAR' => array(),
         'BRACKETS' => array(),
         'STRINGS' => array(),
@@ -67,7 +67,7 @@ $language_data = array(
         'SYMBOLS' => array(),
         'REGEXPS' => array(),
         'SCRIPT' => array()
-        ),
+    ),
     'URLS' => array(),
     'OOLANG' => false,
     'OBJECT_SPLITTERS' => array(),
