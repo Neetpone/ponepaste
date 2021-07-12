@@ -65,7 +65,7 @@
                                 <div class="media">
                                     <div class="media-content" style="overflow: hidden">
                                         <p class="title is-5"><a href="' . $p_id . '" title="' . $titlehov . '">' . $title . ' </a></p>
-                                        <p class="subtitle is-6"><a href="https://Ponepaste.org/user/' . $p_member . '">' . $p_member . '</a><br><time datetime="' . $p_date . '">' . $p_date . '</time></p>';
+                                        <p class="subtitle is-6"><a href="/user/' . $p_member . '">' . $p_member . '</a><br><time datetime="' . $p_date . '">' . $p_date . '</time></p>';
                                                     if (strlen($p_tagsys) > 0) {
                                                         echo $tagui;
                                                     } else {
@@ -116,7 +116,7 @@
                                 <div class="media">
                                     <div class="media-content" style="overflow: hidden">
                                         <p class="title is-5"><a href="' . $p_id . '" title="' . $titlehov . '">' . $title . ' </a></p>
-                                        <p class="subtitle is-6"><a href="https://Ponepaste.org/user/' . $p_member . '">' . $p_member . '</a><br><time datetime="' . $p_date . '">' . $p_date . '</time></p>';
+                                        <p class="subtitle is-6"><a href="/user/' . $p_member . '">' . $p_member . '</a><br><time datetime="' . $p_date . '">' . $p_date . '</time></p>';
                                                     if (strlen($p_tagsys) > 0) {
                                                         echo $tagui;
                                                     } else {
@@ -168,7 +168,7 @@
                                 <div class="media">
                                     <div class="media-content" style="overflow: hidden">
                                         <p class="title is-5"><a href="' . $p_id . '" title="' . $titlehov . '">' . $title . ' </a></p>
-                                        <p class="subtitle is-6"><a href="https://Ponepaste.org/user/' . $p_member . '">' . $p_member . '</a><br><time datetime="' . $p_date . '">' . $p_date . '</time></p>';
+                                        <p class="subtitle is-6"><a href="/user/' . $p_member . '">' . $p_member . '</a><br><time datetime="' . $p_date . '">' . $p_date . '</time></p>';
                                                     if (strlen($p_tagsys) > 0) {
                                                         echo $tagui;
                                                     } else {
@@ -220,7 +220,7 @@
                                 <div class="media">
                                     <div class="media-content" style="overflow: hidden">
                                         <p class="title is-5"><a href="' . $p_id . '" title="' . $titlehov . '">' . $title . ' </a></p>
-                                        <p class="subtitle is-6"><a href="https://Ponepaste.org/user/' . $p_member . '">' . $p_member . '</a><br><time datetime="' . $p_date . '">' . $p_date . '</time></p>';
+                                        <p class="subtitle is-6"><a href="/user/' . $p_member . '">' . $p_member . '</a><br><time datetime="' . $p_date . '">' . $p_date . '</time></p>';
                                                     if (strlen($p_tagsys) > 0) {
                                                         echo $tagui;
                                                     } else {
@@ -271,7 +271,7 @@
                                 <div class="media">
                                     <div class="media-content" style="overflow: hidden">
                                         <p class="title is-5"><a href="' . $p_id . '" title="' . $titlehov . '">' . $title . ' </a></p>
-                                        <p class="subtitle is-6"><a href="https://Ponepaste.org/user/' . $p_member . '">' . $p_member . '</a><br><time datetime="' . $p_date . '">' . $p_date . '</time></p>';
+                                        <p class="subtitle is-6"><a href="/user/' . $p_member . '">' . $p_member . '</a><br><time datetime="' . $p_date . '">' . $p_date . '</time></p>';
                                                     if (strlen($p_tagsys) > 0) {
                                                         echo $tagui;
                                                     } else {
@@ -296,6 +296,8 @@
                 </div>
             </div>
         </div>
+     </div>
+</div>
 </main>
 <script>
     const tabSystem = {
