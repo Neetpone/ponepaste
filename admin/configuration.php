@@ -15,23 +15,25 @@
 define('IN_ADMIN', 1);
 require_once('common.php');
 
+const CONFIG_FILE_PATH = '../config/site.php';
+
+
 updateAdminHistory($conn);
 
-$query = $conn->query('SELECT * FROM site_info');
+function updateConfiguration(string $path, array $new_config) {
+    $fp = fopen($path, 'w');
 
-if ($row = $query->fetch()) {
-    $title = Trim($row['title']);
-    $des = Trim($row['des']);
-    $baseurl = Trim($row['baseurl']);
-    $keyword = Trim($row['keyword']);
-    $site_name = Trim($row['site_name']);
-    $email = Trim($row['email']);
-    $twit = Trim($row['twit']);
-    $face = Trim($row['face']);
-    $gplus = Trim($row['gplus']);
-    $ga = Trim($row['ga']);
-    $additional_scripts = Trim($row['additional_scripts']);
+    $new_config_text = var_export($new_config, true);
+    $code = "<?php\n/* This file has been machine-generated, but is human-editable if you so desire. */\nreturn $new_config_text;";
+
+    fwrite($fp, $code);
+
+    fclose($fp);
 }
+
+/** @noinspection PhpIncludeInspection */
+$current_config = require(CONFIG_FILE_PATH);
+$current_site_info = $current_config['site_info'];
 
 $query = "SELECT * FROM captcha WHERE id = '1'";
 $result = $conn->query('SELECT * FROM captcha WHERE id = 1');
@@ -69,12 +71,33 @@ if ($row = $result->fetch()) {
 /* Update the configuration if necessary */
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'];
+
+    if ($action === 'manage') {
+        $new_site_info = [
+            'title' =>  trim($_POST['title']),
+            'description' => trim($_POST['description']),
+            'baseurl' => trim($_POST['baseurl']),
+            'keywords' => trim($_POST['keywords']),
+            'site_name' => trim($_POST['site_name']),
+            'email' => trim($_POST['email']),
+            'google_analytics' => trim($_POST['ga']),
+            'additional_scripts' => trim($_POST['additional_scripts'])
+        ];
+
+        $current_config['site_info'] = $new_site_info;
+        $current_site_info = $new_site_info;
+
+       updateConfiguration(CONFIG_FILE_PATH, $current_config);
+            $msg = '<div class="paste-alert alert3" style="text-align: center;">
+									Configuration saved.
+									</div>';
+    }
     if (isset($_POST['manage'])) {
         $query = $conn->prepare(
             'UPDATE site_info SET title = ?, des = ?, baseurl = ?, keyword = ?, site_name = ?, email = ?, twit = ?, face = ?, gplus = ?, ga = ?, additional_scripts = ? WHERE id = 1'
         );
         $query->execute([
-            trim($_POST['title']),
             trim($_POST['des']),
             trim($_POST['baseurl']),
             trim($_POST['keyword']),
@@ -218,7 +241,7 @@ if (isset($_POST['smtp_code'])) {
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" name="site_name"
                                                        placeholder="The name of your site"
-                                                       value="<?php echo (isset($_POST['site_name'])) ? $_POST['site_name'] : $site_name; // Prevent special characters on $_POST ?>">
+                                                       value="<?php echo htmlentities($current_site_info['site_name'], ENT_QUOTES); ?>">
                                             </div>
                                         </div>
 
@@ -227,7 +250,7 @@ if (isset($_POST['smtp_code'])) {
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" name="title"
                                                        placeholder="Site title tag"
-                                                       value="<?php echo (isset($_POST['title'])) ? $_POST['title'] : $title; // Prevent special characters on $_POST ?>">
+                                                       value="<?php echo htmlentities($current_site_info['title'], ENT_QUOTES); ?>">
                                             </div>
                                         </div>
 
@@ -245,25 +268,25 @@ if (isset($_POST['smtp_code'])) {
                                             <div class="col-sm-5">
                                                 <input type="text" class="form-control" name="baseurl"
                                                        placeholder="eg: pastethis.in (no trailing slash)"
-                                                       value="<?php echo (isset($_POST['baseurl'])) ? $_POST['baseurl'] : $baseurl; // Prevent special characters on $_POST ?>">
+                                                       value="<?php echo htmlentities($current_site_info['baseurl'], ENT_QUOTES); ?>">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label form-label">Site Description</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="des"
+                                                <input type="text" class="form-control" name="description"
                                                        placeholder="Site description"
-                                                       value="<?php echo (isset($_POST['des'])) ? $_POST['des'] : $des; // Prevent special characters on $_POST ?>">
+                                                       value="<?php echo htmlentities($current_site_info['description'], ENT_QUOTES); ?>">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label form-label">Site Keywords</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="keyword"
+                                                <input type="text" class="form-control" name="keywords"
                                                        placeholder="Keywords (separated by a comma)"
-                                                       value="<?php echo $keyword; ?>">
+                                                       value="<?php echo htmlentities($current_site_info['keywords'], ENT_QUOTES); ?>">
                                             </div>
                                         </div>
 
@@ -271,7 +294,7 @@ if (isset($_POST['smtp_code'])) {
                                             <label class="col-sm-2 control-label form-label">Google Analytics</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" name="ga"
-                                                       placeholder="Google Analytics ID" value="<?php echo $ga; ?>">
+                                                       value="<?php echo htmlentities($current_site_info['google_analytics'], ENT_QUOTES); ?>">
                                             </div>
                                         </div>
 
@@ -279,31 +302,7 @@ if (isset($_POST['smtp_code'])) {
                                             <label class="col-sm-2 control-label form-label">Admin Email</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" name="email" placeholder="Email"
-                                                       value="<?php echo (isset($_POST['email'])) ? $_POST['email'] : $email; // Prevent special characters on $_POST ?>">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label">Facebook URL</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="face"
-                                                       placeholder="Facebook URL" value="<?php echo $face; ?>">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label">Twitter URL</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="twit"
-                                                       placeholder="Twitter URL" value="<?php echo $twit; ?>">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label">Google+ URL</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="gplus"
-                                                       placeholder="Google+ URL" value="<?php echo $gplus; ?>">
+                                                       value="<?php echo htmlentities($current_site_info['email'], ENT_QUOTES); ?>">
                                             </div>
                                         </div>
 
@@ -313,11 +312,11 @@ if (isset($_POST['smtp_code'])) {
                                             <div class="col-sm-10">
                                                 <textarea class="form-control" id="additional_scripts"
                                                           name="additional_scripts"
-                                                          rows="8"><?php echo (isset($_POST['additional_scripts'])) ? $_POST['additional_scripts'] : $additional_scripts; // Prevent special characters on $_POST ?></textarea>
+                                                          rows="8"><?php echo htmlentities($current_site_info['title'], ENT_QUOTES); ?></textarea>
                                             </div>
                                         </div>
 
-                                        <input type="hidden" name="manage" value="manage"/>
+                                        <input type="hidden" name="action" value="manage"/>
 
                                         <div class="form-group">
                                             <div class="col-sm-offset-2 col-sm-10">

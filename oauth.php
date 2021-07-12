@@ -38,9 +38,6 @@ while ($row = mysqli_fetch_array($result)) {
     $keyword = Trim($row['keyword']);
     $site_name = Trim($row['site_name']);
     $email = Trim($row['email']);
-    $twit = Trim($row['twit']);
-    $face = Trim($row['face']);
-    $gplus = Trim($row['gplus']);
     $ga = Trim($row['ga']);
     $additional_scripts = Trim($row['additional_scripts']);
 }
