@@ -72,7 +72,7 @@ function sandwitch($str) {
         } else {
             $tagcolor = "tag is-info";
         }
-        $output .= '<a href="/archive?q=' . trim($word) . '"><span class="' . $tagcolor . '">' . trim($word) . '</span>';
+        $output .= '<a href="/archive?q=' . trim($word) . '"><span class="' . $tagcolor . '">' . trim($word) . '</span>,</a>';
     }
     return $output;
 }
