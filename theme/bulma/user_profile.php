@@ -172,8 +172,8 @@ $protocol = paste_protocol();
                         </tfoot>
                         <tbody>
                         <?php
-                        $res = getUserPastes($con, $profile_username);
-                        while ($row = mysqli_fetch_array($res)) {
+                        $res = getUserPastes($conn, $profile_username);
+                        foreach ($res as $index => $row) {
                             $title = Trim($row['title']);
                             $p_id = Trim($row['id']);
                             $p_code = Trim($row['code']);
@@ -199,7 +199,7 @@ $protocol = paste_protocol();
                             }
                             $p_link = ($mod_rewrite == '1') ? "$p_id" : "paste.php?id=$p_id";
                             $p_delete_link = ($mod_rewrite == '1') ? "user.php?del&user=$profile_username&id=$p_id" : "user.php?del&user=$profile_username&id=$p_id";
-                            $p_tag_link = ($mod_rewrite == '1') ? "user.php?user=$profile_username&q=$tags" : "user.php?user=$profile_username&q=$tags";
+                            $p_tag_link = ($mod_rewrite == '1') ? "user.php?user=$profile_username&q=$p_tags" : "user.php?user=$profile_username&q=$tags";
                             $title = truncate($title, 20, 50);
 
                             // Guests only see public pastes
@@ -261,7 +261,7 @@ $protocol = paste_protocol();
                         <thead>
                         <tr>
                             <td><?php echo $lang['pastetitle']; ?></td>
-                            <td><?php echo "Favorited"; ?></td>
+                            <td><?php echo $lang['tags']; ?></td>
                             <td><?php echo "Updated (48hrs)"; ?></td>
                             <td><?php echo $lang['tags']; ?></td>
                             <?php //if (isset($_SESSION) && $_SESSION['username'] == $profile_username) {
@@ -271,8 +271,8 @@ $protocol = paste_protocol();
                         </thead>
                         <tbody>
                         <?php
-                        $res = getUserFavs($con, $profile_username);
-                        while ($row = mysqli_fetch_array($res)) {
+                        $res = getUserFavs($conn, $profile_username);
+                        foreach ($res as $index => $row) {
                             $ftitle = Trim($row['title']);
                             $f_id = Trim($row['f_paste']);
                             $f_date = Trim($row['f_time']);
