@@ -263,14 +263,11 @@ function jsonView($paste_id, $p_title, $p_conntent, $p_code) {
 }
 
 
-function getTotalPastes($conn, $username) {
-    $count = 0;
-    $query = $conn->prepare("SELECT member FROM pastes WHERE member=?");
+function getTotalPastes(PDO $conn, string $username) : int {
+    $query = $conn->prepare("SELECT COUNT(*) FROM pastes WHERE member = ?");
     $query->execute([$username]);
-    while ($row = $site_info_rows->fetch()) {
-        $count = $count + 1;
-    }
-    return $count;
+
+    return intval($query->fetch(PDO::FETCH_NUM)[0]);
 }
 
 function isValidUsername(string $str) : bool {

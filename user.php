@@ -28,7 +28,7 @@ $user_username = trim($_SESSION['username']);
 if (isset($_GET['user'])) {
     $profile_username = trim($_GET['user']);
 
-    if (!existingUser($con, $profile_username)) {
+    if (!existingUser($conn, $profile_username)) {
         // Invalid username
         header("Location: ../error.php");
         die();
