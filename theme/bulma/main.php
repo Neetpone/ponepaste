@@ -332,7 +332,7 @@
                                 <!-- $text_ads -->
                                 <?php
                                     // don't display ads for logged in users.
-                                    if (isset($site_ads) && !isset($_SESSION['username'])) {
+                                    if (!empty($site_ads) && !isset($_SESSION['username'])) {
                                         echo $site_ads['text_ads'];
                                     }
                                 ?>

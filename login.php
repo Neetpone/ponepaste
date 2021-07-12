@@ -150,7 +150,6 @@ if (isset($_GET['forgot'])) {
         } else {
             $error = $lang['email_not']; //"Email not found";
         }
-
     }
 }
 

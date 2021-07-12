@@ -111,11 +111,18 @@ $site_permissions = getSitePermissions($conn);
 
 if ($site_permissions) {
     $siteprivate = $site_permissions['siteprivate'];
+    $disableguest = $site_permissions['disableguest'];
 } else {
     $siteprivate = 'off';
+    $disableguest = 'off';
 }
 
 $privatesite = $siteprivate;
+$noguests = $disableguest;
+
+if (isset($_SESSION['username'])) {
+    $noguests = "off";
+}
 
 
 // Prevent a potential LFI (you never know :p)
