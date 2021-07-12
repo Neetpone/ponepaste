@@ -4,6 +4,7 @@
  */
 
 $lang = array();
+$lang['loginwarning'] = "You must be logged in to do that.";
 $lang['titlelen'] = "Title too long";
 $lang['notags'] = "Please tag your paste";
 $lang['maxnamelimit'] = "Username too long";

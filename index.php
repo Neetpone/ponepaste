@@ -213,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ]);
             $success = $paste_id;
         } else {
-            $error = 'You must be logged in to do that.'; // TODO: Lang?
+            $error = $lang['loginwarning']; //"You must be logged in to do that."
         }
     } else {
         $statement = $conn->prepare(
