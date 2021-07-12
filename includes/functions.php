@@ -27,13 +27,13 @@ function timer() {
 }
 
 function getUserFavs($conn, $username) {
-    $query = $conn->prepare("SELECT pins.f_time, pins.m_fav, pins.f_paste, pastes.id, pastes.title, pastes.now_time, pastes.tagsys FROM pins, pastes WHERE pins.f_paste = pastes.id AND pins.m_fav=?'");
+    $query = $conn->prepare("SELECT pins.f_time, pins.m_fav, pins.f_paste, pastes.id, pastes.title, pastes.now_time, pastes.tagsys FROM pins, pastes WHERE pins.f_paste = pastes.id AND pins.m_fav=?");
     $query->execute([$username]);
     return $query->fetchAll();
 }
 
 function CountPasteFavs($conn, $fav_id) {
-    $query = $conn->prepare("SELECT COUNT(f_paste) FROM pins WHERE f_paste=?");
+    $query = intval($conn->prepare("SELECT COUNT(f_paste) FROM pins WHERE f_paste=?"))->fetch(PDO::FETCH_NUM)[0]);
     $query->execute([$fav_id]);
     return $query->fetchAll();
 }
