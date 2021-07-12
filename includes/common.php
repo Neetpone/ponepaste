@@ -7,12 +7,8 @@ require_once('config.php');
 require_once('includes/functions.php');
 
 
-function getSiteInfo(PDO $conn) : array {
-    return $conn->query('SELECT * FROM site_info LIMIT 1')->fetch();
-}
-
-function getSiteLangAndTheme(PDO $conn) : array {
-    return $conn->query('SELECT lang, theme FROM interface LIMIT 1')->fetch();
+function getSiteInfo() : array {
+    return require('config/site.php');
 }
 
 function getSitePermissions(PDO $conn) : array {
@@ -82,34 +78,25 @@ $conn = new PDO(
 );
 
 // Setup site info
-$row = getSiteInfo($conn);
+$site_info = getSiteInfo();
+$row = $site_info['site_info'];
 $title = Trim($row['title']);
-$des = Trim($row['des']);
+$des = Trim($row['description']);
 $baseurl = Trim($row['baseurl']);
-$keyword = Trim($row['keyword']);
+$keyword = Trim($row['keywords']);
 $site_name = Trim($row['site_name']);
 $email = Trim($row['email']);
-$twit = Trim($row['twit']);
-$face = Trim($row['face']);
-$gplus = Trim($row['gplus']);
-$ga = Trim($row['ga']);
+$ga = Trim($row['google_analytics']);
 $additional_scripts = Trim($row['additional_scripts']);
 
 
 // Setup theme and language
-
-$lang_and_theme = getSiteLangAndTheme($conn);
-
-if ($lang_and_theme) {
-    $default_lang = $lang_and_theme['lang'];
-    $default_theme = $lang_and_theme['theme'];
-} else {
-    $default_lang = 'en.php';
-    $default_theme = 'bulma';
-}
+$lang_and_theme = $site_info['interface'];
+$default_lang = $lang_and_theme['language'];
+$default_theme = $lang_and_theme['theme'];
 
 // site permissions
-$site_permissions = getSitePermissions($conn);
+$site_permissions = $site_info['permissions'];
 
 if ($site_permissions) {
     $siteprivate = $site_permissions['siteprivate'];
