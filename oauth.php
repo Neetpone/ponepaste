@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $error = $lang['usernotvalid']; //"Username not vaild";
         } else {
             $res = isValidUsername($new_username);
-            if ($res == '1') {
+            if ($res) {
                 $query = "SELECT * FROM users WHERE username='$new_username'";
                 $result = mysqli_query($con, $query);
                 if (mysqli_num_rows($result) > 0) {

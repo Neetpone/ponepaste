@@ -47,7 +47,7 @@ function default_mail($admin_mail, $admin_name, $sent_mail, $subject, $body) {
 
 }
 
-function smtp_mail($smtp_host, $smtp_port = 587, $smtp_auth, $smtp_user, $smtp_pass, $smtp_sec = 'tls', $admin_mail, $admin_name, $sent_mail, $subject, $body) {
+function smtp_mail($smtp_host, $smtp_port, $smtp_auth, $smtp_user, $smtp_pass, $smtp_sec, $admin_mail, $admin_name, $sent_mail, $subject, $body) {
     require_once('class.phpmailer.php');
     require_once('class.smtp.php');
     $mail = new PHPMailer;

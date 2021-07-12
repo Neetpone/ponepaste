@@ -14,6 +14,7 @@
  */
 
 // Required functions
+define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/functions.php');
 require_once('includes/password.php');
@@ -163,22 +164,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = htmlentities(trim($_POST['username']));
             $password = $_POST['password'];
             if ($username != null && $password != null) {
-                $query = $conn->prepare("SELECT * FROM users WHERE username=?");
+                $query = $conn->prepare("SELECT * FROM users WHERE username = ?");
                 $query->execute([$username]);
-                if ($query->fetchColumn() > 0) {
+                if ($row = $query->fetch()) {
                     // Username found
-                    while ($row = $query->fetch()) {
-                        $db_oauth_uid = $row['oauth_uid'];
-                        $db_email_id = $row['email_id'];
-                        $db_full_name = $row['full_name'];
-                        $db_platform = $row['platform'];
-                        $db_password = $row['password'];
-                        $db_verified = $row['verified'];
-                        $db_picture = $row['picture'];
-                        $db_date = $row['date'];
-                        $db_ip = $row['ip'];
-                        $db_id = $row['id'];
-                    }
+                    $db_oauth_uid = $row['oauth_uid'];
+                    $db_email_id = $row['email_id'];
+                    $db_full_name = $row['full_name'];
+                    $db_platform = $row['platform'];
+                    $db_password = $row['password'];
+                    $db_verified = $row['verified'];
+                    $db_picture = $row['picture'];
+                    $db_date = $row['date'];
+                    $db_ip = $row['ip'];
+                    $db_id = $row['id'];
 
                     if (password_verify($password, $db_password)) {
                         if ($db_verified == "1") {
@@ -228,50 +227,47 @@ if (isset($_POST['signup'])) {
         } else {
             if ($username != null && $password != null && $email != null) {
                 $res = isValidUsername($username);
-                if ($res == '1') {
-                    $query = "SELECT * FROM users WHERE username='$username'";
-                    $result = mysqli_query($con, $query);
-                    if (mysqli_num_rows($result) > 0) {
+                if ($res) {
+                    $query = $conn->prepare('SELECT 1 FROM users WHERE username = ?');
+                    $query->execute([$username]);
+                    if ($query->fetch()) {
                         $error = $lang['userexists']; // "Username already taken.";
                     } else {
+                        $query = $conn->prepare("SELECT 1 FROM users WHERE email_id = ?");
+                        $query->execute([$email]);
 
-                        $query = "SELECT * FROM users WHERE email_id='$email'";
-                        $result = mysqli_query($con, $query);
-
-                        if (mysqli_num_rows($result) > 0) {
+                        if ($query->fetch()) {
                             $error = $lang['emailexists']; // "Email already registered.";
                         } else {
-                            if ($verification == 'disabled') {
-                                $query = "INSERT INTO users (oauth_uid,username,email_id,platform,password,verified,picture,date,ip,badge) VALUES ('0','$username','$email','Direct','$password','1','NONE','$date','$ip','0')";
+                            $verification_needed = $verification !== 'disabled';
+
+                            $query = $conn->prepare(
+                                "INSERT INTO users (oauth_uid, username, email_id, platform, password, verified, picture, date, ip, badge) VALUES ('0', ?, ?, 'Direct', ?, ?, 'NONE', ?, ?, '0')"
+                            );
+                            $query->execute([$username, $email, $password, $verification_needed ? 0 : 1, $date, $ip]);
+
+                            if (!$verification_needed) {
+                                $success = $lang['registered']; // "Your account was successfully registered.";
                             } else {
-                                $query = "INSERT INTO users (oauth_uid,username,email_id,platform,password,verified,picture,date,ip,badge) VALUES ('0','$username','$email','Direct','$password','0','NONE','$date','$ip','0')";
-                            }
-                            mysqli_query($con, $query);
-                            if (mysqli_error($con))
-                                $error = "Invalid input dectected";
-                            else {
-                                if ($verification == 'disabled') {
-                                    $success = $lang['registered']; // "Your account was successfully registered.";
-                                } else {
-                                    $success = $lang['registered']; // "Your account was successfully registered.";
-                                    $protocol = paste_protocol();
-                                    $verify_url = $protocol . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . "/verify.php?username=$username&code=" . Md5('4et4$55765' . $email . 'd94ereg');
-                                    $sent_mail = $email;
-                                    $subject = $lang['mail_acc_con']; // "$site_name Account Confirmation";
-                                    $body = "
+                                $success = $lang['registered']; // "Your account was successfully registered.";
+                                $protocol = paste_protocol();
+                                $verify_url = $protocol . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . "/verify.php?username=$username&code=" . Md5('4et4$55765' . $email . 'd94ereg');
+                                $sent_mail = $email;
+                                $subject = $lang['mail_acc_con']; // "$site_name Account Confirmation";
+                                $body = "
 			  Hello $username, Your $site_name account has been created. Please verify your account by clicking the link below.<br /><br />
 
 			  <a href='$verify_url' target='_self'>$verify_url</a>  <br /> <br />
 
 			  After confirming your account you can log in using your username: <b>$username</b> and the password you used when signing up.
 			  ";
-                                    if ($mail_type == '1') {
-                                        default_mail($admin_mail, $admin_name, $sent_mail, $subject, $body);
-                                    } else {
-                                        smtp_mail($smtp_host, $smtp_port, $smtp_auth, $smtp_user, $smtp_pass, $smtp_sec, $admin_mail, $admin_name, $sent_mail, $subject, $body);
-                                    }
+                                if ($mail_type == '1') {
+                                    default_mail($admin_mail, $admin_name, $sent_mail, $subject, $body);
+                                } else {
+                                    smtp_mail($smtp_host, $smtp_port, $smtp_auth, $smtp_user, $smtp_pass, $smtp_sec, $admin_mail, $admin_name, $sent_mail, $subject, $body);
                                 }
                             }
+
                         }
 
                     }

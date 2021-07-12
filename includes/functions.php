@@ -273,7 +273,7 @@ function getTotalPastes($conn, $username) {
     return $count;
 }
 
-function isValidUsername($str) {
+function isValidUsername(string $str) : bool {
     return !preg_match('/[^A-Za-z0-9._\\-$]/', $str);
 }
 
@@ -514,18 +514,13 @@ function addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite) {
     file_put_contents("sitemap.xml", $full_map);
 }
 
-function paste_protocol() {
-
-    $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? 'https://' : 'http://';
-
-    return $protocol;
+function paste_protocol() : string {
+    return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? 'https://' : 'http://';
 }
 
-function is_banned($conn, $ip) {
+function is_banned(PDO $conn, string $ip) : bool {
     $query = $conn->prepare('SELECT 1 FROM ban_user WHERE ip = ?');
     $query->execute([$ip]);
 
-    return (bool)$query->fetch();
+    return (bool) $query->fetch();
 }
-
-?>

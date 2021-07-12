@@ -12,8 +12,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License in GPL.txt for more details.
  */
-session_start();
-
 define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/functions.php');
