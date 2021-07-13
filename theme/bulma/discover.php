@@ -6,7 +6,7 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -37,267 +37,190 @@
                         <!-- Pop Pastes -->
                         <div class="tab-content" id="first-tab">
                             <div class="panel panel-default">
-                                <h1 class="title is-4"><?php echo $lang['popular']; ?>
-                                    <h1>
-                                        <div class="columns is-multiline">
-                                            <?php
-                                            $res = getpopular($conn, 10);
-                                            foreach ($res as $index => $row) {
-                                                $title = Trim($row['title']);
-                                                $p_member = Trim($row['member']);
-                                                $titlehov = ($row['title']);
-                                                $p_id = Trim($row['id']);
-                                                $p_date = Trim($row['date']);
-                                                $p_time = Trim($row['now_time']);
-                                                $nowtime = time();
-                                                $oldtime = $p_time;
-                                                $p_time = conTime($nowtime - $oldtime);
-                                                $p_tagsys = Trim($row['tagsys']);
-                                                $tags = htmlentities($p_tagsys, ENT_QUOTES, 'UTF-8');
-                                                $tagui = sandwitch($tags);
-                                                ?>
-                                                <?php
-                                                if ($mod_rewrite == '1') {
-                                                    echo '
-                    <div class="column is-half">	                   
-                        <div class="card">
-                            <div class="card-content">
-                                <div class="media">
-                                    <div class="media-content" style="overflow: hidden">
-                                        <p class="title is-5"><a href="' . $p_id . '" title="' . $titlehov . '">' . $title . ' </a></p>
-                                        <p class="subtitle is-6"><a href="/user/' . $p_member . '">' . $p_member . '</a><br><time datetime="' . $p_date . '">' . $p_date . '</time></p>';
-                                                    if (strlen($p_tagsys) > 0) {
-                                                        echo $tagui;
-                                                    } else {
-                                                        echo ' <span class="tag is-warning">No tags</span>';
-                                                    }
-                                                    echo '</div>
-                                </div>
-                            </div>
-                        </div><br>
-                    </div>	';
+                                <h1 class="title is-4"><?php echo $lang['popular']; ?></h1>
+                                <div class="columns is-multiline">
+                                    <?php foreach ($popular_pastes as $paste): ?>
+                                        <div class="column is-half">
+                                            <div class="card">
+                                                <div class="card-content">
+                                                    <div class="media">
+                                                        <div class="media-content" style="overflow: hidden">
+                                                            <p class="title is-5">
+                                                                <a href="<?= urlForPaste($paste['id']) ?>" title="<?= $paste['title'] ?>"> <?= $paste['title'] ?> </a>
+                                                            </p>
+                                                            <p class="subtitle is-6">
+                                                                <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
+                                                                <br>
+                                                                <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
+                                                            </p>
+                                                            <?php
+                                                            if (!empty($paste['tags'])) {
+                                                                echo sandwitch($paste['tags']);
+                                                            } else {
+                                                                echo ' <span class="tag is-warning">No tags</span>';
+                                                            }
+                                                            ?>
 
-                                                } else {
-                                                    echo '<a href="' . $p_id . '" title="' . $titlehov . '">' . ucfirst($title) . '</a>';
-                                                }
-                                            }
-                                            ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div><br>
                                         </div>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
                         </div>
                         <!-- mPop Pastes -->
                         <div class="tab-content" id="second-tab">
                             <div class="panel panel-default">
-                                <h1 class="title is-4"><?php echo $lang['monthpopular']; ?>
-                                    <h1>
-                                        <div class="columns is-multiline">
-                                            <?php
-                                            $res = monthpop($conn, 10);
-                                            foreach ($res as $index => $row) {
-                                                $title = Trim($row['title']);
-                                                $p_member = Trim($row['member']);
-                                                $titlehov = ($row['title']);
-                                                $p_id = Trim($row['id']);
-                                                $p_date = Trim($row['date']);
-                                                $p_time = Trim($row['now_time']);
-                                                $nowtime = time();
-                                                $oldtime = $p_time;
-                                                $p_time = conTime($nowtime - $oldtime);
-                                                $p_tagsys = Trim($row['tagsys']);
-                                                $tags = htmlentities($p_tagsys, ENT_QUOTES, 'UTF-8');
-                                                $tagui = sandwitch($tags);
-                                                ?>
-                                                <?php
-                                                if ($mod_rewrite == '1') {
-                                                    echo '
-                    <div class="column is-half">	                   
-                        <div class="card">
-                            <div class="card-content">
-                                <div class="media">
-                                    <div class="media-content" style="overflow: hidden">
-                                        <p class="title is-5"><a href="' . $p_id . '" title="' . $titlehov . '">' . $title . ' </a></p>
-                                        <p class="subtitle is-6"><a href="/user/' . $p_member . '">' . $p_member . '</a><br><time datetime="' . $p_date . '">' . $p_date . '</time></p>';
-                                                    if (strlen($p_tagsys) > 0) {
-                                                        echo $tagui;
-                                                    } else {
-                                                        echo ' <span class="tag is-warning">No tags</span>';
-                                                    }
-                                                    echo '</div>
-                                </div>
-                            </div>
-                        </div><br>
-                    </div>	';
+                                <h1 class="title is-4"><?php echo $lang['monthpopular']; ?></h1>
+                                <div class="columns is-multiline">
+                                    <?php foreach ($monthly_popular_pastes as $paste): ?>
+                                        <div class="column is-half">
+                                            <div class="card">
+                                                <div class="card-content">
+                                                    <div class="media">
+                                                        <div class="media-content" style="overflow: hidden">
+                                                            <p class="title is-5">
+                                                                <a href="<?= urlForPaste($paste['id']) ?>" title="<?= $paste['title'] ?>"> <?= $paste['title'] ?> </a>
+                                                            </p>
+                                                            <p class="subtitle is-6">
+                                                                <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
+                                                                <br>
+                                                                <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
+                                                            </p>
+                                                            <?php
+                                                            if (!empty($paste['tags'])) {
+                                                                echo sandwitch($paste['tags']);
+                                                            } else {
+                                                                echo ' <span class="tag is-warning">No tags</span>';
+                                                            }
+                                                            ?>
 
-                                                } else {
-                                                    echo '<a href="' . $p_id . '" title="' . $titlehov . '">' . ucfirst($title) . '</a>';
-                                                }
-                                            }
-                                            ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div><br>
                                         </div>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
                         </div>
 
                         <!-- New Pastes -->
                         <div class="tab-content" id="third-tab">
                             <div class="panel panel-default">
-                                <h1 class="title is-4"><?php echo $lang['recentpastes']; ?>
-                                    <h1>
-                                        <div class="columns is-multiline">
-                                            <?php
-                                            $res = getRecent($conn, 10);
-                                            foreach ($res as $index => $row) {
-                                                $title = Trim($row['title']);
-                                                $p_member = Trim($row['member']);
-                                                $titlehov = ($row['title']);
-                                                $p_id = Trim($row['id']);
-                                                $p_date = Trim($row['date']);
-                                                $p_time = Trim($row['now_time']);
-                                                $nowtime = time();
-                                                $oldtime = $p_time;
-                                                $p_time = conTime($nowtime - $oldtime);
-                                                $p_tagsys = Trim($row['tagsys']);
-                                                $tags = htmlentities($p_tagsys, ENT_QUOTES, 'UTF-8');
-                                                $tagui = sandwitch($tags);
-                                                ?>
-                                                <?php
-                                                if ($mod_rewrite == '1') {
-                                                    echo '
-                    <div class="column is-half">	                   
-                        <div class="card">
-                            <div class="card-content">
-                                <div class="media">
-                                    <div class="media-content" style="overflow: hidden">
-                                        <p class="title is-5"><a href="' . $p_id . '" title="' . $titlehov . '">' . $title . ' </a></p>
-                                        <p class="subtitle is-6"><a href="/user/' . $p_member . '">' . $p_member . '</a><br><time datetime="' . $p_date . '">' . $p_date . '</time></p>';
-                                                    if (strlen($p_tagsys) > 0) {
-                                                        echo $tagui;
-                                                    } else {
-                                                        echo ' <span class="tag is-warning">No tags</span>';
-                                                    }
-                                                    echo '</div>
-                                </div>
-                            </div>
-                        </div><br>
-                    </div>	';
+                                <h1 class="title is-4"><?php echo $lang['recentpastes']; ?></h1>
+                                <div class="columns is-multiline">
+                                    <?php foreach ($recent_pastes as $paste): ?>
+                                        <div class="column is-half">
+                                            <div class="card">
+                                                <div class="card-content">
+                                                    <div class="media">
+                                                        <div class="media-content" style="overflow: hidden">
+                                                            <p class="title is-5">
+                                                                <a href="<?= urlForPaste($paste['id']) ?>" title="<?= $paste['title'] ?>"> <?= $paste['title'] ?> </a>
+                                                            </p>
+                                                            <p class="subtitle is-6">
+                                                                <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
+                                                                <br>
+                                                                <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
+                                                            </p>
+                                                            <?php
+                                                            if (!empty($paste['tags'])) {
+                                                                echo sandwitch($paste['tags']);
+                                                            } else {
+                                                                echo ' <span class="tag is-warning">No tags</span>';
+                                                            }
+                                                            ?>
 
-                                                } else {
-                                                    echo '<a href="' . $p_id . '" title="' . $titlehov . '">' . ucfirst($title) . '</a>';
-                                                }
-                                            }
-                                            ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div><br>
                                         </div>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Updated Pastes -->
                         <div class="tab-content" id="forth-tab">
                             <div class="panel panel-default">
-                                <h1 class="title is-4"><?php echo $lang['updatedgreen']; ?>
-                                    <h1>
-                                        <div class="columns is-multiline">
-                                            <?php
-                                            $res = recentupdate($conn, 10);
-                                            foreach ($res as $index => $row) {
-                                                $title = Trim($row['title']);
-                                                $p_member = Trim($row['member']);
-                                                $titlehov = ($row['title']);
-                                                $p_id = Trim($row['id']);
-                                                $p_date = Trim($row['date']);
-                                                $p_time = Trim($row['now_time']);
-                                                $nowtime = time();
-                                                $oldtime = $p_time;
-                                                $p_time = conTime($nowtime - $oldtime);
-                                                $p_tagsys = Trim($row['tagsys']);
-                                                $tags = htmlentities($p_tagsys, ENT_QUOTES, 'UTF-8');
-                                                $tagui = sandwitch($tags);
-                                                ?>
-                                                <?php
-                                                if ($mod_rewrite == '1') {
-                                                    echo '
-                    <div class="column is-half">	                   
-                        <div class="card">
-                            <div class="card-content">
-                                <div class="media">
-                                    <div class="media-content" style="overflow: hidden">
-                                        <p class="title is-5"><a href="' . $p_id . '" title="' . $titlehov . '">' . $title . ' </a></p>
-                                        <p class="subtitle is-6"><a href="/user/' . $p_member . '">' . $p_member . '</a><br><time datetime="' . $p_date . '">' . $p_date . '</time></p>';
-                                                    if (strlen($p_tagsys) > 0) {
-                                                        echo $tagui;
-                                                    } else {
-                                                        echo ' <span class="tag is-warning">No tags</span>';
-                                                    }
-                                                    echo '</div>
+                                <h1 class="title is-4"><?php echo $lang['updatedgreen']; ?></h1>
+                                <div class="columns is-multiline">
+                                    <?php foreach ($updated_pastes as $paste): ?>
+                                        <div class="column is-half">
+                                            <div class="card">
+                                                <div class="card-content">
+                                                    <div class="media">
+                                                        <div class="media-content" style="overflow: hidden">
+                                                            <p class="title is-5">
+                                                                <a href="<?= urlForPaste($paste['id']) ?>" title="<?= $paste['title'] ?>"> <?= $paste['title'] ?> </a>
+                                                            </p>
+                                                            <p class="subtitle is-6">
+                                                                <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
+                                                                <br>
+                                                                <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
+                                                            </p>
+                                                            <?php
+                                                            if (!empty($paste['tags'])) {
+                                                                echo sandwitch($paste['tags']);
+                                                            } else {
+                                                                echo ' <span class="tag is-warning">No tags</span>';
+                                                            }
+                                                            ?>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div><br>
+                                        </div>
+                                    <?php endforeach; ?>
                                 </div>
                             </div>
-                        </div><br>
-                    </div>	';
-
-                                                } else {
-                                                    echo '<a href="' . $p_id . '" title="' . $titlehov . '">' . ucfirst($title) . '</a>';
-                                                }
-                                            }
-                                            ?>
-                                        </div>
-                            </div>
                         </div>
-                        <!-- Updated Pastes -->
+
+                        <!-- Random Pastes -->
                         <div class="tab-content" id="fifth-tab">
                             <div class="panel panel-default">
-                                <h1 class="title is-4"><?php echo $lang['random']; ?>
-                                    <h1>
-                                        <div class="columns is-multiline">
-                                            <?php
-                                            $res = getrandom($conn, 10);
-                                            foreach ($res as $index => $row) {
-                                                $title = Trim($row['title']);
-                                                $p_member = Trim($row['member']);
-                                                $titlehov = ($row['title']);
-                                                $p_id = Trim($row['id']);
-                                                $p_date = Trim($row['date']);
-                                                $p_time = Trim($row['now_time']);
-                                                $nowtime = time();
-                                                $oldtime = $p_time;
-                                                $p_time = conTime($nowtime - $oldtime);
-                                                $p_tagsys = Trim($row['tagsys']);
-                                                $tags = htmlentities($p_tagsys, ENT_QUOTES, 'UTF-8');
-                                                $tagui = sandwitch($tags);
-                                                ?>
-                                                <?php
-                                                if ($mod_rewrite == '1') {
-                                                    echo '
-                    <div class="column is-half">	                   
-                        <div class="card">
-                            <div class="card-content">
-                                <div class="media">
-                                    <div class="media-content" style="overflow: hidden">
-                                        <p class="title is-5"><a href="' . $p_id . '" title="' . $titlehov . '">' . $title . ' </a></p>
-                                        <p class="subtitle is-6"><a href="/user/' . $p_member . '">' . $p_member . '</a><br><time datetime="' . $p_date . '">' . $p_date . '</time></p>';
-                                                    if (strlen($p_tagsys) > 0) {
-                                                        echo $tagui;
-                                                    } else {
-                                                        echo ' <span class="tag is-warning">No tags</span>';
-                                                    }
-                                                    echo '</div>
+                                <h1 class="title is-4"><?php echo $lang['random']; ?></h1>
+                                <div class="columns is-multiline">
+                                    <?php foreach ($random_pastes as $paste): ?>
+                                        <div class="column is-half">
+                                            <div class="card">
+                                                <div class="card-content">
+                                                    <div class="media">
+                                                        <div class="media-content" style="overflow: hidden">
+                                                            <p class="title is-5">
+                                                                <a href="<?= urlForPaste($paste['id']) ?>" title="<?= $paste['title'] ?>"> <?= $paste['title'] ?> </a>
+                                                            </p>
+                                                            <p class="subtitle is-6">
+                                                                <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
+                                                                <br>
+                                                                <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
+                                                            </p>
+                                                            <?php
+                                                            if (!empty($paste['tags'])) {
+                                                                echo sandwitch($paste['tags']);
+                                                            } else {
+                                                                echo ' <span class="tag is-warning">No tags</span>';
+                                                            }
+                                                            ?>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div><br>
+                                        </div>
+                                    <?php endforeach; ?>
                                 </div>
                             </div>
-                        </div><br>
-                    </div>	';
-
-                                                } else {
-                                                    echo '<a href="' . $p_id . '" title="' . $titlehov . '">' . ucfirst($title) . '</a>';
-                                                }
-                                            }
-                                            ?>
-                                        </div>
-                            </div>
                         </div>
-
-
                 </div>
             </div>
         </div>
-     </div>
-</div>
+    </div>
 </main>
 <script>
     const tabSystem = {

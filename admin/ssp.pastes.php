@@ -188,8 +188,9 @@ class SSP {
 
         // Main query to actually get the data
         $data = self::Ssql_exec($db, $bindings,
-            "SELECT SQL_CALC_FOUND_ROWS `" . implode("`, `", self::pluck($columns, 'db')) . "`
+            "SELECT SQL_CALC_FOUND_ROWS pastes.id AS id, users.name AS member
 			 FROM `$table`
+			 INNER JOIN users ON users.id = pastes.user_id
 			 $where
 			 $order
 		     $limit"

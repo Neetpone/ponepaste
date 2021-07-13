@@ -214,8 +214,9 @@ class SSP {
 
         // Main query to actually get the data
         $data = self::Ssql_exec($db, $bindings,
-            "SELECT SQL_CALC_FOUND_ROWS `" . implode("`, `", self::pluck($columns, 'db')) . "`
-			 FROM `$table` WHERE visible='0' AND tagsys IS NOT NULL AND NOT title LIKE ''
+            "SELECT SQL_CALC_FOUND_ROWS pastes.id AS id, users.username AS member, tagsys, title, visible
+			 FROM `$table`
+			 INNER JOIN users ON users.id = pastes.user_id WHERE visible='0' AND tagsys IS NOT NULL AND NOT title LIKE ''
 			 $order
 		     $limit"
         );

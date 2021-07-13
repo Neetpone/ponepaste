@@ -6,7 +6,27 @@ if (!defined('IN_PONEPASTE')) {
 require_once('config.php');
 require_once('includes/functions.php');
 
+/* View functions */
+function urlForPaste($paste_id) : string {
+    global $mod_rewrite;
 
+    if ($mod_rewrite === '1') {
+        return "/${paste_id}";
+    }
+
+    return "/paste.php?id=${paste_id}";
+}
+
+function urlForMember(string $member_name) : string {
+    global $mod_rewrite;
+
+    if ($mod_rewrite === '1') {
+        return '/user/' . urlencode($member_name);
+    }
+
+    return '/user.php?name=' . urlencode($member_name);
+}
+/* Database functions */
 function getSiteInfo() : array {
     return require('config/site.php');
 }

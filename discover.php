@@ -19,9 +19,26 @@ require_once('includes/functions.php');
 // UTF-8
 header('Content-Type: text/html; charset=utf-8');
 
+
+function transformPasteRow(array $row) : array {
+    return [
+        'id' => $row['id'],
+        'title' => $row['title'],
+        'member' => $row['member'],
+        'time' => $row['created_at'],
+        'friendly_time' => friendlyDateDifference(new DateTime($row['created_at']), new DateTime()),
+        'tags' => $row['tagsys']
+    ];
+}
+
+$popular_pastes = array_map('transformPasteRow', getpopular($conn, 10));
+$monthly_popular_pastes = array_map('transformPasteRow', monthpop($conn, 10));
+$recent_pastes = array_map('transformPasteRow', getRecent($conn, 10));
+$updated_pastes = array_map('transformPasteRow', recentupdate($conn, 10));
+$random_pastes = array_map('transformPasteRow', getrandom($conn, 10));
+
 // Theme
 $p_title = $lang['archive']; // "Pastes Archive";
 require_once('theme/' . $default_theme . '/header.php');
 require_once('theme/' . $default_theme . '/discover.php');
 require_once('theme/' . $default_theme . '/footer.php');
-?>

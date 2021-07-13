@@ -1,9 +1,7 @@
 <?php
 session_start();
 
-if (isset($_SESSION['login'])) {
-// Do nothing	
-} else {
+if (!isset($_SESSION['login'])) {
     header("Location: .");
     exit();
 }
@@ -18,6 +16,8 @@ if (isset($_GET['logout'])) {
 }
 
 require_once('../config.php');
+
+
 // DB table to use
 $table = 'pastes';
 

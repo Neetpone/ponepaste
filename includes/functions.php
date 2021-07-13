@@ -147,17 +147,23 @@ LIMIT 0 , 5");
 }
 
 function recentupdate($conn, $count) {
-    $query = $conn->prepare("SELECT id, visible, title, date, timeedit, now_time, member, tagsys FROM pastes WHERE visible='0' ORDER BY timeedit DESC
-    LIMIT 10 , ?");
+    $query = $conn->prepare(
+        "SELECT pastes.id AS id, visible, title, created_at, users.username AS member, tagsys
+            FROM pastes
+            INNER JOIN users ON users.id = pastes.user_id
+            WHERE visible = '0' ORDER BY timeedit DESC
+            LIMIT ?");
     $query->execute([$count]);
     return $query->fetchAll();
 }
 
-//Cannot get this to work.
 function monthpop($conn, $count) {
-    $p_month = date('F');
-    $query = $conn->prepare("SELECT s_date, views, title, id, now_time, visible, tagsys, member FROM pastes WHERE s_date LIKE ? AND visible = '0' ORDER BY views + 0 DESC LIMIT 10, ?");
-    $query->execute([$p_month, $count]);
+    $query = $conn->prepare(
+        "SELECT pastes.id AS id, views, title, created_at, visible, tagsys, users.username AS member 
+            FROM pastes
+            INNER JOIN users ON users.id = pastes.user_id
+            WHERE MONTH(created_at) = MONTH(NOW()) AND visible = '0' ORDER BY views DESC LIMIT ?");
+    $query->execute([$count]);
     return $query->fetchAll();
 }
 
@@ -202,10 +208,13 @@ function deleteMyPaste($conn, $paste_id) {
 
 
 function getRecent($conn, $count) {
-    $query = $conn->prepare("SELECT id, visible, title, date, now_time, member, tagsys 
-FROM pastes where visible='0'
-ORDER BY id DESC
-LIMIT ?");
+    $query = $conn->prepare("
+        SELECT pastes.id, visible, title, created_at, users.username AS member, tagsys 
+        FROM pastes
+        INNER JOIN users ON pastes.user_id = users.id
+        WHERE visible = '0'
+        ORDER BY created_at DESC
+        LIMIT ?");
     $query->execute([$count]);
     return $query->fetchAll();
 }
@@ -218,19 +227,25 @@ function getRecentadmin($conn, $count = 5) {
 }
 
 function getpopular($conn, $count) {
-    $query = $conn->prepare("SELECT id, visible, title, date, now_time, views, member, tagsys
-FROM pastes WHERE visible='0'
-ORDER BY views + 0 DESC
-LIMIT 0, ?");
+    $query = $conn->prepare("
+        SELECT pastes.id AS id, visible, title, pastes.created_at AS created_at, views, users.username AS member, tagsys
+            FROM pastes INNER JOIN users ON users.id = pastes.user_id
+            WHERE visible = '0'
+            ORDER BY views DESC 
+            LIMIT ?
+    ");
     $query->execute([$count]);
     return $query->fetchAll();
 }
 
 function getrandom($conn, $count) {
-    $query = $conn->prepare("SELECT id, visible, title, date, now_time, views, member, tagsys
-FROM pastes where visible='0'
-ORDER BY RAND()
-LIMIT ?");
+    $query = $conn->prepare("
+        SELECT pastes.id, visible, title, created_at, views, users.username AS member, tagsys
+            FROM pastes
+            INNER JOIN users ON users.id = pastes.user_id
+            WHERE visible = '0'
+            ORDER BY RAND()
+            LIMIT ?");
     $query->execute([$count]);
     return $query->fetchAll();
 }
@@ -287,6 +302,30 @@ function existingUser(PDO $conn, string $username) : bool {
 function updateMyView(PDO $conn, $paste_id) {
     $query = $conn->prepare("UPDATE pastes SET views = (views + 1) where id = ?");
     $query->execute([$paste_id]);
+}
+
+function friendlyDateDifference(DateTime $lesser, DateTime $greater) : string {
+    $delta = $greater->diff($lesser, true);
+
+    $parts = [
+        'year' => $delta->y,
+        'month' => $delta->m,
+        'day' => $delta->d,
+        'hour' => $delta->h,
+        'min' => $delta->i,
+        'sec' => $delta->s
+    ];
+
+    $friendly = '';
+
+    foreach ($parts as $part => $value) {
+        if ($value !== 0) {
+            $pluralizer = ($value === 1 ? '' : 's');
+            $friendly .= "${value} ${part}${pluralizer} ";
+        }
+    }
+
+    return trim($friendly) . ' ago';
 }
 
 function conTime($secs) {
