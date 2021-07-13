@@ -12,10 +12,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License in GPL.txt for more details.
  */
-
-// PHP <5.5 compatibility
-require_once('../includes/password.php');
-
 session_start();
 
 require_once('../config.php');

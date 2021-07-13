@@ -16,8 +16,6 @@
 define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/functions.php');
-require_once('includes/password.php');
-
 
 // UTF-8
 header('Content-Type: text/html; charset=utf-8');
@@ -30,8 +28,7 @@ $p_title = $lang['myprofile']; //"My Profile";
 
 
 // Check if already logged in
-if (isset($_SESSION['token'])) {
-} else {
+if (!isset($_SESSION['token'])) {
     header("Location: ./login.php");
 }
 $user_username = htmlentities(trim($_SESSION['username']));

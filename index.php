@@ -25,7 +25,6 @@ define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/captcha.php');
 require_once('includes/functions.php');
-require_once('includes/password.php');
 
 function verifyCaptcha() : string|bool {
     global $cap_e;

@@ -41,10 +41,10 @@ $query = intval($conn->prepare("SELECT COUNT(f_paste) FROM pins WHERE f_paste=?"
 
 //Can't seem to get working.
 function checkFavorite($conn,$paste_id, $user_id) {
-    $result = $conn->query("SELECT * FROM pins WHERE m_fav = ? AND f_paste = ?");
+    $query = $conn->prepare("SELECT 1 FROM pins WHERE m_fav = ? AND f_paste = ?");
     $query->execute([$user_id,$paste_id]);
-    $numrows = $result->num_rows;
-    if ($numrows) {
+
+    if ($query->fetch()) {
         return "<a  href='#' id='favorite' class='iconn tool-iconn' data-fid='" . $paste_id . "'><i class='far fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
     } else {
         return "<a  href='#' id='favorite' class='iconn tool-iconn' data-fid='" . $paste_id . "'><i class='fas fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
@@ -281,19 +281,12 @@ function existingUser(PDO $conn, string $username) : bool {
     $query = $conn->prepare('SELECT 1 FROM users WHERE username = ?');
     $query->execute([$username]);
 
-    return (bool)$query->fetch();
+    return (bool) $query->fetch();
 }
 
-function updateMyView($conn, $paste_id) {
-    $query = $conn->prepare("SELECT views, id FROM pastes WHERE id= ?");
+function updateMyView(PDO $conn, $paste_id) {
+    $query = $conn->prepare("UPDATE pastes SET views = (views + 1) where id = ?");
     $query->execute([$paste_id]);
-    if ($row = $query->fetch()) {
-        $p_view = Trim($row['views']);
-    }
-    $p_view = $p_view + 1;
-    $query = $conn->prepare("UPDATE pastes SET views='$p_view' where id= ?");
-    $query->execute([$paste_id]);
-    return $query->fetchAll();
 }
 
 function conTime($secs) {

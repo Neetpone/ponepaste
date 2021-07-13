@@ -17,7 +17,6 @@
 define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/functions.php');
-require_once('includes/password.php');
 require_once('mail/mail.php');
 
 // Current Date & User IP

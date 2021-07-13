@@ -13,8 +13,6 @@
  * GNU General Public License in GPL.txt for more details.
  */
 
-// PHP <5.5 compatibility
-require_once('../includes/password.php');
 define('IN_ADMIN', 1);
 require_once('common.php');
 

@@ -21,7 +21,6 @@ define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/geshi.php');
 require_once('includes/functions.php');
-require_once('includes/password.php');
 
 require_once('includes/Parsedown/Parsedown.php');
 require_once('includes/Parsedown/ParsedownExtra.php');
@@ -66,8 +65,7 @@ if (!$row) {
     $p_private_error = '0';
     if ($p_visible == "2") {
         if (isset($_SESSION['username'])) {
-            if ($p_member == Trim($_SESSION['username'])) {
-            } else {
+            if ($p_member !== trim($_SESSION['username'])) {
                 $notfound = $lang['privatepaste']; //" This is a private paste.";
                 $p_private_error = '1';
                 goto Not_Valid_Paste;
