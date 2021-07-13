@@ -11,10 +11,6 @@ function getSiteInfo() : array {
     return require('config/site.php');
 }
 
-function getSitePermissions(PDO $conn) : array {
-    return $conn->query('SELECT * FROM site_permissions LIMIT 1')->fetch();
-}
-
 function getSiteAds(PDO $conn) : array|bool {
     return $conn->query('SELECT text_ads, ads_1, ads_2 FROM ads LIMIT 1')->fetch();
 }
@@ -99,8 +95,8 @@ $default_theme = $lang_and_theme['theme'];
 $site_permissions = $site_info['permissions'];
 
 if ($site_permissions) {
-    $siteprivate = $site_permissions['siteprivate'];
-    $disableguest = $site_permissions['disableguest'];
+    $siteprivate = $site_permissions['private'];
+    $disableguest = $site_permissions['disable_guest'];
 } else {
     $siteprivate = 'off';
     $disableguest = 'off';
@@ -115,8 +111,9 @@ if (isset($_SESSION['username'])) {
 
 
 // Prevent a potential LFI (you never know :p)
-if (in_array($default_lang, scandir('langs/'))) {
-    require_once("langs/$default_lang");
+$lang_file = "${default_lang}.php";
+if (in_array($lang_file, scandir('langs/'))) {
+    require_once("langs/${lang_file}");
 }
 
 // Check if IP is banned
