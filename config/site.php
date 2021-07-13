@@ -16,4 +16,17 @@
     'language' => 'en',
     'theme' => 'bulma',
   ),
+        'permissions' => [
+            'disable_guest' => false,
+            'private' => false
+        ],
+        'mail' => [
+            'verification' => false,
+            'smtp_host' => '',
+            'smtp_port' => '',
+            'smtp_user' => '',
+            'socket' => '',
+            'auth' => '',
+            'protocol' => ''
+        ]
 );

@@ -6,7 +6,7 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -34,8 +34,9 @@ function updateConfiguration(string $path, array $new_config) {
 /** @noinspection PhpIncludeInspection */
 $current_config = require(CONFIG_FILE_PATH);
 $current_site_info = $current_config['site_info'];
+$current_permissions = $current_config['permissions'];
+$current_mail = $current_config['mail'];
 
-$query = "SELECT * FROM captcha WHERE id = '1'";
 $result = $conn->query('SELECT * FROM captcha WHERE id = 1');
 
 if ($row = $result->fetch()) {
@@ -46,13 +47,6 @@ if ($row = $result->fetch()) {
     $color = $row['color'];
     $recaptcha_sitekey = $row['recaptcha_sitekey'];
     $recaptcha_secretkey = $row['recaptcha_secretkey'];
-}
-
-$result = $conn->query("SELECT * FROM site_permissions WHERE id='1'");
-
-if ($row = $result->fetch()) {
-    $disableguest = Trim($row['disableguest']);
-    $siteprivate = Trim($row['siteprivate']);
 }
 
 $result = $conn->query("SELECT * FROM mail WHERE id='1'");
@@ -88,31 +82,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $current_config['site_info'] = $new_site_info;
         $current_site_info = $new_site_info;
 
-       updateConfiguration(CONFIG_FILE_PATH, $current_config);
-            $msg = '<div class="paste-alert alert3" style="text-align: center;">
+        updateConfiguration(CONFIG_FILE_PATH, $current_config);
+        $msg = '<div class="paste-alert alert3" style="text-align: center;">
 									Configuration saved.
 									</div>';
-    }
-    if (isset($_POST['manage'])) {
-        $query = $conn->prepare(
-            'UPDATE site_info SET title = ?, des = ?, baseurl = ?, keyword = ?, site_name = ?, email = ?, twit = ?, face = ?, gplus = ?, ga = ?, additional_scripts = ? WHERE id = 1'
-        );
-        $query->execute([
-            trim($_POST['des']),
-            trim($_POST['baseurl']),
-            trim($_POST['keyword']),
-            trim($_POST['site_name']),
-            trim($_POST['email']),
-            trim($_POST['twit']),
-            trim($_POST['face']),
-            trim($_POST['gplus']),
-            trim($_POST['ga']),
-            trim($_POST['additional_scripts'])
-        ]);
+    } elseif ($action === 'permissions') {
+        $new_permissions = [
+            'disable_guest' => trim($_POST['disableguest']),
+            'private' => trim($_POST['siteprivate'])
+        ];
+        $current_config['permissions'] = $new_permissions;
+        $current_permissions = $new_permissions;
+
+        updateConfiguration(CONFIG_FILE_PATH, $current_config);
 
         $msg = '<div class="paste-alert alert3" style="text-align: center;">
-											Configuration saved
-											</div>';
+									Site permissions saved.
+									</div>';
+    } elseif ($action === 'mail') {
+        $new_mail = [
+            'verification' => trim($_POST['verification']),
+            'smtp_host' => trim($_POST['smtp_host']),
+            'smtp_port' => trim($_POST['smtp_port']),
+            'smtp_user' => trim($_POST['smtp_user']),
+            'socket' => trim($_POST['socket']),
+            'auth' => trim($_POST['auth']),
+            'protocol' => trim($_POST['protocol'])
+        ];
+
+        $current_config['mail'] = $new_mail;
+        $current_mail = $new_mail;
+
+        updateConfiguration(CONFIG_FILE_PATH, $current_config);
+
+        $msg = '
+							<div class="paste-alert alert3" style="text-align: center;">
+							Mail settings updated
+							</div>';
     }
 
     if (isset($_POST['cap'])) {
@@ -133,39 +139,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 									</div>';
 
     }
-
-    if (isset($_POST['permissions'])) {
-        $query = $conn->prepare('UPDATE site_permissions SET disableguest = ?, siteprivate = ? WHERE id = 1');
-        $query->execute([
-            trim($_POST['disableguest']),
-            trim($_POST['siteprivate'])
-        ]);
-
-        $msg = '<div class="paste-alert alert3" style="text-align: center;">
-									Site permissions saved.
-									</div>';
-    }
-
-}
-
-if (isset($_POST['smtp_code'])) {
-    $query = $conn->prepare(
-        'UPDATE mail SET verification = ?, smtp_host = ?, smtp_port = ?, smtp_username = ?, smtp_password = ?, socket = ?, protocol = ?, auth = ? WHERE id = 1'
-    );
-
-    $query->execute([
-        trim($_POST['verification']),
-        trim($_POST['smtp_host']),
-        trim($_POST['smtp_port']),
-        trim($_POST['smtp_user']),
-        trim($_POST['socket']),
-        trim($_POST['auth']),
-        trim($_POST['protocol'])
-    ]);
-    $msg = '
-							<div class="paste-alert alert3" style="text-align: center;">
-							Mail settings updated
-							</div>';
 }
 ?>
 
@@ -477,7 +450,7 @@ if (isset($_POST['smtp_code'])) {
                                             <label class="col-sm-2 control-label form-label">Email Verification</label>
                                             <select class="selectpicker" name="verification">
                                                 <?php
-                                                if ($verification == 'enabled') {
+                                                if ($current_mail['verification']) {
                                                     echo '<option selected value="enabled">Enabled</option>';
                                                     echo '<option value="disabled">Disabled</option>';
                                                 } else {
@@ -495,7 +468,7 @@ if (isset($_POST['smtp_code'])) {
                                             <label class="col-sm-2 control-label form-label">Mail Protocol</label>
                                             <select class="selectpicker" name="protocol">
                                                 <?php
-                                                if ($protocol == '1') {
+                                                if ($current_mail['protocol'] === '1') {
                                                     echo '<option selected value="1">PHP Mail</option>';
                                                     echo '<option value="2">SMTP</option>';
                                                 } else {
@@ -510,7 +483,7 @@ if (isset($_POST['smtp_code'])) {
                                             <label class="col-sm-2 control-label form-label">SMTP Auth</label>
                                             <select class="selectpicker" name="auth">
                                                 <?php
-                                                if ($auth == 'true') {
+                                                if ($current_mail['auth']) {
                                                     echo '<option selected value="true">True</option>
 																  <option value="false">False</option>';
                                                 } else {
@@ -525,7 +498,7 @@ if (isset($_POST['smtp_code'])) {
                                             <label class="col-sm-2 control-label form-label">SMTP Protocol</label>
                                             <select class="selectpicker" name="socket">
                                                 <?php
-                                                if ($socket == 'tls') {
+                                                if ($current_mail['socket'] === 'tls') {
                                                     echo '   
 														   <option selected value="tls">TLS</option>
 														   <option value="ssl">SSL</option>';
@@ -542,7 +515,7 @@ if (isset($_POST['smtp_code'])) {
                                             <label class="col-sm-2 control-label form-label">SMTP Host</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" placeholder="eg smtp.gmail.com"
-                                                       name="smtp_host" value="<?php echo $smtp_host; ?>">
+                                                       value="<?php echo htmlentities($current_mail['smtp_host'], ENT_QUOTES); ?>">
                                             </div>
                                         </div>
 
@@ -551,7 +524,7 @@ if (isset($_POST['smtp_code'])) {
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" name="smtp_port"
                                                        placeholder="eg 465 for SSL or 587 for TLS"
-                                                       value="<?php echo $smtp_port; ?>">
+                                                       value="<?php echo htmlentities($current_mail['smtp_port'], ENT_QUOTES); ?>">
                                             </div>
                                         </div>
 
@@ -560,7 +533,7 @@ if (isset($_POST['smtp_code'])) {
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" name="smtp_user"
                                                        placeholder="eg user@gmail.com"
-                                                       value="<?php echo $smtp_username; ?>">
+                                                       value="<?php echo htmlentities($current_mail['smtp_username'], ENT_QUOTES); ?>">
                                             </div>
                                         </div>
 
@@ -569,7 +542,7 @@ if (isset($_POST['smtp_code'])) {
                                             <div class="col-sm-10">
                                                 <input type="password" class="form-control" id="smtp_pass"
                                                        name="smtp_pass" placeholder="Email password"
-                                                       value="<?php echo($smtp_password); ?>">
+                                                       value="<?php echo htmlentities($current_mail['smtp_pass'], ENT_QUOTES); ?>">
                                             </div>
                                         </div>
 
