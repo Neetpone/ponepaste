@@ -26,7 +26,6 @@ $language_data = array(
     'LANG_NAME' => 'Example',
     'COMMENT_SINGLE' => array(
         1 => '>',
-        2 => '>'
     ),
     'COMMENT_MULTI' => array(),
     'COMMENT_REGEXP' => array(),
@@ -37,11 +36,7 @@ $language_data = array(
     'HARDQUOTE' => array(),
     'HARDESCAPE' => array(),
     'HARDCHAR' => '',
-    'KEYWORDS' => array(
-        1 => array(
-            ''
-        )
-    ),
+    'KEYWORDS' => array(),
     'CASE_SENSITIVE' => array(
         1 => false
     ),
@@ -51,14 +46,9 @@ $language_data = array(
         )
     ),
     'STYLES' => array(
-        'KEYWORDS' => array(
-            1 => 'color: #0000FF; font-weight: bold;'
-        ),
+        'KEYWORDS' => array(),
         'COMMENTS' => array(
             1 => 'font-style: normal; color: #789922; line-height: 1.2;',
-            2 => 'font-style: normal color: #789922; line-height: 1.2;',
-            1 => 'font-style: normal; color: #789922; line-height: 1.2;',
-            'MULTI' => 'font-style: normal; color: #666666; line-height: 1.2;'
         ),
         'ESCAPE_CHAR' => array(),
         'BRACKETS' => array(),
