@@ -36,12 +36,7 @@ while ($row = $query->fetch()) {
     $today_visit = $row['tvisit'];
 }
 
-$query = $conn->query('SELECT email FROM site_info');
-
-while ($row = $query->fetch()) {
-    $admin_email = Trim($row['email']);
-}
-
+$admin_email = getSiteInfo()['site_info']['email'];
 $c_date = date('jS F Y');
 
 /* Number of users today */

@@ -36,7 +36,11 @@ $query->execute([$paste_id]);
 $fav_count = intval($query->fetch(PDO::FETCH_NUM)[0]);
 
 // Get paste info
-$query = $conn->prepare('SELECT * FROM pastes WHERE id = ?');
+$query = $conn->prepare(
+    'SELECT title, content, visible, code, expiry, pastes.password AS password, created_at, encrypt, views, tagsys, users.username AS member
+        FROM pastes
+        INNER JOIN users ON users.id = pastes.user_id
+        WHERE pastes.id = ?');
 $query->execute([$paste_id]);
 $row = $query->fetch();
 
@@ -54,8 +58,6 @@ if (!$row) {
     $p_expiry = Trim($row['expiry']);
     $p_password = $row['password'];
     $p_member = $row['member'];
-    $p_date = $row['date'];
-    $now_time = $row['now_time'];
     $p_encrypt = $row['encrypt'];
     $p_views = $row['views'];
     $p_tagsys = $row['tagsys'];

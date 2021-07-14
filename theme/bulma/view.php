@@ -162,16 +162,11 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                         <div class="column is-4 has-text-centered">
                             <h1 class="title is-6" style="margin-bottom:0;"><?php echo($p_title); ?></h1>
                             <small class="title is-6 has-text-weight-normal has-text-grey">
-                                <?php if ($p_member == 'Guest') {
-                                    echo 'Guest';
-                                } else {
-                                    if ($mod_rewrite == '1') {
-                                        echo 'By <a href="' . $protocol . $baseurl . '/user/' . $p_member . '">' . $p_member . '</a>';
-                                    } else {
-                                        echo 'By <a href="' . $protocol . $baseurl . '/user.php?user=' . $p_member . '">' . $p_member . '</a>';
-                                    }
-                                }
-                                ?>
+                                <?php if ($paste['member'] === NULL): ?>
+                                    Guest
+                                <?php else: ?>
+                                    By <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
+                                <?php endif; ?>
                                 <br/>
                                 Created: <?php echo $p_date; ?>
                                 <br/>
