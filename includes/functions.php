@@ -138,10 +138,13 @@ function getRecentreport($conn, $count) {
 
 
 function getUserRecom($conn, $p_member) {
-    $query = $conn->prepare("SELECT id, member, title, visible
-FROM pastes where member= ? AND visible = '0'
-ORDER BY id DESC
-LIMIT 0 , 5");
+    $query = $conn->prepare(
+        "SELECT pastes.id AS id, users.username AS member, title, visible
+            FROM pastes
+            INNER JOIN users ON users.username = ?
+            WHERE visible = '0'
+            ORDER BY id DESC
+            LIMIT 0, 5");
     $query->execute([$p_member]);
     return $query->fetchAll();
 }
@@ -151,7 +154,7 @@ function recentupdate($conn, $count) {
         "SELECT pastes.id AS id, visible, title, created_at, users.username AS member, tagsys
             FROM pastes
             INNER JOIN users ON users.id = pastes.user_id
-            WHERE visible = '0' ORDER BY timeedit DESC
+            WHERE visible = '0' ORDER BY updated_at DESC
             LIMIT ?");
     $query->execute([$count]);
     return $query->fetchAll();
@@ -220,7 +223,7 @@ function getRecent($conn, $count) {
 }
 
 function getRecentadmin($conn, $count = 5) {
-    $query = $conn->prepare('SELECT id, ip title, date, now_time, s_date, views, member FROM pastes ORDER BY id DESC LIMIT 0, ?');
+    $query = $conn->prepare('SELECT id, ip title, date, now_time, views, member FROM pastes ORDER BY id DESC LIMIT 0, ?');
     $query->execute([$count]);
 
     return $query->fetchAll();
@@ -261,7 +264,7 @@ LIMIT 0 , ?");
 
 
 function getUserPastes($conn, $username) {
-    $query = $conn->prepare("SELECT id, title, code, views, s_date, now_time, visible, date, tagsys, member FROM pastes where member=? ORDER by id DESC");
+    $query = $conn->prepare("SELECT id, title, code, views, now_time, visible, date, tagsys, member FROM pastes where member=? ORDER by id DESC");
     $query->execute([$username]);
     return $query->fetchAll();
 }

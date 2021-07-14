@@ -45,8 +45,7 @@ $query->execute([$c_date]);
 $today_users_count = intval($query->fetch(PDO::FETCH_NUM)[0]);
 
 /* Number of pastes today */
-$query = $conn->prepare('SELECT COUNT(*) FROM pastes where s_date = ?');
-$query->execute([$c_date]);
+$query = $conn->query('SELECT COUNT(*) FROM pastes where DATE(created_at) = DATE(NOW())');
 $today_pastes_count = intval($query->fetch(PDO::FETCH_NUM)[0]);
 
 for ($loop = 0; $loop <= 6; $loop++) {
@@ -169,7 +168,7 @@ for ($loop = 0; $loop <= 6; $loop++) {
                             foreach ($res as $row) {
                                 $title = Trim($row['title']);
                                 $p_id = Trim($row['id']);
-                                $p_date = Trim($row['s_date']);
+                                $p_date = $row['date']->format('jS F Y h:i:s A');
                                 $p_ip = Trim($row['ip']);
                                 $p_member = Trim($row['member']);
                                 $p_view = Trim($row['views']);

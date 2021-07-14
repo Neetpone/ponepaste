@@ -37,7 +37,7 @@ $fav_count = intval($query->fetch(PDO::FETCH_NUM)[0]);
 
 // Get paste info
 $query = $conn->prepare(
-    'SELECT title, content, visible, code, expiry, pastes.password AS password, created_at, encrypt, views, tagsys, users.username AS member
+    'SELECT title, content, visible, code, expiry, pastes.password AS password, created_at, updated_at, encrypt, views, tagsys, users.username AS member
         FROM pastes
         INNER JOIN users ON users.id = pastes.user_id
         WHERE pastes.id = ?');
@@ -47,27 +47,35 @@ $row = $query->fetch();
 // This is used in the theme files.
 $totalpastes = getSiteTotalPastes($conn);
 
+$current_user = getCurrentUser($conn);
+
 if (!$row) {
     header('HTTP/1.1 404 Not Found');
     $notfound = $lang['notfound']; // "Not found";
 } else {
-    $p_title = $row['title'];
+    $paste_title = $row['title'];
+    $paste_code = $row['code'];
+
+    $paste = [
+        'title' => $paste_title,
+        'created_at' => (new DateTime($row['created_at']))->format('jS F Y h:i:s A'),
+        'updated_at' => (new DateTime($row['updated_at']))->format('jS F Y h:i:s A'),
+        'member' => $row['member'],
+        'tags' => $row['tagsys'],
+        'views' => $row['views'],
+        'code' => $paste_code
+    ];
     $p_content = $row['content'];
     $p_visible = $row['visible'];
-    $p_code = $row['code'];
     $p_expiry = Trim($row['expiry']);
     $p_password = $row['password'];
     $p_member = $row['member'];
     $p_encrypt = $row['encrypt'];
-    $p_views = $row['views'];
-    $p_tagsys = $row['tagsys'];
-
-    $mod_date = date("jS F Y h:i:s A", $now_time);
 
     $p_private_error = '0';
     if ($p_visible == "2") {
-        if (isset($_SESSION['username'])) {
-            if ($p_member !== trim($_SESSION['username'])) {
+        if ($current_user) {
+            if ($p_member !== $current_user['id']) {
                 $notfound = $lang['privatepaste']; //" This is a private paste.";
                 $p_private_error = '1';
                 goto Not_Valid_Paste;
@@ -98,12 +106,12 @@ if (!$row) {
     // Download the paste
     if (isset($_GET['download'])) {
         if ($p_password == "NONE") {
-            doDownload($paste_id, $p_title, $p_member, $op_content, $p_code);
+            doDownload($paste_id, $paste_title, $p_member, $op_content, $paste_code);
             exit();
         } else {
             if (isset($_GET['password'])) {
                 if (password_verify($_GET['password'], $p_password)) {
-                    doDownload($paste_id, $p_title, $p_member, $op_content, $p_code);
+                    doDownload($paste_id, $paste_title, $p_member, $op_content, $paste_code);
                     exit();
                 } else {
                     $error = $lang['wrongpassword']; // 'Wrong password';
@@ -117,12 +125,12 @@ if (!$row) {
     // Raw view
     if (isset($_GET['raw'])) {
         if ($p_password == "NONE") {
-            rawView($paste_id, $p_title, $op_content, $p_code);
+            rawView($paste_id, $paste_title, $op_content, $paste_code);
             exit();
         } else {
             if (isset($_GET['password'])) {
                 if (password_verify($_GET['password'], $p_password)) {
-                    rawView($paste_id, $p_title, $op_content, $p_code);
+                    rawView($paste_id, $paste_title, $op_content, $paste_code);
                     exit();
                 } else {
                     $error = $lang['wrongpassword']; // 'Wrong password';
@@ -151,12 +159,12 @@ if (!$row) {
 
     // Apply syntax highlight
     $p_content = htmlspecialchars_decode($p_content);
-    if ($p_code === "pastedown") {
+    if ($paste_code === "pastedown") {
         $Parsedown = new Parsedown();
         $Parsedown->setSafeMode(true);
         $p_content = $Parsedown->text($p_content);
     } else {
-        $geshi = new GeSHi($p_content, $p_code, 'includes/geshi/');
+        $geshi = new GeSHi($p_content, $paste_code, 'includes/geshi/');
 
         $geshi->enable_classes();
         $geshi->set_header_type(GESHI_HEADER_DIV);
@@ -177,12 +185,12 @@ if (!$row) {
     // Embed view after GeSHI is applied so that $p_code is syntax highlighted as it should be.
     if (isset($_GET['embed'])) {
         if ($p_password == "NONE") {
-            embedView($paste_id, $p_title, $p_content, $p_code, $title, $baseurl, $ges_style, $lang);
+            embedView($paste_id, $paste_title, $p_content, $paste_code, $title, $baseurl, $ges_style, $lang);
             exit();
         } else {
             if (isset($_GET['password'])) {
                 if (password_verify($_GET['password'], $p_password)) {
-                    embedView($paste_id, $p_title, $p_content, $p_code, $title, $p_baseurl, $ges_style, $lang);
+                    embedView($paste_id, $paste_title, $p_content, $paste_code, $title, $p_baseurl, $ges_style, $lang);
                     exit();
                 } else {
                     $error = $lang['wrongpassword']; // 'Wrong password';
@@ -196,7 +204,6 @@ if (!$row) {
 
 require_once('theme/' . $default_theme . '/header.php');
 if ($p_password == "NONE") {
-
     // No password & diplay the paste
 
     // Set download URL
@@ -262,4 +269,4 @@ if ($p_private_error == '1') {
 
 // Footer
 require_once('theme/' . $default_theme . '/footer.php');
-?>
+

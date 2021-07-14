@@ -104,6 +104,8 @@ header('Content-Type: text/html; charset=utf-8');
 $date = date('jS F Y');
 $ip = $_SERVER['REMOTE_ADDR'];
 
+$current_user = getCurrentUser($conn);
+
 // Sitemap
 $site_sitemap_rows = $conn->query('SELECT * FROM sitemap_options LIMIT 1');
 if ($row = $site_sitemap_rows->fetch()) {
@@ -174,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $p_password = password_hash($p_password, PASSWORD_DEFAULT);
     }
-    $p_encrypt = Trim(htmlspecialchars($_POST['encrypted']));
+    $p_encrypt = trim(htmlspecialchars($_POST['encrypted']));
 
     if (empty($p_encrypt)) {
         $p_encrypt = "0";
@@ -184,42 +186,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $p_content = encrypt($p_content);
     }
 
-    if (isset($_SESSION['token'])) {
-        $p_member = Trim($_SESSION['username']);
-    } else {
-        $p_member = "Guest";
-    }
-
     // Set expiry time
     $expires = calculatePasteExpiry($p_expiry);
 
-    $p_date = date('jS F Y h:i:s A');
-    $date = date('jS F Y');
-    $now_time = mktime(date("H"), date("i"), date("s"), date("n"), date("j"), date("Y"));
-    $timeedit = gmmktime(date("H"), date("i"), date("s"), date("n"), date("j"), date("Y"));
-
     // Edit existing paste or create new?
     if ($editing) {
-        if (isset($_SESSION['username'])) {
+        if ($current_user && $current_user['id'] === $paste_id) {
             $paste_id = intval($_POST['paste_id']);
             $statement = $conn->prepare(
-                "UPDATE pastes SET title = ?, content = ?, visible = ?, code = ?, expiry = ?, password = ?, encrypt = ?, member = ?, ip = ?, tagsys = ?, now_time = ?, timeedit = ?
+                "UPDATE pastes SET title = ?, content = ?, visible = ?, code = ?, expiry = ?, password = ?, encrypt = ?,ip = ?, tagsys = ?, updated_at = NOW()
                     WHERE id = ?"
             );
 
             $statement->execute([
-                $p_title, $p_content, $p_visible, $p_code, $expires, $p_password, $p_encrypt, $p_member, $ip, $p_tagsys, $now_time, $timeedit, $edit_paste_id
+                $p_title, $p_content, $p_visible, $p_code, $expires, $p_password, $p_encrypt, $ip, $p_tagsys, $paste_id
             ]);
             $success = $paste_id;
         } else {
             $error = $lang['loginwarning']; //"You must be logged in to do that."
         }
     } else {
+        $paste_owner = $current_user ? $current_user['id'] : null;
         $statement = $conn->prepare(
-            "INSERT INTO pastes (title, content, visible, code, expiry, password, encrypt, member, date, ip, now_time, views, s_date, tagsys) VALUES 
-                                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '0', ?, ?)"
+            "INSERT INTO pastes (title, content, visible, code, expiry, password, encrypt, user_id, created_at, ip, views, tagsys) VALUES 
+                                (?,     ?,       ?,       ?,    ?,      ?,        ?,       ?,       NOW(),      ?,  0,     ?)"
         );
-        $statement->execute([$p_title, $p_content, $p_visible, $p_code, $expires, $p_password, $p_encrypt, $p_member, $p_date, $ip, $now_time, $date, $p_tagsys]);
+        $statement->execute([$p_title, $p_content, $p_visible, $p_code, $expires, $p_password, $p_encrypt, $paste_owner, $ip, $p_tagsys]);
         $paste_id = intval($conn->lastInsertId()); /* returns the last inserted ID as per the query above */
         if ($p_visible == '0') {
             addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite);
@@ -229,20 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Redirect to paste on successful entry, or on successful edit redirect back to edited paste
     if (isset($success)) {
-        if ($mod_rewrite == '1') {
-            if ($editing) {
-                $paste_url = "$edit_paste_id";
-            } else {
-                $paste_url = "$success";
-            }
-        } else {
-            if ($editing) {
-                $paste_url = "paste.php?id=$edit_paste_id";
-            } else {
-                $paste_url = "paste.php?id=$success";
-            }
-        }
-
+        $paste_url = urlForPaste($success);
         header("Location: ${paste_url}");
         die();
     }

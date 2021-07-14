@@ -47,6 +47,17 @@ function getSiteTotal_unique_views(PDO $conn) : int {
     return intval($conn->query('SELECT tvisit FROM page_view ORDER BY id DESC LIMIT 1')->fetch(PDO::FETCH_NUM)[0]);
 }
 
+function getCurrentUser(PDO $conn) : array | null {
+    if (empty($_SESSION['username'])) {
+        return null;
+    }
+
+    $query = $conn->prepare('SELECT * FROM users WHERE username = ?');
+    $query->execute($_SESSION['username']);
+
+    return $query->fetch();
+}
+
 function updatePageViews(PDO $conn) : void {
     $ip = $_SERVER['REMOTE_ADDR'];
     $date = date('jS F Y');
@@ -128,7 +139,6 @@ $noguests = $disableguest;
 if (isset($_SESSION['username'])) {
     $noguests = "off";
 }
-
 
 // Prevent a potential LFI (you never know :p)
 $lang_file = "${default_lang}.php";

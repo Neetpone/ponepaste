@@ -58,7 +58,7 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -146,9 +146,9 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                     <div class="columns is-multiline">
                         <div class="column is-4">
                             <span class="tag is-normal"><i class="fa fa-code fa-lg"
-                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?php echo strtoupper($p_code); ?></span>
+                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?php echo strtoupper($paste['code']); ?></span>
                             <span class="tag is-normal"><i class="fa fa-eye fa-lg"
-                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $p_views; ?></span>
+                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $paste['views']; ?></span>
                             <span class="tag is-normal"><i class="fa fa-star fa-lg"
                                                            aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $fav_count; ?></span>
                             <br>
@@ -160,7 +160,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             <span class="tag is-normal"><i class="fa fa-list-ol fa-lg" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo substr_count($op_content, "\n") + 1; ?></span>
                         </div>
                         <div class="column is-4 has-text-centered">
-                            <h1 class="title is-6" style="margin-bottom:0;"><?php echo($p_title); ?></h1>
+                            <h1 class="title is-6" style="margin-bottom:0;"><?= $paste['title'] ?></h1>
                             <small class="title is-6 has-text-weight-normal has-text-grey">
                                 <?php if ($paste['member'] === NULL): ?>
                                     Guest
@@ -168,11 +168,11 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     By <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
                                 <?php endif; ?>
                                 <br/>
-                                Created: <?php echo $p_date; ?>
+                                Created: <?= $paste['created_at'] ?>
                                 <br/>
-                                <?php if (strcmp($p_date, $mod_date) !== 0) { ?>
-                                    Modified: <?php echo $mod_date; ?>
-                                <?php } ?>
+                                <?php if ($paste['updated_at'] != $paste['created_at']): ?>
+                                    <?= $paste['updated_at'] ?>
+                                <?php endif; ?>
                             </small>
                         </div>
                         <div class="column is-4 has-text-right">
@@ -185,7 +185,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     ?>
                                     <a class="icon tool-icon" class="flip" onclick="openreport()"><i
                                                 class="far fa-flag fa-lg has-text-grey" title="Report Paste"></i></a>
-                                    <?php if ($p_code != "pastedown") { ?>
+                                    <?php if ($paste['code'] != "pastedown") { ?>
                                         <a class="icon tool-icon" href="javascript:togglev();"><i
                                                     class="fas fa-list-ol fa-lg has-text-grey"
                                                     title="Toggle Line Numbers"></i></a>
@@ -220,7 +220,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                     <!-- Tag display  -->
                     <div class="columns is-desktop is-centered">
                         <?php
-                        $tagDisplay = htmlentities($p_tagsys, ENT_QUOTES, 'UTF-8');
+                        $tagDisplay = htmlentities($paste['tags'], ENT_QUOTES, 'UTF-8');
                         $tagDisplay = rtrim($tagDisplay);
                         $tagArray = explode(',', $tagDisplay);
                         if (strlen($tagDisplay) > 0) {
@@ -238,7 +238,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                     <?php if (isset($error)) {
                         echo '<p class="help is-danger subtitle is-6">' . $error . '</p>';
                     } else {
-                        if ($p_code != "pastedown") {
+                        if ($paste['code'] != "pastedown") {
                             echo '
 						<div id="paste" style="line-height:1!important;">' . linkify($p_content) . '</div>';
                         } else {
@@ -309,7 +309,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                     <?php // Show popular GeSHi formats
                                                     foreach ($geshiformats as $code => $name) {
                                                         if (in_array($code, $popular_formats)) {
-                                                            $sel = ($p_code == $code) ? 'selected="selected"' : ' ';
+                                                            $sel = ($paste['code'] == $code) ? 'selected="selected"' : ' ';
                                                             echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
                                                         }
                                                     }
@@ -317,7 +317,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                     // Show all GeSHi formats.
                                                     foreach ($geshiformats as $code => $name) {
                                                         if (!in_array($code, $popular_formats)) {
-                                                            $sel = ($p_code == $code) ? 'selected="selected"' : '';
+                                                            $sel = ($paste['code'] == $code) ? 'selected="selected"' : '';
                                                             echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
                                                         }
                                                     }
@@ -501,7 +501,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
         var charRemain = (maxLength - strLength);
         var char2kb = charRemain / 1000;
         var charDisplay = roundToTwo(char2kb);
-// Grace limit    
+// Grace limit
         var gracelimit = 11480;
         var newstrLength = obj.value.length - 1000000;
         var graceRemain = (gracelimit - newstrLength);
