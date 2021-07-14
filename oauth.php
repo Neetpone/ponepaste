@@ -12,46 +12,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License in GPL.txt for more details.
  */
-session_start();
-
-// Required functions
-require_once('config.php');
+define('IN_PONEPASTE', 1);
+require_once('includes/common.php');
 require_once('includes/functions.php');
 
 // Current date & user IP
 $date = date('jS F Y');
 $ip = $_SERVER['REMOTE_ADDR'];
-
-// Database Connection
-$con = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
-if (mysqli_connect_errno()) {
-    die("Unable to connect to database");
-}
-// Get site info
-$query = "SELECT * FROM site_info";
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $title = Trim($row['title']);
-    $des = Trim($row['des']);
-    $baseurl = Trim($row['baseurl']);
-    $keyword = Trim($row['keyword']);
-    $site_name = Trim($row['site_name']);
-    $email = Trim($row['email']);
-    $ga = Trim($row['ga']);
-    $additional_scripts = Trim($row['additional_scripts']);
-}
-
-// Set theme and language
-$query = "SELECT * FROM interface";
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $default_lang = Trim($row['lang']);
-    $default_theme = Trim($row['theme']);
-}
-
-require_once("langs/$default_lang");
 
 // Page title
 $p_title = $lang['login/register']; // "Login/Register";
@@ -101,4 +68,3 @@ OutPut:
 require_once('theme/' . $default_theme . '/header.php');
 require_once('theme/' . $default_theme . '/oauth.php');
 require_once('theme/' . $default_theme . '/footer.php');
-?>
