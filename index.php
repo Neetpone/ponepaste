@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 updatePageViews($conn);
 
 // POST Handler
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $error = validatePasteFields();
 
     if ($error !== null) {

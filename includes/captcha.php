@@ -63,7 +63,7 @@ function captcha($color, $mode, $mul, $allowed) {
     }
 
     // Overwrite defaults with custom config values
-    if (is_array($config)) {
+    if (!empty($config) && is_array($config)) {
         foreach ($config as $key => $value)
             $captcha_config[$key] = $value;
     }
@@ -82,8 +82,6 @@ function captcha($color, $mode, $mul, $allowed) {
     if ($captcha_config['max_font_size'] < $captcha_config['min_font_size'])
         $captcha_config['max_font_size'] = $captcha_config['min_font_size'];
 
-    // Use milliseconds instead of seconds
-    srand(microtime() * 100);
 
     // Generate CAPTCHA code if not set by user
     if (empty($captcha_config['code'])) {
@@ -135,9 +133,6 @@ if (isset($_GET['_CAPTCHA'])) {
     $captcha_config = unserialize($_SESSION['_CAPTCHA']['config']);
     if (!$captcha_config)
         exit();
-
-    // Use milliseconds instead of seconds
-    srand(microtime() * 100);
 
     // Pick random background, get info, and start captcha
     $background = $captcha_config['backgrounds'][rand(0, count($captcha_config['backgrounds']) - 1)];
