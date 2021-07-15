@@ -200,7 +200,7 @@ if ($last_ip == $ip) {
 
                                 <tr>
                                     <td> Email ID</td>
-                                    <td> <?php echo $user_email_id; ?> </td>
+                                    <td> <?php echo htmlentities($user_email_id); ?> </td>
                                 </tr>
 
                                 <tr>

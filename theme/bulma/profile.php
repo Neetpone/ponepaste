@@ -56,7 +56,7 @@
                                     <input <?php if ($user_verified == "1") {
                                         echo 'disabled=""';
                                     } ?> type="text" class="input" name="email"
-                                         placeholder="<?php echo $user_email_id; ?>">
+                                         placeholder="<?php echo htmlentities($user_email_id, ENT_QUOTES); ?>">
                                     <span class="icon is-small is-left">
 										<i class="fas fa-envelope"></i>
 									</span>

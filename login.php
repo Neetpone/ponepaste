@@ -19,35 +19,47 @@ require_once('includes/common.php');
 require_once('includes/functions.php');
 require_once('mail/mail.php');
 
+
+function sendVerificationEmail($email_address, $username, $full_name) {
+    global $lang;
+    global $email;
+    global $site_name;
+
+    $mail_type = "1";
+
+    $protocol = paste_protocol();
+    $verify_url = $protocol . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . "/verify.php?username=${username}&code=" . md5('4et4$55765' . $email_address . 'd94ereg');
+    $subject = $lang['mail_acc_con']; // "$site_name Account Confirmation";
+    $body = "
+          Hello ${full_name}, Please verify your account by clicking the link below.<br /><br />
+
+          <a href='$verify_url' target='_self'>$verify_url</a>  <br /> <br />
+
+          After confirming your account you can log in using your username: <b>$username</b> and the password you used when signing up.
+          ";
+
+    if ($mail_type == '1') {
+        default_mail($email, $site_name, $email_address, $subject, $body);
+    } else {
+        $email_info = getSiteInfo()['mail'];
+        smtp_mail(
+            $email_info['smtp_host'], $email_info['smtp_port'],
+            $email_info['auth'], $email_info['smtp_username'], $email_info['smtp_password'], $email_info['socket'],
+            $email, $site_name, $email_address, $subject, $body
+        );
+    }
+}
+
 // Current Date & User IP
 $date = date('jS F Y');
 $ip = $_SERVER['REMOTE_ADDR'];
 
-// Mail
-$mail_type = "1";
+
 
 // Check if already logged in
 if (isset($_SESSION['token'])) {
     header("Location: ./");
 }
-
-$admin_mail = $email;
-$admin_name = $site_name;
-
-// Email information
-
-$email_info_rows = $conn->query("SELECT * FROM mail LIMIT 1");
-while ($row = $email_info_rows->fetch()) {
-    $verification = Trim($row['verification']);
-    $smtp_host = Trim($row['smtp_host']);
-    $smtp_user = Trim($row['smtp_username']);
-    $smtp_pass = Trim($row['smtp_password']);
-    $smtp_port = Trim($row['smtp_port']);
-    $smtp_protocol = Trim($row['protocol']);
-    $smtp_auth = Trim($row['auth']);
-    $smtp_sec = Trim($row['socket']);
-}
-$mail_type = $smtp_protocol;
 
 // Page title
 $p_title = $lang['login/register']; // "Login/Register";
@@ -56,56 +68,28 @@ updatePageViews($conn);
 
 if (isset($_GET['resend'])) {
     if (isset($_POST['email'])) {
-        $email = htmlentities(trim($_POST['email']));
-        $statement = $conn->prepare("SELECT * FROM users WHERE email_id = ?");
+        $email = trim($_POST['email']);
+        $statement = $conn->prepare("SELECT username, verified FROM users WHERE email_id = ?");
         $statement->execute([$email]);
-        if ($statement->fetchColumn() > 0) {
-            // Username found
-            foreach ($statement as $index => $row) {
-                $username = $row['username'];
-                $db_email_id = $row['email_id'];
-                $db_platform = $row['platform'];
-                $db_password = Trim($row['password']);
-                $db_verified = $row['verified'];
-                $db_picture = $row['picture'];
-                $db_date = $row['date'];
-                $db_ip = $row['ip'];
-                $db_id = $row['id'];
-            }
-            if ($db_verified == '0') {
-                $protocol = paste_protocol();
-                $verify_url = $protocol . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . "/verify.php?username=$username&code=" . Md5('4et4$55765' . $db_email_id . 'd94ereg');
-                $sent_mail = $email;
-                $subject = $lang['mail_acc_con']; // "$site_name Account Confirmation";
-                $body = "
-          Hello $db_full_name, Please verify your account by clicking the link below.<br /><br />
+        if ($row = $statement->fetch()) {
+            $username = $row['username'];
+            $verified = (bool) $row['verified'];
 
-          <a href='$verify_url' target='_self'>$verify_url</a>  <br /> <br />
-
-          After confirming your account you can log in using your username: <b>$username</b> and the password you used when signing up.
-          ";
-
-                if ($mail_type == '1') {
-                    default_mail($admin_mail, $admin_name, $sent_mail, $subject, $body);
-                } else {
-                    smtp_mail($smtp_host, $smtp_port, $smtp_auth, $smtp_user, $smtp_pass, $smtp_sec, $admin_mail, $admin_name, $sent_mail, $subject, $body);
-                }
+            if (!$verified) {
+                sendVerificationEmail($email, $username, $username);
                 $success = $lang['mail_suc']; // "Verification code successfully sent to your email.";
-
             } else {
                 $error = $lang['email_ver']; //"Email already verified.";
             }
-
         } else {
             $error = $lang['email_not']; // "Email not found.";
         }
-
     }
 }
 
 if (isset($_GET['forgot'])) {
     if (isset($_POST['email'])) {
-        $email = htmlentities(trim($_POST['email']));
+        $email = trim($_POST['email']);
         $query = "SELECT * FROM users WHERE email_id='$email'";
         $result = mysqli_query($con, $query);
         if (mysqli_num_rows($result) > 0) {
@@ -157,129 +141,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if logged in
     if (isset($_SESSION['token'])) {
         header("Location: ./");
-    } else {
-        // Login process
-        if (isset($_POST['signin'])) {
-            $username = htmlentities(trim($_POST['username']));
-            $password = $_POST['password'];
-            if ($username != null && $password != null) {
-                $query = $conn->prepare("SELECT * FROM users WHERE username = ?");
-                $query->execute([$username]);
-                if ($row = $query->fetch()) {
-                    // Username found
-                    $db_oauth_uid = $row['oauth_uid'];
-                    $db_email_id = $row['email_id'];
-                    $db_full_name = $row['full_name'];
-                    $db_platform = $row['platform'];
-                    $db_password = $row['password'];
-                    $db_verified = $row['verified'];
-                    $db_picture = $row['picture'];
-                    $db_date = $row['date'];
-                    $db_ip = $row['ip'];
-                    $db_id = $row['id'];
-
-                    if (password_verify($password, $db_password)) {
-                        if ($db_verified == "1") {
-                            // Login successful
-                            $_SESSION['token'] = Md5($db_id . $username);
-                            $_SESSION['oauth_uid'] = $db_oauth_uid;
-                            $_SESSION['username'] = $username;
-
-                            header('Location: ' . $_SERVER['HTTP_REFERER']);
-
-                        } elseif ($db_verified == "2") {
-                            // User is banned
-                            $error = $lang['banned'];
-                        } else {
-                            // Account not verified
-                            $error = $lang['notverified'];
-                        }
-                    } else {
-                        // Password wrong
-                        $error = $lang['incorrect'];
-
-                    }
-                } else {
-                    // Username not found
-                    $error = $lang['incorrect'];
-                }
-            } else {
-                $error = $lang['missingfields']; //"All fields must be filled out.";
-            }
-        }
-
+        exit;
     }
 
+    // Login process
+    if (isset($_POST['signin'])) {
+        if (!empty($_POST['username']) && !empty($_POST['password'])) {
+            $query = $conn->prepare("SELECT id, password, banned, verified FROM users WHERE username = ?");
+            $query->execute([$username]);
+            $row = $query->fetch();
+            if ($row && password_verify($_POST['password'], $row['password'])) {
+                // Username found
+                $db_oauth_uid = $row['oauth_uid'];
+                $db_ip = $row['ip'];
+                $db_id = $row['id'];
+
+                if ($row['banned']) {
+                    // User is banned
+                    $error = $lang['banned'];
+                } if ($row['verified']) {
+                    // Login successful
+                    $_SESSION['token'] = md5($db_id . $username);
+                    $_SESSION['oauth_uid'] = $db_oauth_uid;
+                    $_SESSION['username'] = $username;
+
+                    header('Location: ' . $_SERVER['HTTP_REFERER']);
+                    exit();
+                } else {
+                    // Account not verified
+                    $error = $lang['notverified'];
+                }
+            } else {
+                // Username not found or password incorrect.
+                $error = $lang['incorrect'];
+            }
+        } else {
+            $error = $lang['missingfields']; // "All fields must be filled out.";
+        }
+    }
 }
 // Register process
 if (isset($_POST['signup'])) {
     $username = htmlentities(trim($_POST['username'], ENT_QUOTES));
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $email = htmlentities(trim($_POST['email'], ENT_QUOTES));
     $chara_max = 25;   //characters for max input
 
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if (empty($_POST['email']) || empty($_POST['password']) || empty($_POST['username'])) {
+        $error = $lang['missingfields']; // "All fields must be filled out";
+    } elseif (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
         $error = $lang['email_invalid']; // "Your email address seems to be invalid.";
+    } elseif (strlen($username) > $chara_max) {
+        $error = $lang['maxnamelimit']; // "Username already taken.";
+    } elseif (!isValidUsername($username)) {
+        $error = $lang['usrinvalid']; // "Username not valid. Usernames can't contain special characters.";
     } else {
-        if (strlen($username) > $chara_max) {
-            $error = $lang['maxnamelimit']; // "Username already taken.";
+        $query = $conn->prepare('SELECT 1 FROM users WHERE username = ?');
+        $query->execute([$username]);
+        if ($query->fetch()) {
+            $error = $lang['userexists']; // "Username already taken.";
         } else {
-            if ($username != null && $password != null && $email != null) {
-                $res = isValidUsername($username);
-                if ($res) {
-                    $query = $conn->prepare('SELECT 1 FROM users WHERE username = ?');
-                    $query->execute([$username]);
-                    if ($query->fetch()) {
-                        $error = $lang['userexists']; // "Username already taken.";
-                    } else {
-                        $query = $conn->prepare("SELECT 1 FROM users WHERE email_id = ?");
-                        $query->execute([$email]);
+            $query = $conn->prepare("SELECT 1 FROM users WHERE email_id = ?");
+            $query->execute([$email]);
 
-                        if ($query->fetch()) {
-                            $error = $lang['emailexists']; // "Email already registered.";
-                        } else {
-                            $verification_needed = $verification !== 'disabled';
-
-                            $query = $conn->prepare(
-                                "INSERT INTO users (oauth_uid, username, email_id, platform, password, verified, picture, date, ip, badge) VALUES ('0', ?, ?, 'Direct', ?, ?, 'NONE', ?, ?, '0')"
-                            );
-                            $query->execute([$username, $email, $password, $verification_needed ? 0 : 1, $date, $ip]);
-
-                            if (!$verification_needed) {
-                                $success = $lang['registered']; // "Your account was successfully registered.";
-                            } else {
-                                $success = $lang['registered']; // "Your account was successfully registered.";
-                                $protocol = paste_protocol();
-                                $verify_url = $protocol . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . "/verify.php?username=$username&code=" . Md5('4et4$55765' . $email . 'd94ereg');
-                                $sent_mail = $email;
-                                $subject = $lang['mail_acc_con']; // "$site_name Account Confirmation";
-                                $body = "
-			  Hello $username, Your $site_name account has been created. Please verify your account by clicking the link below.<br /><br />
-
-			  <a href='$verify_url' target='_self'>$verify_url</a>  <br /> <br />
-
-			  After confirming your account you can log in using your username: <b>$username</b> and the password you used when signing up.
-			  ";
-                                if ($mail_type == '1') {
-                                    default_mail($admin_mail, $admin_name, $sent_mail, $subject, $body);
-                                } else {
-                                    smtp_mail($smtp_host, $smtp_port, $smtp_auth, $smtp_user, $smtp_pass, $smtp_sec, $admin_mail, $admin_name, $sent_mail, $subject, $body);
-                                }
-                            }
-
-                        }
-
-                    }
-                } else {
-                    $error = $lang['usrinvalid']; // "Username not valid. Usernames can't contain special characters.";
-                }
+            if ($query->fetch()) {
+                $error = $lang['emailexists']; // "Email already registered.";
             } else {
-                $error = $lang['missingfields']; // "All fields must be filled out";
+                $verification_needed = $verification !== 'disabled';
+
+                $query = $conn->prepare(
+                    "INSERT INTO users (oauth_uid, username, email_id, platform, password, verified, picture, date, ip, badge) VALUES ('0', ?, ?, 'Direct', ?, ?, 'NONE', ?, ?, '0')"
+                );
+                $query->execute([$username, $email, $password, $verification_needed ? 0 : 1, $date, $ip]);
+
+                if ($verification_needed) {
+                    sendVerificationEmail($email, $username, $username);;
+                }
+
+                $success = $lang['registered']; // "Your account was successfully registered.";
             }
+
         }
     }
 }
-
 // Theme
 require_once('theme/' . $default_theme . '/header.php');
 require_once('theme/' . $default_theme . '/login.php');

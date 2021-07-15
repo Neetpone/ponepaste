@@ -192,16 +192,16 @@ function str_conntains($haystack, $needle, $ignoreCase = false) {
     return ($needlePos === false ? false : ($needlePos + 1));
 }
 
-function encrypt($value) {
-    $salt = $sec_key;
-    $encrypted_string = openssl_encrypt($value, "AES-256-CBC", $salt);
-    return $encrypted_string;
+function encrypt(string $value) : string {
+    global $sec_key;
+
+    return openssl_encrypt($value, "AES-256-CBC", $sec_key);
 }
 
-function decrypt($value) {
-    $salt = $sec_key;
-    $decrypted_string = openssl_decrypt($value, "AES-256-CBC", $salt);
-    return $decrypted_string;
+function decrypt(string $value) : string {
+    global $sec_key;
+
+    return openssl_decrypt($value, "AES-256-CBC", $sec_key);
 }
 
 function deleteMyPaste($conn, $paste_id) {
