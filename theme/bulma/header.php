@@ -11,7 +11,7 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License in GPL.txt for more details.
+ * GNU General Public License in GPL.txt for more details. 
  */
 $statrttime = microtime();
 $time = explode(' ', $statrttime);
@@ -275,16 +275,15 @@ $start = $time;
                             </label>
                         </div>
                         <div class="field">
-                            <img id="captcha" src="https://ponepaste.org/captcha/securimage_show.php"
-                                 alt="CAPTCHA Image"/>
-                        </div>
-                        <div class="field">
-                            <input required type="text" name="captcha_code" size="10" maxlength="6"/>
-                            <a href="#"
-                               onclick="document.getElementById('captcha').src = 'captcha/securimage_show.php?' + Math.random(); return false">[
-                                Different Image ]</a>
-                        </div>
-                    </div>
+                        <div class="notification">
+                            <span class="tags are-large"><?php echo '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA" class="imagever">'; ?></span>
+                            <input type="text" class="input" name="scode" value=""
+                            placeholder="<?php echo $lang['entercode']; ?>">
+                           <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press
+                                                    "Enter"</p>
+                            </div>
+                          </div>
+                        </div>         
                     <input class="button is-link is-fullwidth my-4" type="submit" name="signup" value="Register"
                            value="<?php echo md5($date . $ip); ?>">
                     <div class="field">
