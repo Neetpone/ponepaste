@@ -26,8 +26,11 @@ function timer() {
     }
 }
 
-function getUserFavs($conn, $username) {
-    $query = $conn->prepare("SELECT pins.f_time, pins.m_fav, pins.f_paste, pastes.id, pastes.title, pastes.now_time, pastes.tagsys FROM pins, pastes WHERE pins.f_paste = pastes.id AND pins.m_fav=?");
+function getUserFavs(PDO $conn, string $username) : array {
+    $query = $conn->prepare(
+        "SELECT pins.f_time, pins.m_fav, pins.f_paste, pastes.id, pastes.title, pastes.created_at, pastes.tagsys
+            FROM pins, pastes
+            WHERE pins.f_paste = pastes.id AND pins.m_fav = ?");
     $query->execute([$username]);
     return $query->fetchAll();
 }
@@ -40,9 +43,9 @@ $query = intval($conn->prepare("SELECT COUNT(f_paste) FROM pins WHERE f_paste=?"
 
 
 //Can't seem to get working.
-function checkFavorite($conn,$paste_id, $user_id) {
+function checkFavorite(PDO $conn, int $paste_id, string $username) : string {
     $query = $conn->prepare("SELECT 1 FROM pins WHERE m_fav = ? AND f_paste = ?");
-    $query->execute([$user_id,$paste_id]);
+    $query->execute([$username, $paste_id]);
 
     if ($query->fetch()) {
         return "<a  href='#' id='favorite' class='iconn tool-iconn' data-fid='" . $paste_id . "'><i class='far fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
@@ -263,9 +266,13 @@ LIMIT 0 , ?");
 }
 
 
-function getUserPastes($conn, $username) {
-    $query = $conn->prepare("SELECT id, title, code, views, now_time, visible, date, tagsys, member FROM pastes where member=? ORDER by id DESC");
-    $query->execute([$username]);
+function getUserPastes(PDO $conn, $user_id) : array {
+    $query = $conn->prepare(
+        "SELECT id, title, code, views, created_at, visible, tagsys
+            FROM pastes
+            where user_id = ?
+            ORDER by id DESC");
+    $query->execute([$user_id]);
     return $query->fetchAll();
 }
 

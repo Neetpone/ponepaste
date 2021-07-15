@@ -172,13 +172,12 @@ $protocol = paste_protocol();
                         </tfoot>
                         <tbody>
                         <?php
-                        $res = getUserPastes($conn, $profile_username);
-                        foreach ($res as $index => $row) {
+                        foreach ($profile_pastes as $row) {
                             $title = Trim($row['title']);
                             $p_id = Trim($row['id']);
                             $p_code = Trim($row['code']);
-                            $p_date = strtotime(Trim($row['date']));
-                            $p_dateui = date("d F Y", $p_date);
+                            $p_date = new DateTime($row['created_at']);
+                            $p_dateui = $p_date->format("d F Y");
                             $p_views = Trim($row['views']);
                             $p_visible = Trim($row['visible']);
                             $p_tags = Trim($row['tagsys']);
@@ -209,7 +208,7 @@ $protocol = paste_protocol();
                                                 <td>
                                                     <a href="' . $protocol . $baseurl . '/' . $p_link . '" title="' . $title . '">' . ($title) . '</a>
                                                 </td>    
-                                                <td data-sort="' . $p_date . '" class="td-center">
+                                                <td data-sort="' . $p_date->format('U') . '" class="td-center">
                                                 <span>' . $p_dateui . '</span>
                                                 </td>
                                                 <td class="td-center">

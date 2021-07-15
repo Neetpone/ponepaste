@@ -147,6 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Login process
     if (isset($_POST['signin'])) {
         if (!empty($_POST['username']) && !empty($_POST['password'])) {
+            $username = trim($_POST['username']);
             $query = $conn->prepare("SELECT id, password, banned, verified FROM users WHERE username = ?");
             $query->execute([$username]);
             $row = $query->fetch();
@@ -195,6 +196,7 @@ if (isset($_POST['signup'])) {
     } elseif (!isValidUsername($username)) {
         $error = $lang['usrinvalid']; // "Username not valid. Usernames can't contain special characters.";
     } else {
+        $email = trim($_POST['email']);
         $query = $conn->prepare('SELECT 1 FROM users WHERE username = ?');
         $query->execute([$username]);
         if ($query->fetch()) {

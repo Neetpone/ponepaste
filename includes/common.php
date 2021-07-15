@@ -53,7 +53,7 @@ function getCurrentUser(PDO $conn) : array | null {
     }
 
     $query = $conn->prepare('SELECT * FROM users WHERE username = ?');
-    $query->execute($_SESSION['username']);
+    $query->execute([$_SESSION['username']]);
 
     return $query->fetch();
 }

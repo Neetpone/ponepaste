@@ -180,7 +180,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 <div class="panel-tools">
                                     <?php if (isset($_SESSION['token'])) {
                                         $f_username = $_SESSION['username'];
-                                        $fav_paste = checkFavorite($paste_id, $f_username, $con);
+                                        $fav_paste = checkFavorite($conn, $paste_id, $f_username);
                                     }
                                     ?>
                                     <a class="icon tool-icon" class="flip" onclick="openreport()"><i
@@ -373,7 +373,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                 <!-- Expiry -->
                                                 <div class="select">
                                                     <select name="paste_expire_date">
-                                                        <? php// if (isset($_SESSION['token'])) {?>
+                                                        <?php// if (isset($_SESSION['token'])) {?>
                                                         <option value="N" selected="selected">Never</option>
                                                         <option value="self">View Once</option>
                                                         <option value="10M">10 Minutes</option>
@@ -382,7 +382,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                         <option value="1W">1 Week</option>
                                                         <option value="2W">2 Weeks</option>
                                                         <option value="1M">1 Month</option>
-                                                        <? php// } else { ?>
+                                                        <?php// } else { ?>
                                                         <!--
                                                             <option value="1D" selected="selected">1 Day</option>
                                                             <option value="self">View Once</option>
@@ -392,7 +392,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                             <option disabled >1 Month (Register)</option>
                                                             <option disabled >Never (Register)</option>
                                                             -->
-                                                        <? php// } ?>
+                                                        <?php// } ?>
                                                     </select>
                                                 </div>
                                             </div>
