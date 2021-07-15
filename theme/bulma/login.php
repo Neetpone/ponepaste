@@ -156,14 +156,11 @@
                                     </label>
                                 </div>
                                 <div class="field">
-                                    <img id="captcha" src="https://ponepaste.org/captcha/securimage_show.php"
-                                         alt="CAPTCHA Image"/>
-                                </div>
-                                <div class="field">
-                                    <input required type="text" name="check" size="10" maxlength="6" required>
-                                    <a href="#"
-                                       onclick="document.getElementById('captcha').src = 'captcha/securimage_show.php?' + Math.random(); return false">[
-                                        Different Image ]</a>
+                                    <div class="notification">
+                                        <span class="tags are-large"><?php echo '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA" class="imagever">'; ?></span>
+                                        <input type="text" class="input" name="scode" value=""  placeholder="<?php echo $lang['entercode']; ?>">
+                                        <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press"Enter"</p>
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <input class="button is-info" type="submit" name="signup" value="Register"
