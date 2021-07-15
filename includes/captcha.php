@@ -5,7 +5,7 @@ function captcha($color, $mode, $mul, $allowed) {
     $font_path = dirname(__FILE__) . '/fonts/';
 
     if ($mode == "Easy") {
-        $fonr_name = 'SigmarOne.ttf';
+        $fonr_name = 'PonyvilleMedium0.4.ttf';
     } elseif ($mode == "Normal") {
         $fonr_name = 'times_new_yorker.ttf';
     } elseif ($mode == "Tough") {
@@ -18,25 +18,27 @@ function captcha($color, $mode, $mul, $allowed) {
         $captcha_config = array(
             'code' => '',
             'min_length' => 5,
-            'max_length' => 5,
+            'max_length' => 6,
             'backgrounds' => array(
                 $bg_path . 'text3.png',
                 $bg_path . 'text2.png',
                 $bg_path . 'text1.png'
             ),
             'fonts' => array(
-                $font_path . $fonr_name
+                $font_path . 'LMS Pretty Pony.ttf',
+                $font_path . 'PonyvilleMedium0.4.ttf',
+                $font_path . 'PonyvilleMedium0.4.ttf'
             ),
             'characters' => $allowed,
-            'min_font_size' => 28,
+            'min_font_size' => 20,
             'max_font_size' => 28,
             'color' => $color,
             'angle_min' => 0,
-            'angle_max' => 10,
+            'angle_max' => 5,
             'shadow' => true,
             'shadow_color' => '#fff',
-            'shadow_offset_x' => -1,
-            'shadow_offset_y' => 1
+            'shadow_offset_x' => -2,
+            'shadow_offset_y' => 4
         );
     } else {
         $captcha_config = array(
