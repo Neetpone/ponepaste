@@ -61,7 +61,8 @@ $db_opts = [
 ];
 
 // Secret key for paste encryption
-$sec_key = "8ac67343e7980b16b31e8311d4377bbb";
+//$sec_key = "8ac67343e7980b16b31e8311d4377bbb";
+$sec_key = '';
 define('SECRET', md5($sec_key));
 
 // Set to 1 to enable Apache's mod_rewrite

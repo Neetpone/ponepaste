@@ -26,26 +26,19 @@ function timer() {
     }
 }
 
-function getUserFavs(PDO $conn, string $username) : array {
+function getUserFavs(PDO $conn, string $user_id) : array {
     $query = $conn->prepare(
-        "SELECT pins.f_time, pins.m_fav, pins.f_paste, pastes.id, pastes.title, pastes.created_at, pastes.tagsys
-            FROM pins, pastes
-            WHERE pins.f_paste = pastes.id AND pins.m_fav = ?");
-    $query->execute([$username]);
+        "SELECT pins.f_time, pastes.id, pastes.title, pastes.created_at, pastes.tagsys
+            FROM pins
+            INNER JOIN pastes ON pastes.id = pins.paste_id
+            WHERE pins.user_id = ?");
+    $query->execute([$user_id]);
     return $query->fetchAll();
 }
 
-function CountPasteFavs($conn, $fav_id) {
-$query = intval($conn->prepare("SELECT COUNT(f_paste) FROM pins WHERE f_paste=?")->fetch(PDO::FETCH_NUM)[0]);
-    $query->execute([$fav_id]);
-    return $query->fetchAll();
-}
-
-
-//Can't seem to get working.
-function checkFavorite(PDO $conn, int $paste_id, string $username) : string {
-    $query = $conn->prepare("SELECT 1 FROM pins WHERE m_fav = ? AND f_paste = ?");
-    $query->execute([$username, $paste_id]);
+function checkFavorite(PDO $conn, int $paste_id, int $user_id) : string {
+    $query = $conn->prepare("SELECT 1 FROM pins WHERE user_id = ? AND paste_id = ?");
+    $query->execute([$user_id, $paste_id]);
 
     if ($query->fetch()) {
         return "<a  href='#' id='favorite' class='iconn tool-iconn' data-fid='" . $paste_id . "'><i class='far fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
@@ -140,15 +133,15 @@ function getRecentreport($conn, $count) {
 }
 
 
-function getUserRecom($conn, $p_member) {
+function getUserRecom(PDO $conn, int $user_id) : array {
     $query = $conn->prepare(
         "SELECT pastes.id AS id, users.username AS member, title, visible
             FROM pastes
-            INNER JOIN users ON users.username = ?
-            WHERE visible = '0'
+            INNER JOIN users ON pastes.user_id = users.id
+            WHERE pastes.visible = '0' AND users.id = ?
             ORDER BY id DESC
             LIMIT 0, 5");
-    $query->execute([$p_member]);
+    $query->execute([$user_id]);
     return $query->fetchAll();
 }
 

@@ -178,9 +178,8 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                         <div class="column is-4 has-text-right">
                             <div class="">
                                 <div class="panel-tools">
-                                    <?php if (isset($_SESSION['token'])) {
-                                        $f_username = $_SESSION['username'];
-                                        $fav_paste = checkFavorite($conn, $paste_id, $f_username);
+                                    <?php if ($current_user) {
+                                        $fav_paste = checkFavorite($conn, $paste_id, $current_user['id']);
                                     }
                                     ?>
                                     <a class="icon tool-icon" class="flip" onclick="openreport()"><i
@@ -248,26 +247,26 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                     } ?>
                 </div>
                 <!-- Guests -->
-                <?php if (!isset($_SESSION['username']) || strcasecmp($_SESSION['username'], $p_member)) { ?>
+                <?php if (!$current_user || $current_user['id'] !== $paste['user_id']) { ?>
                     <hr>
                     <label class="label">More from this Author </label>
                     <?php
-                    $rec = getUserRecom($conn, $p_member);
+                    $rec = getUserRecom($conn, $paste['user_id']);
                     foreach ($rec as $index => $row) {
                         $title = Trim($row['title']);
                         $p_id = Trim($row['id']);
-                        $p_member = Trim($row['member']);
                         $titlehov = ($row['title']);
-                        $title = truncate($title, 24, 60);
+                        $long_title = pp_html_escape($row['title']);
+                        $title = pp_html_escape(truncate($row['title'], 24, 60));
                         ?>
 
                         <p class="no-margin">
                         <?php
                         if ($mod_rewrite == '1') {
                             echo '<header class="bd-category-header my-1">
-									<a href="' . $p_id . '" title="' . $title . '">' . $title . ' </a>
+									<a href="' . $p_id . '" title="' . $long_title . '">' . $title . ' </a>
 									<p class="subtitle is-7">' . 'by ' . '
-										<i>' . $p_member . '</i>' . '
+										<i>' . $row['member'] . '</i>' . '
 									</p>' .
                                 '</header>';
                         } else {
@@ -462,7 +461,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                             <?php echo $lang['encrypt']; ?>
                                         </label>
                                         <?php
-                                        if (strcasecmp($_SESSION['username'], $p_member) == 0) {
+                                        if ($current_user && ($current_user['id'] === $paste['user_id'])) {
                                             ?>
                                             <input class="button is-info" type="submit" name="edit" id="edit"
                                                    value="<?php echo $lang['editpaste']; ?>"/>

@@ -6,7 +6,7 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -31,13 +31,13 @@ $paste_id = intval(trim($_REQUEST['id']));
 updatePageViews($conn);
 
 // Get paste favorite count
-$query = $conn->prepare('SELECT COUNT(*) FROM pins WHERE f_paste = ?');
+$query = $conn->prepare('SELECT COUNT(*) FROM pins WHERE paste_id = ?');
 $query->execute([$paste_id]);
 $fav_count = intval($query->fetch(PDO::FETCH_NUM)[0]);
 
 // Get paste info
 $query = $conn->prepare(
-    'SELECT title, content, visible, code, expiry, pastes.password AS password, created_at, updated_at, encrypt, views, tagsys, users.username AS member
+    'SELECT title, content, visible, code, expiry, pastes.password AS password, created_at, updated_at, encrypt, views, tagsys, users.username AS member, users.id AS user_id
         FROM pastes
         INNER JOIN users ON users.id = pastes.user_id
         WHERE pastes.id = ?');
@@ -46,8 +46,6 @@ $row = $query->fetch();
 
 // This is used in the theme files.
 $totalpastes = getSiteTotalPastes($conn);
-
-$current_user = getCurrentUser($conn);
 
 if (!$row) {
     header('HTTP/1.1 404 Not Found');
@@ -60,6 +58,7 @@ if (!$row) {
         'title' => $paste_title,
         'created_at' => (new DateTime($row['created_at']))->format('jS F Y h:i:s A'),
         'updated_at' => (new DateTime($row['updated_at']))->format('jS F Y h:i:s A'),
+        'user_id' => $row['user_id'],
         'member' => $row['member'],
         'tags' => $row['tagsys'],
         'views' => $row['views'],
@@ -69,22 +68,16 @@ if (!$row) {
     $p_visible = $row['visible'];
     $p_expiry = Trim($row['expiry']);
     $p_password = $row['password'];
-    $p_member = $row['member'];
     $p_encrypt = $row['encrypt'];
 
-    $p_private_error = '0';
-    if ($p_visible == "2") {
-        if ($current_user) {
-            if ($p_member !== $current_user['id']) {
-                $notfound = $lang['privatepaste']; //" This is a private paste.";
-                $p_private_error = '1';
-                goto Not_Valid_Paste;
-            }
-        } else {
-            $notfound = $lang['privatepaste']; //" This is a private paste. If you created this paste, please login to view it.";
-            $p_private_error = '1';
-            goto Not_Valid_Paste;
-        }
+
+    $is_private = $row['visible'] === '2';
+    $private_error = false;
+
+    if ($is_private && (!$current_user || $current_user['id'] !== $row['user_id'])) {
+        $notfound = $lang['privatepaste']; //" This is a private paste. If you created this paste, please login to view it.";
+        $private_error = true;
+        goto Not_Valid_Paste;
     }
 
     if (!empty($p_expiry) && $p_expiry !== 'SELF') {
@@ -144,18 +137,17 @@ if (!$row) {
     // Preprocess
     $highlight = array();
     $prefix_size = strlen('!highlight!');
-    if ($prefix_size) {
-        $lines = explode("\n", $p_content);
-        $p_content = "";
-        foreach ($lines as $idx => $line) {
-            if (substr($line, 0, $prefix_size) == '!highlight!') {
-                $highlight[] = $idx + 1;
-                $line = substr($line, $prefix_size);
-            }
-            $p_content .= $line . "\n";
+    $lines = explode("\n", $p_content);
+    $p_content = "";
+    foreach ($lines as $idx => $line) {
+        if (substr($line, 0, $prefix_size) == '!highlight!') {
+            $highlight[] = $idx + 1;
+            $line = substr($line, $prefix_size);
         }
-        $p_content = rtrim($p_content);
+        $p_content .= $line . "\n";
     }
+
+    $p_content = rtrim($p_content);
 
     // Apply syntax highlight
     $p_content = htmlspecialchars_decode($p_content);
@@ -261,7 +253,7 @@ if ($p_password == "NONE") {
 
 Not_Valid_Paste:
 // Private paste not valid
-if ($p_private_error == '1') {
+if ($is_private == '1') {
     // Display errors
     require_once('theme/' . $default_theme . '/header.php');
     require_once('theme/' . $default_theme . '/errors.php');

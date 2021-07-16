@@ -58,6 +58,17 @@ function getCurrentUser(PDO $conn) : array | null {
     return $query->fetch();
 }
 
+
+/**
+ * Specialization of `htmlentities()` that avoids double escaping and uses UTF-8.
+ *
+ * @param string $unescaped String to escape
+ * @return string HTML-escaped string
+ */
+function pp_html_escape(string $unescaped) : string {
+    return htmlentities($unescaped, ENT_QUOTES, 'UTF-8', false);
+}
+
 function updatePageViews(PDO $conn) : void {
     $ip = $_SERVER['REMOTE_ADDR'];
     $date = date('jS F Y');
@@ -164,3 +175,5 @@ $site_ads = getSiteAds($conn);
 $total_pastes = getSiteTotalPastes($conn);
 $total_page_views = getSiteTotalviews($conn);
 $total_unique_views = getSiteTotal_unique_views($conn);
+
+$current_user = getCurrentUser($conn);
