@@ -24,6 +24,17 @@
                 // Logged in
                 if (isset($success)) {
                     echo '<p class="help is-success subtitle is-6">' . $success . '</p>';
+                    if (isset($new_password)) {
+                        echo '<p>Your new password is as follows:</p>';
+                        echo "<code>${new_password}</code>";
+                    }
+
+                    if (isset($recovery_code)) {
+                        echo '<h2>IMPORTANT!</h2>';
+                        echo '<p><b>If you wish to recover your account later, you will need the following code. Store it in a safe place!</b></p>';
+                        echo "<code>${recovery_code}</code>";
+                        echo '<p>If you do not save this code and you forget your password, there is no way to get your account back!</p>';
+                    }
                 } // Errors
                 elseif (isset($error)) {
                     echo '<p class="help is-danger subtitle is-6">' . $error . '</p>';
@@ -209,19 +220,29 @@
                         <div class="columns">
                             <div class="column">
                                 <h1 class="title is-4">Forgot Password</h1>
+                                <p>You <i>did</i> save your recovery code, right?</p>
                                 <div class="field">
-                                    <label class="label">Email</label>
+                                    <label class="label">Username</label>
                                     <div class="control has-icons-left has-icons-right">
-                                        <input type="text" class="input" name="email"
-                                               placeholder="Enter your email address">
+                                        <input type="text" class="input" name="username"
+                                               placeholder="Enter your account username">
                                         <span class="icon is-small is-left">
 											<i class="fas fa-envelope"></i>
 										</span>
                                     </div>
                                 </div>
                                 <div class="field">
-                                    <input class="button" type="submit" name="forgot" value="Submit"
-                                           value="<?php echo md5($date . $ip); ?>"/>
+                                    <label class="label">Recovery Code</label>
+                                    <div class="control has-icons-left has-icons-right">
+                                        <input type="password" class="input" name="recovery_code"
+                                               placeholder="Recovery code">
+                                        <span class="icon is-small is-left">
+											<i class="fas fa-key"></i>
+										</span>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <input class="button" type="submit" name="forgot" />
                                 </div>
                             </div>
                             <div class="column">

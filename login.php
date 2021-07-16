@@ -34,52 +34,66 @@ $p_title = $lang['login/register']; // "Login/Register";
 
 updatePageViews($conn);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Check if logged in
-    if (isset($_SESSION['token'])) {
-        header("Location: ./");
-        exit;
+if (isset($_POST['forgot'])) {
+    if (!empty($_POST['username']) && !empty($_POST['recovery_code'])) {
+        $username = trim($_POST['username']);
+        $recovery_code = trim($_POST['recovery_code']);
+
+        $query = $conn->prepare("SELECT id, recovery_code_hash FROM users WHERE username = ?");
+        $query->execute([$username]);
+        $row = $query->fetch();
+        if ($row && password_verify($_POST['recovery_code'], $row['recovery_code_hash'])) {
+            $new_password = md5(random_bytes(64));
+            $new_password_hash = password_hash($new_password, PASSWORD_DEFAULT);
+
+            $recovery_code = hash('SHA512', random_bytes(64));
+            $new_recovery_code_hash = password_hash($recovery_code, PASSWORD_BCRYPT);
+
+            $conn->prepare('UPDATE users SET password = ?, recovery_code_hash = ? WHERE id = ?')
+                ->execute([$new_password_hash, $new_recovery_code_hash, $row['id']]);
+
+            $success = 'Your password has been changed. A new recovery code has also been generated. Please note the recovery code and then sign in with the new password.';
+        } else {
+            $error = $lang['incorrect'];
+        }
+    } else {
+        $error = $lang['missingfields']; // "All fields must be filled out";
     }
+} else if (isset($_POST['signin'])) { // Login process
+    if (!empty($_POST['username']) && !empty($_POST['password'])) {
+        $username = trim($_POST['username']);
+        $query = $conn->prepare("SELECT id, password, banned, verified FROM users WHERE username = ?");
+        $query->execute([$username]);
+        $row = $query->fetch();
+        if ($row && password_verify($_POST['password'], $row['password'])) {
+            // Username found
+            $db_oauth_uid = $row['oauth_uid'];
+            $db_ip = $row['ip'];
+            $db_id = $row['id'];
 
-    // Login process
-    if (isset($_POST['signin'])) {
-        if (!empty($_POST['username']) && !empty($_POST['password'])) {
-            $username = trim($_POST['username']);
-            $query = $conn->prepare("SELECT id, password, banned, verified FROM users WHERE username = ?");
-            $query->execute([$username]);
-            $row = $query->fetch();
-            if ($row && password_verify($_POST['password'], $row['password'])) {
-                // Username found
-                $db_oauth_uid = $row['oauth_uid'];
-                $db_ip = $row['ip'];
-                $db_id = $row['id'];
+            if ($row['banned']) {
+                // User is banned
+                $error = $lang['banned'];
+            } if ($row['verified']) {
+                // Login successful
+                $_SESSION['token'] = md5($db_id . $username);
+                $_SESSION['oauth_uid'] = $db_oauth_uid;
+                $_SESSION['username'] = $username;
 
-                if ($row['banned']) {
-                    // User is banned
-                    $error = $lang['banned'];
-                } if ($row['verified']) {
-                    // Login successful
-                    $_SESSION['token'] = md5($db_id . $username);
-                    $_SESSION['oauth_uid'] = $db_oauth_uid;
-                    $_SESSION['username'] = $username;
-
-                    header('Location: ' . $_SERVER['HTTP_REFERER']);
-                    exit();
-                } else {
-                    // Account not verified
-                    $error = $lang['notverified'];
-                }
+                header('Location: ' . $_SERVER['HTTP_REFERER']);
+                exit();
             } else {
-                // Username not found or password incorrect.
-                $error = $lang['incorrect'];
+                // Account not verified
+                $error = $lang['notverified'];
             }
         } else {
-            $error = $lang['missingfields']; // "All fields must be filled out.";
+            // Username not found or password incorrect.
+            $error = $lang['incorrect'];
         }
+    } else {
+        $error = $lang['missingfields']; // "All fields must be filled out.";
     }
-}
-// Register process
-if (isset($_POST['signup'])) {
+} else if (isset($_POST['signup'])) { // Registration process
     $username = htmlentities(trim($_POST['username'], ENT_QUOTES));
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $chara_max = 25;   //characters for max input
@@ -97,10 +111,12 @@ if (isset($_POST['signup'])) {
         if ($query->fetch()) {
             $error = $lang['userexists']; // "Username already taken.";
         } else {
+            $recovery_code = hash('SHA512', random_bytes('64'));
+            $recovery_code_hash = password_hash($recovery_code, PASSWORD_BCRYPT);
             $query = $conn->prepare(
-                "INSERT INTO users (username, password, picture, date, ip, badge) VALUES (?, ?, 'NONE', ?, ?, '0')"
+                "INSERT INTO users (username, password, recovery_code_hash, picture, date, ip, badge) VALUES (?, ?, ?, 'NONE', ?, ?, '0')"
             );
-            $query->execute([$username, $password, $date, $ip]);
+            $query->execute([$username, $password, $recovery_code_hash, $date, $ip]);
 
             $success = $lang['registered']; // "Your account was successfully registered.";
         }
