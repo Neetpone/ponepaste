@@ -49,6 +49,6 @@ $sql_details = array(
 require('public.pastes.php');
 
 echo json_encode(
-    SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns, $columns2), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-mysqli_close('$con');
-?>
+    SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns, $columns2),
+    JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
+);

@@ -88,47 +88,33 @@ if (isset($_GET['resend'])) {
 }
 
 if (isset($_GET['forgot'])) {
-    if (isset($_POST['email'])) {
-        $email = trim($_POST['email']);
-        $query = "SELECT * FROM users WHERE email_id='$email'";
-        $result = mysqli_query($con, $query);
-        if (mysqli_num_rows($result) > 0) {
-            // Username found
-            while ($row = mysqli_fetch_array($result)) {
-                $username = $row['username'];
-                $db_email_id = $row['email_id'];
-                $db_platform = $row['platform'];
-                $db_password = Trim($row['password']);
-                $db_verified = $row['verified'];
-                $db_picture = $row['picture'];
-                $db_date = $row['date'];
-                $db_ip = $row['ip'];
-                $db_id = $row['id'];
-            }
+    if (!empty($_POST['email'])) {
+        $query = $conn->prepare('SELECT id, username FROM users WHERE email_id = ?');
+        $query->execute([trim($_POST['email'])]);
+
+        if ($row = $query->fetch()) {
+            $username = $row['username'];
+
             $new_pass = uniqid(rand(), true);
             $new_pass_hash = password_hash($new_pass, PASSWORD_DEFAULT);
 
-            $query = "UPDATE users SET password='$new_pass_hash' WHERE username='$username'";
-            mysqli_query($con, $query);
-            if (mysqli_error($con)) {
-                $error = "Unable to access database.";
-            } else {
-                $success = $lang['pass_change']; //"Password changed successfully and sent to your email address.";
-                $sent_mail = $email;
-                $subject = "$site_name Password Reset";
-                $body = "<br />
+            $conn->prepare('UPDATE users SET password = ? WHERE id = ?')
+                ->execute([$new_pass_hash, $row['id']]);
+
+            $success = $lang['pass_change']; //"Password changed successfully and sent to your email address.";
+            $sent_mail = $email;
+            $subject = "$site_name Password Reset";
+            $body = "<br />
           Hello $username , <br /><br />
           
           Your password has been reset: $new_pass  <br /> <br />
           
           You can now login and change your password. <br />
           ";
-                if ($mail_type == '1') {
-                    default_mail($admin_mail, $admin_name, $sent_mail, $subject, $body);
-                } else {
-                    smtp_mail($smtp_host, $smtp_port, $smtp_auth, $smtp_user, $smtp_pass, $smtp_sec, $admin_mail, $admin_name, $sent_mail, $subject, $body);
-                }
-
+            if ($mail_type == '1') {
+                default_mail($admin_mail, $admin_name, $sent_mail, $subject, $body);
+            } else {
+                smtp_mail($smtp_host, $smtp_port, $smtp_auth, $smtp_user, $smtp_pass, $smtp_sec, $admin_mail, $admin_name, $sent_mail, $subject, $body);
             }
 
         } else {
