@@ -131,15 +131,6 @@
 										</span>
                                     </div>
                                 </div>
-                                <div class="field">
-                                    <label class="label">Email</label>
-                                    <div class="control has-icons-left has-icons-right">
-                                        <input type="text" class="input" name="email" placeholder="Email" required>
-                                        <span class="icon is-small is-left">
-											<i class="fas fa-envelope"></i>
-										</span>
-                                    </div>
-                                </div>
                                 <div class="field mb-4">
                                     <label class="label">Password</label>
                                     <div class="control has-icons-left has-icons-right">
@@ -248,39 +239,6 @@
                             </div>
                         </div>
                     </form>
-                    <?php // Resend verification email
-                } elseif (isset($_GET['resend'])) {
-                    ?>
-                    <form action="../login.php?resend" method="post">
-                        <div class="columns">
-                            <div class="column">
-                                <h1 class="title is-4">Resend verification email</h1>
-                                <div class="field">
-                                    <label class="label">Email</label>
-                                    <div class="control has-icons-left has-icons-right">
-                                        <input type="text" class="input" name="email"
-                                               placeholder="Enter your email address">
-                                        <span class="icon is-small is-left">
-											<i class="fas fa-envelope"></i>
-										</span>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <input class="button" type="submit" value="Submit" name="resend"
-                                           value="<?php echo md5($date . $ip); ?>"/>
-                                </div>
-                            </div>
-                            <div class="column">
-                            </div>
-                            <div class="column">
-                                <?php
-                                if (isset($site_ads) && !isset($_SESSION['username'])) {
-                                    echo $site_ads['ads_2'];
-                                }
-                                ?>
-                            </div>
-                        </div>
-                    </form>
                 <?php } else { ?>
                     <div class="columns">
                         <div class="column">
@@ -288,7 +246,6 @@
                             <a href="login.php?login">Login</a><br/>
                             <a href="login.php?registeraccount">Register</a> <br/>
                             <a href="login.php?forgotpassw">Forgot Password</a><br/>
-                            <a href="login.php?resend">Resend verification email</a><br/>
                         </div>
                         <div class="column">
                         </div>

@@ -315,7 +315,6 @@ class SSP {
             $result[$loop]['username'] = $arr['username'];
             $result[$loop]['platform'] = $arr['platform'];
             $result[$loop]['date'] = $arr['date'];
-            $result[$loop]['email_id'] = $arr['email_id'];
             $ver = $arr['verified'];
 
             $myid = $arr['id'];

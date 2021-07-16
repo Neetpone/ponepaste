@@ -166,12 +166,6 @@ function monthpop($conn, $count) {
     return $query->fetchAll();
 }
 
-
-function isValidEmail($email) {
-    return filter_var($email, FILTER_VALIDATE_EMAIL)
-        && preg_match('/@.+\./', $email);
-}
-
 function formatBytes($size, $precision = 2) {
     $base = log($size, 1024);
     $suffixes = array('B', 'KB', 'MB', 'GB', 'TB');

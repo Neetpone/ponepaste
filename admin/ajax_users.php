@@ -13,7 +13,6 @@ $primaryKey = 'id';
 $columns = array(
     array('db' => 'id', 'dt' => 0),
     array('db' => 'username', 'dt' => 1),
-    array('db' => 'email_id', 'dt' => 2),
     array('db' => 'date', 'dt' => 3),
     array('db' => 'platform', 'dt' => 4),
     array('db' => 'id', 'dt' => 5),
@@ -23,7 +22,6 @@ $columns = array(
 $columns2 = array(
     array('db' => 'id', 'dt' => 0),
     array('db' => 'username', 'dt' => 1),
-    array('db' => 'email_id', 'dt' => 2),
     array('db' => 'date', 'dt' => 3),
     array('db' => 'platform', 'dt' => 4),
     array('db' => 'ban', 'dt' => 5),

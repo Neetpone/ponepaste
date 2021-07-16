@@ -38,7 +38,6 @@ $query->execute([$user_username]);
 $row = $query->fetch();
 $user_oauth_uid = $row['oauth_uid'];
 $user_id = $row['id'];
-$user_email_id = $row['email_id'];
 $user_full_name = $row['full_name'];
 $user_platform = Trim($row['platform']);
 $user_verified = $row['verified'];

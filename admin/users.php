@@ -168,7 +168,6 @@ if ($last_ip == $ip) {
                         while ($row = mysqli_fetch_array($result)) {
                             $user_oauth_uid = $row['oauth_uid'];
                             $user_username = $row['username'];
-                            $user_email_id = $row['email_id'];
                             $user_full_name = $row['full_name'];
                             $user_platform = Trim($row['platform']);
                             $user_verified = $row['verified'];
@@ -196,11 +195,6 @@ if ($last_ip == $ip) {
                                 <tr>
                                     <td> Username</td>
                                     <td> <?php echo $user_username; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> Email ID</td>
-                                    <td> <?php echo htmlentities($user_email_id); ?> </td>
                                 </tr>
 
                                 <tr>
@@ -250,7 +244,6 @@ if ($last_ip == $ip) {
                                 <tr>
                                     <th>ID</th>
                                     <th>Username</th>
-                                    <th>Email ID</th>
                                     <th>Date Registered</th>
                                     <th>Platform</th>
                                     <th>Ban User</th>

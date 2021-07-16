@@ -293,9 +293,6 @@ $start = $time;
                     </div>
                 </form>
             </section>
-            <footer class="modal-card-foot">
-                <a href="../login.php?resend">Resend verification email</a>
-            </footer>
         </div>
     </div>
 </div>

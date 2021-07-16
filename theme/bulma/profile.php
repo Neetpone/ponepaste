@@ -50,18 +50,6 @@
 									</span>
                                 </div>
                             </div>
-                            <div class="field">
-                                <label class="label">Email</label>
-                                <div class="control has-icons-left has-icons-right">
-                                    <input <?php if ($user_verified == "1") {
-                                        echo 'disabled=""';
-                                    } ?> type="text" class="input" name="email"
-                                         placeholder="<?php echo htmlentities($user_email_id, ENT_QUOTES); ?>">
-                                    <span class="icon is-small is-left">
-										<i class="fas fa-envelope"></i>
-									</span>
-                                </div>
-                            </div>
                             <hr>
                             <h1 class="title is-5"><?php echo $lang['chgpwd']; ?></h1>
                             <div class="field">
