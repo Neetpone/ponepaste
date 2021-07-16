@@ -98,13 +98,9 @@ if (isset($_POST['signup'])) {
             $error = $lang['userexists']; // "Username already taken.";
         } else {
             $query = $conn->prepare(
-                "INSERT INTO users (oauth_uid, username, email_id, platform, password, verified, picture, date, ip, badge) VALUES ('0', ?, ?, 'Direct', ?, ?, 'NONE', ?, ?, '0')"
+                "INSERT INTO users (username, password, picture, date, ip, badge) VALUES (?, ?, 'NONE', ?, ?, '0')"
             );
-            $query->execute([$username, $email, $password, $verification_needed ? 0 : 1, $date, $ip]);
-
-            if ($verification_needed) {
-                sendVerificationEmail($email, $username, $username);;
-            }
+            $query->execute([$username, $password, $date, $ip]);
 
             $success = $lang['registered']; // "Your account was successfully registered.";
         }

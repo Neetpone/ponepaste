@@ -49,19 +49,6 @@ if ($row = $result->fetch()) {
     $recaptcha_secretkey = $row['recaptcha_secretkey'];
 }
 
-$result = $conn->query("SELECT * FROM mail WHERE id='1'");
-
-if ($row = $result->fetch()) {
-    $verification = Trim($row['verification']);
-    $smtp_host = Trim($row['smtp_host']);
-    $smtp_username = Trim($row['smtp_username']);
-    $smtp_password = Trim($row['smtp_password']);
-    $smtp_port = Trim($row['smtp_port']);
-    $protocol = Trim($row['protocol']);
-    $auth = Trim($row['auth']);
-    $socket = Trim($row['socket']);
-}
-
 /* Update the configuration if necessary */
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -99,29 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $msg = '<div class="paste-alert alert3" style="text-align: center;">
 									Site permissions saved.
 									</div>';
-    } elseif ($action === 'mail') {
-        $new_mail = [
-            'verification' => trim($_POST['verification']),
-            'smtp_host' => trim($_POST['smtp_host']),
-            'smtp_port' => trim($_POST['smtp_port']),
-            'smtp_user' => trim($_POST['smtp_user']),
-            'socket' => trim($_POST['socket']),
-            'auth' => trim($_POST['auth']),
-            'protocol' => trim($_POST['protocol'])
-        ];
-
-        $current_config['mail'] = $new_mail;
-        $current_mail = $new_mail;
-
-        updateConfiguration(CONFIG_FILE_PATH, $current_config);
-
-        $msg = '
-							<div class="paste-alert alert3" style="text-align: center;">
-							Mail settings updated
-							</div>';
-    }
-
-    if (isset($_POST['cap'])) {
+    } else if (isset($_POST['cap'])) {
         $query = $conn->prepare(
             'UPDATE captcha SET cap_e = ?, mode = ?, mul = ?, allowed = ?, color = ?, recaptcha_sitekey = ?, recaptcha_secretkey = ? WHERE id = 1'
         );
@@ -199,8 +164,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                            data-toggle="tab">Permissions</a></li>
                                 <li role="presentation"><a href="#captcha" aria-controls="captcha" role="tab"
                                                            data-toggle="tab">Captcha Settings</a></li>
-                                <li role="presentation"><a href="#mail" aria-controls="mail" role="tab"
-                                                           data-toggle="tab">Mail Settings</a></li>
                             </ul>
 
                             <!-- Tab panes -->

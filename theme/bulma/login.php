@@ -24,10 +24,6 @@
                 // Logged in
                 if (isset($success)) {
                     echo '<p class="help is-success subtitle is-6">' . $success . '</p>';
-                    // Verification email sent
-                    if (isset($_GET['register']) && $verification == 'enabled') {
-                        echo '<p class="help is-success subtitle is-6">' . $lang['versent'] . '</p>';
-                    }
                 } // Errors
                 elseif (isset($error)) {
                     echo '<p class="help is-danger subtitle is-6">' . $error . '</p>';
