@@ -249,15 +249,6 @@ $start = $time;
                         </div>
                     </div>
                     <div class="field">
-                        <label class="label"><?php echo $lang['email']; ?></label>
-                        <div class="control has-icons-left has-icons-right">
-                            <input type="text" class="input" name="email" placeholder="<?php echo $lang['email']; ?>">
-                            <span class="icon is-small is-left">
-									<i class="fas fa-envelope"></i>
-								</span>
-                        </div>
-                    </div>
-                    <div class="field">
                         <label class="label"><?php echo $lang['newpwd']; ?></label>
                         <div class="control has-icons-left has-icons-right">
                             <input type="password" class="input" name="password"
