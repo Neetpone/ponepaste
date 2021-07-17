@@ -255,10 +255,11 @@ LIMIT 0 , ?");
 
 function getUserPastes(PDO $conn, $user_id) : array {
     $query = $conn->prepare(
-        "SELECT id, title, code, views, created_at, visible, tagsys
-            FROM pastes
-            where user_id = ?
-            ORDER by id DESC");
+        "SELECT pastes.id, visible, title, created_at, users.username, tagsys 
+        FROM pastes
+        INNER JOIN users ON pastes.user_id = users.id
+        WHERE users.username = ?
+        ORDER by pastes.id DESC");
     $query->execute([$user_id]);
     return $query->fetchAll();
 }

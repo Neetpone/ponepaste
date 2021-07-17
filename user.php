@@ -48,14 +48,16 @@ $p_title = $profile_username . $lang['user_public_pastes']; // "Username's Publi
 
 // Favorite Counts
 $query = $conn->prepare(
-    'SELECT COUNT(*) FROM pins INNER JOIN pastes ON pins.f_paste = pastes.id WHERE pastes.user_id = ?'
+    'SELECT COUNT(*) AS total_favs FROM pins INNER JOIN pastes ON pastes.id = pins.paste_id WHERE pins.paste_id = ?'
 );
 $query->execute([$profile_info['id']]);
 $total_pfav = intval($query->fetch(PDO::FETCH_NUM)[0]);
 
 
 $query = $conn->prepare(
-    'SELECT COUNT(*) FROM pins INNER JOIN pastes ON pins.f_paste = pastes.id WHERE pins.m_fav = ?'
+    'SELECT COUNT(*) AS total_favs
+            FROM pins INNER JOIN users ON users.id = pins.user_id
+            WHERE users.username = ?'
 );
 $query->execute([$profile_username]);
 $total_yfav = intval($query->fetch(PDO::FETCH_NUM)[0]);
