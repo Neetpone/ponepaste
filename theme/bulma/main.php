@@ -329,7 +329,7 @@
                                                             <option value="1" <?php echo ($post_visibility == "1") ? 'selected="selected"' : ''; ?>>
                                                                 Unlisted
                                                             </option>
-                                                            <?php if (isset($_SESSION['token'])) { ?>
+                                                            <?php if ($current_user) { ?>
                                                                 <option value="2" <?php echo ($post_visibility == "2") ? 'selected="selected"' : ''; ?>>
                                                                     Private
                                                                 </option>
@@ -385,14 +385,14 @@
                                 <!-- $text_ads -->
                                 <?php
                                 // don't display ads for logged in users.
-                                if (!empty($site_ads) && !isset($_SESSION['username'])) {
+                                if (!empty($site_ads) && $current_user === null) {
                                     echo $site_ads['text_ads'];
                                 }
                                 ?>
                             </div>
                             <div class="column is-4">
                                 <!-- ReCaptcha & Captcha -->
-                                <?php if ($cap_e == "on" && !isset($_SESSION['username'])) {
+                                <?php if ($cap_e == "on" && $current_user === null) {
                                     if ($_SESSION['captcha_mode'] == "recaptcha") {
                                         ?>
                                         <div class="g-recaptcha" style="float: right; right: 0;"

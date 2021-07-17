@@ -32,7 +32,7 @@ $protocol = paste_protocol();
         })
     });
 </script>
-<?php if (isset($_SESSION['token'])) { ?>
+<?php if ($current_user) { ?>
     <script>
         $(document).ready(function () {
             $('#favs').DataTable({
@@ -119,7 +119,7 @@ $protocol = paste_protocol();
                 ?>
 
                 <?php
-                if ($_SESSION['username'] == $profile_username) {
+                if ($current_user && $current_user->username === $profile_username) {
                     ?>
                     <?php echo $lang['profile-stats']; ?><br/>
                     <?php echo $lang['totalpastes'] . ' ' . $profile_total_pastes; ?> &mdash;
@@ -146,12 +146,12 @@ $protocol = paste_protocol();
                         <tr>
                             <td><?php echo $lang['pastetitle']; ?></td>
                             <td><?php echo $lang['pastetime']; ?></td>
-                            <?php if (isset($_SESSION) && $_SESSION['username'] == $profile_username) {
+                            <?php if ($is_current_user) {
                                 echo "<td>" . $lang['visibility'] . "</td>";
                             } ?>
                             <td><?php echo $lang['pasteviews']; ?></td>
                             <td><?php echo $lang['tags']; ?></td>
-                            <?php if (isset($_SESSION) && $_SESSION['username'] == $profile_username) {
+                            <?php if ($is_current_user) {
                                 echo "<td>" . $lang['delete'] . "</td>";
                             } ?>
                         </tr>
@@ -160,12 +160,12 @@ $protocol = paste_protocol();
                         <tr>
                             <td><?php echo $lang['pastetitle']; ?></td>
                             <td><?php echo $lang['pastedate']; ?></td>
-                            <?php if (isset($_SESSION) && $_SESSION['username'] == $profile_username) {
+                            <?php if ($is_current_user) {
                                 echo "<td>" . $lang['visibility'] . "</td>";
                             } ?>
                             <td><?php echo $lang['pasteviews']; ?></td>
                             <td><?php echo $lang['tags']; ?></td>
-                            <?php if (isset($_SESSION) && $_SESSION['username'] == $profile_username) {
+                            <?php if ($is_current_user) {
                                 echo "<td>" . $lang['delete'] . "</td>";
                             } ?>
                         </tr>
@@ -202,7 +202,7 @@ $protocol = paste_protocol();
                             $title = truncate($title, 20, 50);
 
                             // Guests only see public pastes
-                            if (!isset($_SESSION['token']) || $_SESSION['username'] != $profile_username) {
+                            if (!$is_current_user) {
                                 if ($row['visible'] == 0) {
                                     echo '<tr> 
                                                 <td>
@@ -254,7 +254,7 @@ $protocol = paste_protocol();
                         </tbody>
                     </table>
                 </div>
-                <?php if ($_SESSION['username'] == $profile_username) { ?>
+                <?php if ($is_current_user) { ?>
                 <div class="tab-content" id="second-tab">
                     <table id="favs" class="table is-fullwidth is-hoverable">
                         <thead>

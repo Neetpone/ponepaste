@@ -21,7 +21,7 @@
         <div class="bd-duo">
             <div class="bd-lead">
                 <h1 class="title is-5"><?php echo $lang['totalpastes'] . ' ' . $total_user_pastes ?></h1>
-                <h1 class="subtitle is-6"><?php echo '<a href="user.php?user=' . $_SESSION['username'] . '" target="_self">' . $lang['mypastes'] . '</a>'; ?></h1>
+                <h1 class="subtitle is-6"><?php echo '<a href="user.php?user=' . urlencode($current_user->username) . '" target="_self">' . $lang['mypastes'] . '</a>'; ?></h1>
                 <?php
                 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     if (isset($success)) {
@@ -58,7 +58,7 @@
                                 <label class="label">Username</label>
                                 <div class="control has-icons-left has-icons-right">
                                     <input disabled="" type="text" class="input" name="username"
-                                           style="cursor:not-allowed;" placeholder="<?php echo $user_username; ?>">
+                                           style="cursor:not-allowed;" placeholder="<?php echo pp_html_escape($current_user->username); ?>">
                                     <span class="icon is-small is-left">
 										<i class="fas fa-user"></i>
 									</span>

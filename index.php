@@ -31,8 +31,9 @@ function verifyCaptcha() : string|bool {
     global $mode;
     global $recaptcha_secretkey;
     global $lang;
+    global $current_user;
 
-    if ($cap_e == "on" && !isset($_SESSION['username'])) {
+    if ($cap_e == "on" && !$current_user) {
         if ($mode == "reCAPTCHA") {
             $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=" . $recaptcha_secretkey . "&response=" . $_POST['g-recaptcha-response']);
             $response = json_decode($response, true);
@@ -103,8 +104,6 @@ header('Content-Type: text/html; charset=utf-8');
 // Current date & user IP
 $date = date('jS F Y');
 $ip = $_SERVER['REMOTE_ADDR'];
-
-$current_user = getCurrentUser($conn);
 
 // Sitemap
 $site_sitemap_rows = $conn->query('SELECT * FROM sitemap_options LIMIT 1');

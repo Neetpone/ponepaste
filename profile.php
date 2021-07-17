@@ -28,10 +28,12 @@ $p_title = $lang['myprofile']; //"My Profile";
 
 
 // Check if already logged in
-if (!isset($_SESSION['token'])) {
+if ($current_user === null) {
     header("Location: ./login.php");
+    die();
 }
-$user_username = htmlentities(trim($_SESSION['username']));
+
+$user_username = $current_user->username;
 
 $query = $conn->prepare('SELECT * FROM users WHERE username = ?');
 $query->execute([$user_username]);

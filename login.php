@@ -26,8 +26,9 @@ $ip = $_SERVER['REMOTE_ADDR'];
 
 
 // Check if already logged in
-if (isset($_SESSION['token'])) {
+if ($current_user !== null) {
     header("Location: ./");
+    die();
 }
 
 // Page title
@@ -84,8 +85,7 @@ if (isset($_POST['forgot'])) {
                 $error = $lang['banned'];
             } else {
                 // Login successful
-                $_SESSION['token'] = md5($db_id . $username);
-                $_SESSION['username'] = $username;
+                $_SESSION['user_id'] = $row['id'];
 
                 header('Location: ' . $_SERVER['HTTP_REFERER']);
                 exit();

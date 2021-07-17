@@ -372,7 +372,6 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                 <!-- Expiry -->
                                                 <div class="select">
                                                     <select name="paste_expire_date">
-                                                        <?php// if (isset($_SESSION['token'])) {?>
                                                         <option value="N" selected="selected">Never</option>
                                                         <option value="self">View Once</option>
                                                         <option value="10M">10 Minutes</option>
@@ -381,17 +380,6 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                         <option value="1W">1 Week</option>
                                                         <option value="2W">2 Weeks</option>
                                                         <option value="1M">1 Month</option>
-                                                        <?php// } else { ?>
-                                                        <!--
-                                                            <option value="1D" selected="selected">1 Day</option>
-                                                            <option value="self">View Once</option>
-                                                            <option value="10M">10 Minutes</option>
-                                                            <option disabled >1 Week (Register)</option>
-                                                            <option disabled >2 Weeks (Register)</option>
-                                                            <option disabled >1 Month (Register)</option>
-                                                            <option disabled >Never (Register)</option>
-                                                            -->
-                                                        <?php// } ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -413,7 +401,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                         <option value="1" <?php echo ($p_visible == "1") ? 'selected="selected"' : ''; ?>>
                                                             Unlisted
                                                         </option>
-                                                        <?php if (isset($_SESSION['token'])) { ?>
+                                                        <?php if ($current_user) { ?>
                                                             <option value="2" <?php echo ($p_visible == "2") ? 'selected="selected"' : ''; ?>>
                                                                 Private
                                                             </option>
@@ -535,7 +523,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
 
     });
 </script>
-<?php if (isset($_SESSION['token'])) { ?>
+<?php if ($current_user) { ?>
     <script>
         $(document).ready(function () {
             $('#favorite').on('click', null, function () {

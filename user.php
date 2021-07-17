@@ -23,9 +23,6 @@ header('Content-Type: text/html; charset=utf-8');
 $date = date('jS F Y');
 $ip = $_SERVER['REMOTE_ADDR'];
 
-// If username defined in URL, then check if it's exists in database. If invalid, redirect to main site.
-$user_username = trim($_SESSION['username']);
-
 if (empty($_GET['user'])) {
     // No username provided
     header("Location: ../error.php");
@@ -48,18 +45,17 @@ $p_title = $profile_username . $lang['user_public_pastes']; // "Username's Publi
 
 // Favorite Counts
 $query = $conn->prepare(
-    'SELECT COUNT(*) AS total_favs FROM pins INNER JOIN pastes ON pastes.id = pins.paste_id WHERE pins.paste_id = ?'
+    'SELECT COUNT(*) FROM pins INNER JOIN pastes ON pastes.id = pins.paste_id WHERE pins.paste_id = ?'
 );
 $query->execute([$profile_info['id']]);
 $total_pfav = intval($query->fetch(PDO::FETCH_NUM)[0]);
 
-
 $query = $conn->prepare(
-    'SELECT COUNT(*) AS total_favs
-            FROM pins INNER JOIN users ON users.id = pins.user_id
-            WHERE users.username = ?'
+    'SELECT COUNT(*)
+        FROM pins INNER JOIN users ON users.id = pins.user_id
+        WHERE users.id = ?'
 );
-$query->execute([$profile_username]);
+$query->execute([$profile_info['id']]);
 $total_yfav = intval($query->fetch(PDO::FETCH_NUM)[0]);
 
 // Badges
@@ -94,19 +90,19 @@ $profile_total_paste_views = intval($query->fetch(PDO::FETCH_NUM)[0]);
 $profile_join_date = $profile_info['date'];
 
 $profile_pastes = getUserPastes($conn, $profile_info['id']);
-
+$is_current_user = ($current_user !== null) && ($profile_info['id'] == $current_user->user_id);
 
 updatePageViews($conn);
 
 if (isset($_GET['del'])) {
-    if ($_SESSION['token']) { // Prevent unauthorized deletes
+    if ($current_user !== null) { // Prevent unauthorized deletes
         $paste_id = intval(trim($_GET['id']));
 
         $query = $conn->prepare('SELECT user_id FROM pastes WHERE id = ?');
         $query->execute([$paste_id]);
         $result = $query->fetch();
 
-        if (empty($result) || $result['user_id'] !== $profile_info['id']) {
+        if (empty($result) || $result['user_id'] !== $current_user->user_id) {
             $error = $lang['delete_error_invalid']; // Does not exist or not paste owner
         } else {
             $query = $conn->prepare('DELETE FROM pastes WHERE id = ?');

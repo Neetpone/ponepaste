@@ -76,9 +76,8 @@ $start = $time;
         <div id="navMenuDocumentation" class="navbar-menu">
             <div class="navbar-end">
                 <div class="navbar-item">
-                    <?php if (isset($_SESSION['token'])) {
-                        if (isset($privatesite) && $privatesite == "on") { // Hide if site is private
-                        } else {
+                    <?php if ($current_user !== null) {
+                        if (!isset($privatesite) || $privatesite !== "on") {
                             if ($mod_rewrite == '1') {
                                 echo '  <a class="button navbar-item mx-2" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/">
 											<span class="icon has-text-info">
@@ -124,13 +123,13 @@ $start = $time;
                             }
                         }
                         echo '<div class="navbar-item has-dropdown is-hoverable">
-										<a class="navbar-link" role="presentation">' . $_SESSION['username'] . '</a>
+										<a class="navbar-link" role="presentation">' . pp_html_escape($current_user->username)  . '</a>
 											<div class="navbar-dropdown">';
                         if ($mod_rewrite == '1') {
-                            echo '<a class="navbar-item" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/user/' . $_SESSION['username'] . '">Pastes</a>';
+                            echo '<a class="navbar-item" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/user/' . urlencode($current_user->username) . '">Pastes</a>';
                             echo '<a class="navbar-item" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/profile">Settings</a>';
                         } else {
-                            echo '<a class="navbar-item" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/user.php?user=' . $_SESSION['username'] . '">Pastes</a>';
+                            echo '<a class="navbar-item" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/user.php?user=' . urlencode($current_user->username) . '">Pastes</a>';
                             echo '<a class="navbar-item" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/profile.php">Settings</a>';
                         }
                         echo '<hr class="navbar-divider">
@@ -141,8 +140,7 @@ $start = $time;
                     <?php } else { ?>
                         <div class="buttons">
                             <?php
-                            if (isset($privatesite) && $privatesite == "on") { // Hide if site is private
-                            } else {
+                            if (!isset($privatesite) || $privatesite != "on") {
                                 if ($mod_rewrite == '1') {
                                     echo '<a class="button navbar-item mx-2" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/archive">
 											<span class="icon has-text-info">

@@ -6,28 +6,18 @@ require_once('includes/functions.php');
 // UTF-8
 header('Content-Type: text/html; charset=utf-8');
 
-$date = date('jS F Y');
-$ip = $_SERVER['REMOTE_ADDR'];
-
-if (isset($_POST['fid']) && isset($_SESSION['token'])) {
-    $f_user = htmlspecialchars($_SESSION['username']);
-    $f_pasteid = Trim(htmlspecialchars($_POST['fid']));
-    $f_pasteid = preg_replace('/[^0-9]/', '', $f_pasteid);
-    $f_pasteid = (int)filter_var($f_pasteid, FILTER_SANITIZE_NUMBER_INT);
-    $f_time = gmmktime(date("H"), date("i"), date("s"), date("n"), date("j"), date("Y"));
-
-
-    $query = $conn->prepare('SELECT 1 FROM pins WHERE f_paste = ? AND m_fav = ?');
-    $query->execute([$f_pasteid, $f_user]);
+if ($current_user && !empty($_POST['fid'])) {
+    $paste_id = intval($_POST['fid']);
+    $query = $conn->prepare('SELECT 1 FROM pins WHERE paste_id = ? AND user_id = ?');
+    $query->execute([$paste_id, $current_user->user_id]);
 
     if ($query->fetch()) { /* Already favorited */
-        $query = $conn->prepare('DELETE FROM pins WHERE f_paste = ? AND m_fav = ?');
+        $query = $conn->prepare('DELETE FROM pins WHERE paste_id = ? AND user_id = ?');
     } else {
-        $query = $conn->prepare('INSERT INTO pins (m_fav, f_paste, f_time) VALUES (?, ?, NOW())');
+        $query = $conn->prepare('INSERT INTO pins (paste_id, user_id, f_time) VALUES (?, ?, NOW())');
     }
 
-    $query->execute([$f_pasteid, $f_user]);
-
+    $query->execute([$paste_id, $current_user->user_id]);
     $error = 'Paste has been favorited.';
 }
 

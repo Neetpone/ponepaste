@@ -5,6 +5,8 @@ if (!defined('IN_PONEPASTE')) {
 
 require_once(__DIR__ . '/config.php');
 require_once(__DIR__ . '/functions.php');
+require_once(__DIR__ . '/DatabaseHandle.class.php');
+require_once(__DIR__ . '/User.class.php');
 
 /* View functions */
 function urlForPaste($paste_id) : string {
@@ -46,18 +48,6 @@ function getSiteTotalviews(PDO $conn) : int {
 function getSiteTotal_unique_views(PDO $conn) : int {
     return intval($conn->query('SELECT tvisit FROM page_view ORDER BY id DESC LIMIT 1')->fetch(PDO::FETCH_NUM)[0]);
 }
-
-function getCurrentUser(PDO $conn) : array | null {
-    if (empty($_SESSION['username'])) {
-        return null;
-    }
-
-    $query = $conn->prepare('SELECT * FROM users WHERE username = ?');
-    $query->execute([$_SESSION['username']]);
-
-    return $query->fetch();
-}
-
 
 /**
  * Specialization of `htmlentities()` that avoids double escaping and uses UTF-8.
@@ -115,6 +105,8 @@ $conn = new PDO(
     $db_opts
 );
 
+$new_conn = new DatabaseHandle("mysql:host=$db_host;dbname=$db_schema;charset=utf8", $db_user, $db_pass);
+
 // Setup site info
 $site_info = getSiteInfo();
 $row = $site_info['site_info'];
@@ -147,9 +139,7 @@ if ($site_permissions) {
 $privatesite = $siteprivate;
 $noguests = $disableguest;
 
-if (isset($_SESSION['username'])) {
-    $noguests = "off";
-}
+
 
 // Prevent a potential LFI (you never know :p)
 $lang_file = "${default_lang}.php";
@@ -164,8 +154,7 @@ if (is_banned($conn, $ip)) die($lang['banned']); // "You have been banned from "
 // Logout
 if (isset($_GET['logout'])) {
     header('Location: ' . $_SERVER['HTTP_REFERER']);
-    unset($_SESSION['token']);
-    unset($_SESSION['username']);
+    unset($_SESSION['user_id']);
     unset($_SESSION['pic']);
     session_destroy();
 }
@@ -175,4 +164,9 @@ $total_pastes = getSiteTotalPastes($conn);
 $total_page_views = getSiteTotalviews($conn);
 $total_unique_views = getSiteTotal_unique_views($conn);
 
-$current_user = getCurrentUser($conn);
+$current_user = User::current($new_conn);
+//$current_user = getCurrentUser($conn);
+
+if ($current_user) {
+    $noguests = "off";
+}
