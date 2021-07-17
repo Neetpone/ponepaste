@@ -14,9 +14,7 @@
  */
 session_start();
 
-if (isset($_SESSION['login'])) {
-// Do nothing	
-} else {
+if (!isset($_SESSION['login'])) {
     header("Location: .");
     exit();
 }

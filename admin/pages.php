@@ -18,28 +18,27 @@ require_once('common.php');
 updateAdminHistory($conn);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST{'editme'})) {
+    if (isset($_POST['editme'])) {
         $edit_me_id = htmlentities(Trim($_POST['editme']));
         $page_name = Trim($_POST['page_name']);
         $page_title = Trim($_POST['page_title']);
         $page_content = $_POST['data'];
 
         $query = "UPDATE pages SET last_date='$date', page_name='$page_name', page_title='$page_title', page_content='$page_content' WHERE id='$edit_me_id'";
-        mysqli_query($con, $query);
     } else {
         $page_name = Trim($_POST['page_name']);
         $page_title = Trim($_POST['page_title']);
         $page_content = $_POST['data'];
 
         $query = "INSERT INTO pages (last_date,page_name,page_title,page_content) VALUES ('$date','$page_name','$page_title','$page_content')";
-        mysqli_query($con, $query);
     }
+    mysqli_query($con, $query);
     $page_name = "";
     $page_title = "";
     $page_content = "";
 }
 
-if (isset($_GET{'edit'})) {
+if (isset($_GET['edit'])) {
 
     $page_id = trim($_GET['edit']);
     $sql = "SELECT * FROM pages where id='$page_id'";
@@ -120,7 +119,7 @@ if (isset($_GET{'edit'})) {
                                 </div>
                                 <br/>
                                 <?php
-                                if (isset($_GET{'edit'})) {
+                                if (isset($_GET['edit'])) {
                                     echo '<input type="hidden" value=' . $_GET['edit'] . 'id="editme" name="editme" />';
                                 }
                                 ?>
@@ -151,7 +150,7 @@ if (isset($_GET{'edit'})) {
                                     <th>Delete</th>
 
                                     <?php
-                                    if (isset($_GET{'delete'})) {
+                                    if (isset($_GET['delete'])) {
                                         $delete = htmlentities(Trim($_GET['delete']));
                                         $query = "DELETE FROM pages WHERE id=$delete";
                                         $result = mysqli_query($con, $query);

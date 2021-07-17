@@ -1,7 +1,7 @@
 <?php
 // Turn off all error reporting - uh no?
 //error_reporting(0);
-?>
+
 <?php
 /**
  * GeSHi - Generic Syntax Highlighter
@@ -864,7 +864,7 @@ class GeSHi {
      * @since 1.0.0
      */
     public function enable_classes($flag = true) {
-        $this->use_classes = ($flag) ? true : false;
+        $this->use_classes = (bool)$flag;
     }
 
     /**
@@ -1011,7 +1011,7 @@ class GeSHi {
      * @since 1.0.0
      */
     public function set_keyword_group_highlighting($key, $flag = true) {
-        $this->lexic_permissions['KEYWORDS'][$key] = ($flag) ? true : false;
+        $this->lexic_permissions['KEYWORDS'][$key] = (bool)$flag;
     }
 
     /**
@@ -1051,7 +1051,7 @@ class GeSHi {
      * @since 1.0.0
      */
     public function set_comments_highlighting($key, $flag = true) {
-        $this->lexic_permissions['COMMENTS'][$key] = ($flag) ? true : false;
+        $this->lexic_permissions['COMMENTS'][$key] = (bool)$flag;
     }
 
     /**
@@ -1080,7 +1080,7 @@ class GeSHi {
      * @since 1.0.0
      */
     public function set_escape_characters_highlighting($flag = true) {
-        $this->lexic_permissions['ESCAPE_CHAR'] = ($flag) ? true : false;
+        $this->lexic_permissions['ESCAPE_CHAR'] = (bool)$flag;
     }
 
     /**
@@ -1116,7 +1116,7 @@ class GeSHi {
      * @deprecated In favour of set_symbols_highlighting
      */
     public function set_brackets_highlighting($flag) {
-        $this->lexic_permissions['BRACKETS'] = ($flag) ? true : false;
+        $this->lexic_permissions['BRACKETS'] = (bool)$flag;
     }
 
     /**
@@ -1152,7 +1152,7 @@ class GeSHi {
      */
     public function set_symbols_highlighting($flag) {
         // Update lexic permissions for this symbol group
-        $this->lexic_permissions['SYMBOLS'] = ($flag) ? true : false;
+        $this->lexic_permissions['SYMBOLS'] = (bool)$flag;
 
         // For backward compatibility
         $this->set_brackets_highlighting($flag);
@@ -1184,7 +1184,7 @@ class GeSHi {
      * @since 1.0.0
      */
     public function set_strings_highlighting($flag) {
-        $this->lexic_permissions['STRINGS'] = ($flag) ? true : false;
+        $this->lexic_permissions['STRINGS'] = (bool)$flag;
     }
 
     /**
@@ -1233,7 +1233,7 @@ class GeSHi {
      * @since 1.0.0
      */
     public function set_numbers_highlighting($flag) {
-        $this->lexic_permissions['NUMBERS'] = ($flag) ? true : false;
+        $this->lexic_permissions['NUMBERS'] = (bool)$flag;
     }
 
     /**
@@ -1264,7 +1264,7 @@ class GeSHi {
      * @since 1.0.0
      */
     public function set_methods_highlighting($flag) {
-        $this->lexic_permissions['METHODS'] = ($flag) ? true : false;
+        $this->lexic_permissions['METHODS'] = (bool)$flag;
     }
 
     /**
@@ -1295,7 +1295,7 @@ class GeSHi {
      * @since 1.0.0
      */
     public function set_regexps_highlighting($key, $flag) {
-        $this->lexic_permissions['REGEXPS'][$key] = ($flag) ? true : false;
+        $this->lexic_permissions['REGEXPS'][$key] = (bool)$flag;
     }
 
     /**
@@ -1306,7 +1306,7 @@ class GeSHi {
      * @since 1.0.0
      */
     public function set_case_sensitivity($key, $case) {
-        $this->language_data['CASE_SENSITIVE'][$key] = ($case) ? true : false;
+        $this->language_data['CASE_SENSITIVE'][$key] = (bool)$case;
     }
 
     /**
@@ -1406,7 +1406,7 @@ class GeSHi {
      * @todo  Rewrite with array traversal
      */
     public function enable_highlighting($flag = true) {
-        $flag = $flag ? true : false;
+        $flag = (bool)$flag;
         foreach ($this->lexic_permissions as $key => $value) {
             if (is_array($value)) {
                 foreach ($value as $k => $v) {
@@ -1781,7 +1781,7 @@ class GeSHi {
      * @since 1.0.2
      */
     public function enable_important_blocks($flag) {
-        $this->enable_important_blocks = ($flag) ? true : false;
+        $this->enable_important_blocks = (bool)$flag;
     }
 
     /**
@@ -1791,7 +1791,7 @@ class GeSHi {
      * @since 1.0.2
      */
     public function enable_ids($flag = true) {
-        $this->add_ids = ($flag) ? true : false;
+        $this->add_ids = (bool)$flag;
     }
 
     /**
@@ -3192,14 +3192,11 @@ class GeSHi {
      * @since  1.0.0
      */
     protected function change_case($instr) {
-        switch ($this->language_data['CASE_KEYWORDS']) {
-            case GESHI_CAPS_UPPER:
-                return strtoupper($instr);
-            case GESHI_CAPS_LOWER:
-                return strtolower($instr);
-            default:
-                return $instr;
-        }
+        return match ($this->language_data['CASE_KEYWORDS']) {
+            GESHI_CAPS_UPPER => strtoupper($instr),
+            GESHI_CAPS_LOWER => strtolower($instr),
+            default => $instr,
+        };
     }
 
     /**
@@ -3445,8 +3442,7 @@ class GeSHi {
         foreach (array_keys($this->language_data['KEYWORDS']) as $k) {
             if (!$this->use_classes) {
                 $attributes = ' style="' .
-                    (isset($this->language_data['STYLES']['KEYWORDS'][$k]) ?
-                        $this->language_data['STYLES']['KEYWORDS'][$k] : "") . '"';
+                    ($this->language_data['STYLES']['KEYWORDS'][$k] ?? "") . '"';
             } else {
                 $attributes = ' class="kw' . $k . '"';
             }
@@ -4126,7 +4122,7 @@ class GeSHi {
         $footer = $this->footer_content;
         if ($footer) {
             if ($this->header_type == GESHI_HEADER_PRE) {
-                $footer = str_replace("\n", '', $footer);;
+                $footer = str_replace("\n", '', $footer);
             }
             $footer = $this->replace_keywords($footer);
 
@@ -4377,20 +4373,12 @@ class GeSHi {
         //       or the appropriate key is given.
         foreach ($this->link_styles as $key => $style) {
             if ($style != '') {
-                switch ($key) {
-                    case GESHI_LINK:
-                        $stylesheet .= "{$selector}a:link {{$style}}\n";
-                        break;
-                    case GESHI_HOVER:
-                        $stylesheet .= "{$selector}a:hover {{$style}}\n";
-                        break;
-                    case GESHI_ACTIVE:
-                        $stylesheet .= "{$selector}a:active {{$style}}\n";
-                        break;
-                    case GESHI_VISITED:
-                        $stylesheet .= "{$selector}a:visited {{$style}}\n";
-                        break;
-                }
+                $stylesheet .= match ($key) {
+                    GESHI_LINK => "{$selector}a:link {{$style}}\n",
+                    GESHI_HOVER => "{$selector}a:hover {{$style}}\n",
+                    GESHI_ACTIVE => "{$selector}a:active {{$style}}\n",
+                    GESHI_VISITED => "{$selector}a:visited {{$style}}\n",
+                };
             }
         }
 

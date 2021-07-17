@@ -117,4 +117,4 @@ $lang['profile-total-pri'] = "Total private pastes:";
 $lang['profile-total-views'] = "Total views of all your pastes:";
 $lang['embed-hosted-by'] = "hosted by";
 $lang['view-raw'] = "Покажи в необработен текст";
-?>
+

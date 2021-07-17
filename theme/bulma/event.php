@@ -69,8 +69,7 @@
                     <?php } else { ?>
 
                     <?php }
-                    if (isset($privatesite) && $privatesite == "on") { // Remove 'recent pastes' if site is private
-                    } else { ?>
+                    if (!isset($privatesite) || $privatesite != "on") { ?>
                     <div class="notification is-warning">
                         <strong id="headline">Entries Deadline</strong>
                         <div id="countdown">
@@ -217,8 +216,9 @@
 
 <!-- End Panel -->
 <?php }
-if ($privatesite == "on") { // Remove sidebar if site is private
+if ($privatesite != "on") {
+    return;
 } elseif (isset($site_ads)) {
     echo $site_ads['ads_2'];
-}
+}// Remove sidebar if site is private
 ?>

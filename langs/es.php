@@ -117,4 +117,4 @@ $lang ['perfil-total-pri'] = "Total de pegados privados:";
 $lang ['profile-total-views'] = "Total de vistas de todos sus pegados:";
 $lang ['embed-hosted-by'] = "alojado por";
 $lang ['view-raw'] = "Ver crudo";
-?>
+

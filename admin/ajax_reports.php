@@ -1,9 +1,7 @@
 <?php
 session_start();
 
-if (isset($_SESSION['login'])) {
-// Do nothing	
-} else {
+if (!isset($_SESSION['login'])) {
     header("Location: .");
     exit();
 }
@@ -65,4 +63,3 @@ require('ssp.reports.php');
 echo json_encode(
     SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns, $columns2)
 );
-?>

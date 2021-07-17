@@ -14,9 +14,7 @@
  */
 session_start();
 
-if (isset($_SESSION['login'])) {
-// Do nothing	
-} else {
+if (!isset($_SESSION['login'])) {
     header("Location: .");
     exit();
 }
@@ -57,9 +55,7 @@ while ($row = mysqli_fetch_array($result)) {
 }
 
 if ($last_ip == $ip) {
-    if ($last_date == $date) {
-
-    } else {
+    if ($last_date != $date) {
         $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
         mysqli_query($con, $query);
     }
@@ -192,8 +188,7 @@ if ($last_ip == $ip) {
                                                 $fname = explode('.php', $files1[$loop]);
                                                 $fname = $fname[0];
                                                 $ffname = $files1[$loop];
-                                                if ($ffname == "index.php") {/* we don't want index.php showing */
-                                                } else {
+                                                if ($ffname != "index.php") {
                                                     echo '<option value="' . $ffname . '">' . $fname . '</option>';
                                                 }
                                             }

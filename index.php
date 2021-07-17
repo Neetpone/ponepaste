@@ -236,4 +236,3 @@ OutPut:
 require_once('theme/' . $default_theme . '/header.php');
 require_once('theme/' . $default_theme . '/main.php');
 require_once('theme/' . $default_theme . '/footer.php');
-?>

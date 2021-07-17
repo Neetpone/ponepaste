@@ -399,4 +399,3 @@ if ($_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest") {
     header("Location: http://ponepaste.org/SVOtaKqJZh4nT9Z");
     die();
 }
-?>

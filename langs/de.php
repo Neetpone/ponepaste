@@ -119,4 +119,4 @@ $lang['profile-total-pri'] = "Total private Pastes:";
 $lang['profile-total-views'] = "Total Ansichten all deiner Pastes:";
 $lang['embed-hosted-by'] = "gehostet von";
 $lang['view-raw'] = "Zeige Raw";
-?>
+

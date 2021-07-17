@@ -68,14 +68,13 @@ function updatePageViews(PDO $conn) : void {
     $last_date = $last_page_view['date'];
 
     if ($last_date == $date) {
-        if (str_contains($data_ip, $ip)) {
-            $last_tpage = intval($last_page_view['tpage']) + 1;
+        $last_tpage = intval($last_page_view['tpage']) + 1;
 
+        if (str_contains($data_ip, $ip)) {
             // IP already exists, Update view count
             $statement = $conn->prepare("UPDATE page_view SET tpage = ? WHERE id = ?");
             $statement->execute([$last_tpage, $last_page_view['id']]);
         } else {
-            $last_tpage = intval($last_page_view['tpage']) + 1;
             $last_tvisit = intval($last_page_view['tvisit']) + 1;
 
             // Update both tpage and tvisit.

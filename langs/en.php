@@ -130,4 +130,4 @@ $lang['pastfavs-total'] = "Total Favorites of your pastes:";
 $lang['yourfavs-total'] = "Total Favorites by you:";
 $lang['embed-hosted-by'] = "hosted by";
 $lang['view-raw'] = "View Raw";
-?>
+

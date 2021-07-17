@@ -13,19 +13,6 @@
  * GNU General Public License in GPL.txt for more details.
  */
 
-
-function timer() {
-    static $start;
-
-    if (is_null($start)) {
-        $start = microtime(true);
-    } else {
-        $diff = round((microtime(true) - $start), 4);
-        $start = null;
-        return $diff;
-    }
-}
-
 function getUserFavs(PDO $conn, string $user_id) : array {
     $query = $conn->prepare(
         "SELECT pins.f_time, pastes.id, pastes.title, pastes.created_at, pastes.tagsys
@@ -100,21 +87,16 @@ function linkify($value, $protocols = array('http', 'mail'), array $attributes =
 
     // Extract text links for each protocol
     foreach ((array)$protocols as $protocol) {
-        switch ($protocol) {
-            case 'http':
-            case 'https':
-                $value = preg_replace_callback('~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) {
-                    if ($match[1]) $protocol = $match[1];
-                    $link = $match[2] ?: $match[3];
-                    return '<' . array_push($links, "<a $attr href=\"$protocol://$link\">$protocol://$link</a>") . '>';
-                }, $value);
-                break;
-            default:
-                $value = preg_replace_callback('~' . preg_quote($protocol, '~') . '://([^\s<]+?)(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) {
-                    return '<' . array_push($links, "<a $attr href=\"$protocol://{$match[1]}\">$protocol://{$match[1]}</a>") . '>';
-                }, $value);
-                break;
-        }
+        $value = match ($protocol) {
+            'http', 'https' => preg_replace_callback('~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) {
+                if ($match[1]) $protocol = $match[1];
+                $link = $match[2] ?: $match[3];
+                return '<' . array_push($links, "<a $attr href=\"$protocol://$link\">$protocol://$link</a>") . '>';
+            }, $value),
+            default => preg_replace_callback('~' . preg_quote($protocol, '~') . '://([^\s<]+?)(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) {
+                return '<' . array_push($links, "<a $attr href=\"$protocol://{$match[1]}\">$protocol://{$match[1]}</a>") . '>';
+            }, $value),
+        };
     }
 
     // Insert all link
@@ -213,7 +195,7 @@ function getRecent($conn, $count) {
 }
 
 function getRecentadmin($conn, $count = 5) {
-    $query = $conn->prepare('SELECT id, ip title, date, now_time, views, member FROM pastes ORDER BY id DESC LIMIT 0, ?');
+    $query = $conn->prepare('SELECT id, ip, title, date, now_time, views, member FROM pastes ORDER BY id DESC LIMIT 0, ?');
     $query->execute([$count]);
 
     return $query->fetchAll();
@@ -255,8 +237,8 @@ LIMIT 0 , ?");
 
 function getUserPastes(PDO $conn, $user_id) : array {
     $query = $conn->prepare(
-        "SELECT id, title, visible,code,created_at,tagsys,user_id from pastes WHERE user_id= ?
-        ORDER by pastes.id DESC");
+        "SELECT id, title, visible, code, created_at, tagsys, user_id, views from pastes WHERE user_id = ?
+         ORDER by pastes.id DESC");
     $query->execute([$user_id]);
     return $query->fetchAll();
 }
@@ -350,8 +332,7 @@ function conTime($secs) {
     $ret[] = 'ago';
 
     $val = join(' ', $ret);
-    if (str_conntains($val, "week")) {
-    } else {
+    if (!str_conntains($val, "week")) {
         $val = str_replace("and", "", $val);
     }
     if (Trim($val) == "ago") {
@@ -404,7 +385,7 @@ function truncatetag($input, $maxWords, $maxChars) {
         $truncated1[] = $fragment;
     }
 
-    $result = implode($truncated1, ' ');
+    $result = implode(' ', $truncated1);
 
     return $result . ($input == $result ? '' : '...');
 }
@@ -414,11 +395,9 @@ function doDownload($paste_id, $p_title, $p_member, $p_conntent, $p_code) {
     if ($p_code) {
         // Figure out extensions.
         $ext = "txt";
-        switch ($p_code) {
-            default:
-                $ext = 'txt';
-                break;
-        }
+        $ext = match ($p_code) {
+            default => 'txt',
+        };
 
         // Download
         $p_title = stripslashes($p_title);

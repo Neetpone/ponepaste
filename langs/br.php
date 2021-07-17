@@ -118,4 +118,4 @@ $lang['profile-total-pri'] = "Numero de pastes privados:";
 $lang['profile-total-views'] = "Numero de visualizações nos seus pastes:";
 $lang['embed-hosted-by'] = "hospedado por";
 $lang['view-raw'] = "Ver texto bruto";
-?>
+

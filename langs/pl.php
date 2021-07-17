@@ -119,4 +119,4 @@ $lang['profile-total-pri'] = "Prywatne wklejki:";
 $lang['profile-total-views'] = "Wyświetlenia wszystkich wklejek:";
 $lang['embed-hosted-by'] = "przechowywane na";
 $lang['view-raw'] = "Surowy plik";
-?>
+

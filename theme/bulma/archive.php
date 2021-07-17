@@ -75,8 +75,7 @@
                 ?>
             </div>
             <?php }
-            if ($privatesite == "on") { // Remove sidebar if site is private
-            } else {
+            if ($privatesite != "on") {
                 require_once('theme/' . $default_theme . '/sidebar.php');
             }
             ?>

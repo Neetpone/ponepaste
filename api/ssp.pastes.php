@@ -308,8 +308,7 @@ class SSP {
         } catch (PDOException $e) {
             self::fatal("An SQL error occurred: " . $e->getMessage());
         }
-        $result = $stmt->fetchAll();
-        return $result;
+        return $stmt->fetchAll();
     }
 
     static function Ssql_exec($db, $bindings, $sql = null) {
@@ -341,7 +340,7 @@ class SSP {
             $result[$loop]['id'] = $arr['id'];
             $result[$loop]['member'] = $arr['member'];
             $result[$loop]['tagsys'] = sandwitch($arr['tagsys']);
-            $date_time = strtotime(isset($arr['date']) ? $arr['date'] : '0');
+            $date_time = strtotime($arr['date'] ?? '0');
             $result[$loop]['date'] = date("d F Y", $date_time);
             $myid = $arr['id'];
             $mytitle = $arr['title'];

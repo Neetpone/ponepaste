@@ -33,4 +33,3 @@ $p_title = $lang['archive']; // "Pastes Archive";
 require_once('theme/' . $default_theme . '/header.php');
 require_once('theme/' . $default_theme . '/archive.php');
 require_once('theme/' . $default_theme . '/footer.php');
-?>

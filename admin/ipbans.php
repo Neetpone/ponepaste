@@ -14,9 +14,7 @@
  */
 session_start();
 
-if (isset($_SESSION['login'])) {
-// Do nothing	
-} else {
+if (!isset($_SESSION['login'])) {
     header("Location: .");
     exit();
 }
@@ -57,9 +55,7 @@ while ($row = mysqli_fetch_array($result)) {
 }
 
 if ($last_ip == $ip) {
-    if ($last_date == $date) {
-
-    } else {
+    if ($last_date != $date) {
         $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
         mysqli_query($con, $query);
     }
@@ -97,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || isset($_GET['banip'])) {
     }
 }
 
-if (isset($_GET{'delete'})) {
+if (isset($_GET['delete'])) {
     $delete = htmlentities(Trim($_GET['delete']));
     $query = "DELETE FROM ban_user WHERE id=$delete";
     $result = mysqli_query($con, $query);
@@ -237,8 +233,8 @@ if (isset($_GET{'delete'})) {
                             $rec_count = Trim($row[0]);
 
 
-                            if (isset($_GET{'page'})) { // Current page
-                                $page = $_GET{'page'} + 1;
+                            if (isset($_GET['page'])) { // Current page
+                                $page = $_GET['page'] + 1;
                                 $offset = $rec_limit * $page;
                             } else {
                                 // Show first set of results

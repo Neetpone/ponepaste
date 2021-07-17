@@ -119,4 +119,3 @@ $lang['profile-total-views'] = "Nombre total de vues :";
 $lang['embed-hosted-by'] = "hébergé par";
 $lang['view-raw'] = "Voir les données brutes";
 
-?>

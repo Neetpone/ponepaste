@@ -1,5 +1,9 @@
 <?php
-function captcha($color, $mode, $mul, $allowed) {
+
+use JetBrains\PhpStorm\ArrayShape;
+
+#[ArrayShape(['code' => "mixed|string", 'image_src' => "string"])]
+function captcha($color, $mode, $mul, $allowed) : array {
 
     $bg_path = dirname(__FILE__) . '/captchabg/';
     $font_path = dirname(__FILE__) . '/fonts/';
@@ -100,10 +104,10 @@ function captcha($color, $mode, $mul, $allowed) {
 
     $_SESSION['_CAPTCHA']['config'] = serialize($captcha_config);
 
-    return array(
+    return [
         'code' => $captcha_config['code'],
         'image_src' => $image_src
-    );
+    ];
 
 }
 

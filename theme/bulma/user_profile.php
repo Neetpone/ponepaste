@@ -174,28 +174,22 @@ $protocol = paste_protocol();
                         <?php
                         foreach ($profile_pastes as $row) {
                             $title = Trim($row['title']);
-                            $p_id = Trim($row['id']);
+                            $p_id = $row['id'];
                             $p_code = Trim($row['code']);
                             $p_date = new DateTime($row['created_at']);
                             $p_dateui = $p_date->format("d F Y");
                             $p_views = Trim($row['views']);
-                            $p_visible = Trim($row['visible']);
+                            $p_visible = intval($row['visible']);
                             $p_tags = Trim($row['tagsys']);
                             $tagArray = explode(',', $p_tags);
                             $tagArray = array_filter($tagArray);
 
 
-                            switch ($p_visible) {
-                                case 0:
-                                    $p_visible = $lang['public'];
-                                    break;
-                                case 1:
-                                    $p_visible = $lang['unlisted'];
-                                    break;
-                                case 2:
-                                    $p_visible = $lang['private'];
-                                    break;
-                            }
+                            $p_visible = match ($p_visible) {
+                                0 => $lang['public'],
+                                1 => $lang['unlisted'],
+                                2 => $lang['private']
+                            };
                             $p_link = ($mod_rewrite == '1') ? "$p_id" : "paste.php?id=$p_id";
                             $p_delete_link = ($mod_rewrite == '1') ? "user.php?del&user=$profile_username&id=$p_id" : "user.php?del&user=$profile_username&id=$p_id";
                             $p_tag_link = ($mod_rewrite == '1') ? "user.php?user=$profile_username&q=$p_tags" : "user.php?user=$profile_username&q=$tags";
@@ -206,7 +200,7 @@ $protocol = paste_protocol();
                                 if ($row['visible'] == 0) {
                                     echo '<tr> 
                                                 <td>
-                                                    <a href="' . $protocol . $baseurl . '/' . $p_link . '" title="' . $title . '">' . ($title) . '</a>
+                                                    <a href="' . urlForPaste($p_id) . '" title="' . $title . '">' . ($title) . '</a>
                                                 </td>    
                                                 <td data-sort="' . $p_date->format('U') . '" class="td-center">
                                                 <span>' . $p_dateui . '</span>
@@ -218,10 +212,10 @@ $protocol = paste_protocol();
                                     if (strlen($p_tags) > 0) {
                                         foreach ($tagArray as $key => $tags) {
                                             echo '<a href="' . $protocol . $baseurl . '/user.php?user=' . $profile_username . '&q=' . $tags . '"><span class="tag is-info">' . trim($tags) . '</span></a>';
-                                        };
+                                        }
                                     } else {
                                         echo ' <span class="tag is-warning">No tags</span>';
-                                    };
+                                    }
 
 
                                     echo '</td> 
@@ -305,10 +299,10 @@ $protocol = paste_protocol();
                             if (strlen($f_tags) > 0) {
                                 foreach ($ftagArray as $key => $ftags) {
                                     echo '<span class="tag is-info">' . trim($ftags) . '</span>';
-                                };
+                                }
                             } else {
                                 echo ' <span class="tag is-warning">No tags</span>';
-                            };
+                            }
 
 
                             echo '</td> 

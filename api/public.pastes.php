@@ -281,8 +281,7 @@ class SSP {
         } catch (PDOException $e) {
             self::fatal("An SQL error occurred: " . $e->getMessage());
         }
-        $result = $stmt->fetchAll();
-        return $result;
+        return $stmt->fetchAll();
     }
 
     static function Ssql_exec($db, $bindings, $sql = null) {
@@ -389,4 +388,3 @@ class SSP {
     }
 }
 
-?>
