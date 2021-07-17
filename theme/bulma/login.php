@@ -90,37 +90,6 @@
                             </div>
                         </div>
                     </form>
-                    <!-- Oauth -->
-                    <?php if ($enablegoog == "no") {
-                    } else { ?>
-                        <div class="control">
-                            <a href="oauth/google.php?login">
-                                <div class="google-btn">
-                                    <div class="google-icon-wrapper">
-                                        <img class="google-icon"
-                                             src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
-                                    </div>
-                                    <p class="btn-text">Sign up with Google</p>
-                                </div>
-                            </a>
-                        </div>
-                        <br>
-                    <?php }
-                    if ($enablefb == "no") {
-                    } else { ?>
-                        <div class="control">
-                            <a class="btn-fb" href="oauth/facebook.php?login">
-                                <div class="fb-content">
-                                    <div class="logo">
-                                        <img src="https://facebookbrand.com/wp-content/uploads/2019/04/f_logo_RGB-Hex-Blue_512.png?w=512&h=512"
-                                             alt="" width="32px" height="32px">
-                                    </div>
-                                    <p>Sign up with Facebook</p>
-                                </div>
-                            </a>
-                        </div>
-                    <?php } ?>
-                    <!-- // -->
                     <?php // Registration page
                 } elseif (isset($_GET['registeraccount'])) {
                     ?>
@@ -182,37 +151,6 @@
                                 not sutible for under 18's</p>
                         </div>
                     </form>
-                    <!-- Oauth -->
-                    <?php if ($enablegoog == "no") {
-                    } else { ?>
-                        <div class="control">
-                            <a href="oauth/google.php?login">
-                                <div class="google-btn">
-                                    <div class="google-icon-wrapper">
-                                        <img class="google-icon"
-                                             src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
-                                    </div>
-                                    <p class="btn-text">Sign up with Google</p>
-                                </div>
-                            </a>
-                        </div>
-                        <br>
-                    <?php }
-                    if ($enablefb == "no") {
-                    } else { ?>
-                        <div class="control">
-                            <a class="btn-fb" href="oauth/facebook.php?login">
-                                <div class="fb-content">
-                                    <div class="logo">
-                                        <img src="https://facebookbrand.com/wp-content/uploads/2019/04/f_logo_RGB-Hex-Blue_512.png?w=512&h=512"
-                                             alt="" width="32px" height="32px">
-                                    </div>
-                                    <p>Sign up with Facebook</p>
-                                </div>
-                            </a>
-                        </div>
-                    <?php } ?>
-                    <!-- // -->
                     <?php // Forgot password
                 } elseif (isset($_GET['forgotpassw'])) {
                     ?>

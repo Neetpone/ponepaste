@@ -67,7 +67,6 @@ if (isset($_POST['forgot'])) {
         $row = $query->fetch();
         if ($row && password_verify($_POST['password'], $row['password'])) {
             // Username found
-            $db_oauth_uid = $row['oauth_uid'];
             $db_ip = $row['ip'];
             $db_id = $row['id'];
 
@@ -77,7 +76,6 @@ if (isset($_POST['forgot'])) {
             } if ($row['verified']) {
                 // Login successful
                 $_SESSION['token'] = md5($db_id . $username);
-                $_SESSION['oauth_uid'] = $db_oauth_uid;
                 $_SESSION['username'] = $username;
 
                 header('Location: ' . $_SERVER['HTTP_REFERER']);

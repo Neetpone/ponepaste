@@ -14,7 +14,7 @@
  */
 session_start();
 
-require_once('../config.php');
+require_once('../includes/config.php');
 
 $conn = new PDO(
     "mysql:host=$db_host;dbname=$db_schema;charset=utf8",

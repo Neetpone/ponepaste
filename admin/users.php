@@ -32,7 +32,7 @@ if (isset($_GET['logout'])) {
 
 $date = date('jS F Y');
 $ip = $_SERVER['REMOTE_ADDR'];
-require_once('../config.php');
+require_once('../includes/config.php');
 $con = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
 
 if (mysqli_connect_errno()) {
@@ -166,7 +166,6 @@ if ($last_ip == $ip) {
                         $query = "SELECT * FROM users WHERE id='$detail_id'";
                         $result = mysqli_query($con, $query);
                         while ($row = mysqli_fetch_array($result)) {
-                            $user_oauth_uid = $row['oauth_uid'];
                             $user_username = $row['username'];
                             $user_full_name = $row['full_name'];
                             $user_platform = Trim($row['platform']);
@@ -174,9 +173,7 @@ if ($last_ip == $ip) {
                             $user_date = $row['date'];
                             $user_ip = $row['ip'];
                         }
-                        if ($user_oauth_uid == '0') {
-                            $user_oauth_uid = "None";
-                        }
+
                         if ($user_verified == '0') {
                             $user_verified = "Unverified";
                         } elseif ($user_verified == '1') {
@@ -200,11 +197,6 @@ if ($last_ip == $ip) {
                                 <tr>
                                     <td> Platform</td>
                                     <td> <?php echo $user_platform; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> OAUTH ID</td>
-                                    <td> <?php echo $user_oauth_uid; ?> </td>
                                 </tr>
 
                                 <tr>

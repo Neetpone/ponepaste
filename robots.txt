@@ -4,8 +4,6 @@ Disallow: /includes/
 Disallow: /theme/
 Disallow: /langs/
 Disallow: /tmp/
-Disallow: /oauth/
-Disallow: /mail/
 
 User-Agent: Googlebot
 Disallow: /

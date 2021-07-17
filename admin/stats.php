@@ -32,7 +32,7 @@ if (isset($_GET['logout'])) {
 
 $date = date('jS F Y');
 $ip = $_SERVER['REMOTE_ADDR'];
-require_once('../config.php');
+require_once('../includes/config.php');
 $con = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
 
 if (mysqli_connect_errno()) {

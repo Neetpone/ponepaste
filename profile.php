@@ -36,7 +36,6 @@ $user_username = htmlentities(trim($_SESSION['username']));
 $query = $conn->prepare('SELECT * FROM users WHERE username = ?');
 $query->execute([$user_username]);
 $row = $query->fetch();
-$user_oauth_uid = $row['oauth_uid'];
 $user_id = $row['id'];
 $user_full_name = $row['full_name'];
 $user_platform = Trim($row['platform']);
@@ -44,10 +43,6 @@ $user_verified = $row['verified'];
 $user_date = $row['date'];
 $user_ip = $row['ip'];
 $user_password = $row['password'];
-
-if ($user_oauth_uid == '0') {
-    $user_oauth_uid = "None";
-}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['cpassword'])) {

@@ -3,8 +3,8 @@ if (!defined('IN_PONEPASTE')) {
     die('This file may not be accessed directly.');
 }
 
-require_once('config.php');
-require_once('includes/functions.php');
+require_once(__DIR__ . '/config.php');
+require_once(__DIR__ . '/functions.php');
 
 /* View functions */
 function urlForPaste($paste_id) : string {
@@ -165,7 +165,6 @@ if (is_banned($conn, $ip)) die($lang['banned']); // "You have been banned from "
 if (isset($_GET['logout'])) {
     header('Location: ' . $_SERVER['HTTP_REFERER']);
     unset($_SESSION['token']);
-    unset($_SESSION['oauth_uid']);
     unset($_SESSION['username']);
     unset($_SESSION['pic']);
     session_destroy();

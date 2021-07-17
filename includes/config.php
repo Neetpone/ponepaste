@@ -12,7 +12,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License in LIC.txt for more details.
  */
-
 if (gethostname() === 'thunderlane') {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
@@ -26,20 +25,8 @@ $currentversion = 2.2;
 // Otherwise, the maximum value that can be set is 4000 (4GB)
 $pastelimit = "1"; // 0.5 = 512 kilobytes, 1 = 1MB
 
-// OAUTH (to enable, change to yes and edit)
-$enablefb = "no";
-$enablegoog = "no";
-
-// "CHANGE THIS" = Replace with your details
-// Facebook
-define('FB_APP_ID', 'CHANGE THIS'); // Your application ID, see https://developers.facebook.com/docs/apps/register
-define('FB_APP_SECRET', 'CHANGE THIS');    // What's your Secret key
-
-// Google 
-define('G_Client_ID', 'CHANGE THIS'); // Get a Client ID from https://console.developers.google.com/projectselector/apis/library
-define('G_Client_Secret', 'CHANGE THIS'); // What's your Secret key
-define('G_Redirect_Uri', 'http://ponepaste.org//oauth/google.php'); // Leave this as is
-define('G_Application_Name', 'Paste'); // Make sure this matches the name of your application
+/* A long and random string used for additionally salting passwords. */
+const PP_PASSWORD_PEPPER = 'd791b6c6-91f2-4e8f-ba80-74ea968e4931';
 
 $db_host = 'localhost';
 $db_schema = 'p0nepast3s';

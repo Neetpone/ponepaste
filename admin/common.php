@@ -3,7 +3,7 @@ if (!defined('IN_ADMIN')) {
     die();
 }
 
-require_once('../config.php');
+require_once('../includes/config.php');
 
 function updateAdminHistory($conn) {
     $last_date = null;
