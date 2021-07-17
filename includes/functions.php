@@ -279,7 +279,9 @@ function jsonView($paste_id, $p_title, $p_conntent, $p_code) {
 
 
 function getTotalPastes(PDO $conn, string $username) : int {
-    $query = $conn->prepare("SELECT COUNT(*) FROM pastes WHERE member = ?");
+    $query = $conn->prepare("SELECT COUNT(*) AS total_pastes
+            FROM pastes INNER JOIN users ON users.id = pastes.user_id
+            WHERE users.username = ?");
     $query->execute([$username]);
 
     return intval($query->fetch(PDO::FETCH_NUM)[0]);

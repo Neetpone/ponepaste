@@ -20,7 +20,7 @@
     <div class="bd-main-container container">
         <div class="bd-duo">
             <div class="bd-lead">
-                <h1 class="title is-5"><?php echo $lang['totalpastes'] . ' ' . $total_pastes ?></h1>
+                <h1 class="title is-5"><?php echo $lang['totalpastes'] . ' ' . $total_user_pastes ?></h1>
                 <h1 class="subtitle is-6"><?php echo '<a href="user.php?user=' . $_SESSION['username'] . '" target="_self">' . $lang['mypastes'] . '</a>'; ?></h1>
                 <?php
                 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -40,6 +40,20 @@
                 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
                     <div class="columns">
                         <div class="column">
+                          <div class="field">
+                                <label class="label">Generate New Recovery Key</label>
+                                <div class="control has-icons-left has-icons-right">
+                                    <input disabled="" type="text" class="input" name="username"
+                                           style="cursor:not-allowed;" placeholder="New gen generated here">
+                                    <span class="icon is-small is-left">
+										<i class="fas fa-user"></i>
+									</span>
+                                </div>
+                            </div>
+                                                        <div class="field">
+                                 <button type="submit" name="Gen_key" class="button is-info">Generate New Key</button>
+                            </div>
+                            <hr>
                             <div class="field">
                                 <label class="label">Username</label>
                                 <div class="control has-icons-left has-icons-right">
@@ -85,8 +99,6 @@
                             <div class="field">
                                 <button type="submit" name="submit" class="button is-info">Submit</button>
                             </div>
-                        </div>
-                        <div class="column">
                         </div>
                         <div class="column">
                         </div>

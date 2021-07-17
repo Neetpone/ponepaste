@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 updatePageViews($conn);
 
-$total_pastes = getTotalPastes($conn, $user_username);
+$total_user_pastes = getTotalPastes($conn, $user_username);
 
 // Theme
 require_once('theme/' . $default_theme . '/header.php');
