@@ -255,15 +255,12 @@ LIMIT 0 , ?");
 
 function getUserPastes(PDO $conn, $user_id) : array {
     $query = $conn->prepare(
-        "SELECT pastes.id, visible, title, created_at, users.username, tagsys 
-        FROM pastes
-        INNER JOIN users ON pastes.user_id = users.id
-        WHERE users.username = ?
+        "SELECT id, title, visible,code,created_at,tagsys,user_id from pastes WHERE user_id= ?
         ORDER by pastes.id DESC");
     $query->execute([$user_id]);
     return $query->fetchAll();
 }
-
+ 
 function jsonView($paste_id, $p_title, $p_conntent, $p_code) {
     $stats = false;
     if ($p_code) {
