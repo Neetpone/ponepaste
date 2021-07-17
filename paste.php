@@ -231,8 +231,8 @@ if ($p_password == "NONE") {
         deleteMyPaste($con, $paste_id);
     }
 } else {
-    $p_download = "paste.php?download&id=$paste_id&password=" . password_hash(isset($_POST['mypass']), PASSWORD_DEFAULT);
-    $p_raw = "paste.php?raw&id=$paste_id&password=" . password_hash(isset($_POST['mypass']), PASSWORD_DEFAULT);
+    $p_download = "paste.php?download&id=$paste_id&password=" . pp_password_hash(isset($_POST['mypass']));
+    $p_raw = "paste.php?raw&id=$paste_id&password=" . pp_password_hash(isset($_POST['mypass']));
     // Check password
     if (isset($_POST['mypass'])) {
         if (pp_password_verify($_POST['mypass'], $p_password)) {

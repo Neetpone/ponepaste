@@ -63,7 +63,7 @@ if (isset($_POST['forgot'])) {
 } else if (isset($_POST['signin'])) { // Login process
     if (!empty($_POST['username']) && !empty($_POST['password'])) {
         $username = trim($_POST['username']);
-        $query = $conn->prepare("SELECT id, password, banned, verified FROM users WHERE username = ?");
+        $query = $conn->prepare("SELECT id, password, banned FROM users WHERE username = ?");
         $query->execute([$username]);
         $row = $query->fetch();
         $needs_rehash = false;
@@ -82,16 +82,13 @@ if (isset($_POST['forgot'])) {
             if ($row['banned']) {
                 // User is banned
                 $error = $lang['banned'];
-            } if ($row['verified']) {
+            } else {
                 // Login successful
                 $_SESSION['token'] = md5($db_id . $username);
                 $_SESSION['username'] = $username;
 
                 header('Location: ' . $_SERVER['HTTP_REFERER']);
                 exit();
-            } else {
-                // Account not verified
-                $error = $lang['notverified'];
             }
         } else {
             // Username not found or password incorrect.
