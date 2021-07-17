@@ -48,8 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['cpassword'])) {
         $user_new_full = trim(htmlspecialchars($_POST['full']));
         $user_old_pass = $_POST['old_password'];
-        if (password_verify($user_old_pass, $user_password)) {
-            $user_new_cpass = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        if (pp_password_verify($user_old_pass, $user_password)) {
+            $user_new_cpass = pp_password_hash($_POST['password']);
 
             $conn->prepare('UPDATE users SET full_name = ?, password = ? WHERE username = ?')
                 ->execute([$user_new_full, $user_new_cpass, $user_username]);

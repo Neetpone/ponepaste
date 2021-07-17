@@ -103,7 +103,7 @@ if (!$row) {
             exit();
         } else {
             if (isset($_GET['password'])) {
-                if (password_verify($_GET['password'], $p_password)) {
+                if (pp_password_verify($_GET['password'], $p_password)) {
                     doDownload($paste_id, $paste_title, $p_member, $op_content, $paste_code);
                     exit();
                 } else {
@@ -122,7 +122,7 @@ if (!$row) {
             exit();
         } else {
             if (isset($_GET['password'])) {
-                if (password_verify($_GET['password'], $p_password)) {
+                if (pp_password_verify($_GET['password'], $p_password)) {
                     rawView($paste_id, $paste_title, $op_content, $paste_code);
                     exit();
                 } else {
@@ -181,7 +181,7 @@ if (!$row) {
             exit();
         } else {
             if (isset($_GET['password'])) {
-                if (password_verify($_GET['password'], $p_password)) {
+                if (pp_password_verify($_GET['password'], $p_password)) {
                     embedView($paste_id, $paste_title, $p_content, $paste_code, $title, $p_baseurl, $ges_style, $lang);
                     exit();
                 } else {
@@ -235,7 +235,7 @@ if ($p_password == "NONE") {
     $p_raw = "paste.php?raw&id=$paste_id&password=" . password_hash(isset($_POST['mypass']), PASSWORD_DEFAULT);
     // Check password
     if (isset($_POST['mypass'])) {
-        if (password_verify($_POST['mypass'], $p_password)) {
+        if (pp_password_verify($_POST['mypass'], $p_password)) {
             // Theme
             require_once('theme/' . $default_theme . '/view.php');
             if ($p_expiry == "SELF") {
