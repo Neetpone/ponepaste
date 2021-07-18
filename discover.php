@@ -26,6 +26,7 @@ function transformPasteRow(array $row) : array {
         'title' => $row['title'],
         'member' => $row['member'],
         'time' => $row['created_at'],
+        'friendly_update_time' => friendlyDateDifference(new DateTime($row['updated_at']), new DateTime()),
         'friendly_time' => friendlyDateDifference(new DateTime($row['created_at']), new DateTime()),
         'tags' => $row['tagsys']
     ];

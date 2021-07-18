@@ -161,7 +161,7 @@
                                                             <p class="subtitle is-6">
                                                                 <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
                                                                 <br>
-                                                                <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
+                                                                <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_update_time'] ?></time>
                                                             </p>
                                                             <?php
                                                             if (!empty($paste['tags'])) {

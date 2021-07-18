@@ -147,7 +147,7 @@ function getUserRecom(PDO $conn, int $user_id) : array {
 
 function recentupdate($conn, $count) {
     $query = $conn->prepare(
-        "SELECT pastes.id AS id, visible, title, created_at, users.username AS member, tagsys
+        "SELECT pastes.id AS id, visible, title, created_at, updated_at, users.username AS member, tagsys
             FROM pastes
             INNER JOIN users ON users.id = pastes.user_id
             WHERE visible = '0' ORDER BY updated_at DESC
