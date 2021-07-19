@@ -138,8 +138,6 @@ if ($site_permissions) {
 $privatesite = $siteprivate;
 $noguests = $disableguest;
 
-
-
 // Prevent a potential LFI (you never know :p)
 $lang_file = "${default_lang}.php";
 if (in_array($lang_file, scandir('langs/'))) {

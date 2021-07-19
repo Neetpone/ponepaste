@@ -9,6 +9,13 @@ class User {
         $this->username = $row['username'];
     }
 
+    public static function findByUsername(DatabaseHandle $conn, string $username) : User | null {
+        $query = $conn->query('SELECT id, username FROM users WHERE username = ?', [$username]);
+        $row = $query->fetch();
+
+        return empty($row) ? null : new User($row);
+    }
+
     public static function current(DatabaseHandle $conn) : User | null {
         $session_user = User::createFromPhpSession($conn);
 
@@ -27,7 +34,7 @@ class User {
 
     public static function createFromRememberToken(DatabaseHandle $conn, string $remember_token) : User | null {
         $result = $conn->query(
-            'SELECT users.id AS id, users.username AS username
+            'SELECT users.id AS id, users.username AS username, users.banned AS banned
                 FROM user_sessions
                 INNER JOIN users ON users.id = user_sessions.user_id
                 WHERE user_sessions.token = ?', [$remember_token]
@@ -47,7 +54,7 @@ class User {
 
         $user_id = intval($_SESSION['user_id']);
 
-        $row = $conn->query('SELECT id, username FROM users WHERE id = ?', [$user_id])->fetch();
+        $row = $conn->query('SELECT id, username, banned FROM users WHERE id = ?', [$user_id])->fetch();
 
         return $row ? new User($row) : null;
     }

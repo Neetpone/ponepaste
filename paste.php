@@ -219,16 +219,18 @@ if ($p_password == "NONE") {
         $p_embed = "paste.php?embed&id=$paste_id";
     }
 
-    //pasteviews
+    // View counter
     if ($_SESSION['not_unique'] !== $paste_id) {
         $_SESSION['not_unique'] = $paste_id;
-        updateMyView($conn, $paste_id);
+        $conn->prepare("UPDATE pastes SET views = (views + 1) where id = ?")
+            ->execute($paste_id);
     }
 
     // Theme
     require_once('theme/' . $default_theme . '/view.php');
     if ($p_expiry == "SELF") {
-        deleteMyPaste($con, $paste_id);
+        $conn->prepare('DELETE FROM pastes WHERE id = ?')
+            ->execute([$paste_id]);
     }
 } else {
     $p_download = "paste.php?download&id=$paste_id&password=" . pp_password_hash(isset($_POST['mypass']));
@@ -239,7 +241,8 @@ if ($p_password == "NONE") {
             // Theme
             require_once('theme/' . $default_theme . '/view.php');
             if ($p_expiry == "SELF") {
-                deleteMyPaste($con, $paste_id);
+                $conn->prepare('DELETE FROM pastes WHERE id = ?')
+                    ->execute([$paste_id]);
             }
         } else {
             $error = $lang['wrongpwd']; //"Password is wrong";

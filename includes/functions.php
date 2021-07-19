@@ -176,12 +176,6 @@ function decrypt(string $value) : string {
     return openssl_decrypt($value, "AES-256-CBC", $sec_key);
 }
 
-function deleteMyPaste($conn, $paste_id) {
-    $query = "DELETE FROM pastes where id='$paste_id'";
-    $result = mysqli_query($conn, $query);
-}
-
-
 function getRecent($conn, $count) {
     $query = $conn->prepare("
         SELECT pastes.id, visible, title, created_at, users.username AS member, tagsys 
@@ -195,13 +189,17 @@ function getRecent($conn, $count) {
 }
 
 function getRecentadmin($conn, $count = 5) {
-    $query = $conn->prepare('SELECT id, ip, title, date, now_time, views, member FROM pastes ORDER BY id DESC LIMIT 0, ?');
+    $query = $conn->prepare(
+        'SELECT pastes.id AS id, pastes.ip AS ip, title, created_at, views, users.username AS member
+            FROM pastes
+            INNER JOIN users ON users.id = pastes.user_id
+            ORDER BY id DESC LIMIT 0, ?');
     $query->execute([$count]);
 
     return $query->fetchAll();
 }
 
-function getpopular($conn, $count) {
+function getpopular(PDO $conn, int $count) : array {
     $query = $conn->prepare("
         SELECT pastes.id AS id, visible, title, pastes.created_at AS created_at, views, users.username AS member, tagsys
             FROM pastes INNER JOIN users ON users.id = pastes.user_id
@@ -213,7 +211,7 @@ function getpopular($conn, $count) {
     return $query->fetchAll();
 }
 
-function getrandom($conn, $count) {
+function getrandom(PDO $conn, int $count) : array {
     $query = $conn->prepare("
         SELECT pastes.id, visible, title, created_at, views, users.username AS member, tagsys
             FROM pastes
@@ -225,38 +223,13 @@ function getrandom($conn, $count) {
     return $query->fetchAll();
 }
 
-function getUserRecent($conn, $count, $username) {
-    $query = $conn->prepare("SELECT id, member, title, date, now_time
-FROM pastes where member=? 
-ORDER BY id DESC
-LIMIT 0 , ?");
-    $query->execute([$username, $count]);
-    return $query->fetchAll();
-}
-
-
-function getUserPastes(PDO $conn, $user_id) : array {
+function getUserPastes(PDO $conn, int $user_id) : array {
     $query = $conn->prepare(
         "SELECT id, title, visible, code, created_at, tagsys, user_id, views from pastes WHERE user_id = ?
          ORDER by pastes.id DESC");
     $query->execute([$user_id]);
     return $query->fetchAll();
 }
- 
-function jsonView($paste_id, $p_title, $p_conntent, $p_code) {
-    $stats = false;
-    if ($p_code) {
-        // Raw
-        header('conntent-type: text/plain');
-        echo $p_conntent;
-        $stats = true;
-    } else {
-        // 404
-        header('HTTP/1.1 404 Not Found');
-    }
-    return $stats;
-}
-
 
 function getTotalPastes(PDO $conn, string $username) : int {
     $query = $conn->prepare("SELECT COUNT(*) AS total_pastes
@@ -269,18 +242,6 @@ function getTotalPastes(PDO $conn, string $username) : int {
 
 function isValidUsername(string $str) : bool {
     return !preg_match('/[^A-Za-z0-9._\\-$]/', $str);
-}
-
-function existingUser(PDO $conn, string $username) : bool {
-    $query = $conn->prepare('SELECT 1 FROM users WHERE username = ?');
-    $query->execute([$username]);
-
-    return (bool) $query->fetch();
-}
-
-function updateMyView(PDO $conn, $paste_id) {
-    $query = $conn->prepare("UPDATE pastes SET views = (views + 1) where id = ?");
-    $query->execute([$paste_id]);
 }
 
 function friendlyDateDifference(DateTime $lesser, DateTime $greater) : string {
@@ -341,7 +302,7 @@ function conTime($secs) {
     return $val;
 }
 
-function truncate($input, $maxWords, $maxChars) {
+function truncate(string $input, int $maxWords, int $maxChars) : string {
     $words = preg_split('/\s+/', $input);
     $words = array_slice($words, 0, $maxWords);
     $words = array_reverse($words);
@@ -362,32 +323,6 @@ function truncate($input, $maxWords, $maxChars) {
     $result = implode(' ', $truncated);
 
     return $result . ($input == $result ? '' : '[...]');
-}
-
-function truncatetag($input, $maxWords, $maxChars) {
-    $str = $input;
-    $pattern = '/,/i';
-    $words = preg_replace($pattern, ' ', $str);
-    $words = preg_split('/\s+/', $input);
-    $words = array_slice($words, 0, $maxWords);
-    $words = array_reverse($words);
-
-    $chars = 0;
-    $truncated1 = array();
-
-    while (count($words) > 0) {
-        $fragment = trim(array_pop($words));
-        $chars += strlen($fragment);
-
-        if ($chars > $maxChars)
-            break;
-
-        $truncated1[] = $fragment;
-    }
-
-    $result = implode(' ', $truncated1);
-
-    return $result . ($input == $result ? '' : '...');
 }
 
 function doDownload($paste_id, $p_title, $p_member, $p_conntent, $p_code) {
