@@ -33,19 +33,19 @@ function getSiteInfo() : array {
     return require('config/site.php');
 }
 
-function getSiteAds(PDO $conn) : array|bool {
+function getSiteAds(DatabaseHandle $conn) : array|bool {
     return $conn->query('SELECT text_ads, ads_1, ads_2 FROM ads LIMIT 1')->fetch();
 }
 
-function getSiteTotalPastes(PDO $conn) : int {
+function getSiteTotalPastes(DatabaseHandle $conn) : int {
     return intval($conn->query('SELECT COUNT(*) FROM pastes')->fetch(PDO::FETCH_NUM)[0]);
 }
 
-function getSiteTotalviews(PDO $conn) : int {
+function getSiteTotalviews(DatabaseHandle $conn) : int {
     return intval($conn->query('SELECT tpage FROM page_view ORDER BY id DESC LIMIT 1')->fetch(PDO::FETCH_NUM)[0]);
 }
 
-function getSiteTotal_unique_views(PDO $conn) : int {
+function getSiteTotal_unique_views(DatabaseHandle $conn) : int {
     return intval($conn->query('SELECT tvisit FROM page_view ORDER BY id DESC LIMIT 1')->fetch(PDO::FETCH_NUM)[0]);
 }
 
@@ -59,7 +59,7 @@ function pp_html_escape(string $unescaped) : string {
     return htmlentities($unescaped, ENT_QUOTES, 'UTF-8', false);
 }
 
-function updatePageViews(PDO $conn) : void {
+function updatePageViews(DatabaseHandle $conn) : void {
     $ip = $_SERVER['REMOTE_ADDR'];
     $date = date('jS F Y');
     $data_ip = file_get_contents('tmp/temp.tdata');
@@ -97,14 +97,7 @@ function updatePageViews(PDO $conn) : void {
 
 session_start();
 
-$conn = new PDO(
-    "mysql:host=$db_host;dbname=$db_schema;charset=utf8",
-    $db_user,
-    $db_pass,
-    $db_opts
-);
-
-$new_conn = new DatabaseHandle("mysql:host=$db_host;dbname=$db_schema;charset=utf8", $db_user, $db_pass);
+$conn = new DatabaseHandle("mysql:host=$db_host;dbname=$db_schema;charset=utf8", $db_user, $db_pass);
 
 // Setup site info
 $site_info = getSiteInfo();
@@ -161,7 +154,7 @@ $total_pastes = getSiteTotalPastes($conn);
 $total_page_views = getSiteTotalviews($conn);
 $total_unique_views = getSiteTotal_unique_views($conn);
 
-$current_user = User::current($new_conn);
+$current_user = User::current($conn);
 //$current_user = getCurrentUser($conn);
 
 if ($current_user) {

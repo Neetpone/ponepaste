@@ -1,8 +1,6 @@
 <?php
 // Turn off all error reporting - uh no?
 //error_reporting(0);
-
-<?php
 /**
  * GeSHi - Generic Syntax Highlighter
  *

@@ -11,6 +11,10 @@ class DatabaseHandle {
         ]);
     }
 
+    public function prepare(string $query) : PDOStatement {
+        return $this->conn->prepare($query);
+    }
+
     public function query(string $query, array $params = null) : PDOStatement {
         if (empty($params)) {
             return $this->conn->query($query);

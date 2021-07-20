@@ -222,15 +222,13 @@ if ($p_password == "NONE") {
     // View counter
     if ($_SESSION['not_unique'] !== $paste_id) {
         $_SESSION['not_unique'] = $paste_id;
-        $conn->prepare("UPDATE pastes SET views = (views + 1) where id = ?")
-            ->execute($paste_id);
+        $conn->query("UPDATE pastes SET views = (views + 1) where id = ?", [$paste_id]);
     }
 
     // Theme
     require_once('theme/' . $default_theme . '/view.php');
     if ($p_expiry == "SELF") {
-        $conn->prepare('DELETE FROM pastes WHERE id = ?')
-            ->execute([$paste_id]);
+        $conn->query('DELETE FROM pastes WHERE id = ?', [$paste_id]);
     }
 } else {
     $p_download = "paste.php?download&id=$paste_id&password=" . pp_password_hash(isset($_POST['mypass']));

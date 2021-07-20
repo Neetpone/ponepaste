@@ -13,7 +13,7 @@
  * GNU General Public License in GPL.txt for more details.
  */
 
-function getUserFavs(PDO $conn, string $user_id) : array {
+function getUserFavs(DatabaseHandle $conn, string $user_id) : array {
     $query = $conn->prepare(
         "SELECT pins.f_time, pastes.id, pastes.title, pastes.created_at, pastes.tagsys
             FROM pins
@@ -23,7 +23,7 @@ function getUserFavs(PDO $conn, string $user_id) : array {
     return $query->fetchAll();
 }
 
-function checkFavorite(PDO $conn, int $paste_id, int $user_id) : string {
+function checkFavorite(DatabaseHandle $conn, int $paste_id, int $user_id) : string {
     $query = $conn->prepare("SELECT 1 FROM pins WHERE user_id = ? AND paste_id = ?");
     $query->execute([$user_id, $paste_id]);
 
@@ -115,7 +115,7 @@ function getRecentreport($conn, $count) {
 }
 
 
-function getUserRecom(PDO $conn, int $user_id) : array {
+function getUserRecom(DatabaseHandle $conn, int $user_id) : array {
     $query = $conn->prepare(
         "SELECT pastes.id AS id, users.username AS member, title, visible
             FROM pastes
@@ -199,7 +199,7 @@ function getRecentadmin($conn, $count = 5) {
     return $query->fetchAll();
 }
 
-function getpopular(PDO $conn, int $count) : array {
+function getpopular(DatabaseHandle $conn, int $count) : array {
     $query = $conn->prepare("
         SELECT pastes.id AS id, visible, title, pastes.created_at AS created_at, views, users.username AS member, tagsys
             FROM pastes INNER JOIN users ON users.id = pastes.user_id
@@ -211,7 +211,7 @@ function getpopular(PDO $conn, int $count) : array {
     return $query->fetchAll();
 }
 
-function getrandom(PDO $conn, int $count) : array {
+function getrandom(DatabaseHandle $conn, int $count) : array {
     $query = $conn->prepare("
         SELECT pastes.id, visible, title, created_at, views, users.username AS member, tagsys
             FROM pastes
@@ -223,7 +223,7 @@ function getrandom(PDO $conn, int $count) : array {
     return $query->fetchAll();
 }
 
-function getUserPastes(PDO $conn, int $user_id) : array {
+function getUserPastes(DatabaseHandle $conn, int $user_id) : array {
     $query = $conn->prepare(
         "SELECT id, title, visible, code, created_at, tagsys, user_id, views from pastes WHERE user_id = ?
          ORDER by pastes.id DESC");
@@ -231,7 +231,7 @@ function getUserPastes(PDO $conn, int $user_id) : array {
     return $query->fetchAll();
 }
 
-function getTotalPastes(PDO $conn, string $username) : int {
+function getTotalPastes(DatabaseHandle $conn, string $username) : int {
     $query = $conn->prepare("SELECT COUNT(*) AS total_pastes
             FROM pastes INNER JOIN users ON users.id = pastes.user_id
             WHERE users.username = ?");
@@ -461,9 +461,6 @@ function paste_protocol() : string {
     return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? 'https://' : 'http://';
 }
 
-function is_banned(PDO $conn, string $ip) : bool {
-    $query = $conn->prepare('SELECT 1 FROM ban_user WHERE ip = ?');
-    $query->execute([$ip]);
-
-    return (bool) $query->fetch();
+function is_banned(DatabaseHandle $conn, string $ip) : bool {
+    return (bool) $conn->query('SELECT 1 FROM ban_user WHERE ip = ?', [$ip])->fetch();
 }

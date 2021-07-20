@@ -1,6 +1,7 @@
 <?php
-
 class User {
+    public const REMEMBER_TOKEN_COOKIE = '_ponepaste_token';
+
     public int $user_id;
     public string $username;
 
@@ -23,8 +24,8 @@ class User {
             return $session_user;
         }
 
-        if (!empty($_COOKIE['_ponepaste_token']) &&
-            ($token_user = User::createFromRememberToken($conn, $_COOKIE['_ponepaste_token']))) {
+        if (!empty($_COOKIE[self::REMEMBER_TOKEN_COOKIE]) &&
+            ($token_user = User::createFromRememberToken($conn, $_COOKIE[self::REMEMBER_TOKEN_COOKIE]))) {
             $_SESSION['user_id'] = $token_user->user_id;
             return $token_user;
         }
