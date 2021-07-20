@@ -20,15 +20,15 @@
                 <div class="columns">
                     <div class="column">
                         <ul>
-                            <li><a href="https://ponepaste.org/page/rules" target="_blank">Site Rules</a></li>
-                            <li><a href="https://ponepaste.org/page/privacy" target="_blank">Privacy Policy</a></li>
+                            <li><a href="page/rules" target="_blank">Site Rules</a></li>
+                            <li><a href="/page/privacy" target="_blank">Privacy Policy</a></li>
                             <li><a href="mailto:admin@ponepaste.org">Contact</a></li>
                         </ul>
                     </div>
                     <div class="column">
                         <ul>
-                            <li><a href="https://ponepaste.org/page/tags" target="_blank">Tag Guide</a></li>
-                            <li><a href="https://ponepaste.org/page/transparency " target="_blank">Transparency</a></li>
+                            <li><a href="/page/tags" target="_blank">Tag Guide</a></li>
+                            <li><a href="/page/transparency " target="_blank">Transparency</a></li>
                             <li><a href="https://liberapay.com/Ponepaste" target="_blank">Donate </a></li>
                         </ul>
                     </div>
