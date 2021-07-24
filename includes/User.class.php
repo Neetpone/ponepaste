@@ -10,6 +10,10 @@ class User {
         $this->username = $row['username'];
     }
 
+    public function destroySession(DatabaseHandle $conn, string $token) {
+        $conn->query('DELETE FROM user_sessions WHERE user_id = ? AND token = ?', [$this->user_id, $token]);
+    }
+
     public static function findByUsername(DatabaseHandle $conn, string $username) : User | null {
         $query = $conn->query('SELECT id, username FROM users WHERE username = ?', [$username]);
         $row = $query->fetch();
@@ -35,13 +39,22 @@ class User {
 
     public static function createFromRememberToken(DatabaseHandle $conn, string $remember_token) : User | null {
         $result = $conn->query(
-            'SELECT users.id AS id, users.username AS username, users.banned AS banned
+            'SELECT users.id AS id, users.username AS username, users.banned AS banned, user_sessions.id AS session_id, user_sessions.expire_at AS session_expiry
                 FROM user_sessions
                 INNER JOIN users ON users.id = user_sessions.user_id
                 WHERE user_sessions.token = ?', [$remember_token]
         );
 
         if ($row = $result->fetch()) {
+            $session_expiry = new DateTime($row['session_expiry']);
+            $now = new DateTime();
+
+            /* Session is expired (diff is negative) */
+            if ($now->diff($session_expiry)->invert === 1) {
+                $conn->query('DELETE FROM user_sessions WHERE id = ?', [$row['session_id']]);
+                return null;
+            }
+
             return new User($row);
         }
 

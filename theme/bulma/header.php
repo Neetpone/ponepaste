@@ -132,11 +132,11 @@ $start = $time;
                             echo '<a class="navbar-item" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/user.php?user=' . urlencode($current_user->username) . '">Pastes</a>';
                             echo '<a class="navbar-item" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/profile.php">Settings</a>';
                         }
-                        echo '<hr class="navbar-divider">
-								<a class="navbar-item" href="../?logout">Logout</a>
-							  </div>
-							</div>';
                         ?>
+                    <hr class="navbar-divider" />
+                    <form action="logout.php" method="POST">
+                        <input class="button navbar-link" type="submit" value="Logout" style="border:none;padding: 0.375rem 1rem;"/>
+                    </form>
                     <?php } else { ?>
                         <div class="buttons">
                             <?php

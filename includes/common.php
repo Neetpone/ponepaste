@@ -141,14 +141,6 @@ if (in_array($lang_file, scandir('langs/'))) {
 $ip = $_SERVER['REMOTE_ADDR'];
 if (is_banned($conn, $ip)) die($lang['banned']); // "You have been banned from ".$site_name;
 
-// Logout
-if (isset($_GET['logout'])) {
-    header('Location: ' . $_SERVER['HTTP_REFERER']);
-    unset($_SESSION['user_id']);
-    unset($_SESSION['pic']);
-    session_destroy();
-}
-
 $site_ads = getSiteAds($conn);
 $total_pastes = getSiteTotalPastes($conn);
 $total_page_views = getSiteTotalviews($conn);
