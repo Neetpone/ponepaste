@@ -22,3 +22,24 @@ function pp_password_verify(string $password, string $hash, bool &$needs_rehash 
 
     return password_verify($password, $hash);
 }
+
+function pp_random_bytes(int $length) : string {
+    try {
+        return random_bytes($length);
+    } catch (Exception) {
+        /* Out of entropy! */
+        die('Error generating random bytes - this should never be seen!');
+    }
+}
+
+function pp_random_token() : string {
+    return hash('SHA512', pp_random_bytes(64));
+}
+
+function pp_random_password() : string {
+    /* MD-5 is OK to use here because it is not being used to protect secure data,
+     * but rather to reduce the size of the string a little bit into something that
+     * can reasonably be handled by a user.
+     */
+    return hash('MD5', pp_random_bytes(64));
+}

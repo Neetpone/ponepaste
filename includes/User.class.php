@@ -6,7 +6,7 @@ class User {
     public string $username;
 
     private function __construct(array $row) {
-        $this->user_id = intval($row['user_id']);
+        $this->user_id = intval($row['id']);
         $this->username = $row['username'];
     }
 

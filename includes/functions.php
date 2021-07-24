@@ -140,7 +140,7 @@ function recentupdate($conn, $count) {
 
 function monthpop($conn, $count) {
     $query = $conn->prepare(
-        "SELECT pastes.id AS id, views, title, created_at, visible, tagsys, users.username AS member 
+        "SELECT pastes.id AS id, views, title, created_at, updated_at, visible, tagsys, users.username AS member 
             FROM pastes
             INNER JOIN users ON users.id = pastes.user_id
             WHERE MONTH(created_at) = MONTH(NOW()) AND visible = '0' ORDER BY views DESC LIMIT ?");
@@ -178,7 +178,7 @@ function decrypt(string $value) : string {
 
 function getRecent($conn, $count) {
     $query = $conn->prepare("
-        SELECT pastes.id, visible, title, created_at, users.username AS member, tagsys 
+        SELECT pastes.id, visible, title, created_at, updated_at, users.username AS member, tagsys 
         FROM pastes
         INNER JOIN users ON pastes.user_id = users.id
         WHERE visible = '0'
@@ -201,7 +201,7 @@ function getRecentadmin($conn, $count = 5) {
 
 function getpopular(DatabaseHandle $conn, int $count) : array {
     $query = $conn->prepare("
-        SELECT pastes.id AS id, visible, title, pastes.created_at AS created_at, views, users.username AS member, tagsys
+        SELECT pastes.id AS id, visible, title, pastes.created_at AS created_at, updated_at, views, users.username AS member, tagsys
             FROM pastes INNER JOIN users ON users.id = pastes.user_id
             WHERE visible = '0'
             ORDER BY views DESC 
@@ -213,7 +213,7 @@ function getpopular(DatabaseHandle $conn, int $count) : array {
 
 function getrandom(DatabaseHandle $conn, int $count) : array {
     $query = $conn->prepare("
-        SELECT pastes.id, visible, title, created_at, views, users.username AS member, tagsys
+        SELECT pastes.id, visible, title, created_at, updated_at, views, users.username AS member, tagsys
             FROM pastes
             INNER JOIN users ON users.id = pastes.user_id
             WHERE visible = '0'
@@ -231,11 +231,11 @@ function getUserPastes(DatabaseHandle $conn, int $user_id) : array {
     return $query->fetchAll();
 }
 
-function getTotalPastes(DatabaseHandle $conn, string $username) : int {
+function getTotalPastes(DatabaseHandle $conn, int $user_id) : int {
     $query = $conn->prepare("SELECT COUNT(*) AS total_pastes
             FROM pastes INNER JOIN users ON users.id = pastes.user_id
-            WHERE users.username = ?");
-    $query->execute([$username]);
+            WHERE users.id = ?");
+    $query->execute([$user_id]);
 
     return intval($query->fetch(PDO::FETCH_NUM)[0]);
 }

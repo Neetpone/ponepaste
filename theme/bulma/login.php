@@ -66,7 +66,7 @@
                                 </div>
                                 <div class="field">
                                     <div class="b-checkbox is-info is-inline">
-                                        <input class="is-checkradio is-info" id="rememberme" name="rememberme"
+                                        <input class="is-checkradio is-info" id="rememberme" name="remember_me"
                                                type="checkbox" checked="">
                                         <label for="rememberme">
                                             <?php echo $lang['rememberme']; ?>

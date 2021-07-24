@@ -41,14 +41,14 @@ if (isset($_POST['forgot'])) {
         $username = trim($_POST['username']);
         $recovery_code = trim($_POST['recovery_code']);
 
-        $query = $conn->prepare("SELECT id, recovery_code_hash FROM users WHERE username = ?");
-        $query->execute([$username]);
+        $query = $conn->query("SELECT id, recovery_code_hash FROM users WHERE username = ?", [$username]);
         $row = $query->fetch();
+
         if ($row && pp_password_verify($_POST['recovery_code'], $row['recovery_code_hash'])) {
-            $new_password = md5(random_bytes(64));
+            $new_password = pp_random_password();
             $new_password_hash = pp_password_hash($new_password);
 
-            $recovery_code = hash('SHA512', random_bytes(64));
+            $recovery_code = pp_random_token();
             $new_recovery_code_hash = pp_password_hash($recovery_code);
 
             $conn->prepare('UPDATE users SET password = ?, recovery_code_hash = ? WHERE id = ?')
@@ -63,21 +63,24 @@ if (isset($_POST['forgot'])) {
     }
 } else if (isset($_POST['signin'])) { // Login process
     if (!empty($_POST['username']) && !empty($_POST['password'])) {
+        $remember_me = (bool) $_POST['remember_me'];
         $username = trim($_POST['username']);
-        $query = $conn->prepare("SELECT id, password, banned FROM users WHERE username = ?");
-        $query->execute([$username]);
-        $row = $query->fetch();
+        $row = $conn->query("SELECT id, password, banned FROM users WHERE username = ?", [$username])
+                    ->fetch();
+
         $needs_rehash = false;
-        if ($row && pp_password_verify($_POST['password'], $row['password'], $needs_rehash)) {
-            // Username found
-            $db_ip = $row['ip'];
-            $db_id = $row['id'];
+
+        /* This is designed to be a constant time lookup, hence the warning suppression operator so that
+         * we always call pp_password_verify, even if row is null.
+         */
+        if (pp_password_verify($_POST['password'], @$row['password'], $needs_rehash)) {
+            $user_id = $row['id'];
 
             if ($needs_rehash) {
                 $new_password_hash = pp_password_hash($_POST['password']);
 
-                $conn->prepare('UPDATE users SET password = ? WHERE id = ?')
-                    ->execute([$new_password_hash, $row['id']]);
+                $conn->query('UPDATE users SET password = ? WHERE id = ?',
+                              [$new_password_hash, $user_id]);
             }
 
             if ($row['banned']) {
@@ -85,7 +88,19 @@ if (isset($_POST['forgot'])) {
                 $error = $lang['banned'];
             } else {
                 // Login successful
-                $_SESSION['user_id'] = $row['id'];
+                $_SESSION['user_id'] = (string) $user_id;
+
+                if ($remember_me) {
+                    $remember_token = pp_random_token();
+
+                    $conn->query('INSERT INTO user_sessions (user_id, token) VALUES (?, ?)', [$user_id, $remember_token]);
+
+                    setcookie(User::REMEMBER_TOKEN_COOKIE, $remember_token, [
+                        'secure' => !empty($_SERVER['HTTPS']), /* Local dev environment is non-HTTPS */
+                        'httponly' => true,
+                        'samesite' => 'Lax'
+                    ]);
+                }
 
                 header('Location: ' . $_SERVER['HTTP_REFERER']);
                 exit();
@@ -109,13 +124,12 @@ if (isset($_POST['forgot'])) {
     } elseif (!isValidUsername($username)) {
         $error = $lang['usrinvalid']; // "Username not valid. Usernames can't contain special characters.";
     } else {
-        $query = $conn->prepare('SELECT 1 FROM users WHERE username = ?');
-        $query->execute([$username]);
+        $query = $conn->query('SELECT 1 FROM users WHERE username = ?', [$username]);
 
         if ($query->fetch()) {
             $error = $lang['userexists']; // "Username already taken.";
         } else {
-            $recovery_code = hash('SHA512', random_bytes('64'));
+            $recovery_code = pp_random_token();
             $recovery_code_hash = pp_password_hash($recovery_code);
             $query = $conn->prepare(
                 "INSERT INTO users (username, password, recovery_code_hash, picture, date, ip, badge) VALUES (?, ?, ?, 'NONE', ?, ?, '0')"

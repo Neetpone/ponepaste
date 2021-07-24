@@ -16,6 +16,7 @@
 define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/functions.php');
+require_once('includes/passwords.php');
 
 // UTF-8
 header('Content-Type: text/html; charset=utf-8');
@@ -35,11 +36,9 @@ if ($current_user === null) {
 
 $user_username = $current_user->username;
 
-$query = $conn->prepare('SELECT * FROM users WHERE username = ?');
-$query->execute([$user_username]);
+$query = $conn->query('SELECT * FROM users WHERE id = ?', [$current_user->user_id]);
 $row = $query->fetch();
 $user_id = $row['id'];
-$user_full_name = $row['full_name'];
 $user_platform = Trim($row['platform']);
 $user_date = $row['date'];
 $user_ip = $row['ip'];
@@ -52,8 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (pp_password_verify($user_old_pass, $user_password)) {
             $user_new_cpass = pp_password_hash($_POST['password']);
 
-            $conn->prepare('UPDATE users SET full_name = ?, password = ? WHERE username = ?')
-                ->execute([$user_new_full, $user_new_cpass, $user_username]);
+            $conn->prepare('UPDATE users SET password = ? WHERE id = ?')
+                ->execute([$user_new_cpass, $user_id]);
 
             $success = $lang['profileupdated']; //"  Your profile information is updated ";
         } else {
@@ -66,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 updatePageViews($conn);
 
-$total_user_pastes = getTotalPastes($conn, $user_username);
+$total_user_pastes = getTotalPastes($conn, $current_user->user_id);
 
 // Theme
 require_once('theme/' . $default_theme . '/header.php');

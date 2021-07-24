@@ -222,7 +222,7 @@ $start = $time;
                     <input class="button is-link is-fullwidth my-4" type="submit" name="signin" value="Login"
                            value="<?php echo md5($date . $ip); ?>">
                     <div class="checkbox checkbox-primary">
-                        <input id="rememberme" name="rememberme" type="checkbox" checked="">
+                        <input id="rememberme" name="remember_me" type="checkbox" checked="">
                         <label for="rememberme">
                             <?php echo $lang['rememberme']; ?>
                         </label>

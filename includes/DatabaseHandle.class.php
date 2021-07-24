@@ -25,12 +25,4 @@ class DatabaseHandle {
 
         return $stmt;
     }
-
-    public static function get() {
-        if (DatabaseHandle::$instance === null) {
-            DatabaseHandle::$instance = new DatabaseHandle();
-        }
-
-        return DatabaseHandle::$instance;
-    }
 }

@@ -178,8 +178,8 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                         <div class="column is-4 has-text-right">
                             <div class="">
                                 <div class="panel-tools">
-                                    <?php if ($current_user) {
-                                        $fav_paste = checkFavorite($conn, $paste_id, $current_user['id']);
+                                    <?php if ($current_user !== null) {
+                                        $fav_paste = checkFavorite($conn, $paste_id, $current_user->user_id);
                                     }
                                     ?>
                                     <a class="icon tool-icon" class="flip" onclick="openreport()"><i
@@ -247,7 +247,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                     } ?>
                 </div>
                 <!-- Guests -->
-                <?php if (!$current_user || $current_user['id'] !== $paste['user_id']) { ?>
+                <?php if ($current_user === null || $current_user->user_id !== $paste['user_id']) { ?>
                     <hr>
                     <label class="label">More from this Author </label>
                     <?php
