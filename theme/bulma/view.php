@@ -181,6 +181,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     <?php if ($current_user !== null) {
                                         $fav_paste = checkFavorite($conn, $paste_id, $current_user->user_id);
                                     }
+                                    echo $fav_paste;
                                     ?>
                                     <a class="icon tool-icon" class="flip" onclick="openreport()"><i
                                                 class="far fa-flag fa-lg has-text-grey" title="Report Paste"></i></a>
