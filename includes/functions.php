@@ -13,9 +13,9 @@
  * GNU General Public License in GPL.txt for more details.
  */
 
-function getUserFavs(DatabaseHandle $conn, string $user_id) : array {
+function getUserFavs(DatabaseHandle $conn, int $user_id) : array {
     $query = $conn->prepare(
-        "SELECT pins.f_time, pastes.id, pastes.title, pastes.created_at, pastes.tagsys
+        "SELECT pins.f_time, pastes.id, pins.paste_id, pastes.title, pastes.created_at, pastes.tagsys, pastes.updated_at
             FROM pins
             INNER JOIN pastes ON pastes.id = pins.paste_id
             WHERE pins.user_id = ?");
@@ -28,9 +28,9 @@ function checkFavorite(DatabaseHandle $conn, int $paste_id, int $user_id) : stri
     $query->execute([$user_id, $paste_id]);
 
     if ($query->fetch()) {
-        return "<a  href='#' id='favorite' class='iconn tool-iconn' data-fid='" . $paste_id . "'><i class='far fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
+        return "<a  href='#' id='favorite' class='icon tool-icon' data-fid='" . $paste_id . "'><i class='fas fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
     } else {
-        return "<a  href='#' id='favorite' class='iconn tool-iconn' data-fid='" . $paste_id . "'><i class='fas fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
+        return "<a  href='#' id='favorite' class='icon tool-icon' data-fid='" . $paste_id . "'><i class='far fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
     }
 }
 

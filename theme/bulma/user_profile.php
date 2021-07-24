@@ -226,7 +226,7 @@ $protocol = paste_protocol();
                                                 <td>
                                                     <a href="' . $protocol . $baseurl . '/' . $p_link . '" title="' . $title . '">' . ($title) . '</a>
                                                 </td>    
-                                                <td data-sort="' . $p_date . '" class="td-center">
+                                                <td data-sort="' . $p_date->format('U') . '" class="td-center">
                                                 <span>' . $p_dateui . '</span>
                                                 </td>
                                                 <td class="td-center">
@@ -264,21 +264,22 @@ $protocol = paste_protocol();
                         </thead>
                         <tbody>
                         <?php
-                        $res = getUserFavs($conn, $profile_username);
-                        foreach ($res as $index => $row) {
+                        foreach ($profile_favs as $index => $row) {
                             $ftitle = Trim($row['title']);
-                            $f_id = Trim($row['f_paste']);
-                            $f_date = Trim($row['f_time']);
-                            $Recent_update = Trim($row['now_time']);
+                            $f_id = Trim($row['paste_id']);
+                            $f_date = new DateTime($row['f_time']);
+                            $f_dateui = $f_date->format("d F Y");
+                            $Recent_update = new DateTime($row['updated_at']);
+                            $Recent_update_u = date_format($Recent_update,'U');
                             $f_tags = Trim($row['tagsys']);
                             $ftagArray = explode(',', $f_tags);
                             $ftagArray = array_filter($ftagArray);
-                            $p_link = ($mod_rewrite == '1') ? "$f_id" : "paste.php?favdel=$fu_id";
-                            $f_delete_link = ($mod_rewrite == '1') ? "user.php?favdel&user=$profile_username&fid=$fu_id" : "user.php?favdel&user=$profile_username&fid=$fu_id";
+                            //$p_link = ($mod_rewrite == '1') ? "$f_id" : "paste.php?favdel=$fu_id";
+                            //$f_delete_link = ($mod_rewrite == '1') ? "user.php?favdel&user=$profile_username&fid=$f_id" : "user.php?favdel&user=$profile_username&fid=$f_id";
                             $title = truncate($title, 20, 50);
                             $current_time = time();
                             $past = strtotime('-2 day', $current_time);
-                            if ($past <= $Recent_update && $Recent_update <= $current_time) {
+                            if ($past <= $Recent_update_u && $Recent_update_u <= $current_time) {
                                 $updatenote = "<i class='far fa-check-square fa-lg' aria-hidden='true'></i>";
                             } else {
                                 $updatenote = "<i class='far fa-minus-square fa-lg' aria-hidden='true'></i>";
@@ -288,11 +289,11 @@ $protocol = paste_protocol();
                                                 <td>
                                                     <a href="' . $protocol . $baseurl . '/' . $p_link . '" title="' . $ftitle . '">' . ($ftitle) . '</a>
                                                 </td>    
-                                                <td  data-sort="' . $f_date . '" class="td-left">
-                                                <span>' . date("d F Y", $f_date) . '</span>
+                                                <td  data-sort="' . $f_dateui . '" class="td-left">
+                                                <span>' . date_format($f_date,'U') . '</span>
                                                 </td>
                                                <td class="td-center">
-                                                <span style="display:none;">' . $Recent_update . '</span>
+                                                <span style="display:none;">' . $Recent_update_u . '</span>
                                                 ' . $updatenote . '
                                                 </td>
                                                 <td class="td-left">';
