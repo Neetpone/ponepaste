@@ -199,25 +199,16 @@ if ($p_password == "NONE") {
     // No password & diplay the paste
 
     // Set download URL
-    if ($mod_rewrite == '1') {
+    if (PP_MOD_REWRITE) {
         $p_download = "download/$paste_id";
-    } else {
-        $p_download = "paste.php?download&id=$paste_id";
-    }
-
-    // Set raw URL
-    if ($mod_rewrite == '1') {
         $p_raw = "raw/$paste_id";
-    } else {
-        $p_raw = "paste.php?raw&id=$paste_id";
-    }
-
-    // Set embed URL
-    if ($mod_rewrite == '1') {
         $p_embed = "embed/$paste_id";
     } else {
+        $p_download = "paste.php?download&id=$paste_id";
+        $p_raw = "paste.php?raw&id=$paste_id";
         $p_embed = "paste.php?embed&id=$paste_id";
     }
+
 
     // View counter
     if ($_SESSION['not_unique'] !== $paste_id) {

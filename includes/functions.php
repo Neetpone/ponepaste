@@ -437,7 +437,7 @@ function addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite) {
     // which protocol are we on
     $protocol = paste_protocol();
 
-    if ($mod_rewrite == "1") {
+    if (PP_MOD_REWRITE) {
         $server_name = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/" . $paste_id;
     } else {
         $server_name = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/paste.php?id=" . $paste_id;

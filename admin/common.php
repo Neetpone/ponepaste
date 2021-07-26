@@ -2,6 +2,12 @@
 if (!defined('IN_ADMIN')) {
     die();
 }
+$db_opts = [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, /* throw a fatal exception on database errors */
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, /* Fetch rows as an associative array (hash table) by default */
+    PDO::ATTR_EMULATE_PREPARES => false
+];
+
 
 require_once('../includes/config.php');
 

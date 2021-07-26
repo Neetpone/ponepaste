@@ -201,7 +201,7 @@ while ($row = mysqli_fetch_array($result)) {
                                 $site_data = file_get_contents("../sitemap.xml");
                                 $site_data = str_replace("</urlset>", "", $site_data);
 
-                                if ($mod_rewrite == "1") {
+                                if (PP_MOD_REWRITE) {
                                     $server_name = $protocol . $_SERVER['SERVER_NAME'] . $levelup . "/" . $paste_id;
                                 } else {
                                     $server_name = $protocol . $_SERVER['SERVER_NAME'] . $levelup . "/paste.php?id=" . $paste_id;

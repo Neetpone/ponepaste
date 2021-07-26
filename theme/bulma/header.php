@@ -78,7 +78,7 @@ $start = $time;
                 <div class="navbar-item">
                     <?php if ($current_user !== null) {
                         if (!isset($privatesite) || $privatesite !== "on") {
-                            if ($mod_rewrite == '1') {
+                            if (PP_MOD_REWRITE) {
                                 echo '  <a class="button navbar-item mx-2" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/">
 											<span class="icon has-text-info">
 												<i class="fa fa-clipboard" aria-hidden="true"></i>
@@ -125,7 +125,7 @@ $start = $time;
                         echo '<div class="navbar-item has-dropdown is-hoverable">
 										<a class="navbar-link" role="presentation">' . pp_html_escape($current_user->username)  . '</a>
 											<div class="navbar-dropdown">';
-                        if ($mod_rewrite == '1') {
+                        if (PP_MOD_REWRITE) {
                             echo '<a class="navbar-item" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/user/' . urlencode($current_user->username) . '">Pastes</a>';
                             echo '<a class="navbar-item" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/profile">Settings</a>';
                         } else {
@@ -141,7 +141,7 @@ $start = $time;
                         <div class="buttons">
                             <?php
                             if (!isset($privatesite) || $privatesite != "on") {
-                                if ($mod_rewrite == '1') {
+                                if (PP_MOD_REWRITE) {
                                     echo '<a class="button navbar-item mx-2" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/archive">
 											<span class="icon has-text-info">
 												<i class="fa fa-book" aria-hidden="true"></i>

@@ -91,7 +91,7 @@ function validatePasteFields() : string|null {
         return $lang['notags'];
     } elseif (strlen($_POST["title"]) > 70) { /* Paste title too long */
         return $lang['titlelen'];
-    } elseif (mb_strlen($_POST["paste_data"], '8bit') > 1024 * 1024 * $pastelimit) { /* Paste size too big */
+    } elseif (mb_strlen($_POST["paste_data"], '8bit') > PP_PASTE_LIMIT_BYTES) { /* Paste size too big */
         return $lang['large_paste'];
     }
 

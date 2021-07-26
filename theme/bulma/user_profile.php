@@ -189,9 +189,9 @@ $protocol = paste_protocol();
                                 1 => $lang['unlisted'],
                                 2 => $lang['private']
                             };
-                            $p_link = ($mod_rewrite == '1') ? "$p_id" : "paste.php?id=$p_id";
-                            $p_delete_link = ($mod_rewrite == '1') ? "user.php?del&user=$profile_username&id=$p_id" : "user.php?del&user=$profile_username&id=$p_id";
-                            $p_tag_link = ($mod_rewrite == '1') ? "user.php?user=$profile_username&q=$p_tags" : "user.php?user=$profile_username&q=$tags";
+                            $p_link = urlForPaste($p_id);
+                            $p_delete_link = (PP_MOD_REWRITE) ? "user.php?del&user=$profile_username&id=$p_id" : "user.php?del&user=$profile_username&id=$p_id";
+                            $p_tag_link = (PP_MOD_REWRITE) ? "user.php?user=$profile_username&q=$p_tags" : "user.php?user=$profile_username&q=$tags";
                             $title = truncate($title, 20, 50);
 
                             // Guests only see public pastes

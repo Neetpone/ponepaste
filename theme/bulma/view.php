@@ -206,7 +206,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     <div class="panel-embed my-5" style="display:none;">
                                         <input type="text" class="input has-background-white-ter has-text-grey"
                                                value='<?php echo '<script src="' . $protocol . $baseurl . '/';
-                                               if ($mod_rewrite == '1') {
+                                               if (PP_MOD_REWRITE) {
                                                    echo 'embed/';
                                                } else {
                                                    echo 'paste.php?embed&id=';
@@ -263,7 +263,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
 
                         <p class="no-margin">
                         <?php
-                        if ($mod_rewrite == '1') {
+                        if (PP_MOD_REWRITE) {
                             echo '<header class="bd-category-header my-1">
 									<a href="' . $p_id . '" title="' . $long_title . '">' . $title . ' </a>
 									<p class="subtitle is-7">' . 'by ' . '

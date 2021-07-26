@@ -10,9 +10,7 @@ require_once(__DIR__ . '/User.class.php');
 
 /* View functions */
 function urlForPaste($paste_id) : string {
-    global $mod_rewrite;
-
-    if ($mod_rewrite === '1') {
+    if (PP_MOD_REWRITE) {
         return "/${paste_id}";
     }
 
@@ -20,9 +18,7 @@ function urlForPaste($paste_id) : string {
 }
 
 function urlForMember(string $member_name) : string {
-    global $mod_rewrite;
-
-    if ($mod_rewrite === '1') {
+    if (PP_MOD_REWRITE) {
         return '/user/' . urlencode($member_name);
     }
 

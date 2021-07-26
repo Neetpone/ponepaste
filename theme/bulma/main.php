@@ -95,7 +95,7 @@
 
                                                 <p class="no-margin">
                                                     <?php
-                                                    if ($mod_rewrite == '1') {
+                                                    if (PP_MOD_REWRITE) {
                                                         echo '<header class="bd-category-header my-1">
 									<a data-tooltip="' . $titlehov . '" href="' . $p_id . '" title="' . $title . '">' . $title . ' </a>
 									<a class="icon is-pulled-right has-tooltip-arrow has-tooltip-left-mobile has-tooltip-bottom-desktop has-tooltip-left-until-widescreen" data-tooltip="' . $p_time . '">
@@ -137,7 +137,7 @@
 
                                                 <p class="no-margin">
                                                     <?php
-                                                    if ($mod_rewrite == '1') {
+                                                    if (PP_MOD_REWRITE) {
                                                         echo '<header class="bd-category-header my-1">
 									<a data-tooltip="' . $titlehov . '" href="' . $p_id . '" title="' . $title . '">' . $title . ' </a>
 									<a class="icon is-pulled-right has-tooltip-arrow has-tooltip-left-mobile has-tooltip-bottom-desktop has-tooltip-left-until-widescreen" data-tooltip="' . $p_time . '">
