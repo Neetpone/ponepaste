@@ -9,7 +9,7 @@
 }
 
 .accordion {
-    margin-bottom:-3px;
+    margin-bottom: -3px;
 }
 
 .accordion-group {
@@ -21,8 +21,7 @@
     margin-bottom: 0;
 }
 
-.twitter-typeahead .tt-hint
-{
+.twitter-typeahead .tt-hint {
     display: none;
 }
 
@@ -60,8 +59,8 @@
 
 .tt-suggestion:hover,
 .tt-suggestion:focus {
-  color: #ffffff;
-  text-decoration: none;
-  outline: 0;
-  background-color: #428bca;
+    color: #ffffff;
+    text-decoration: none;
+    outline: 0;
+    background-color: #428bca;
 }

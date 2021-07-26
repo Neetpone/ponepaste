@@ -123,7 +123,7 @@ $start = $time;
                             }
                         }
                         echo '<div class="navbar-item has-dropdown is-hoverable">
-										<a class="navbar-link" role="presentation">' . pp_html_escape($current_user->username)  . '</a>
+										<a class="navbar-link" role="presentation">' . pp_html_escape($current_user->username) . '</a>
 											<div class="navbar-dropdown">';
                         if (PP_MOD_REWRITE) {
                             echo '<a class="navbar-item" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/user/' . urlencode($current_user->username) . '">Pastes</a>';
@@ -133,10 +133,11 @@ $start = $time;
                             echo '<a class="navbar-item" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/profile.php">Settings</a>';
                         }
                         ?>
-                    <hr class="navbar-divider" />
-                    <form action="logout.php" method="POST">
-                        <input class="button navbar-link" type="submit" value="Logout" style="border:none;padding: 0.375rem 1rem;"/>
-                    </form>
+                        <hr class="navbar-divider"/>
+                        <form action="logout.php" method="POST">
+                            <input class="button navbar-link" type="submit" value="Logout"
+                                   style="border:none;padding: 0.375rem 1rem;"/>
+                        </form>
                     <?php } else { ?>
                         <div class="buttons">
                             <?php
@@ -264,15 +265,15 @@ $start = $time;
                             </label>
                         </div>
                         <div class="field">
-                        <div class="notification">
-                            <span class="tags are-large"><?php echo '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA" class="imagever">'; ?></span>
-                            <input type="text" class="input" name="scode" value=""
-                            placeholder="<?php echo $lang['entercode']; ?>">
-                           <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press
-                                                    "Enter"</p>
+                            <div class="notification">
+                                <span class="tags are-large"><?php echo '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA" class="imagever">'; ?></span>
+                                <input type="text" class="input" name="scode" value=""
+                                       placeholder="<?php echo $lang['entercode']; ?>">
+                                <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press
+                                    "Enter"</p>
                             </div>
-                          </div>
-                        </div>         
+                        </div>
+                    </div>
                     <input class="button is-link is-fullwidth my-4" type="submit" name="signup" value="Register"
                            value="<?php echo md5($date . $ip); ?>">
                     <div class="field">

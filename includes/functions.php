@@ -461,5 +461,5 @@ function paste_protocol() : string {
 }
 
 function is_banned(DatabaseHandle $conn, string $ip) : bool {
-    return (bool) $conn->query('SELECT 1 FROM ban_user WHERE ip = ?', [$ip])->fetch();
+    return (bool)$conn->query('SELECT 1 FROM ban_user WHERE ip = ?', [$ip])->fetch();
 }

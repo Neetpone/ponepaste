@@ -292,7 +292,7 @@ for ($loop = 0; $loop <= 6; $loop++) {
                     <div class="panel-title">
                     </div>
                     <p style="height: auto;">
-<br />You have the latest version
+                        <br/>You have the latest version
 
                     </p>
                 </div>

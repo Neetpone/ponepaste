@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'manage') {
         $new_site_info = [
-            'title' =>  trim($_POST['title']),
+            'title' => trim($_POST['title']),
             'description' => trim($_POST['description']),
             'baseurl' => trim($_POST['baseurl']),
             'keywords' => trim($_POST['keywords']),
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $msg = '<div class="paste-alert alert3" style="text-align: center;">
 									Site permissions saved.
 									</div>';
-    } else if (isset($_POST['cap'])) {
+    } elseif (isset($_POST['cap'])) {
         $query = $conn->prepare(
             'UPDATE captcha SET cap_e = ?, mode = ?, mul = ?, allowed = ?, color = ?, recaptcha_sitekey = ?, recaptcha_secretkey = ? WHERE id = 1'
         );

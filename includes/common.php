@@ -24,6 +24,7 @@ function urlForMember(string $member_name) : string {
 
     return '/user.php?name=' . urlencode($member_name);
 }
+
 /* Database functions */
 function getSiteInfo() : array {
     return require('config/site.php');

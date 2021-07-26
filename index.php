@@ -205,10 +205,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = $lang['loginwarning']; //"You must be logged in to do that."
         }
     } else {
-        if ($current_user['id'] == NULL) {
-        $paste_owner = "1";
-        }else{
-        $paste_owner = $current_user ? $current_user['id'] : null;
+        if ($current_user['id'] == null) {
+            $paste_owner = "1";
+        } else {
+            $paste_owner = $current_user ? $current_user['id'] : null;
         }
         $statement = $conn->prepare(
             "INSERT INTO pastes (title, content, visible, code, expiry, password, encrypt, user_id, created_at, ip, views, tagsys) VALUES 

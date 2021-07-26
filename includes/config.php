@@ -40,7 +40,6 @@ if (gethostname() === 'thunderlane') {
 }
 
 
-
 // Secret key for paste encryption
 //$sec_key = "8ac67343e7980b16b31e8311d4377bbb";
 $sec_key = '';

@@ -125,8 +125,10 @@
                                 <div class="field">
                                     <div class="notification">
                                         <span class="tags are-large"><?php echo '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA" class="imagever">'; ?></span>
-                                        <input type="text" class="input" name="scode" value=""  placeholder="<?php echo $lang['entercode']; ?>">
-                                        <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press"Enter"</p>
+                                        <input type="text" class="input" name="scode" value=""
+                                               placeholder="<?php echo $lang['entercode']; ?>">
+                                        <p class="is-size-6	has-text-grey-light has-text-left mt-2">and
+                                            press"Enter"</p>
                                     </div>
                                 </div>
                                 <div class="field">
@@ -180,7 +182,7 @@
                                     </div>
                                 </div>
                                 <div class="field">
-                                    <input class="button" type="submit" name="forgot" />
+                                    <input class="button" type="submit" name="forgot"/>
                                 </div>
                             </div>
                             <div class="column">

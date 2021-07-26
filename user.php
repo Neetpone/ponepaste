@@ -90,7 +90,7 @@ $profile_total_paste_views = intval($query->fetch(PDO::FETCH_NUM)[0]);
 $profile_join_date = $profile_info['date'];
 
 $profile_pastes = getUserPastes($conn, $profile_info['id']);
-$profile_favs =  getUserFavs($conn, $profile_info['id']);
+$profile_favs = getUserFavs($conn, $profile_info['id']);
 $is_current_user = ($current_user !== null) && ($profile_info['id'] == $current_user->user_id);
 
 updatePageViews($conn);

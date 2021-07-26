@@ -3,19 +3,19 @@
  * Copyright 2016-2017 DragonOfMercy.
  * Licensed under the new BSD license
  */
-(function(factory){
-    if (typeof define === 'function' && define.amd){
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define(['jquery'], factory);
-    } else if(typeof module === 'object' && module.exports){
+    } else if (typeof module === 'object' && module.exports) {
         // Node/CommonJS
-        module.exports = function(root, jQuery){
-            if(jQuery === undefined){
+        module.exports = function (root, jQuery) {
+            if (jQuery === undefined) {
                 // require('jQuery') returns a factory that requires window to
                 // build a jQuery instance, we normalize how we use modules
                 // that require this pattern but the window provided is a noop
                 // if it's defined (how jquery works)
-                if (typeof window !== 'undefined'){
+                if (typeof window !== 'undefined') {
                     jQuery = require('jquery');
                 } else {
                     jQuery = require('jquery')(root);
@@ -28,7 +28,7 @@
         // Browser globals
         factory(jQuery);
     }
-}(function($){
+}(function ($) {
     /**
      * Tokenize2 constructor.
      *
@@ -36,7 +36,7 @@
      * @param {object} options
      * @constructor
      */
-    var Tokenize2 = function(element, options){
+    var Tokenize2 = function (element, options) {
 
         this.control = false;
         this.element = $(element);
@@ -94,7 +94,7 @@
      *
      * @see $.trigger
      */
-    Tokenize2.prototype.trigger = function(event, data, elem, onlyHandlers){
+    Tokenize2.prototype.trigger = function (event, data, elem, onlyHandlers) {
 
         this.element.trigger(event, data, elem, onlyHandlers);
 
@@ -103,63 +103,109 @@
     /**
      * Bind events
      */
-    Tokenize2.prototype.bind = function(){
+    Tokenize2.prototype.bind = function () {
 
-        this.element.on('tokenize:load', {}, $.proxy(function(){ this.init() }, this))
-            .on('tokenize:clear', {}, $.proxy(function(){ this.clear() }, this))
-            .on('tokenize:remap', {}, $.proxy(function(){ this.remap() }, this))
-            .on('tokenize:select', {}, $.proxy(function(e, c){ this.focus(c) }, this))
-            .on('tokenize:deselect', {}, $.proxy(function(){ this.blur() }, this))
-            .on('tokenize:search', {}, $.proxy(function(e, v){ this.find(v) }, this))
-            .on('tokenize:paste', {}, $.proxy(function(){ this.paste() }, this))
-            .on('tokenize:dropdown:up', {}, $.proxy(function(){ this.dropdownSelectionMove(-1) }, this))
-            .on('tokenize:dropdown:down', {}, $.proxy(function(){ this.dropdownSelectionMove(1) }, this))
-            .on('tokenize:dropdown:clear', {}, $.proxy(function(){ this.dropdownClear() }, this))
-            .on('tokenize:dropdown:show', {}, $.proxy(function(){ this.dropdownShow() }, this))
-            .on('tokenize:dropdown:hide', {}, $.proxy(function(){ this.dropdownHide() }, this))
-            .on('tokenize:dropdown:fill', {}, $.proxy(function(e, i){ this.dropdownFill(i) }, this))
-            .on('tokenize:dropdown:itemAdd', {}, $.proxy(function(e, i){ this.dropdownAddItem(i) }, this))
-            .on('tokenize:keypress', {}, $.proxy(function(e, routedEvent){ this.keypress(routedEvent) }, this))
-            .on('tokenize:keydown', {}, $.proxy(function(e, routedEvent){ this.keydown(routedEvent) }, this))
-            .on('tokenize:keyup', {}, $.proxy(function(e, routedEvent){ this.keyup(routedEvent) }, this))
-            .on('tokenize:tokens:reorder', {}, $.proxy(function(){ this.reorder() }, this))
-            .on('tokenize:tokens:add', {}, $.proxy(function(e, v, t, c){ this.tokenAdd(v, t, c) }, this))
-            .on('tokenize:tokens:remove', {}, $.proxy(function(e, v){ this.tokenRemove(v) }, this));
+        this.element.on('tokenize:load', {}, $.proxy(function () {
+            this.init()
+        }, this))
+            .on('tokenize:clear', {}, $.proxy(function () {
+                this.clear()
+            }, this))
+            .on('tokenize:remap', {}, $.proxy(function () {
+                this.remap()
+            }, this))
+            .on('tokenize:select', {}, $.proxy(function (e, c) {
+                this.focus(c)
+            }, this))
+            .on('tokenize:deselect', {}, $.proxy(function () {
+                this.blur()
+            }, this))
+            .on('tokenize:search', {}, $.proxy(function (e, v) {
+                this.find(v)
+            }, this))
+            .on('tokenize:paste', {}, $.proxy(function () {
+                this.paste()
+            }, this))
+            .on('tokenize:dropdown:up', {}, $.proxy(function () {
+                this.dropdownSelectionMove(-1)
+            }, this))
+            .on('tokenize:dropdown:down', {}, $.proxy(function () {
+                this.dropdownSelectionMove(1)
+            }, this))
+            .on('tokenize:dropdown:clear', {}, $.proxy(function () {
+                this.dropdownClear()
+            }, this))
+            .on('tokenize:dropdown:show', {}, $.proxy(function () {
+                this.dropdownShow()
+            }, this))
+            .on('tokenize:dropdown:hide', {}, $.proxy(function () {
+                this.dropdownHide()
+            }, this))
+            .on('tokenize:dropdown:fill', {}, $.proxy(function (e, i) {
+                this.dropdownFill(i)
+            }, this))
+            .on('tokenize:dropdown:itemAdd', {}, $.proxy(function (e, i) {
+                this.dropdownAddItem(i)
+            }, this))
+            .on('tokenize:keypress', {}, $.proxy(function (e, routedEvent) {
+                this.keypress(routedEvent)
+            }, this))
+            .on('tokenize:keydown', {}, $.proxy(function (e, routedEvent) {
+                this.keydown(routedEvent)
+            }, this))
+            .on('tokenize:keyup', {}, $.proxy(function (e, routedEvent) {
+                this.keyup(routedEvent)
+            }, this))
+            .on('tokenize:tokens:reorder', {}, $.proxy(function () {
+                this.reorder()
+            }, this))
+            .on('tokenize:tokens:add', {}, $.proxy(function (e, v, t, c) {
+                this.tokenAdd(v, t, c)
+            }, this))
+            .on('tokenize:tokens:remove', {}, $.proxy(function (e, v) {
+                this.tokenRemove(v)
+            }, this));
 
     };
 
     /**
      * Init function
      */
-    Tokenize2.prototype.init = function(){
+    Tokenize2.prototype.init = function () {
 
         this.id = this.guid();
         this.element.hide();
 
-        if(!this.element.attr('multiple')){
+        if (!this.element.attr('multiple')) {
             console.error('Attribute multiple is missing, tokenize2 can be buggy !')
         }
 
         this.dropdown = undefined;
         this.searchContainer = $('<li class="token-search" />');
         this.input = $('<input autocomplete="off" />')
-            .on('keydown', {}, $.proxy(function(e){ this.trigger('tokenize:keydown', [e]) }, this))
-            .on('keypress', {}, $.proxy(function(e){ this.trigger('tokenize:keypress', [e]) }, this))
-            .on('keyup', {}, $.proxy(function(e){ this.trigger('tokenize:keyup', [e]) }, this))
-            .on('focus', {}, $.proxy(function(){
-                if(this.input.val().length >= this.options.searchMinLength && this.input.val().length > 0){
+            .on('keydown', {}, $.proxy(function (e) {
+                this.trigger('tokenize:keydown', [e])
+            }, this))
+            .on('keypress', {}, $.proxy(function (e) {
+                this.trigger('tokenize:keypress', [e])
+            }, this))
+            .on('keyup', {}, $.proxy(function (e) {
+                this.trigger('tokenize:keyup', [e])
+            }, this))
+            .on('focus', {}, $.proxy(function () {
+                if (this.input.val().length >= this.options.searchMinLength && this.input.val().length > 0) {
                     this.trigger('tokenize:search', [this.input.val()]);
                 }
             }, this))
-            .on('paste', {}, $.proxy(function(){
-                if(this.options.tokensAllowCustom){
-                    setTimeout($.proxy(function(){
+            .on('paste', {}, $.proxy(function () {
+                if (this.options.tokensAllowCustom) {
+                    setTimeout($.proxy(function () {
                         this.trigger('tokenize:paste');
                     }, this), 10);
                 }
             }, this));
 
-        if(this.options.searchMaxLength > 0){
+        if (this.options.searchMaxLength > 0) {
             this.input.attr('maxlength', this.options.searchMaxLength);
         }
 
@@ -168,11 +214,11 @@
             .attr('tabindex', this.options.tabIndex)
             .append(this.searchContainer.append(this.input));
 
-        if(this.options.placeholder !== false){
+        if (this.options.placeholder !== false) {
             this.placeholder = $('<li class="placeholder" />').html(this.options.placeholder);
             this.tokensContainer.prepend(this.placeholder);
-            this.element.on('tokenize:tokens:add tokenize:remap tokenize:select tokenize:deselect tokenize:tokens:remove', $.proxy(function(){
-                if(this.container.hasClass('focus') || $('li.token', this.tokensContainer).length > 0 || this.input.val().length > 0){
+            this.element.on('tokenize:tokens:add tokenize:remap tokenize:select tokenize:deselect tokenize:tokens:remove', $.proxy(function () {
+                if (this.container.hasClass('focus') || $('li.token', this.tokensContainer).length > 0 || this.input.val().length > 0) {
                     this.placeholder.hide();
                 } else {
                     this.placeholder.show();
@@ -182,31 +228,31 @@
 
         this.container = $('<div class="tokenize" />').attr('id', this.id);
         this.container.append(this.tokensContainer).insertAfter(this.element);
-        this.container.focusin($.proxy(function(e){
+        this.container.focusin($.proxy(function (e) {
             this.trigger('tokenize:select', [($(e.target)[0] === this.tokensContainer[0])]);
         }, this))
-        .focusout($.proxy(function(){
-            if(this.container.hasClass('focus')){
-                this.trigger('tokenize:deselect')
-            }
-        }, this));
+            .focusout($.proxy(function () {
+                if (this.container.hasClass('focus')) {
+                    this.trigger('tokenize:deselect')
+                }
+            }, this));
 
-        if(this.options.tokensMaxItems === 1){
+        if (this.options.tokensMaxItems === 1) {
             this.container.addClass('single');
         }
 
-        if(this.options.sortable){
+        if (this.options.sortable) {
             this.container.addClass('sortable');
             this.tokensContainer.tokenize2sortable({
                 itemSelector: 'li.token',
                 cursor: 'move',
                 placeholder: '<li class="token shadow"><br /></li>',
                 placeholderClass: 'token shadow',
-                onDragStart: $.proxy(function($item, container, _super){
+                onDragStart: $.proxy(function ($item, container, _super) {
                     this.searchContainer.hide();
                     _super($item, container);
-                } , this),
-                onDrop: $.proxy(function($item, container, _super){
+                }, this),
+                onDrop: $.proxy(function ($item, container, _super) {
                     this.searchContainer.show();
                     this.trigger('tokenize:tokens:reorder');
                     _super($item, container);
@@ -215,14 +261,14 @@
         }
 
         this.element
-            .on('tokenize:tokens:add tokenize:tokens:remove', $.proxy(function(){
-                if(this.options.tokensMaxItems > 0 && $('li.token', this.tokensContainer).length >= this.options.tokensMaxItems){
+            .on('tokenize:tokens:add tokenize:tokens:remove', $.proxy(function () {
+                if (this.options.tokensMaxItems > 0 && $('li.token', this.tokensContainer).length >= this.options.tokensMaxItems) {
                     this.searchContainer.hide();
                 } else {
                     this.searchContainer.show();
                 }
             }, this))
-            .on('tokenize:keydown tokenize:keyup tokenize:loaded', $.proxy(function(){
+            .on('tokenize:keydown tokenize:keyup tokenize:loaded', $.proxy(function () {
                 this.scaleInput();
             }, this));
 
@@ -230,7 +276,7 @@
         this.trigger('tokenize:tokens:reorder');
         this.trigger('tokenize:loaded');
 
-        if(this.element.is(':disabled')){
+        if (this.element.is(':disabled')) {
             this.disable();
         }
 
@@ -239,13 +285,13 @@
     /**
      * Reorder tokens in the select
      */
-    Tokenize2.prototype.reorder = function(){
+    Tokenize2.prototype.reorder = function () {
 
-        if(this.options.sortable){
+        if (this.options.sortable) {
             var previous, current, data = this.tokensContainer.tokenize2sortable('serialize').get(0);
-            $.each(data, $.proxy(function(k, v){
+            $.each(data, $.proxy(function (k, v) {
                 current = $('option[value="' + v.value + '"]', this.element);
-                if(previous === undefined){
+                if (previous === undefined) {
                     current.prependTo(this.element);
                 } else {
                     previous.after(current);
@@ -258,12 +304,12 @@
     /**
      * Transform clipboard item to tokens
      */
-    Tokenize2.prototype.paste = function(){
+    Tokenize2.prototype.paste = function () {
 
         var $pattern = new RegExp(this.escapeRegex(Array.isArray(this.options.delimiter) ? this.options.delimiter.join('|') : this.options.delimiter), 'ig');
 
-        if($pattern.test(this.input.val())){
-            $.each(this.input.val().split($pattern), $.proxy(function(_, value){
+        if ($pattern.test(this.input.val())) {
+            $.each(this.input.val().split($pattern), $.proxy(function (_, value) {
                 this.trigger('tokenize:tokens:add', [value, null, true]);
             }, this))
         }
@@ -280,7 +326,7 @@
      * @param {boolean} force
      * @returns {Tokenize2}
      */
-    Tokenize2.prototype.tokenAdd = function(value, text, force){
+    Tokenize2.prototype.tokenAdd = function (value, text, force) {
 
         value = this.escape(value);
         text = this.escape(text) || value;
@@ -288,28 +334,28 @@
         this.resetInput();
 
         // Check if token is empty
-        if(value === undefined ||(!this.options.allowEmptyValues && value === '')){
+        if (value === undefined || (!this.options.allowEmptyValues && value === '')) {
             this.trigger('tokenize:tokens:error:empty');
             return this;
         }
 
         // Check if max number of token is reached
-        if(this.options.tokensMaxItems > 0 && $('li.token', this.tokensContainer).length >= this.options.tokensMaxItems){
+        if (this.options.tokensMaxItems > 0 && $('li.token', this.tokensContainer).length >= this.options.tokensMaxItems) {
             this.trigger('tokenize:tokens:error:max');
             return this;
         }
 
         // Check duplicate token
-        if($('li.token[data-value="' + value + '"]', this.tokensContainer).length > 0){
+        if ($('li.token[data-value="' + value + '"]', this.tokensContainer).length > 0) {
             this.trigger('tokenize:tokens:error:duplicate', [value, text]);
             return this;
         }
 
-        if($('option[value="' + value + '"]', this.element).length) {
+        if ($('option[value="' + value + '"]', this.element).length) {
             $('option[value="' + value + '"]', this.element).attr('selected', 'selected').prop('selected', true);
-        } else if(force){
+        } else if (force) {
             this.element.append($('<option selected />').val(value).html(text));
-        } else if(this.options.tokensAllowCustom){
+        } else if (this.options.tokensAllowCustom) {
             this.element.append($('<option selected data-type="custom" />').val(value).html(text));
         } else {
             this.trigger('tokenize:tokens:error:notokensAllowCustom');
@@ -319,9 +365,9 @@
         $('<li class="token" />')
             .attr('data-value', value)
             .append('<span>' + text + '</span>')
-            .prepend($('<a class="dismiss" />').on('mousedown touchstart', {}, $.proxy(function(e){
+            .prepend($('<a class="dismiss" />').on('mousedown touchstart', {}, $.proxy(function (e) {
                 e.preventDefault();
-                if(e.which == 1){
+                if (e.which == 1) {
                     this.trigger('tokenize:tokens:remove', [value]);
                 }
             }, this)))
@@ -340,11 +386,11 @@
      * @param {string} v
      * @returns {Tokenize2}
      */
-    Tokenize2.prototype.tokenRemove = function(v){
+    Tokenize2.prototype.tokenRemove = function (v) {
 
         var $item = $('option[value="' + v + '"]', this.element);
 
-        if($item.attr('data-type') === 'custom'){
+        if ($item.attr('data-type') === 'custom') {
             $item.remove();
         } else {
             $item.removeAttr('selected').prop('selected', false);
@@ -362,10 +408,10 @@
      *
      * @returns {Tokenize2}
      */
-    Tokenize2.prototype.remap = function(){
+    Tokenize2.prototype.remap = function () {
 
         var $selected = $('option:selected', this.element);
-        $selected.each($.proxy(function(v, t) {
+        $selected.each($.proxy(function (v, t) {
             this.trigger('tokenize:tokens:add', [$(t).val(), $(t).html(), false]);
         }, this));
 
@@ -378,7 +424,7 @@
      *
      * @returns {Tokenize2}
      */
-    Tokenize2.prototype.disable = function(){
+    Tokenize2.prototype.disable = function () {
 
         this.tokensContainer.addClass('disabled');
         this.searchContainer.hide();
@@ -391,7 +437,7 @@
      *
      * @returns {Tokenize2}
      */
-    Tokenize2.prototype.enable = function(){
+    Tokenize2.prototype.enable = function () {
 
         this.tokensContainer.removeClass('disabled');
         this.searchContainer.show();
@@ -404,18 +450,18 @@
      *
      * @param {boolean} container
      */
-    Tokenize2.prototype.focus = function(container){
+    Tokenize2.prototype.focus = function (container) {
 
-        if(this.element.is(':disabled')){
+        if (this.element.is(':disabled')) {
             this.tokensContainer.blur();
             return;
         }
 
-        if(container){
+        if (container) {
             this.input.focus();
         }
 
-        if(!this.container.hasClass('focus')){
+        if (!this.container.hasClass('focus')) {
             this.container.addClass('focus');
             this.trigger('tokenize:focus');
         }
@@ -425,14 +471,14 @@
     /**
      * Blur
      */
-    Tokenize2.prototype.blur = function(){
+    Tokenize2.prototype.blur = function () {
 
-        if(this.isDropdownOpen()){
+        if (this.isDropdownOpen()) {
             this.trigger('tokenize:dropdown:hide');
         }
         this.container.removeClass('focus');
         this.resetPending();
-        if(!this.tokensContainer.attr('tabindex')){
+        if (!this.tokensContainer.attr('tabindex')) {
             this.tokensContainer.attr('tabindex', this.options.tabIndex);
         }
 
@@ -443,18 +489,18 @@
      *
      * @param {Event} e
      */
-    Tokenize2.prototype.keydown = function(e){
+    Tokenize2.prototype.keydown = function (e) {
 
-        if(e.type === 'keydown'){
-            switch(e.keyCode){
+        if (e.type === 'keydown') {
+            switch (e.keyCode) {
                 case KEYS.BACKSPACE:
-                    if(this.input.val().length < 1){
+                    if (this.input.val().length < 1) {
                         e.preventDefault();
-                        if($('li.token.pending-delete', this.tokensContainer).length > 0){
+                        if ($('li.token.pending-delete', this.tokensContainer).length > 0) {
                             this.trigger('tokenize:tokens:remove', [$('li.token.pending-delete', this.tokensContainer).first().attr('data-value')]);
                         } else {
                             var $token = $('li.token:last', this.tokensContainer);
-                            if($token.length > 0){
+                            if ($token.length > 0) {
                                 this.trigger('tokenize:tokens:markForDelete', [$token.attr('data-value')]);
                                 $token.addClass('pending-delete');
                             }
@@ -464,7 +510,7 @@
                     break;
 
                 case KEYS.TAB:
-                    if(!e.shiftKey){
+                    if (!e.shiftKey) {
                         this.pressedDelimiter(e);
                     } else {
                         this.tokensContainer.removeAttr('tabindex');
@@ -509,10 +555,10 @@
      *
      * @param {Event} e
      */
-    Tokenize2.prototype.keyup = function(e){
+    Tokenize2.prototype.keyup = function (e) {
 
-        if(e.type === 'keyup'){
-            switch(e.keyCode){
+        if (e.type === 'keyup') {
+            switch (e.keyCode) {
                 case KEYS.TAB:
                 case KEYS.ENTER:
                 case KEYS.ESCAPE:
@@ -525,7 +571,7 @@
                     break;
                 case KEYS.BACKSPACE:
                 default:
-                    if(this.input.val().length >= this.options.searchMinLength && this.input.val().length > 0){
+                    if (this.input.val().length >= this.options.searchMinLength && this.input.val().length > 0) {
                         this.trigger('tokenize:search', [this.input.val()]);
                     } else {
                         this.trigger('tokenize:dropdown:hide');
@@ -543,22 +589,22 @@
      *
      * @param {Event} e
      */
-    Tokenize2.prototype.keypress = function(e){
+    Tokenize2.prototype.keypress = function (e) {
 
-        if(e.type === 'keypress' && !this.element.is(':disabled')){
+        if (e.type === 'keypress' && !this.element.is(':disabled')) {
             var $delimiter = false;
 
-            if(Array.isArray(this.options.delimiter)){
-                if(this.options.delimiter.indexOf(String.fromCharCode(e.which)) >= 0){
+            if (Array.isArray(this.options.delimiter)) {
+                if (this.options.delimiter.indexOf(String.fromCharCode(e.which)) >= 0) {
                     $delimiter = true;
                 }
             } else {
-                if(String.fromCharCode(e.which) === this.options.delimiter){
+                if (String.fromCharCode(e.which) === this.options.delimiter) {
                     $delimiter = true;
                 }
             }
 
-            if($delimiter){
+            if ($delimiter) {
                 this.pressedDelimiter(e);
             }
         } else {
@@ -572,14 +618,14 @@
      *
      * @param {Event} e
      */
-    Tokenize2.prototype.pressedDelimiter = function(e){
+    Tokenize2.prototype.pressedDelimiter = function (e) {
 
         this.resetPending();
-        if(this.isDropdownOpen() && $('li.active', this.dropdown).length > 0 && this.control === false){
+        if (this.isDropdownOpen() && $('li.active', this.dropdown).length > 0 && this.control === false) {
             e.preventDefault();
             $('li.active a', this.dropdown).trigger('mousedown');
         } else {
-            if(this.input.val().length > 0){
+            if (this.input.val().length > 0) {
                 e.preventDefault();
                 this.trigger('tokenize:tokens:add', [this.input.val()]);
             }
@@ -592,18 +638,18 @@
      *
      * @param {string} v
      */
-    Tokenize2.prototype.find = function(v){
+    Tokenize2.prototype.find = function (v) {
 
-        if(v.length < this.options.searchMinLength){
+        if (v.length < this.options.searchMinLength) {
             this.trigger('tokenize:dropdown:hide');
             return false;
         }
 
         this.lastSearchTerms = v;
 
-        if(this.options.dataSource === 'select'){
+        if (this.options.dataSource === 'select') {
             this.dataSourceLocal(v);
-        } else if(typeof this.options.dataSource === 'function'){
+        } else if (typeof this.options.dataSource === 'function') {
             this.options.dataSource(v, this);
         } else {
             this.dataSourceRemote(v);
@@ -616,20 +662,20 @@
      *
      * @param {string} search
      */
-    Tokenize2.prototype.dataSourceRemote = function(search){
+    Tokenize2.prototype.dataSourceRemote = function (search) {
 
-        this.debounce($.proxy(function(){
-            if(this.xhr !== undefined){
+        this.debounce($.proxy(function () {
+            if (this.xhr !== undefined) {
                 this.xhr.abort();
             }
             this.xhr = $.ajax(this.options.dataSource, {
-                data: { search: search },
+                data: {search: search},
                 dataType: 'text',
-                success: $.proxy(function(data){
+                success: $.proxy(function (data) {
                     var $items = [];
-                    if(data != ''){
+                    if (data != '') {
                         data = JSON.parse(data);
-                        $.each(data, function(k, v){
+                        $.each(data, function (k, v) {
                             $items.push(v);
                         });
                     }
@@ -645,7 +691,7 @@
      *
      * @param {string} search
      */
-    Tokenize2.prototype.dataSourceLocal = function(search){
+    Tokenize2.prototype.dataSourceLocal = function (search) {
 
         var $searchString = this.transliteration(search);
         var $items = [];
@@ -655,11 +701,11 @@
 
         $('option', this.element)
             .not(':selected, :disabled')
-            .each(function(){
+            .each(function () {
                 var text = $this.trim($(this).html());
                 var value = $this.trim($(this).attr('value'));
-                if($regexp.test($this.transliteration(text))){
-                    $items.push({ value: value, text: text });
+                if ($regexp.test($this.transliteration(text))) {
+                    $items.push({value: value, text: text});
                 }
             });
 
@@ -673,15 +719,15 @@
      * @param {function} func
      * @param {number} threshold
      */
-    Tokenize2.prototype.debounce = function(func, threshold){
+    Tokenize2.prototype.debounce = function (func, threshold) {
 
         var $args = arguments;
-        var $delayed = $.proxy(function(){
+        var $delayed = $.proxy(function () {
             func.apply(this, $args);
             this.debounceTimeout = undefined;
         }, this);
 
-        if(this.debounceTimeout !== undefined){
+        if (this.debounceTimeout !== undefined) {
             clearTimeout(this.debounceTimeout);
         }
 
@@ -692,15 +738,17 @@
     /**
      * Show dropdown
      */
-    Tokenize2.prototype.dropdownShow = function(){
+    Tokenize2.prototype.dropdownShow = function () {
 
-        if(!this.isDropdownOpen()){
+        if (!this.isDropdownOpen()) {
             $('.tokenize-dropdown').remove();
             this.dropdown = $('<div class="tokenize-dropdown dropdown"><ul class="dropdown-menu" /></div>').attr('data-related', this.id);
             $('body').append(this.dropdown);
             this.dropdown.show();
             this.dropdown.css('z-index', this.calculatezindex() + this.options.zIndexMargin);
-            $(window).on('resize scroll', {}, $.proxy(function(){ this.dropdownMove() }, this)).trigger('resize');
+            $(window).on('resize scroll', {}, $.proxy(function () {
+                this.dropdownMove()
+            }, this)).trigger('resize');
             this.trigger('tokenize:dropdown:shown');
         }
 
@@ -711,23 +759,23 @@
      *
      * @returns {int}
      */
-    Tokenize2.prototype.calculatezindex = function(){
+    Tokenize2.prototype.calculatezindex = function () {
 
         var el = this.container;
         var zindex = 0;
 
-        if(!isNaN(parseInt(el.css('z-index'))) && parseInt(el.css('z-index')) > 0){
+        if (!isNaN(parseInt(el.css('z-index'))) && parseInt(el.css('z-index')) > 0) {
             zindex = parseInt(el.css('z-index'));
         }
 
-        if(zindex < 1){
-            while(el.length) {
+        if (zindex < 1) {
+            while (el.length) {
                 el = el.parent();
-                if(el.length > 0){
-                    if(!isNaN(parseInt(el.css('z-index'))) && parseInt(el.css('z-index')) > 0){
+                if (el.length > 0) {
+                    if (!isNaN(parseInt(el.css('z-index'))) && parseInt(el.css('z-index')) > 0) {
                         return parseInt(el.css('z-index'));
                     }
-                    if(el.is('html')){
+                    if (el.is('html')) {
                         break;
                     }
                 }
@@ -741,9 +789,9 @@
     /**
      * Hide dropdown
      */
-    Tokenize2.prototype.dropdownHide = function(){
+    Tokenize2.prototype.dropdownHide = function () {
 
-        if(this.isDropdownOpen()){
+        if (this.isDropdownOpen()) {
             $(window).off('resize scroll');
             this.dropdown.remove();
             this.dropdown = undefined;
@@ -755,9 +803,9 @@
     /**
      * Clear dropdown
      */
-    Tokenize2.prototype.dropdownClear = function(){
+    Tokenize2.prototype.dropdownClear = function () {
 
-        if(this.dropdown){
+        if (this.dropdown) {
             this.dropdown.find('.dropdown-menu li').remove();
         }
 
@@ -768,29 +816,29 @@
      *
      * @param {object} items
      */
-    Tokenize2.prototype.dropdownFill = function(items){
+    Tokenize2.prototype.dropdownFill = function (items) {
 
-        if(items && items.length > 0){
+        if (items && items.length > 0) {
             this.trigger('tokenize:dropdown:show');
             this.trigger('tokenize:dropdown:clear');
 
-            $.each(items, $.proxy(function(k, v) {
-                if($('li.dropdown-item', this.dropdown).length <= this.options.dropdownMaxItems){
+            $.each(items, $.proxy(function (k, v) {
+                if ($('li.dropdown-item', this.dropdown).length <= this.options.dropdownMaxItems) {
                     this.trigger('tokenize:dropdown:itemAdd', [v]);
                 }
             }, this));
 
-            if($('li.active', this.dropdown).length < 1 && this.options.dropdownSelectFirstItem){
+            if ($('li.active', this.dropdown).length < 1 && this.options.dropdownSelectFirstItem) {
                 $('li:first', this.dropdown).addClass('active');
             }
 
-            if($('li.dropdown-item', this.dropdown).length < 1){
+            if ($('li.dropdown-item', this.dropdown).length < 1) {
                 this.trigger('tokenize:dropdown:hide');
             } else {
                 this.trigger('tokenize:dropdown:filled');
             }
         } else {
-            if(this.options.displayNoResultsMessage){
+            if (this.options.displayNoResultsMessage) {
                 this.trigger('tokenize:dropdown:show');
                 this.trigger('tokenize:dropdown:clear');
                 this.dropdown.find('.dropdown-menu').append(
@@ -810,20 +858,20 @@
      * Move selection through dropdown items
      * @param {int} d
      */
-    Tokenize2.prototype.dropdownSelectionMove = function(d){
+    Tokenize2.prototype.dropdownSelectionMove = function (d) {
 
-        if($('li.active', this.dropdown).length > 0){
-            if(!$('li.active', this.dropdown).is('li:' + (d > 0 ? 'last-child'  : 'first-child'))){
+        if ($('li.active', this.dropdown).length > 0) {
+            if (!$('li.active', this.dropdown).is('li:' + (d > 0 ? 'last-child' : 'first-child'))) {
                 var $active = $('li.active', this.dropdown);
                 $active.removeClass('active');
-                if(d > 0){
+                if (d > 0) {
                     $active.next().addClass('active');
                 } else {
                     $active.prev().addClass('active');
                 }
             } else {
                 $('li.active', this.dropdown).removeClass('active');
-                if(this.options.dropdownSelectFirstItem){
+                if (this.options.dropdownSelectFirstItem) {
                     $('li:' + (d > 0 ? 'first-child' : 'last-child'), this.dropdown).addClass('active');
                 }
             }
@@ -838,29 +886,29 @@
      *
      * @param {object} item
      */
-    Tokenize2.prototype.dropdownAddItem = function(item){
+    Tokenize2.prototype.dropdownAddItem = function (item) {
 
-        if(this.isDropdownOpen()){
+        if (this.isDropdownOpen()) {
 
-            if(item.hasOwnProperty('text')){
+            if (item.hasOwnProperty('text')) {
                 item.text = this.escape(item.text);
             }
             item.value = this.escape(item.value);
 
             var $li = $('<li class="dropdown-item" />').html(this.dropdownItemFormat(item))
-                .on('mouseover', $.proxy(function(e){
+                .on('mouseover', $.proxy(function (e) {
                     e.preventDefault();
                     e.target = this.fixTarget(e.target);
                     $('li', this.dropdown).removeClass('active');
                     $(e.target).parent().addClass('active');
-                }, this)).on('mouseout', $.proxy(function(){
+                }, this)).on('mouseout', $.proxy(function () {
                     $('li', this.dropdown).removeClass('active');
-                }, this)).on('mousedown touchstart', $.proxy(function(e){
+                }, this)).on('mousedown touchstart', $.proxy(function (e) {
                     e.preventDefault();
                     e.target = this.fixTarget(e.target);
                     this.trigger('tokenize:tokens:add', [$(e.target).attr('data-value'), $(e.target).attr('data-text'), true]);
                 }, this));
-            if($('li.token[data-value="' + $li.find('a').attr('data-value') + '"]', this.tokensContainer).length < 1){
+            if ($('li.token[data-value="' + $li.find('a').attr('data-value') + '"]', this.tokensContainer).length < 1) {
                 this.dropdown.find('.dropdown-menu').append($li);
                 this.trigger('tokenize:dropdown:itemAdded', [item]);
             }
@@ -874,17 +922,17 @@
      * @param {object} target
      * @returns {object}
      */
-    Tokenize2.prototype.fixTarget = function(target){
+    Tokenize2.prototype.fixTarget = function (target) {
 
         var $target = $(target);
 
-        if(!$target.data('value')){
+        if (!$target.data('value')) {
             var $link = $target.find('a');
-            if($link.length){
+            if ($link.length) {
                 return $link.get(0);
             }
             var $parent = $target.parents('[data-value]');
-            if($parent.length){
+            if ($parent.length) {
                 return $parent.get(0);
             }
         }
@@ -899,11 +947,11 @@
      * @param {object} item
      * @returns {object|jQuery}
      */
-    Tokenize2.prototype.dropdownItemFormat = function(item){
-        if(item.hasOwnProperty('text')){
+    Tokenize2.prototype.dropdownItemFormat = function (item) {
+        if (item.hasOwnProperty('text')) {
             var $display = '';
-            if(this.options.searchHighlight){
-                var $regex = new RegExp((this.options.searchFromStart ? '^' : '') + '(' +this.escapeRegex(this.transliteration(this.lastSearchTerms)) + ')', 'gi');
+            if (this.options.searchHighlight) {
+                var $regex = new RegExp((this.options.searchFromStart ? '^' : '') + '(' + this.escapeRegex(this.transliteration(this.lastSearchTerms)) + ')', 'gi');
                 $display = item.text.replace($regex, '<span class="tokenize-highlight">$1</span>');
             } else {
                 $display = item.text;
@@ -920,7 +968,7 @@
     /**
      * Move dropdown according tokens container
      */
-    Tokenize2.prototype.dropdownMove = function(){
+    Tokenize2.prototype.dropdownMove = function () {
 
         var $position = this.tokensContainer.offset();
         var $height = this.tokensContainer.outerHeight();
@@ -938,7 +986,7 @@
      *
      * @returns {boolean}
      */
-    Tokenize2.prototype.isDropdownOpen = function(){
+    Tokenize2.prototype.isDropdownOpen = function () {
 
         return (this.dropdown !== undefined);
 
@@ -949,9 +997,9 @@
      *
      * @returns {Tokenize2}
      */
-    Tokenize2.prototype.clear = function(){
+    Tokenize2.prototype.clear = function () {
 
-        $.each($('li.token', this.tokensContainer), $.proxy(function(e, item){
+        $.each($('li.token', this.tokensContainer), $.proxy(function (e, item) {
             this.trigger('tokenize:tokens:remove', [$(item).attr('data-value')]);
         }, this));
 
@@ -964,11 +1012,11 @@
     /**
      * Reset pending delete tokens
      */
-    Tokenize2.prototype.resetPending = function(){
+    Tokenize2.prototype.resetPending = function () {
 
         var $token = $('li.pending-delete:last', this.tokensContainer);
 
-        if($token.length > 0){
+        if ($token.length > 0) {
             this.trigger('tokenize:tokens:cancelDelete', [$token.attr('data-value')]);
             $token.removeClass('pending-delete');
         }
@@ -978,9 +1026,9 @@
     /**
      * Scale input
      */
-    Tokenize2.prototype.scaleInput = function(){
+    Tokenize2.prototype.scaleInput = function () {
 
-        if(!this.ctx){
+        if (!this.ctx) {
             this.ctx = document.createElement('canvas').getContext('2d');
         }
 
@@ -996,10 +1044,10 @@
         $tokensContainerWidth = this.tokensContainer.width() -
             (
                 Math.ceil(parseFloat(this.tokensContainer.css('border-left-width'))) + Math.ceil(parseFloat(this.tokensContainer.css('border-right-width')) +
-                Math.ceil(parseFloat(this.tokensContainer.css('padding-left'))) + Math.ceil(parseFloat(this.tokensContainer.css('padding-right'))))
+                    Math.ceil(parseFloat(this.tokensContainer.css('padding-left'))) + Math.ceil(parseFloat(this.tokensContainer.css('padding-right'))))
             );
 
-        if($width >= $tokensContainerWidth){
+        if ($width >= $tokensContainerWidth) {
             $width = $tokensContainerWidth;
         }
 
@@ -1011,14 +1059,14 @@
     /**
      * Reset input
      */
-    Tokenize2.prototype.resetInput = function(){
+    Tokenize2.prototype.resetInput = function () {
 
         this.input.val('');
         this.scaleInput();
 
     };
 
-    Tokenize2.prototype.trim = function(string){
+    Tokenize2.prototype.trim = function (string) {
         return string.trim();
     };
 
@@ -1028,9 +1076,9 @@
      * @param {string} string
      * @returns {string}
      */
-    Tokenize2.prototype.escape = function(string){
+    Tokenize2.prototype.escape = function (string) {
 
-        if(string){
+        if (string) {
             string = string.replaceAll(/["]/g, '&quot;');
             string = string.replaceAll(/[<]/g, '&lt;');
             string = string.replaceAll(/[>]/g, '&gt;');
@@ -1046,9 +1094,9 @@
      * @param {string} value
      * @returns {string}
      */
-    Tokenize2.prototype.escapeRegex = function(value){
+    Tokenize2.prototype.escapeRegex = function (value) {
 
-        return value.replace( /[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&" );
+        return value.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
 
     };
 
@@ -1057,13 +1105,14 @@
      *
      * @returns {string}
      */
-    Tokenize2.prototype.guid = function(){
+    Tokenize2.prototype.guid = function () {
 
-        function s4(){
+        function s4() {
             return Math.floor((1 + Math.random()) * 0x10000)
                 .toString(16)
                 .substring(1);
         }
+
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
             s4() + '-' + s4() + s4() + s4();
 
@@ -1074,17 +1123,17 @@
      *
      * @returns {Array}
      */
-    Tokenize2.prototype.toArray = function(){
+    Tokenize2.prototype.toArray = function () {
 
         var $output = [];
-        $("option:selected", this.element).each(function(){
+        $("option:selected", this.element).each(function () {
             $output.push($(this).val());
         });
         return $output;
 
     };
 
-    Tokenize2.prototype.transliteration = function(text){
+    Tokenize2.prototype.transliteration = function (text) {
         var diacritics = {
             '\u24B6': 'A',
             '\uFF21': 'A',
@@ -1927,7 +1976,7 @@
             '\u03C2': '\u03C3'
         };
 
-        var $match = function(a){
+        var $match = function (a) {
             return diacritics[a] || a;
         };
 
@@ -1940,20 +1989,20 @@
      * @param {object} options
      * @returns {object|Tokenize2|Array}
      */
-    function Plugin(options){
+    function Plugin(options) {
 
         var $items = [];
-        this.filter('select').each(function(){
+        this.filter('select').each(function () {
             var $this = $(this);
             var $data = $this.data('tokenize2');
             var $options = typeof options === 'object' && options;
-            if(!$data){
+            if (!$data) {
                 $this.data('tokenize2', new Tokenize2(this, $options));
             }
             $items.push($this.data('tokenize2'));
         });
 
-        if($items.length > 1){
+        if ($items.length > 1) {
             return $items;
         } else {
             return $items[0];
@@ -1967,7 +2016,7 @@
      */
     $.fn.tokenize2 = Plugin;
     $.fn.tokenize2.Constructor = Tokenize2;
-    $.fn.tokenize2.noConflict = function(){
+    $.fn.tokenize2.noConflict = function () {
         $.fn.tokenize2 = old;
         return this;
     }
@@ -2003,7 +2052,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * ========================================================== */
 
-!function ( $, window, pluginName, undefined){
+!function ($, window, pluginName, undefined) {
     var containerDefaults = {
             // If true, items can be dragged from this container
             drag: true,
@@ -2102,9 +2151,9 @@
             serialize: function ($parent, $children, parentIsContainer) {
                 var result = $.extend({}, $parent.data())
 
-                if(parentIsContainer)
+                if (parentIsContainer)
                     return [$children]
-                else if ($children[0]){
+                else if ($children[0]) {
                     result.children = $children
                 }
 
@@ -2123,7 +2172,7 @@
             left: 0,
             top: 0,
             bottom: 0,
-            right:0
+            right: 0
         },
         eventNames = {
             start: "touchstart.sortable mousedown.sortable",
@@ -2137,10 +2186,10 @@
      * a is Array [left, right, top, bottom]
      * b is array [left, top]
      */
-    function d(a,b) {
+    function d(a, b) {
         var x = Math.max(0, a[0] - b[0], b[0] - a[1]),
             y = Math.max(0, a[2] - b[1], b[1] - a[3])
-        return x+y;
+        return x + y;
     }
 
     function setDimensions(array, dimensions, tolerance, useOffset) {
@@ -2148,12 +2197,12 @@
             offsetMethod = useOffset ? "offset" : "position"
         tolerance = tolerance || 0
 
-        while(i--){
+        while (i--) {
             var el = array[i].el ? array[i].el : $(array[i]),
                 // use fitting method
                 pos = el[offsetMethod]()
             pos.left += parseInt(el.css('margin-left'), 10)
-            pos.top += parseInt(el.css('margin-top'),10)
+            pos.top += parseInt(el.css('margin-top'), 10)
             dimensions[i] = [
                 pos.left - tolerance,
                 pos.left + el.outerWidth() + tolerance,
@@ -2179,11 +2228,11 @@
             i = dimensions.length,
             distances = []
 
-        while(i--){
+        while (i--) {
             dim = dimensions[i]
-            distances[i] = [i,d(dim,pointer), lastPointer && d(dim, lastPointer)]
+            distances[i] = [i, d(dim, pointer), lastPointer && d(dim, lastPointer)]
         }
-        distances = distances.sort(function  (a,b) {
+        distances = distances.sort(function (a, b) {
             return b[1] - a[1] || b[2] - a[2] || b[0] - a[0]
         })
 
@@ -2195,21 +2244,21 @@
         this.options = $.extend({}, groupDefaults, options)
         this.containers = []
 
-        if(!this.options.rootGroup){
+        if (!this.options.rootGroup) {
             this.scrollProxy = $.proxy(this.scroll, this)
             this.dragProxy = $.proxy(this.drag, this)
             this.dropProxy = $.proxy(this.drop, this)
             this.placeholder = $(this.options.placeholder)
 
-            if(!options.isValidTarget)
+            if (!options.isValidTarget)
                 this.options.isValidTarget = undefined
         }
     }
 
-    ContainerGroup.get = function  (options) {
-        if(!containerGroups[options.group]) {
-            if(options.group === undefined)
-                options.group = groupCounter ++
+    ContainerGroup.get = function (options) {
+        if (!containerGroups[options.group]) {
+            if (options.group === undefined)
+                options.group = groupCounter++
 
             containerGroups[options.group] = new ContainerGroup(options)
         }
@@ -2218,7 +2267,7 @@
     }
 
     ContainerGroup.prototype = {
-        dragInit: function  (e, itemContainer) {
+        dragInit: function (e, itemContainer) {
             this.$document = $(itemContainer.el[0].ownerDocument)
 
             // get item to drag
@@ -2237,9 +2286,9 @@
                 this.dragInitDone = true;
             }
         },
-        drag: function  (e) {
-            if(!this.dragging){
-                if(!this.distanceMet(e) || !this.delayMet)
+        drag: function (e) {
+            if (!this.dragging) {
+                if (!this.distanceMet(e) || !this.delayMet)
                     return
 
                 this.options.onDragStart(this.item, this.itemContainer, groupDefaults.onDragStart, e)
@@ -2258,20 +2307,20 @@
                 box = this.sameResultBox,
                 t = this.options.tolerance
 
-            if(!box || box.top - t > p.top || box.bottom + t < p.top || box.left - t > p.left || box.right + t < p.left)
-                if(!this.searchValidTarget()){
+            if (!box || box.top - t > p.top || box.bottom + t < p.top || box.left - t > p.left || box.right + t < p.left)
+                if (!this.searchValidTarget()) {
                     this.placeholder.detach()
                     this.lastAppendedItem = undefined
                 }
         },
-        drop: function  (e) {
+        drop: function (e) {
             this.toggleListeners('off')
 
             this.dragInitDone = false
 
-            if(this.dragging){
+            if (this.dragging) {
                 // processing Drop, check if placeholder is detached
-                if(this.placeholder.closest("html")[0]){
+                if (this.placeholder.closest("html")[0]) {
                     this.placeholder.before(this.item).detach()
                 } else {
                     this.options.onCancel(this.item, this.itemContainer, groupDefaults.onCancel, e)
@@ -2285,8 +2334,8 @@
                 this.dragging = false
             }
         },
-        searchValidTarget: function  (pointer, lastPointer) {
-            if(!pointer){
+        searchValidTarget: function (pointer, lastPointer) {
+            if (!pointer) {
                 pointer = this.relativePointer || this.pointer
                 lastPointer = this.lastRelativePointer || this.lastPointer
             }
@@ -2296,29 +2345,29 @@
                 lastPointer),
                 i = distances.length
 
-            while(i--){
+            while (i--) {
                 var index = distances[i][0],
                     distance = distances[i][1]
 
-                if(!distance || this.options.pullPlaceholder){
+                if (!distance || this.options.pullPlaceholder) {
                     var container = this.containers[index]
-                    if(!container.disabled){
-                        if(!this.$getOffsetParent()){
+                    if (!container.disabled) {
+                        if (!this.$getOffsetParent()) {
                             var offsetParent = container.getItemOffsetParent()
                             pointer = getRelativePosition(pointer, offsetParent)
                             lastPointer = getRelativePosition(lastPointer, offsetParent)
                         }
-                        if(container.searchValidTarget(pointer, lastPointer))
+                        if (container.searchValidTarget(pointer, lastPointer))
                             return true
                     }
                 }
             }
-            if(this.sameResultBox)
+            if (this.sameResultBox)
                 this.sameResultBox = undefined
         },
-        movePlaceholder: function  (container, item, method, sameResultBox) {
+        movePlaceholder: function (container, item, method, sameResultBox) {
             var lastAppendedItem = this.lastAppendedItem
-            if(!sameResultBox && lastAppendedItem && lastAppendedItem[0] === item[0])
+            if (!sameResultBox && lastAppendedItem && lastAppendedItem[0] === item[0])
                 return;
 
             item[method](this.placeholder)
@@ -2326,22 +2375,22 @@
             this.sameResultBox = sameResultBox
             this.options.afterMove(this.placeholder, container, item)
         },
-        getContainerDimensions: function  () {
-            if(!this.containerDimensions)
+        getContainerDimensions: function () {
+            if (!this.containerDimensions)
                 setDimensions(this.containers, this.containerDimensions = [], this.options.tolerance, !this.$getOffsetParent())
             return this.containerDimensions
         },
-        getContainer: function  (element) {
+        getContainer: function (element) {
             return element.closest(this.options.containerSelector).data(pluginName)
         },
-        $getOffsetParent: function  () {
-            if(this.offsetParent === undefined){
+        $getOffsetParent: function () {
+            if (this.offsetParent === undefined) {
                 var i = this.containers.length - 1,
                     offsetParent = this.containers[i].getItemOffsetParent()
 
-                if(!this.options.rootGroup){
-                    while(i--){
-                        if(offsetParent[0] != this.containers[i].getItemOffsetParent()[0]){
+                if (!this.options.rootGroup) {
+                    while (i--) {
+                        if (offsetParent[0] != this.containers[i].getItemOffsetParent()[0]) {
                             // If every container has the same offset parent,
                             // use position() which is relative to this parent,
                             // otherwise use offset()
@@ -2359,7 +2408,7 @@
         setPointer: function (e) {
             var pointer = this.getPointer(e)
 
-            if(this.$getOffsetParent()){
+            if (this.$getOffsetParent()) {
                 var relativePointer = getRelativePosition(pointer, this.$getOffsetParent())
                 this.lastRelativePointer = this.relativePointer
                 this.relativePointer = relativePointer
@@ -2375,7 +2424,7 @@
                 Math.abs(this.pointer.top - currentPointer.top)
             ) >= this.options.distance)
         },
-        getPointer: function(e) {
+        getPointer: function (e) {
             var o = e.originalEvent || e.originalEvent.touches && e.originalEvent.touches[0]
             return {
                 left: e.pageX || o.pageX,
@@ -2389,20 +2438,20 @@
             // init delay timer if needed
             if (!this.delayMet) {
                 clearTimeout(this._mouseDelayTimer);
-                this._mouseDelayTimer = setTimeout(function() {
+                this._mouseDelayTimer = setTimeout(function () {
                     that.delayMet = true
                 }, this.options.delay)
             }
         },
-        scroll: function  (e) {
+        scroll: function (e) {
             this.clearDimensions()
             this.clearOffsetParent() // TODO is this needed?
         },
         toggleListeners: function (method) {
             var that = this,
-                events = ['drag','drop','scroll']
+                events = ['drag', 'drop', 'scroll']
 
-            $.each(events,function  (i,event) {
+            $.each(events, function (i, event) {
                 that.$document[method](eventNames[event], that[event + 'Proxy'])
             })
         },
@@ -2410,19 +2459,19 @@
             this.offsetParent = undefined
         },
         // Recursively clear container and item dimensions
-        clearDimensions: function  () {
-            this.traverse(function(object){
+        clearDimensions: function () {
+            this.traverse(function (object) {
                 object._clearDimensions()
             })
         },
-        traverse: function(callback) {
+        traverse: function (callback) {
             callback(this)
             var i = this.containers.length
-            while(i--){
+            while (i--) {
                 this.containers[i].traverse(callback)
             }
         },
-        _clearDimensions: function(){
+        _clearDimensions: function () {
             this.containerDimensions = undefined
         },
         _destroy: function () {
@@ -2432,7 +2481,7 @@
 
     function Container(element, options) {
         this.el = element
-        this.options = $.extend( {}, containerDefaults, options)
+        this.options = $.extend({}, containerDefaults, options)
 
         this.group = ContainerGroup.get(this.options)
         this.rootGroup = this.options.rootGroup || this.group
@@ -2443,26 +2492,26 @@
 
         this.target.on(eventNames.start, this.handle, $.proxy(this.dragInit, this))
 
-        if(this.options.drop)
+        if (this.options.drop)
             this.group.containers.push(this)
     }
 
     Container.prototype = {
-        dragInit: function  (e) {
+        dragInit: function (e) {
             var rootGroup = this.rootGroup
 
-            if( !this.disabled &&
+            if (!this.disabled &&
                 !rootGroup.dragInitDone &&
                 this.options.drag &&
                 this.isValidDrag(e)) {
                 rootGroup.dragInit(e, this)
             }
         },
-        isValidDrag: function(e) {
+        isValidDrag: function (e) {
             return e.which == 1 ||
                 e.type == "touchstart" && e.originalEvent.touches.length == 1
         },
-        searchValidTarget: function  (pointer, lastPointer) {
+        searchValidTarget: function (pointer, lastPointer) {
             var distances = sortByDistanceDesc(this.getItemDimensions(),
                 pointer,
                 lastPointer),
@@ -2471,25 +2520,24 @@
                 validTarget = !rootGroup.options.isValidTarget ||
                     rootGroup.options.isValidTarget(rootGroup.item, this)
 
-            if(!i && validTarget){
+            if (!i && validTarget) {
                 rootGroup.movePlaceholder(this, this.target, "append")
                 return true
             } else
-                while(i--){
+                while (i--) {
                     var index = distances[i][0],
                         distance = distances[i][1]
-                    if(!distance && this.hasChildGroup(index)){
+                    if (!distance && this.hasChildGroup(index)) {
                         var found = this.getContainerGroup(index).searchValidTarget(pointer, lastPointer)
-                        if(found)
+                        if (found)
                             return true
-                    }
-                    else if(validTarget){
+                    } else if (validTarget) {
                         this.movePlaceholder(index, pointer)
                         return true
                     }
                 }
         },
-        movePlaceholder: function  (index, pointer) {
+        movePlaceholder: function (index, pointer) {
             var item = $(this.items[index]),
                 dim = this.itemDimensions[index],
                 method = "after",
@@ -2502,10 +2550,10 @@
                     top: offset.top,
                     bottom: offset.top + height
                 }
-            if(this.options.vertical){
+            if (this.options.vertical) {
                 var yCenter = (dim[2] + dim[3]) / 2,
                     inUpperHalf = pointer.top <= yCenter
-                if(inUpperHalf){
+                if (inUpperHalf) {
                     method = "before"
                     sameResultBox.bottom -= height / 2
                 } else
@@ -2513,18 +2561,18 @@
             } else {
                 var xCenter = (dim[0] + dim[1]) / 2,
                     inLeftHalf = pointer.left <= xCenter
-                if(inLeftHalf){
+                if (inLeftHalf) {
                     method = "before"
                     sameResultBox.right -= width / 2
                 } else
                     sameResultBox.left += width / 2
             }
-            if(this.hasChildGroup(index))
+            if (this.hasChildGroup(index))
                 sameResultBox = emptyBox
             this.rootGroup.movePlaceholder(this, item, method, sameResultBox)
         },
-        getItemDimensions: function  () {
-            if(!this.itemDimensions){
+        getItemDimensions: function () {
+            if (!this.itemDimensions) {
                 this.items = this.$getChildren(this.el, "item").filter(
                     ":not(." + this.group.options.placeholderClass + ", ." + this.group.options.draggedClass + ")"
                 ).get()
@@ -2532,12 +2580,12 @@
             }
             return this.itemDimensions
         },
-        getItemOffsetParent: function  () {
+        getItemOffsetParent: function () {
             var offsetParent,
                 el = this.el
             // Since el might be empty we have to check el itself and
             // can not do something like el.children().first().offsetParent()
-            if(el.css("position") === "relative" || el.css("position") === "absolute"  || el.css("position") === "fixed")
+            if (el.css("position") === "relative" || el.css("position") === "absolute" || el.css("position") === "fixed")
                 offsetParent = el
             else
                 offsetParent = el.offsetParent()
@@ -2546,16 +2594,16 @@
         hasChildGroup: function (index) {
             return this.options.nested && this.getContainerGroup(index)
         },
-        getContainerGroup: function  (index) {
+        getContainerGroup: function (index) {
             var childGroup = $.data(this.items[index], subContainerKey)
-            if( childGroup === undefined){
+            if (childGroup === undefined) {
                 var childContainers = this.$getChildren(this.items[index], "container")
                 childGroup = false
 
-                if(childContainers[0]){
+                if (childContainers[0]) {
                     var options = $.extend({}, this.options, {
                         rootGroup: this.rootGroup,
-                        group: groupCounter ++
+                        group: groupCounter++
                     })
                     childGroup = childContainers[pluginName](options).data(pluginName).group
                 }
@@ -2569,7 +2617,7 @@
                 selector = options[type + "Selector"]
 
             parent = $(parent)
-            if(path)
+            if (path)
                 parent = parent.find(path)
 
             return parent.children(selector)
@@ -2584,56 +2632,56 @@
 
             return this.rootGroup.options.serialize(parent, children, isContainer)
         },
-        traverse: function(callback) {
-            $.each(this.items || [], function(item){
+        traverse: function (callback) {
+            $.each(this.items || [], function (item) {
                 var group = $.data(this, subContainerKey)
-                if(group)
+                if (group)
                     group.traverse(callback)
             });
 
             callback(this)
         },
-        _clearDimensions: function  () {
+        _clearDimensions: function () {
             this.itemDimensions = undefined
         },
-        _destroy: function() {
+        _destroy: function () {
             var that = this;
 
             this.target.off(eventNames.start, this.handle);
             this.el.removeData(pluginName)
 
-            if(this.options.drop)
-                this.group.containers = $.grep(this.group.containers, function(val){
+            if (this.options.drop)
+                this.group.containers = $.grep(this.group.containers, function (val) {
                     return val != that
                 })
 
-            $.each(this.items || [], function(){
+            $.each(this.items || [], function () {
                 $.removeData(this, subContainerKey)
             })
         }
     }
 
     var API = {
-        enable: function() {
-            this.traverse(function(object){
+        enable: function () {
+            this.traverse(function (object) {
                 object.disabled = false
             })
         },
-        disable: function (){
-            this.traverse(function(object){
+        disable: function () {
+            this.traverse(function (object) {
                 object.disabled = true
             })
         },
         serialize: function () {
             return this._serialize(this.el, true)
         },
-        refresh: function() {
-            this.traverse(function(object){
+        refresh: function () {
+            this.traverse(function (object) {
                 object._clearDimensions()
             })
         },
         destroy: function () {
-            this.traverse(function(object){
+            this.traverse(function (object) {
                 object._destroy();
             })
         }
@@ -2648,16 +2696,16 @@
      *   either options on init
      *   or a method name followed by arguments to pass to the method
      */
-    $.fn[pluginName] = function(methodOrOptions) {
+    $.fn[pluginName] = function (methodOrOptions) {
         var args = Array.prototype.slice.call(arguments, 1)
 
-        return this.map(function(){
+        return this.map(function () {
             var $t = $(this),
                 object = $t.data(pluginName)
 
-            if(object && API[methodOrOptions])
+            if (object && API[methodOrOptions])
                 return API[methodOrOptions].apply(object, args) || this
-            else if(!object && (methodOrOptions === undefined ||
+            else if (!object && (methodOrOptions === undefined ||
                 typeof methodOrOptions === "object"))
                 $t.data(pluginName, new Container($t, methodOrOptions))
 

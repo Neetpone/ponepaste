@@ -2959,7 +2959,7 @@ class GeSHi {
                                 $next_comment_single_pos = $length;
                                 foreach ($this->language_data['COMMENT_SINGLE'] as $comment_key => $comment_mark) {
                                     $match_i = false;
-                                    $case_sensitive_comments = (bool) @$this->language_data['CASE_SENSITIVE'][GESHI_COMMENTS];
+                                    $case_sensitive_comments = (bool)@$this->language_data['CASE_SENSITIVE'][GESHI_COMMENTS];
                                     if (isset($comment_single_cache_per_key[$comment_key]) &&
                                         ($comment_single_cache_per_key[$comment_key] >= $i ||
                                             $comment_single_cache_per_key[$comment_key] === false)) {

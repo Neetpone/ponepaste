@@ -10,7 +10,7 @@ $ip = $_SERVER['REMOTE_ADDR'];
 
 //Report paste
 $p_reasonrep = Trim(htmlspecialchars($_POST['reasonrep']));
-$p_memreport = $current_user ? $current_user ->username : 'Guest';
+$p_memreport = $current_user ? $current_user->username : 'Guest';
 $p_pastereport = $_POST['reppasteid'];
 $p_reasonrep = preg_replace("/[^0-9]/", "", $p_reasonrep);
 

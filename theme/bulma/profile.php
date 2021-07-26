@@ -40,7 +40,7 @@
                 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
                     <div class="columns">
                         <div class="column">
-                          <div class="field">
+                            <div class="field">
                                 <label class="label">Generate New Recovery Key</label>
                                 <div class="control has-icons-left has-icons-right">
                                     <input disabled="" type="text" class="input" name="username"
@@ -50,15 +50,16 @@
 									</span>
                                 </div>
                             </div>
-                                                        <div class="field">
-                                 <button type="submit" name="Gen_key" class="button is-info">Generate New Key</button>
+                            <div class="field">
+                                <button type="submit" name="Gen_key" class="button is-info">Generate New Key</button>
                             </div>
                             <hr>
                             <div class="field">
                                 <label class="label">Username</label>
                                 <div class="control has-icons-left has-icons-right">
                                     <input disabled="" type="text" class="input" name="username"
-                                           style="cursor:not-allowed;" placeholder="<?php echo pp_html_escape($current_user->username); ?>">
+                                           style="cursor:not-allowed;"
+                                           placeholder="<?php echo pp_html_escape($current_user->username); ?>">
                                     <span class="icon is-small is-left">
 										<i class="fas fa-user"></i>
 									</span>

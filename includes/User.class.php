@@ -1,4 +1,5 @@
 <?php
+
 class User {
     public const REMEMBER_TOKEN_COOKIE = '_ponepaste_token';
 
@@ -14,14 +15,14 @@ class User {
         $conn->query('DELETE FROM user_sessions WHERE user_id = ? AND token = ?', [$this->user_id, $token]);
     }
 
-    public static function findByUsername(DatabaseHandle $conn, string $username) : User | null {
+    public static function findByUsername(DatabaseHandle $conn, string $username) : User|null {
         $query = $conn->query('SELECT id, username FROM users WHERE username = ?', [$username]);
         $row = $query->fetch();
 
         return empty($row) ? null : new User($row);
     }
 
-    public static function current(DatabaseHandle $conn) : User | null {
+    public static function current(DatabaseHandle $conn) : User|null {
         $session_user = User::createFromPhpSession($conn);
 
         if ($session_user !== null) {
@@ -37,7 +38,7 @@ class User {
         return null;
     }
 
-    public static function createFromRememberToken(DatabaseHandle $conn, string $remember_token) : User | null {
+    public static function createFromRememberToken(DatabaseHandle $conn, string $remember_token) : User|null {
         $result = $conn->query(
             'SELECT users.id AS id, users.username AS username, users.banned AS banned, user_sessions.id AS session_id, user_sessions.expire_at AS session_expiry
                 FROM user_sessions
@@ -61,7 +62,7 @@ class User {
         return null;
     }
 
-    public static function createFromPhpSession(DatabaseHandle $conn) : User | null {
+    public static function createFromPhpSession(DatabaseHandle $conn) : User|null {
         if (empty($_SESSION['user_id'])) {
             return null;
         }

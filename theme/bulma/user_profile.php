@@ -269,7 +269,7 @@ $protocol = paste_protocol();
                             $f_date = new DateTime($row['f_time']);
                             $f_dateui = $f_date->format("d F Y");
                             $Recent_update = new DateTime($row['updated_at']);
-                            $Recent_update_u = date_format($Recent_update,'U');
+                            $Recent_update_u = date_format($Recent_update, 'U');
                             $f_tags = Trim($row['tagsys']);
                             $ftagArray = explode(',', $f_tags);
                             $ftagArray = array_filter($ftagArray);
@@ -289,7 +289,7 @@ $protocol = paste_protocol();
                                                     <a href="' . $protocol . $baseurl . '/' . $p_link . '" title="' . $ftitle . '">' . ($ftitle) . '</a>
                                                 </td>    
                                                 <td  data-sort="' . $f_dateui . '" class="td-left">
-                                                <span>' . date_format($f_date,'U') . '</span>
+                                                <span>' . date_format($f_date, 'U') . '</span>
                                                 </td>
                                                <td class="td-center">
                                                 <span style="display:none;">' . $Recent_update_u . '</span>

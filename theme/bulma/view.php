@@ -162,7 +162,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                         <div class="column is-4 has-text-centered">
                             <h1 class="title is-6" style="margin-bottom:0;"><?= $paste['title'] ?></h1>
                             <small class="title is-6 has-text-weight-normal has-text-grey">
-                                <?php if ($paste['member'] === NULL): ?>
+                                <?php if ($paste['member'] === null): ?>
                                     Guest
                                 <?php else: ?>
                                     By <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
