@@ -64,8 +64,7 @@ $protocol = paste_protocol();
                     } elseif (strtotime($profile_join_date) <= 1609459200) {
                         echo '<img src = "/img/badges/strag.png" title="[EarlyStraggeler] Joined after the Second wave " style="margin:5px">';
                     }
-                    if (strpos($profile_badge, '0') !== false) {
-                    } else {
+                    if (!str_contains($profile_badge, '0')) {
                         echo $profile_badge;
                     }
 

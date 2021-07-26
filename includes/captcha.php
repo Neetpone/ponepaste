@@ -8,16 +8,6 @@ function captcha($color, $mode, $mul, $allowed) : array {
     $bg_path = dirname(__FILE__) . '/captchabg/';
     $font_path = dirname(__FILE__) . '/fonts/';
 
-    if ($mode == "Easy") {
-        $fonr_name = 'PonyvilleMedium0.4.ttf';
-    } elseif ($mode == "Normal") {
-        $fonr_name = 'times_new_yorker.ttf';
-    } elseif ($mode == "Tough") {
-        $fonr_name = 'captcha_code.otf';
-    } else {
-        $fonr_name = 'times_new_yorker.ttf';
-    }
-
     if ($mul == "on") {
         $captcha_config = array(
             'code' => '',

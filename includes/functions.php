@@ -329,7 +329,6 @@ function doDownload($paste_id, $p_title, $p_member, $p_conntent, $p_code) {
     $stats = false;
     if ($p_code) {
         // Figure out extensions.
-        $ext = "txt";
         $ext = match ($p_code) {
             default => 'txt',
         };

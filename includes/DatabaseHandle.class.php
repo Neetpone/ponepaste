@@ -1,6 +1,5 @@
 <?php
 class DatabaseHandle {
-    private static DatabaseHandle $instance;
     private PDO $conn;
 
     public function __construct(string $conString, string $username, string $password) {
