@@ -286,14 +286,14 @@ $protocol = paste_protocol();
 
                             echo '<tr> 
                                                 <td>
-                                                    <a href="' . $protocol . $baseurl . '/' . $p_link . '" title="' . $ftitle . '">' . ($ftitle) . '</a>
+                                                    <a href="' . $protocol . $baseurl . '/' . $f_id . '" title="' . $ftitle . '">' . ($ftitle) . '</a>
                                                 </td>    
-                                                <td  data-sort="' . $f_dateui . '" class="td-left">
-                                                <span>' . date_format($f_date, 'U') . '</span>
+                                                <td  data-sort="' . date_format($f_date, 'U') . '" class="td-left">
+                                                <span>' . $f_dateui . '</span>
                                                 </td>
-                                               <td class="td-center">
-                                                <span style="display:none;">' . $Recent_update_u . '</span>
-                                                ' . $updatenote . '
+                                               <td  data-sort="' . $Recent_update_u . '" class="td-left">
+                                                  <span>' . $updatenote . '</span>
+                                                
                                                 </td>
                                                 <td class="td-left">';
                             if (strlen($f_tags) > 0) {
