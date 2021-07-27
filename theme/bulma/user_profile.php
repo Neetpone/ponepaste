@@ -143,29 +143,29 @@ $protocol = paste_protocol();
                     <table id="archive" class="table is-fullwidth is-hoverable">
                         <thead>
                         <tr>
-                            <td><?php echo $lang['pastetitle']; ?></td>
-                            <td><?php echo $lang['pastetime']; ?></td>
+                            <td class="td-right" ><?php echo $lang['pastetitle']; ?></td>
+                            <td class="td-center"><?php echo $lang['pastetime']; ?></td>
                             <?php if ($is_current_user) {
-                                echo "<td>" . $lang['visibility'] . "</td>";
+                                echo "<td class='td-center'>" . $lang['visibility'] . "</td>";
                             } ?>
-                            <td><?php echo $lang['pasteviews']; ?></td>
-                            <td><?php echo $lang['tags']; ?></td>
+                            <td class="td-center"><?php echo $lang['pasteviews']; ?></td>
+                            <td class="td-center"><?php echo $lang['tags']; ?></td>
                             <?php if ($is_current_user) {
-                                echo "<td>" . $lang['delete'] . "</td>";
+                                echo "<td class='td-center'>" . $lang['delete'] . "</td>";
                             } ?>
                         </tr>
                         </thead>
                         <tfoot>
                         <tr>
-                            <td><?php echo $lang['pastetitle']; ?></td>
-                            <td><?php echo $lang['pastedate']; ?></td>
+                            <td class="td-center"><?php echo $lang['pastetitle']; ?></td>
+                            <td class="td-center"><?php echo $lang['pastedate']; ?></td>
                             <?php if ($is_current_user) {
-                                echo "<td>" . $lang['visibility'] . "</td>";
+                                echo "<td class='td-center'>" . $lang['visibility'] . "</td>";
                             } ?>
-                            <td><?php echo $lang['pasteviews']; ?></td>
-                            <td><?php echo $lang['tags']; ?></td>
+                            <td class="td-center"><?php echo $lang['pasteviews']; ?></td>
+                            <td class="td-center"><?php echo $lang['tags']; ?></td>
                             <?php if ($is_current_user) {
-                                echo "<td>" . $lang['delete'] . "</td>";
+                                echo "<td class='td-center'>" . $lang['delete'] . "</td>";
                             } ?>
                         </tr>
                         </tfoot>
@@ -252,10 +252,10 @@ $protocol = paste_protocol();
                     <table id="favs" class="table is-fullwidth is-hoverable">
                         <thead>
                         <tr>
-                            <td><?php echo $lang['pastetitle']; ?></td>
-                            <td><?php echo $lang['tags']; ?></td>
-                            <td><?php echo "Updated (48hrs)"; ?></td>
-                            <td><?php echo $lang['tags']; ?></td>
+                            <td class="td-right"><?php echo $lang['pastetitle']; ?></td>
+                            <td class="td-center"><?php echo $lang['datefav']; ?></td>
+                            <td class="td-center"><?php echo $lang['pastestatus']; ?></td>
+                            <td class="td-center"><?php echo $lang['tags']; ?></td>
                             <?php //if (isset($_SESSION) && $_SESSION['username'] == $profile_username) {
                             //echo "<td>" . $lang['delete'] . "</td>";
                             //} ?>
@@ -288,10 +288,10 @@ $protocol = paste_protocol();
                                                 <td>
                                                     <a href="' . $protocol . $baseurl . '/' . $f_id . '" title="' . $ftitle . '">' . ($ftitle) . '</a>
                                                 </td>    
-                                                <td  data-sort="' . date_format($f_date, 'U') . '" class="td-left">
+                                                <td  data-sort="' . date_format($f_date, 'U') . '" class="td-center">
                                                 <span>' . $f_dateui . '</span>
                                                 </td>
-                                               <td  data-sort="' . $Recent_update_u . '" class="td-left">
+                                               <td  data-sort="' . $Recent_update_u . '" class="td-center">
                                                   <span>' . $updatenote . '</span>
                                                 
                                                 </td>

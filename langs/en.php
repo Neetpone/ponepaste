@@ -4,6 +4,8 @@
  */
 
 $lang = array();
+$lang['pastestatus'] = "Status";
+$lang['datefav'] = "Date Favorited";
 $lang['loginwarning'] = "You must be logged in to do that.";
 $lang['titlelen'] = "Title too long";
 $lang['notags'] = "Please tag your paste";
