@@ -14,7 +14,6 @@
  * GNU General Public License in GPL.txt for more details.
  */
 ?>
-
 <main class="bd-main">
     <div class="bd-side-background"></div>
     <div class="bd-main-container container">
@@ -23,16 +22,16 @@
                 <?php
                 // Logged in
                 if (isset($success)) {
-                    echo '<p class="help is-success subtitle is-6">' . $success . '</p>';
+                    echo '<div class="notification is-success"><i class="fa fa-exclamation-circle"></i> ' . $success . '</div>';
                     if (isset($new_password)) {
                         echo '<p>Your new password is as follows:</p>';
-                        echo "<code>${new_password}</code>";
+                        echo "<code>${new_password}</code><br>";
                     }
 
                     if (isset($recovery_code)) {
-                        echo '<h2>IMPORTANT!</h2>';
+                        echo '<br><span class="tag is-danger is-medium">IMPORTANT!</span>';
                         echo '<p><b>If you wish to recover your account later, you will need the following code. Store it in a safe place!</b></p>';
-                        echo "<code>${recovery_code}</code>";
+                        echo "<code id='recovery'>${recovery_code}</code>";
                         echo '<p>If you do not save this code and you forget your password, there is no way to get your account back!</p>';
                     }
                 } // Errors
