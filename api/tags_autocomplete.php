@@ -13,6 +13,9 @@ if (empty($_GET['tag'])) {
 $tag_name = Tag::cleanTagName($_GET['tag']);
 $tag_name = str_replace('%', '', $tag_name); /* get rid of MySQL LIKE wildcards */
 
-$results = $conn->query('SELECT name FROM tags WHERE name LIKE ?', [$tag_name . '%']);
+$results = $conn->query('SELECT name FROM tags WHERE name LIKE ? AND name != ?', [$tag_name . '%', $tag_name]);
+$tags = $results->fetchAll();
 
-echo json_encode($results->fetchAll());
+array_push($tags, ['name' => $tag_name]);
+
+echo json_encode($tags);
