@@ -220,13 +220,11 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                     <!-- Tag display  -->
                     <div class="columns is-desktop is-centered">
                         <?php
-                        $tagDisplay = htmlentities($paste['tags'], ENT_QUOTES, 'UTF-8');
-                        $tagDisplay = rtrim($tagDisplay);
-                        $tagArray = explode(',', $tagDisplay);
-                        if (strlen($tagDisplay) > 0) {
-                            foreach ($tagArray as $tag_Array) {
-                                $tag_Array = ucfirst($tag_Array);
-                                echo '<a href="/archive?q=' . trim($tag_Array) . '"><span class="tag is-info">' . $tag_Array . '</span></a>';
+                        $tags = $paste['tags'];
+                        if (count($tags) != 0) {
+                            foreach ($tags as $tag) {
+                                $tagName = ucfirst(pp_html_escape($tag['name']));
+                                echo '<a href="/archive?q=' . $tagName . '"><span class="tag is-info">' . $tagName . '</span></a>';
                             }
                         } else {
                             echo ' <span class="tag is-warning">No tags</span>';
@@ -356,7 +354,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                            data-max-tags="10" data-max-chars="40" type="text"
                                                            data-item-text="name" data-case-sensitive="false"
                                                            placeholder="10 Tags Maximum"
-                                                           value="<?php echo $p_tagsys; ?>">
+                                                           value="<?php echo pp_html_encode(join(',', $paste['tags'])); ?>">
                                                 </div>
                                             </div>
                                         </div>

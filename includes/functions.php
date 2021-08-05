@@ -13,9 +13,17 @@
  * GNU General Public License in GPL.txt for more details.
  */
 
+function getPasteTags(DatabaseHandle $conn, int $paste_id) : array {
+    return $conn->query(
+        'SELECT name, slug FROM tags
+            INNER JOIN paste_taggings ON paste_taggings.tag_id = tags.id
+            WHERE paste_taggings.paste_id = ?',
+        [$paste_id])->fetchAll();
+}
+
 function getUserFavs(DatabaseHandle $conn, int $user_id) : array {
     $query = $conn->prepare(
-        "SELECT pins.f_time, pastes.id, pins.paste_id, pastes.title, pastes.created_at, pastes.tagsys, pastes.updated_at
+        "SELECT pins.f_time, pastes.id, pins.paste_id, pastes.title, pastes.created_at, pastes.updated_at
             FROM pins
             INNER JOIN pastes ON pastes.id = pins.paste_id
             WHERE pins.user_id = ?");
@@ -129,7 +137,7 @@ function getUserRecom(DatabaseHandle $conn, int $user_id) : array {
 
 function recentupdate($conn, $count) {
     $query = $conn->prepare(
-        "SELECT pastes.id AS id, visible, title, created_at, updated_at, users.username AS member, tagsys
+        "SELECT pastes.id AS id, visible, title, created_at, updated_at, users.username AS member
             FROM pastes
             INNER JOIN users ON users.id = pastes.user_id
             WHERE visible = '0' ORDER BY updated_at DESC
@@ -140,7 +148,7 @@ function recentupdate($conn, $count) {
 
 function monthpop($conn, $count) {
     $query = $conn->prepare(
-        "SELECT pastes.id AS id, views, title, created_at, updated_at, visible, tagsys, users.username AS member 
+        "SELECT pastes.id AS id, views, title, created_at, updated_at, visible, users.username AS member 
             FROM pastes
             INNER JOIN users ON users.id = pastes.user_id
             WHERE MONTH(created_at) = MONTH(NOW()) AND visible = '0' ORDER BY views DESC LIMIT ?");
@@ -178,7 +186,7 @@ function decrypt(string $value) : string {
 
 function getRecent($conn, $count) {
     $query = $conn->prepare("
-        SELECT pastes.id, visible, title, created_at, updated_at, users.username AS member, tagsys 
+        SELECT pastes.id, visible, title, created_at, updated_at, users.username AS member 
         FROM pastes
         INNER JOIN users ON pastes.user_id = users.id
         WHERE visible = '0'
@@ -201,7 +209,7 @@ function getRecentadmin($conn, $count = 5) {
 
 function getpopular(DatabaseHandle $conn, int $count) : array {
     $query = $conn->prepare("
-        SELECT pastes.id AS id, visible, title, pastes.created_at AS created_at, updated_at, views, users.username AS member, tagsys
+        SELECT pastes.id AS id, visible, title, pastes.created_at AS created_at, updated_at, views, users.username AS member
             FROM pastes INNER JOIN users ON users.id = pastes.user_id
             WHERE visible = '0'
             ORDER BY views DESC 
@@ -213,7 +221,7 @@ function getpopular(DatabaseHandle $conn, int $count) : array {
 
 function getrandom(DatabaseHandle $conn, int $count) : array {
     $query = $conn->prepare("
-        SELECT pastes.id, visible, title, created_at, updated_at, views, users.username AS member, tagsys
+        SELECT pastes.id, visible, title, created_at, updated_at, views, users.username AS member
             FROM pastes
             INNER JOIN users ON users.id = pastes.user_id
             WHERE visible = '0'
@@ -224,11 +232,10 @@ function getrandom(DatabaseHandle $conn, int $count) : array {
 }
 
 function getUserPastes(DatabaseHandle $conn, int $user_id) : array {
-    $query = $conn->prepare(
-        "SELECT id, title, visible, code, created_at, tagsys, user_id, views from pastes WHERE user_id = ?
-         ORDER by pastes.id DESC");
-    $query->execute([$user_id]);
-    return $query->fetchAll();
+    return $conn->query(
+        "SELECT id, title, visible, code, created_at, views FROM pastes
+            WHERE user_id = ?
+            ORDER by pastes.id DESC", [$user_id])->fetchAll();
 }
 
 function getTotalPastes(DatabaseHandle $conn, int $user_id) : int {

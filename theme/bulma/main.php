@@ -242,10 +242,10 @@
                                     <div class="field">
                                         <label class="label">Tags</label>
                                         <div class="control">
-                                            <input id="tags-with-source" name="tags" class="input" data-max-tags="10"
+                                            <input id="tags-with-source" name="tag_input" class="input" data-max-tags="10"
                                                    data-max-chars="40" type="text" data-item-text="name"
                                                    data-case-sensitive="false" placeholder="10 Tags Maximum"
-                                                   value="<?php echo (isset($_POST['tags'])) ? $_POST['tags'] : ''; // Pre-populate if we come here on an error" ?>">
+                                                   value="<?php echo (isset($_POST['tag_input'])) ? $_POST['tag_input'] : ''; // Pre-populate if we come here on an error" ?>">
                                         </div>
                                     </div>
 

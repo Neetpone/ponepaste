@@ -25,6 +25,7 @@ define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/captcha.php');
 require_once('includes/functions.php');
+require_once('includes/Tag.class.php');
 
 function verifyCaptcha() : string|bool {
     global $cap_e;
@@ -87,7 +88,7 @@ function validatePasteFields() : string|null {
         return $lang['empty_paste'];
     } elseif (!isset($_POST['title'])) { /* No paste title POSTed */
         return $lang['error'];
-    } elseif (empty($_POST["tags"])) { /* No tags provided */
+    } elseif (empty($_POST["tag_input"])) { /* No tags provided */
         return $lang['notags'];
     } elseif (strlen($_POST["title"]) > 70) { /* Paste title too long */
         return $lang['titlelen'];
@@ -157,25 +158,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $editing = isset($_POST['edit']);
 
-    $p_title = Trim(htmlspecialchars($_POST['title']));
+    $p_title = trim(htmlspecialchars($_POST['title']));
 
     if (empty($p_title)) {
         $p_title = 'Untitled';
     }
 
     $p_content = htmlspecialchars($_POST['paste_data']);
-    $p_visible = Trim(htmlspecialchars($_POST['visibility']));
-    $p_code = Trim(htmlspecialchars($_POST['format']));
-    $p_expiry = Trim(htmlspecialchars($_POST['paste_expire_date']));
-    $p_tagsys = Trim(htmlspecialchars($_POST['tags']));
-    $p_tagsys = rtrim($p_tagsys, ',');
+    $p_visible = trim(htmlspecialchars($_POST['visibility']));
+    $p_code = trim(htmlspecialchars($_POST['format']));
+    $p_expiry = trim(htmlspecialchars($_POST['paste_expire_date']));
     $p_password = $_POST['pass'];
-    if ($p_password == "" || $p_password == null) {
-        $p_password = "NONE";
+
+    if (empty($p_password)) {
+        $p_password = null;
     } else {
         $p_password = password_hash($p_password, PASSWORD_DEFAULT);
     }
+
     $p_encrypt = trim(htmlspecialchars($_POST['encrypted']));
+
+    $tag_input = $_POST['tag_input'];
 
     if (empty($p_encrypt)) {
         $p_encrypt = "0";
@@ -190,45 +193,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Edit existing paste or create new?
     if ($editing) {
-        if ($current_user && $current_user['id'] === $paste_id) {
+        if ($current_user &&
+            $current_user->user_id === (int) $conn->querySelectOne('SELECT user_id FROM pastes WHERE id = ?', [$_POST['paste_id']])['user_id']) {
             $paste_id = intval($_POST['paste_id']);
-            $statement = $conn->prepare(
-                "UPDATE pastes SET title = ?, content = ?, visible = ?, code = ?, expiry = ?, password = ?, encrypt = ?,ip = ?, tagsys = ?, updated_at = NOW()
-                    WHERE id = ?"
+
+            $conn->query(
+                "UPDATE pastes SET title = ?, content = ?, visible = ?, code = ?, expiry = ?, password = ?, encrypt = ?, ip = ?, updated_at = NOW()
+                    WHERE id = ?",
+                [$p_title, $p_content, $p_visible, $p_code, $expires, $p_password, $p_encrypt, $ip, $paste_id]
             );
 
-            $statement->execute([
-                $p_title, $p_content, $p_visible, $p_code, $expires, $p_password, $p_encrypt, $ip, $p_tagsys, $paste_id
-            ]);
-            $success = $paste_id;
+            Tag::replacePasteTags($conn, $paste_id, Tag::parseTagInput($tag_input));
         } else {
             $error = $lang['loginwarning']; //"You must be logged in to do that."
         }
     } else {
-        if ($current_user['id'] == null) {
-            $paste_owner = "1";
-        } else {
-            $paste_owner = $current_user ? $current_user['id'] : null;
-        }
-        $statement = $conn->prepare(
-            "INSERT INTO pastes (title, content, visible, code, expiry, password, encrypt, user_id, created_at, ip, views, tagsys) VALUES 
-                                (?,     ?,       ?,       ?,    ?,      ?,        ?,       ?,       NOW(),      ?,  0,     ?)"
+        $paste_owner = $current_user ? $current_user->user_id : 1; /* 1 is the guest user's user ID */
+
+        $paste_id = $conn->queryInsert(
+            "INSERT INTO pastes (title, content, visible, code, expiry, password, encrypt, user_id, created_at, ip, views) VALUES 
+                                (?,     ?,       ?,       ?,    ?,      ?,        ?,       ?,       NOW(),      ?,  0)",
+            [$p_title, $p_content, $p_visible, $p_code, $expires, $p_password, $p_encrypt, $paste_owner, $ip]
         );
-        $statement->execute([$p_title, $p_content, $p_visible, $p_code, $expires, $p_password, $p_encrypt, $paste_owner, $ip, $p_tagsys]);
-        $paste_id = intval($conn->lastInsertId()); /* returns the last inserted ID as per the query above */
+
+        Tag::replacePasteTags($conn, $paste_id, Tag::parseTagInput($tag_input));
+
         if ($p_visible == '0') {
             addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite);
         }
-        $success = $paste_id;
     }
 
     // Redirect to paste on successful entry, or on successful edit redirect back to edited paste
-    if (isset($success)) {
-        $paste_url = urlForPaste($success);
-        header("Location: ${paste_url}");
+    if (isset($paste_id)) {
+        header('Location: ' . urlForPaste($paste_id));
         die();
     }
-
 }
 
 OutPut:

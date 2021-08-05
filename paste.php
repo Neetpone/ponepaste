@@ -21,6 +21,8 @@ define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/geshi.php');
 require_once('includes/functions.php');
+require_once('includes/Tag.class.php');
+require_once('includes/passwords.php');
 
 require_once('includes/Parsedown/Parsedown.php');
 require_once('includes/Parsedown/ParsedownExtra.php');
@@ -36,13 +38,12 @@ $query->execute([$paste_id]);
 $fav_count = intval($query->fetch(PDO::FETCH_NUM)[0]);
 
 // Get paste info
-$query = $conn->prepare(
+$row = $conn->querySelectOne(
     'SELECT title, content, visible, code, expiry, pastes.password AS password, created_at, updated_at, encrypt, views, tagsys, users.username AS member, users.id AS user_id
         FROM pastes
         INNER JOIN users ON users.id = pastes.user_id
-        WHERE pastes.id = ?');
-$query->execute([$paste_id]);
-$row = $query->fetch();
+        WHERE pastes.id = ?', [$paste_id]);
+
 
 // This is used in the theme files.
 $totalpastes = getSiteTotalPastes($conn);
@@ -60,9 +61,9 @@ if (!$row) {
         'updated_at' => (new DateTime($row['updated_at']))->format('jS F Y h:i:s A'),
         'user_id' => $row['user_id'],
         'member' => $row['member'],
-        'tags' => $row['tagsys'],
         'views' => $row['views'],
-        'code' => $paste_code
+        'code' => $paste_code,
+        'tags' => getPasteTags($conn, $paste_id)
     ];
     $p_content = $row['content'];
     $p_visible = $row['visible'];
@@ -98,7 +99,7 @@ if (!$row) {
 
     // Download the paste
     if (isset($_GET['download'])) {
-        if ($p_password == "NONE") {
+        if ($p_password == "NONE" || $p_password === null) {
             doDownload($paste_id, $paste_title, $p_member, $op_content, $paste_code);
             exit();
         } else {
@@ -117,7 +118,7 @@ if (!$row) {
 
     // Raw view
     if (isset($_GET['raw'])) {
-        if ($p_password == "NONE") {
+        if ($p_password == "NONE" || $p_password === null) {
             rawView($paste_id, $paste_title, $op_content, $paste_code);
             exit();
         } else {
@@ -176,7 +177,7 @@ if (!$row) {
 
     // Embed view after GeSHI is applied so that $p_code is syntax highlighted as it should be.
     if (isset($_GET['embed'])) {
-        if ($p_password == "NONE") {
+        if ($p_password == "NONE" || $p_password === null) {
             embedView($paste_id, $paste_title, $p_content, $paste_code, $title, $baseurl, $ges_style, $lang);
             exit();
         } else {
@@ -195,7 +196,7 @@ if (!$row) {
 }
 
 require_once('theme/' . $default_theme . '/header.php');
-if ($p_password == "NONE") {
+if ($p_password == "NONE" || $p_password === null) {
     // No password & diplay the paste
 
     // Set download URL

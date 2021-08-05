@@ -25,4 +25,20 @@ class DatabaseHandle {
 
         return $stmt;
     }
+
+    public function querySelectOne(string $query, array $params = null) : array | null {
+        $stmt = $this->query($query, $params);
+
+        if ($row = $stmt->fetch()) {
+            return $row;
+        }
+
+        return null;
+    }
+
+    public function queryInsert(string $query, array $params = null) : int {
+        $this->query($query, $params);
+
+        return (int) $this->conn->lastInsertId();
+    }
 }
