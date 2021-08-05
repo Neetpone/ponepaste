@@ -25,15 +25,25 @@
     });
 </script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    function setupTagsInput() {
         const tagsInput = document.getElementById('tags-with-source');
         new BulmaTagsInput(tagsInput, {
-            autocomplete: {
-                <!-- Json to be completed -->
-                source: "",
-            }
+           source: async function(value) {
+                    // Value equal input value
+                    // We can then use it to request data from external API
+                    return await fetch("/api/tags_autocomplete.php?tag=" + encodeURIComponent(value))
+                        .then(function(response) {
+                            return response.json();
+                        });
+                }
         });
-    }, false);
+    }
+
+    if (document.readyState !== 'loading') {
+        setupTagsInput();
+    } else {
+        document.addEventListener('DOMContentLoaded', setupTagsInput);
+    }
 </script>
 <main class="bd-main">
     <div class="bd-side-background"></div>
@@ -237,19 +247,15 @@
                         <div class='row is-full'>
                             <div class="columns">
                                 <div class="column">
-
-
                                     <div class="field">
                                         <label class="label">Tags</label>
                                         <div class="control">
                                             <input id="tags-with-source" name="tag_input" class="input" data-max-tags="10"
-                                                   data-max-chars="40" type="text" data-item-text="name"
+                                                   data-max-chars="40" type="text" data-item-text="name" data-item-value="name"
                                                    data-case-sensitive="false" placeholder="10 Tags Maximum"
                                                    value="<?php echo (isset($_POST['tag_input'])) ? $_POST['tag_input'] : ''; // Pre-populate if we come here on an error" ?>">
                                         </div>
                                     </div>
-
-
                                 </div>
                             </div>
                         </div>
@@ -420,12 +426,7 @@
         </div>
         <?php } ?>
     </div>
-    </div>
-
-    </div>
-    </div>
 </main>
-</div>
 
 <script>
     function roundToTwo(num) {
