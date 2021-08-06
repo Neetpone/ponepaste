@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Paste - Login</title>
     <link href="css/paste.css" rel="stylesheet">
-    <style type="text/css">
+    <style>
         body {
             background: #F5F5F5;
         }

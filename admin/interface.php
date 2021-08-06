@@ -134,9 +134,6 @@ if ($last_ip == $ip) {
                         <a href="ads.php"><i class="fa fa-gbp"></i>Ads</a>
                     </li>
                     <li class="col-xs-3 col-sm-2 col-md-1">
-                        <a href="pages.php"><i class="fa fa-file"></i>Pages</a>
-                    </li>
-                    <li class="col-xs-3 col-sm-2 col-md-1">
                         <a href="sitemap.php"><i class="fa fa-map-signs"></i>Sitemap</a>
                     </li>
                     <li class="col-xs-3 col-sm-2 col-md-1">

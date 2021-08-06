@@ -124,9 +124,7 @@
                                             <div class="list-widget pagination-content">
                                                 <?php
                                                 $res = getrandom($conn, 10);
-                                                foreach ($res
-
-                                                as $index => $row) {
+                                                foreach ($res  as $index => $row) {
                                                 $title = Trim($row['title']);
                                                 $titlehov = ($row['title']);
                                                 $p_member = Trim($row['member']);
