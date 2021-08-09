@@ -179,9 +179,8 @@ $protocol = paste_protocol();
                             $p_dateui = $p_date->format("d F Y");
                             $p_views = Trim($row['views']);
                             $p_visible = intval($row['visible']);
-                            $p_tags = Trim($row['tagsys']);
-                            $tagArray = explode(',', $p_tags);
-                            $tagArray = array_filter($tagArray);
+                            $tagArray = array_map(function($tag) { return $tag['name']; }, getPasteTags($conn, $p_id));
+                            $p_tags = implode(',', $tagArray);
 
 
                             $p_visible = match ($p_visible) {
@@ -209,7 +208,7 @@ $protocol = paste_protocol();
                                                 </td>
                                                 <td class="td-left">';
                                     if (strlen($p_tags) > 0) {
-                                        foreach ($tagArray as $key => $tags) {
+                                        foreach ($tagArray as $tags) {
                                             echo '<a href="' . $protocol . $baseurl . '/user.php?user=' . $profile_username . '&q=' . $tags . '"><span class="tag is-info">' . trim($tags) . '</span></a>';
                                         }
                                     } else {
