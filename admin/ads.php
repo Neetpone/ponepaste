@@ -13,7 +13,7 @@
  * GNU General Public License in GPL.txt for more details.
  */
 
-define('IN_ADMIN', 1);
+define('IN_PONEPASTE', 1);
 require_once('common.php');
 
 updateAdminHistory($conn);

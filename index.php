@@ -27,33 +27,17 @@ require_once('includes/captcha.php');
 require_once('includes/functions.php');
 require_once('includes/Tag.class.php');
 
-function verifyCaptcha() : string|bool {
-    global $cap_e;
-    global $mode;
-    global $recaptcha_secretkey;
+function verifyCaptcha() : string | bool {
+    global $captcha_config;
     global $lang;
     global $current_user;
 
-    if ($cap_e == "on" && !$current_user) {
-        if ($mode == "reCAPTCHA") {
-            $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=" . $recaptcha_secretkey . "&response=" . $_POST['g-recaptcha-response']);
-            $response = json_decode($response, true);
-            if ($response["success"] == false) {
-                // reCAPTCHA Errors
-                return match ($response["error-codes"][0]) {
-                    "missing-input-response" => $lang['missing-input-response'],
-                    "missing-input-secret" => $lang['missing-input-secret'],
-                    "invalid-input-secret" => $lang['invalid-input-secret'],
-                    default => $lang['error']
-                };
-            }
-        } else {
+    if ($captcha_config['enabled'] && !$current_user) {
             $scode = strtolower(htmlentities(Trim($_POST['scode'])));
             $cap_code = strtolower($_SESSION['captcha']['code']);
             if ($cap_code !== $scode) {
                 return $lang['image_wrong']; // Wrong captcha.
             }
-        }
     }
 
     return true;
@@ -82,7 +66,6 @@ function calculatePasteExpiry(string $expiry) {
 
 function validatePasteFields() : string|null {
     global $lang;
-    global $pastelimit;
 
     if (empty($_POST["paste_data"]) || trim($_POST['paste_data'] === '')) { /* Empty paste input */
         return $lang['empty_paste'];
@@ -113,29 +96,9 @@ if ($row = $site_sitemap_rows->fetch()) {
     $changefreq = $row['changefreq'];
 }
 
-// Captcha
-$site_captcha_rows = $conn->query("SELECT * FROM captcha LIMIT 1");
-if ($row = $site_captcha_rows->fetch()) {
-    $color = Trim($row['color']);
-    $mode = Trim($row['mode']);
-    $mul = Trim($row['mul']);
-    $allowed = Trim($row['allowed']);
-    $cap_e = Trim($row['cap_e']);
-    $recaptcha_sitekey = Trim($row['recaptcha_sitekey']);
-    $recaptcha_secretkey = Trim($row['recaptcha_secretkey']);
-}
-
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    if ($cap_e == "on") {
-        if ($mode == "reCAPTCHA") {
-            $_SESSION['captcha_mode'] = "recaptcha";
-            $_SESSION['captcha'] = $recaptcha_sitekey;
-        } else {
-            $_SESSION['captcha_mode'] = "internal";
-            $_SESSION['captcha'] = captcha($color, $mode, $mul, $allowed);
-        }
-    } else {
-        $_SESSION['captcha_mode'] = "none";
+    if ($captcha_config['enabled']) {
+        $_SESSION['captcha'] = captcha($captcha_config['colour'], $captcha_config['mode'], $captcha_config['multiple'], $captcha_config['allowed']);
     }
 }
 

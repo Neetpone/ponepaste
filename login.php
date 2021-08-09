@@ -125,17 +125,15 @@ if (isset($_POST['forgot'])) {
     } elseif (!isValidUsername($username)) {
         $error = $lang['usrinvalid']; // "Username not valid. Usernames can't contain special characters.";
     } else {
-        $query = $conn->query('SELECT 1 FROM users WHERE username = ?', [$username]);
-
-        if ($query->fetch()) {
+        if ($conn->querySelectOne('SELECT 1 FROM users WHERE username = ?', [$username])) {
             $error = $lang['userexists']; // "Username already taken.";
         } else {
             $recovery_code = pp_random_token();
             $recovery_code_hash = pp_password_hash($recovery_code);
-            $query = $conn->prepare(
-                "INSERT INTO users (username, password, recovery_code_hash, picture, date, ip, badge) VALUES (?, ?, ?, 'NONE', ?, ?, '0')"
+            $conn->query(
+                "INSERT INTO users (username, password, recovery_code_hash, picture, date, ip, badge) VALUES (?, ?, ?, 'NONE', ?, ?, '0')",
+                [$username, $password, $recovery_code_hash, $date, $ip]
             );
-            $query->execute([$username, $password, $recovery_code_hash, $date, $ip]);
 
             $success = $lang['registered']; // "Your account was successfully registered.";
         }

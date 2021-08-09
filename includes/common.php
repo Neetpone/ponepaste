@@ -128,6 +128,10 @@ if ($site_permissions) {
 $privatesite = $siteprivate;
 $noguests = $disableguest;
 
+// CAPTCHA configuration
+$captcha_config = $site_info['captcha'];
+$captcha_enabled = (bool) $captcha_config['enabled'];
+
 // Prevent a potential LFI (you never know :p)
 $lang_file = "${default_lang}.php";
 if (in_array($lang_file, scandir(__DIR__ . '/../langs/'))) {
@@ -144,7 +148,6 @@ $total_page_views = getSiteTotalviews($conn);
 $total_unique_views = getSiteTotal_unique_views($conn);
 
 $current_user = User::current($conn);
-//$current_user = getCurrentUser($conn);
 
 if ($current_user) {
     $noguests = "off";

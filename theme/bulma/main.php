@@ -389,17 +389,8 @@
                                 ?>
                             </div>
                             <div class="column is-4">
-                                <!-- ReCaptcha & Captcha -->
-                                <?php if ($cap_e == "on" && $current_user === null) {
-                                    if ($_SESSION['captcha_mode'] == "recaptcha") {
-                                        ?>
-                                        <div class="g-recaptcha" style="float: right; right: 0;"
-                                             data-sitekey="<?php echo $_SESSION['captcha']; ?>"></div>
-                                        <br/>
-                                        <?php
-                                    } else {
-                                        ?>
-                                        <!-- Captcha -->
+                                <!-- CAPTCHA -->
+                                <?php if ($captcha_config['enabled'] && $current_user === null): ?>
                                         <div class="is-one-quarter">
                                             <div class="notification">
                                                 <span class="tags are-large"><?php echo '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA" class="imagever">'; ?></span>
@@ -409,7 +400,7 @@
                                                     "Enter"</p>
                                             </div>
                                         </div>
-                                    <?php }
+                                <?php endif; ?>
                                 } ?>
                             </div>
                         </div>

@@ -1,15 +1,8 @@
 <?php
-if (!defined('IN_ADMIN')) {
-    die();
+if (!defined('IN_PONEPASTE')) {
+    die('This file may not be accessed directly.');
 }
-$db_opts = [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, /* throw a fatal exception on database errors */
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, /* Fetch rows as an associative array (hash table) by default */
-    PDO::ATTR_EMULATE_PREPARES => false
-];
-
-
-require_once('../includes/config.php');
+require_once('../includes/common.php');
 
 function updateAdminHistory($conn) {
     $last_date = null;
@@ -29,8 +22,6 @@ function updateAdminHistory($conn) {
     }
 }
 
-session_start();
-
 if (!isset($_SESSION['login'])) {
     header('Location: .');
     exit();
@@ -44,12 +35,4 @@ if (isset($_GET['logout'])) {
     header("Location: .");
     exit();
 }
-
-$conn = new PDO(
-    "mysql:host=$db_host;dbname=$db_schema;charset=utf8",
-    $db_user,
-    $db_pass,
-    $db_opts
-);
-
 

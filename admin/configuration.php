@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License in GPL.txt for more details.
  */
-define('IN_ADMIN', 1);
+define('IN_PONEPASTE', 1);
 require_once('common.php');
 
 const CONFIG_FILE_PATH = '../config/site.php';
@@ -31,39 +31,26 @@ function updateConfiguration(string $path, array $new_config) {
     fclose($fp);
 }
 
-/** @noinspection PhpIncludeInspection */
 $current_config = require(CONFIG_FILE_PATH);
 $current_site_info = $current_config['site_info'];
 $current_permissions = $current_config['permissions'];
 $current_mail = $current_config['mail'];
-
-$result = $conn->query('SELECT * FROM captcha WHERE id = 1');
-
-if ($row = $result->fetch()) {
-    $cap_e = $row['cap_e'];
-    $mode = $row['mode'];
-    $mul = $row['mul'];
-    $allowed = $row['allowed'];
-    $color = $row['color'];
-    $recaptcha_sitekey = $row['recaptcha_sitekey'];
-    $recaptcha_secretkey = $row['recaptcha_secretkey'];
-}
+$current_captcha = $current_config['captcha'];
 
 /* Update the configuration if necessary */
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'];
 
-    if ($action === 'manage') {
+    if ($action === 'site_info') {
+        $data = $_POST['site_info'];
         $new_site_info = [
-            'title' => trim($_POST['title']),
-            'description' => trim($_POST['description']),
-            'baseurl' => trim($_POST['baseurl']),
-            'keywords' => trim($_POST['keywords']),
-            'site_name' => trim($_POST['site_name']),
-            'email' => trim($_POST['email']),
-            'google_analytics' => trim($_POST['ga']),
-            'additional_scripts' => trim($_POST['additional_scripts'])
+            'title' => trim($data['title']),
+            'description' => trim($data['description']),
+            'baseurl' => trim($data['baseurl']),
+            'keywords' => trim($data['keywords']),
+            'site_name' => trim($data['site_name']),
+            'email' => trim($data['email']),
+            'additional_scripts' => trim($data['additional_scripts'])
         ];
 
         $current_config['site_info'] = $new_site_info;
@@ -86,23 +73,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $msg = '<div class="paste-alert alert3" style="text-align: center;">
 									Site permissions saved.
 									</div>';
-    } elseif (isset($_POST['cap'])) {
-        $query = $conn->prepare(
-            'UPDATE captcha SET cap_e = ?, mode = ?, mul = ?, allowed = ?, color = ?, recaptcha_sitekey = ?, recaptcha_secretkey = ? WHERE id = 1'
-        );
-        $query->execute([
-            trim($_POST['cap_e']),
-            trim($_POST['mode']),
-            trim($_POST['mul']),
-            trim($_POST['allowed']),
-            trim($_POST['color']),
-            trim($_POST['recaptcha_sitekey']),
-            trim($_POST['recaptcha_secretkey'])
-        ]);
+    } elseif ($action === 'captcha') {
+        $new_captcha = [
+                'enabled' => ($_POST['captcha']['enabled'] === '1'),
+                'multiple' => ($_POST['captcha']['multiple'] === '1')
+        ];
+
+        $current_config['captcha'] = $new_captcha;
+        $current_captcha = $new_captcha;
+
+        updateConfiguration(CONFIG_FILE_PATH, $current_config);
+
         $msg = '<div class="paste-alert alert3" style="text-align: center;">
 									Captcha settings saved
 									</div>';
-
     }
 }
 ?>
@@ -170,89 +154,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="tab-content">
                                 <div role="tabpanel" class="tab-pane active" id="siteinfo">
                                     <form class="form-horizontal" method="POST"
-                                          action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                                          action="<?= $_SERVER['PHP_SELF']; ?>">
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label">Site Name</label>
+                                            <label class="col-sm-2 control-label form-label" for="site_info_name">Site Name</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="site_name"
+                                                <input type="text" class="form-control" name="site_info[site_name]" id="site_info_name"
                                                        placeholder="The name of your site"
-                                                       value="<?php echo htmlentities($current_site_info['site_name'], ENT_QUOTES); ?>">
+                                                       value="<?= pp_html_escape($current_site_info['site_name']); ?>">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label">Site Title</label>
+                                            <label class="col-sm-2 control-label form-label" for="site_info_title">Site Title</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="title"
+                                                <input type="text" class="form-control" name="site_info[title]" id="site_info_title"
                                                        placeholder="Site title tag"
-                                                       value="<?php echo htmlentities($current_site_info['title'], ENT_QUOTES); ?>">
+                                                       value="<?= pp_html_escape($current_site_info['title']); ?>">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label">Domain name</label>
+                                            <label class="col-sm-2 control-label form-label" for="site_info_baseurl">Domain name</label>
                                             <div class="col-sm-1" style="padding:5px;">
 												<span class="badge">
-												<?php if ($_SERVER['HTTPS'] == "on") {
-                                                    echo "https://";
-                                                } else {
-                                                    echo "http://";
-                                                } ?>
+                                                    <?= !empty($_SERVER['HTTPS']) ? 'https://' : 'http://' ?>;
 												</span>
                                             </div>
                                             <div class="col-sm-5">
-                                                <input type="text" class="form-control" name="baseurl"
-                                                       placeholder="eg: pastethis.in (no trailing slash)"
-                                                       value="<?php echo htmlentities($current_site_info['baseurl'], ENT_QUOTES); ?>">
+                                                <input type="text" class="form-control" name="site_info[baseurl]" id="site_info_baseurl"
+                                                       placeholder="eg: ponepaste.org (no trailing slash)"
+                                                       value="<?= pp_html_escape($current_site_info['baseurl']); ?>">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label">Site Description</label>
+                                            <label class="col-sm-2 control-label form-label" for="site_info_description">Site Description</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="description"
+                                                <input type="text" class="form-control" name="site_info[description]" id="site_info_description"
                                                        placeholder="Site description"
-                                                       value="<?php echo htmlentities($current_site_info['description'], ENT_QUOTES); ?>">
+                                                       value="<?= pp_html_escape($current_site_info['description']); ?>">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label">Site Keywords</label>
+                                            <label class="col-sm-2 control-label form-label" for="site_info_keywords">Site Keywords</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="keywords"
+                                                <input type="text" class="form-control" name="site_info[keywords]" id="site_info_keywords"
                                                        placeholder="Keywords (separated by a comma)"
-                                                       value="<?php echo htmlentities($current_site_info['keywords'], ENT_QUOTES); ?>">
+                                                       value="<?= pp_html_escape($current_site_info['keywords']); ?>">
                                             </div>
                                         </div>
-
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label">Google Analytics</label>
+                                            <label class="col-sm-2 control-label form-label" for="site_info_email">Admin Email</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="ga"
-                                                       value="<?php echo htmlentities($current_site_info['google_analytics'], ENT_QUOTES); ?>">
+                                                <input type="text" class="form-control" name="site_info[email]" placeholder="Email" id="site_info_email"
+                                                       value="<?= pp_html_escape($current_site_info['email']); ?>">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label">Admin Email</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="email" placeholder="Email"
-                                                       value="<?php echo htmlentities($current_site_info['email'], ENT_QUOTES); ?>">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label">Additional Site
+                                            <label class="col-sm-2 control-label form-label" for="site_info_additional_scripts">Additional Site
                                                 Scripts</label>
                                             <div class="col-sm-10">
-                                                <textarea class="form-control" id="additional_scripts"
-                                                          name="additional_scripts"
-                                                          rows="8"><?php echo htmlentities($current_site_info['title'], ENT_QUOTES); ?></textarea>
+                                                <textarea class="form-control" id="additional_scripts" id="site_info_additional_scripts"
+                                                          name="site_info[additional_scripts]"
+                                                          rows="8"><?= pp_html_escape($current_site_info['title']); ?></textarea>
                                             </div>
                                         </div>
 
-                                        <input type="hidden" name="action" value="manage"/>
+                                        <input type="hidden" name="action" value="site_info"/>
 
                                         <div class="form-group">
                                             <div class="col-sm-offset-2 col-sm-10">
@@ -300,36 +271,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 <div role="tabpanel" class="tab-pane" id="captcha">
                                     <form class="form-horizontal" method="POST"
-                                          action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                                          action="<?= $_SERVER['PHP_SELF']; ?>">
 
                                         <div class="checkbox checkbox-primary">
-                                            <input <?php if ($cap_e == "on") echo 'checked="true"'; ?> type="checkbox"
-                                                                                                       name="cap_e"
-                                                                                                       id="cap_e">
-                                            <label for="cap_e">Enable Captcha</label>
+                                            <input <?php if ($current_captcha['enabled']) echo 'checked="true"'; ?> type="checkbox"
+                                                                                                       name="captcha[enabked]"
+                                                                                                       id="captcha_enabled">
+                                            <label for="captcha_enabled">Enable Captcha</label>
                                         </div>
                                         <br/>
 
                                         <div class="form-group row">
-                                            <label for="mode" class="col-sm-1 col-form-label">Captcha Type</label>
-                                            <select class="selectpicker" name="mode">
+                                            <label for="captcha_mode" class="col-sm-1 col-form-label">Captcha Type</label>
+                                            <select id="captcha_mode" class="selectpicker" name="captcha[mode]">
                                                 <?php
-                                                if ($mode == "reCAPTCHA") {
-                                                    echo '<option selected="">reCAPTCHA</option>';
-                                                } else {
-                                                    echo '<option>reCAPTCHA</option>';
-                                                }
-                                                if ($mode == "Easy") {
+                                                if ($current_captcha['mode'] == "Easy") {
                                                     echo '<option selected="">Easy</option>';
                                                 } else {
                                                     echo '<option>Easy</option>';
                                                 }
-                                                if ($mode == "Normal") {
+
+                                                if ($current_captcha['mode'] == "Normal") {
                                                     echo '<option selected="">Normal</option>';
                                                 } else {
                                                     echo '<option>Normal</option>';
                                                 }
-                                                if ($mode == "Tough") {
+
+                                                if ($current_captcha['mode'] == "Tough") {
                                                     echo '<option selected="">Tough</option>';
                                                 } else {
                                                     echo '<option>Tough</option>';
@@ -343,52 +311,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             Internal Captcha Settings:
                                         </div>
                                         <div class="checkbox checkbox-primary">
-                                            <input <?php if ($mul == "on") echo 'checked="true"'; ?> type="checkbox"
-                                                                                                     name="mul"
-                                                                                                     id="mul">
-                                            <label for="mul">Enable multiple backgrounds</label>
+                                            <input <?php if ($current_captcha['multiple']) echo 'checked="checked"'; ?> type="checkbox"
+                                                                                                     name="captcha[multiple]"
+                                                                                                     id="captcha_multiple">
+                                            <label for="captcha_multiple">Enable multiple backgrounds</label>
                                         </div>
                                         <br/>
                                         <div class="form-group row">
-                                            <label for="allowed" class="col-sm-1 col-form-label">Captcha
+                                            <label for="captcha_allowed" class="col-sm-1 col-form-label">Captcha
                                                 Characters</label>
                                             <div class="col-sm-10">
-                                                <input type="text" id="allowed" name="allowed"
-                                                       placeholder="Allowed Characters" value="<?php echo $allowed; ?>">
+                                                <input type="text" id="captcha_allowed" name="captcha[allowed]"
+                                                       placeholder="Allowed Characters" value="<?php echo $current_captcha['allowed']; ?>">
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="color" class="col-sm-1 col-form-label">Captcha Text
+                                            <label for="captcha_colour" class="col-sm-1 col-form-label">Captcha Text
                                                 Colour</label>
                                             <div class="col-sm-10">
-                                                <input type="text" id="color" name="color"
-                                                       placeholder="Captcha Text Colour" value="<?php echo $color; ?>">
+                                                <input type="text" id="captcha_colour" name="captcha[colour]"
+                                                       placeholder="Captcha Text Colour" value="<?= $current_captcha['colour']; ?>">
                                             </div>
                                         </div>
 
                                         <hr/>
-                                        <div class="panel-title">
-                                            reCAPTCHA Settings:
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="recaptcha_sitekey" class="col-sm-1 col-form-label">Site
-                                                Key</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" id="recaptcha_sitekey" name="recaptcha_sitekey"
-                                                       placeholder="Site Key" value="<?php echo $recaptcha_sitekey; ?>">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <label for="recaptcha_secretkey" class="col-sm-1 col-form-label">Secret
-                                                Key</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" id="recaptcha_secretkey" name="recaptcha_secretkey"
-                                                       placeholder="Site Key"
-                                                       value="<?php echo $recaptcha_secretkey; ?>">
-                                            </div>
-                                        </div>
 
                                         <input type="hidden" name="cap" value="cap"/>
 
@@ -429,16 +376,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <script>
     function show() {
-        var smtppassword = document.getElementById('smtp_pass');
-        smtppassword.setAttribute('type', 'text');
+        document.getElementById('smtp_pass').setAttribute('type', 'text');
     }
 
     function hide() {
-        var smtppassword = document.getElementById('smtp_pass');
-        smtppassword.setAttribute('type', 'password');
+        document.getElementById('smtp_pass').setAttribute('type', 'password');
     }
 
-    if ($('#smtppasstoggle').is(':checked')) {
+    if (document.getElementById('smtppasstoggle').hasAttribute('checked')) {
         show();
     } else {
         hide();

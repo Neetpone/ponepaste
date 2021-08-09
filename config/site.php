@@ -28,5 +28,12 @@ return array(
         'socket' => '',
         'auth' => '',
         'protocol' => ''
+    ],
+    'captcha' => [
+        'enabled' => true,
+        'multiple' => false,
+        'mode' => 'Normal',
+        'allowed' => 'ABCDEFGHIJKLMNOPQRSTUVYXYZabcdefghijklmnopqrstuvwxyz0123456789',
+        'colour' => '#000000'
     ]
 );

@@ -51,9 +51,6 @@ $start = $time;
     if (isset($ges_style)) {
         echo $ges_style;
     }
-    if (isset($_SESSION['captcha_mode']) == "recaptcha") {
-        echo "<script src='https://www.google.com/recaptcha/api.js'></script>";
-    }
     ?>
 </head>
 

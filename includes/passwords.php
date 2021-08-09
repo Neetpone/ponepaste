@@ -7,7 +7,7 @@ function pp_password_hash(string $password) : string {
 
 function pp_password_verify(string $password, string $hash, bool &$needs_rehash = null) : bool {
     /* New, peppered hash. */
-    if ($hash[0] === 'P') {
+    if ($hash && $hash[0] === 'P') {
         if ($needs_rehash !== null) {
             $needs_rehash = false;
         }
@@ -15,7 +15,7 @@ function pp_password_verify(string $password, string $hash, bool &$needs_rehash 
         return password_verify($password . PP_PASSWORD_PEPPER, substr($hash, 1));
     }
 
-    /* Old, unpeppered hash. */
+    /* Old, non-peppered hash. */
     if ($needs_rehash !== null) {
         $needs_rehash = true;
     }
@@ -38,7 +38,7 @@ function pp_random_token() : string {
 
 function pp_random_password() : string {
     /* MD-5 is OK to use here because it is not being used to protect secure data,
-     * but rather to reduce the size of the string a little bit into something that
+     * but rather to reduce the size of the string a little into something that
      * can reasonably be handled by a user.
      */
     return hash('MD5', pp_random_bytes(64));
