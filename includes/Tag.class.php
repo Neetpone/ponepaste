@@ -6,7 +6,7 @@ class Tag {
     public string $slug;
 
     public function __construct(array $row) {
-        $this->id = (int) $row['id'];
+        $this->id = (int)$row['id'];
         $this->name = $row['name'];
         $this->slug = $row['slug'];
     }
@@ -22,13 +22,13 @@ class Tag {
         $new_tag_id = $conn->queryInsert('INSERT INTO tags (name, slug) VALUES (?, ?)', [$name, $new_slug]);
 
         return new Tag([
-                'id' => $new_tag_id,
-                'name' => $name,
-                'slug' => $new_slug
+            'id' => $new_tag_id,
+            'name' => $name,
+            'slug' => $new_slug
         ]);
     }
 
-    public static function findBySlug(DatabaseHandle $conn, string $slug) : Tag | null {
+    public static function findBySlug(DatabaseHandle $conn, string $slug) : Tag|null {
         if ($row = $conn->querySelectOne('SELECT id, name, slug FROM tags WHERE slug = ?', [$slug])) {
             return new Tag($row);
         }
@@ -72,7 +72,7 @@ class Tag {
         $cleanTags = [];
 
         foreach (explode(',', $tagInput) as $tagName) {
-            $cleanName =  Tag::cleanTagName($tagName);
+            $cleanName = Tag::cleanTagName($tagName);
 
             if (!empty($cleanName)) {
                 array_push($cleanTags, $cleanName);
@@ -85,7 +85,7 @@ class Tag {
     private static function encodeSlug(string $name) : string {
         /* This one's a doozy. */
         $name = str_replace(
-            ['-',      '/',         '\\',        ':',       '.',      '+'],
+            ['-', '/', '\\', ':', '.', '+'],
             ['-dash-', '-fwslash-', '-bwslash-', '-colon-', '-dot-', '-plus-'],
             $name
         );

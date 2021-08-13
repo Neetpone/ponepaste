@@ -75,8 +75,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 									</div>';
     } elseif ($action === 'captcha') {
         $new_captcha = [
-                'enabled' => ($_POST['captcha']['enabled'] === '1'),
-                'multiple' => ($_POST['captcha']['multiple'] === '1')
+            'enabled' => ($_POST['captcha']['enabled'] === '1'),
+            'multiple' => ($_POST['captcha']['multiple'] === '1')
         ];
 
         $current_config['captcha'] = $new_captcha;
@@ -157,67 +157,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                           action="<?= $_SERVER['PHP_SELF']; ?>">
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label" for="site_info_name">Site Name</label>
+                                            <label class="col-sm-2 control-label form-label" for="site_info_name">Site
+                                                Name</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="site_info[site_name]" id="site_info_name"
+                                                <input type="text" class="form-control" name="site_info[site_name]"
+                                                       id="site_info_name"
                                                        placeholder="The name of your site"
                                                        value="<?= pp_html_escape($current_site_info['site_name']); ?>">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label" for="site_info_title">Site Title</label>
+                                            <label class="col-sm-2 control-label form-label" for="site_info_title">Site
+                                                Title</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="site_info[title]" id="site_info_title"
+                                                <input type="text" class="form-control" name="site_info[title]"
+                                                       id="site_info_title"
                                                        placeholder="Site title tag"
                                                        value="<?= pp_html_escape($current_site_info['title']); ?>">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label" for="site_info_baseurl">Domain name</label>
+                                            <label class="col-sm-2 control-label form-label" for="site_info_baseurl">Domain
+                                                name</label>
                                             <div class="col-sm-1" style="padding:5px;">
 												<span class="badge">
                                                     <?= !empty($_SERVER['HTTPS']) ? 'https://' : 'http://' ?>;
 												</span>
                                             </div>
                                             <div class="col-sm-5">
-                                                <input type="text" class="form-control" name="site_info[baseurl]" id="site_info_baseurl"
+                                                <input type="text" class="form-control" name="site_info[baseurl]"
+                                                       id="site_info_baseurl"
                                                        placeholder="eg: ponepaste.org (no trailing slash)"
                                                        value="<?= pp_html_escape($current_site_info['baseurl']); ?>">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label" for="site_info_description">Site Description</label>
+                                            <label class="col-sm-2 control-label form-label"
+                                                   for="site_info_description">Site Description</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="site_info[description]" id="site_info_description"
+                                                <input type="text" class="form-control" name="site_info[description]"
+                                                       id="site_info_description"
                                                        placeholder="Site description"
                                                        value="<?= pp_html_escape($current_site_info['description']); ?>">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label" for="site_info_keywords">Site Keywords</label>
+                                            <label class="col-sm-2 control-label form-label" for="site_info_keywords">Site
+                                                Keywords</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="site_info[keywords]" id="site_info_keywords"
+                                                <input type="text" class="form-control" name="site_info[keywords]"
+                                                       id="site_info_keywords"
                                                        placeholder="Keywords (separated by a comma)"
                                                        value="<?= pp_html_escape($current_site_info['keywords']); ?>">
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label" for="site_info_email">Admin Email</label>
+                                            <label class="col-sm-2 control-label form-label" for="site_info_email">Admin
+                                                Email</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="site_info[email]" placeholder="Email" id="site_info_email"
+                                                <input type="text" class="form-control" name="site_info[email]"
+                                                       placeholder="Email" id="site_info_email"
                                                        value="<?= pp_html_escape($current_site_info['email']); ?>">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label" for="site_info_additional_scripts">Additional Site
+                                            <label class="col-sm-2 control-label form-label"
+                                                   for="site_info_additional_scripts">Additional Site
                                                 Scripts</label>
                                             <div class="col-sm-10">
-                                                <textarea class="form-control" id="additional_scripts" id="site_info_additional_scripts"
+                                                <textarea class="form-control" id="additional_scripts"
+                                                          id="site_info_additional_scripts"
                                                           name="site_info[additional_scripts]"
                                                           rows="8"><?= pp_html_escape($current_site_info['title']); ?></textarea>
                                             </div>
@@ -274,15 +288,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                           action="<?= $_SERVER['PHP_SELF']; ?>">
 
                                         <div class="checkbox checkbox-primary">
-                                            <input <?php if ($current_captcha['enabled']) echo 'checked="true"'; ?> type="checkbox"
-                                                                                                       name="captcha[enabked]"
-                                                                                                       id="captcha_enabled">
+                                            <input <?php if ($current_captcha['enabled']) echo 'checked="true"'; ?>
+                                                    type="checkbox"
+                                                    name="captcha[enabked]"
+                                                    id="captcha_enabled">
                                             <label for="captcha_enabled">Enable Captcha</label>
                                         </div>
                                         <br/>
 
                                         <div class="form-group row">
-                                            <label for="captcha_mode" class="col-sm-1 col-form-label">Captcha Type</label>
+                                            <label for="captcha_mode" class="col-sm-1 col-form-label">Captcha
+                                                Type</label>
                                             <select id="captcha_mode" class="selectpicker" name="captcha[mode]">
                                                 <?php
                                                 if ($current_captcha['mode'] == "Easy") {
@@ -311,9 +327,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             Internal Captcha Settings:
                                         </div>
                                         <div class="checkbox checkbox-primary">
-                                            <input <?php if ($current_captcha['multiple']) echo 'checked="checked"'; ?> type="checkbox"
-                                                                                                     name="captcha[multiple]"
-                                                                                                     id="captcha_multiple">
+                                            <input <?php if ($current_captcha['multiple']) echo 'checked="checked"'; ?>
+                                                    type="checkbox"
+                                                    name="captcha[multiple]"
+                                                    id="captcha_multiple">
                                             <label for="captcha_multiple">Enable multiple backgrounds</label>
                                         </div>
                                         <br/>
@@ -322,7 +339,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 Characters</label>
                                             <div class="col-sm-10">
                                                 <input type="text" id="captcha_allowed" name="captcha[allowed]"
-                                                       placeholder="Allowed Characters" value="<?php echo $current_captcha['allowed']; ?>">
+                                                       placeholder="Allowed Characters"
+                                                       value="<?php echo $current_captcha['allowed']; ?>">
                                             </div>
                                         </div>
 
@@ -331,7 +349,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 Colour</label>
                                             <div class="col-sm-10">
                                                 <input type="text" id="captcha_colour" name="captcha[colour]"
-                                                       placeholder="Captcha Text Colour" value="<?= $current_captcha['colour']; ?>">
+                                                       placeholder="Captcha Text Colour"
+                                                       value="<?= $current_captcha['colour']; ?>">
                                             </div>
                                         </div>
 

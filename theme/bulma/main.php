@@ -22,14 +22,14 @@
     function setupTagsInput() {
         const tagsInput = document.getElementById('tags-with-source');
         new BulmaTagsInput(tagsInput, {
-           source: async function(value) {
-                    // Value equal input value
-                    // We can then use it to request data from external API
-                    return await fetch("/api/tags_autocomplete.php?tag=" + encodeURIComponent(value))
-                        .then(function(response) {
-                            return response.json();
-                        });
-                }
+            source: async function (value) {
+                // Value equal input value
+                // We can then use it to request data from external API
+                return await fetch("/api/tags_autocomplete.php?tag=" + encodeURIComponent(value))
+                    .then(function (response) {
+                        return response.json();
+                    });
+            }
         });
     }
 
@@ -124,7 +124,9 @@
                                             <div class="list-widget pagination-content">
                                                 <?php
                                                 $res = getrandom($conn, 10);
-                                                foreach ($res  as $index => $row) {
+                                                foreach ($res
+
+                                                as $index => $row) {
                                                 $title = Trim($row['title']);
                                                 $titlehov = ($row['title']);
                                                 $p_member = Trim($row['member']);
@@ -242,8 +244,10 @@
                                     <div class="field">
                                         <label class="label">Tags</label>
                                         <div class="control">
-                                            <input id="tags-with-source" name="tag_input" class="input" data-max-tags="10"
-                                                   data-max-chars="40" type="text" data-item-text="name" data-item-value="name"
+                                            <input id="tags-with-source" name="tag_input" class="input"
+                                                   data-max-tags="10"
+                                                   data-max-chars="40" type="text" data-item-text="name"
+                                                   data-item-value="name"
                                                    data-case-sensitive="false" placeholder="10 Tags Maximum"
                                                    value="<?php echo (isset($_POST['tag_input'])) ? $_POST['tag_input'] : ''; // Pre-populate if we come here on an error" ?>">
                                         </div>
@@ -391,15 +395,15 @@
                             <div class="column is-4">
                                 <!-- CAPTCHA -->
                                 <?php if ($captcha_config['enabled'] && $current_user === null): ?>
-                                        <div class="is-one-quarter">
-                                            <div class="notification">
-                                                <span class="tags are-large"><?php echo '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA" class="imagever">'; ?></span>
-                                                <input type="text" class="input" name="scode" value=""
-                                                       placeholder="<?php echo $lang['entercode']; ?>">
-                                                <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press
-                                                    "Enter"</p>
-                                            </div>
+                                    <div class="is-one-quarter">
+                                        <div class="notification">
+                                            <span class="tags are-large"><?php echo '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA" class="imagever">'; ?></span>
+                                            <input type="text" class="input" name="scode" value=""
+                                                   placeholder="<?php echo $lang['entercode']; ?>">
+                                            <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press
+                                                "Enter"</p>
                                         </div>
+                                    </div>
                                 <?php endif; ?>
                                 } ?>
                             </div>

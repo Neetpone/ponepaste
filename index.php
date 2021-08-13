@@ -27,17 +27,17 @@ require_once('includes/captcha.php');
 require_once('includes/functions.php');
 require_once('includes/Tag.class.php');
 
-function verifyCaptcha() : string | bool {
+function verifyCaptcha() : string|bool {
     global $captcha_config;
     global $lang;
     global $current_user;
 
     if ($captcha_config['enabled'] && !$current_user) {
-            $scode = strtolower(htmlentities(Trim($_POST['scode'])));
-            $cap_code = strtolower($_SESSION['captcha']['code']);
-            if ($cap_code !== $scode) {
-                return $lang['image_wrong']; // Wrong captcha.
-            }
+        $scode = strtolower(htmlentities(Trim($_POST['scode'])));
+        $cap_code = strtolower($_SESSION['captcha']['code']);
+        if ($cap_code !== $scode) {
+            return $lang['image_wrong']; // Wrong captcha.
+        }
     }
 
     return true;
@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Edit existing paste or create new?
     if ($editing) {
         if ($current_user &&
-            $current_user->user_id === (int) $conn->querySelectOne('SELECT user_id FROM pastes WHERE id = ?', [$_POST['paste_id']])['user_id']) {
+            $current_user->user_id === (int)$conn->querySelectOne('SELECT user_id FROM pastes WHERE id = ?', [$_POST['paste_id']])['user_id']) {
             $paste_id = intval($_POST['paste_id']);
 
             $conn->query(

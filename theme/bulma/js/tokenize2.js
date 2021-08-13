@@ -2341,8 +2341,8 @@
             }
 
             var distances = sortByDistanceDesc(this.getContainerDimensions(),
-                pointer,
-                lastPointer),
+                    pointer,
+                    lastPointer),
                 i = distances.length
 
             while (i--) {
@@ -2513,8 +2513,8 @@
         },
         searchValidTarget: function (pointer, lastPointer) {
             var distances = sortByDistanceDesc(this.getItemDimensions(),
-                pointer,
-                lastPointer),
+                    pointer,
+                    lastPointer),
                 i = distances.length,
                 rootGroup = this.rootGroup,
                 validTarget = !rootGroup.options.isValidTarget ||

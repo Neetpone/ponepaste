@@ -143,7 +143,7 @@ $protocol = paste_protocol();
                     <table id="archive" class="table is-fullwidth is-hoverable">
                         <thead>
                         <tr>
-                            <td class="td-right" ><?php echo $lang['pastetitle']; ?></td>
+                            <td class="td-right"><?php echo $lang['pastetitle']; ?></td>
                             <td class="td-center"><?php echo $lang['pastetime']; ?></td>
                             <?php if ($is_current_user) {
                                 echo "<td class='td-center'>" . $lang['visibility'] . "</td>";
@@ -179,7 +179,9 @@ $protocol = paste_protocol();
                             $p_dateui = $p_date->format("d F Y");
                             $p_views = Trim($row['views']);
                             $p_visible = intval($row['visible']);
-                            $tagArray = array_map(function($tag) { return $tag['name']; }, getPasteTags($conn, $p_id));
+                            $tagArray = array_map(function ($tag) {
+                                return $tag['name'];
+                            }, getPasteTags($conn, $p_id));
                             $p_tags = implode(',', $tagArray);
 
 
@@ -262,7 +264,7 @@ $protocol = paste_protocol();
                         </thead>
                         <tbody>
                         <?php
-                        foreach ($profile_favs as $index => $row) {
+                        foreach ($profile_favs as $row) {
                             $ftitle = Trim($row['title']);
                             $f_id = Trim($row['paste_id']);
                             $f_date = new DateTime($row['f_time']);

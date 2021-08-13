@@ -73,7 +73,7 @@ function sandwitch($str) {
 
 
 function getevent($conn, $event_name, $count) {
-    $query = $conn->prepare("SELECT id, visible, title, date, now_time, views, member, tagsys FROM pastes WHERE visible='1' AND tagsys LIKE '%?%' 
+    $query = $conn->prepare("SELECT id, visible, title, date, now_time, views, member FROM pastes WHERE visible='1' AND tagsys LIKE '%?%' 
  ORDER BY RAND () LIMIT 0, ?");
     $query->execute([$event_name, $count]);
     return $query->fetchAll();

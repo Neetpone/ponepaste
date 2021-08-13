@@ -130,7 +130,7 @@ $noguests = $disableguest;
 
 // CAPTCHA configuration
 $captcha_config = $site_info['captcha'];
-$captcha_enabled = (bool) $captcha_config['enabled'];
+$captcha_enabled = (bool)$captcha_config['enabled'];
 
 // Prevent a potential LFI (you never know :p)
 $lang_file = "${default_lang}.php";

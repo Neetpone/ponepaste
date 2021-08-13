@@ -39,7 +39,7 @@ $fav_count = intval($query->fetch(PDO::FETCH_NUM)[0]);
 
 // Get paste info
 $row = $conn->querySelectOne(
-    'SELECT title, content, visible, code, expiry, pastes.password AS password, created_at, updated_at, encrypt, views, tagsys, users.username AS member, users.id AS user_id
+    'SELECT title, content, visible, code, expiry, pastes.password AS password, created_at, updated_at, encrypt, views, users.username AS member, users.id AS user_id
         FROM pastes
         INNER JOIN users ON users.id = pastes.user_id
         WHERE pastes.id = ?', [$paste_id]);

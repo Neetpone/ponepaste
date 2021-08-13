@@ -721,7 +721,7 @@
                                     that.setSelected(clickedIndex, true);
                                 } else {
                                     var maxOptionsArr = (typeof that.options.maxOptionsText === 'function') ?
-                                        that.options.maxOptionsText(maxOptions, maxOptionsGrp) : that.options.maxOptionsText,
+                                            that.options.maxOptionsText(maxOptions, maxOptionsGrp) : that.options.maxOptionsText,
                                         maxTxt = maxOptionsArr[0].replace('{n}', maxOptions),
                                         maxTxtGrp = maxOptionsArr[1].replace('{n}', maxOptionsGrp),
                                         $notify = $('<div class="notify"></div>');
