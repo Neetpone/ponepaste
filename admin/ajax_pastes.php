@@ -1,21 +1,7 @@
 <?php
-session_start();
+define('IN_PONEPASTE', 1);
 
-if (!isset($_SESSION['login'])) {
-    header("Location: .");
-    exit();
-}
-
-if (isset($_GET['logout'])) {
-    if (isset($_SESSION['login']))
-        unset($_SESSION['login']);
-
-    session_destroy();
-    header("Location: .");
-    exit();
-}
-
-require_once('../includes/config.php');
+require_once(__DIR__ . '/common.php');
 
 
 // DB table to use
@@ -48,10 +34,10 @@ $columns2 = array(
 
 // SQL server connection information
 $sql_details = array(
-    'user' => $dbuser,
-    'pass' => $dbpassword,
-    'db' => $dbname,
-    'host' => $dbhost
+    'user' => $db_user,
+    'pass' => $db_pass,
+    'db' => $db_schema,
+    'host' => $db_host
 );
 
 

@@ -12,61 +12,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License in GPL.txt for more details.
  */
-session_start();
+define('IN_PONEPASTE', 1);
+require_once(__DIR__ . '/common.php');
 
-if (isset($_SESSION['login'])) {
-// Do nothing	
-} else {
-    header("Location: .");
-    exit();
-}
-
-if (isset($_GET['logout'])) {
-    if (isset($_SESSION['login']))
-        unset($_SESSION['login']);
-
-    session_destroy();
-    header("Location: .");
-    exit();
-}
-
-$date = date('jS F Y');
-$ip = $_SERVER['REMOTE_ADDR'];
-require_once('../includes/config.php');
-$con = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
-
-if (mysqli_connect_errno()) {
-    $sql_error = mysqli_connect_error();
-    die("Unable connect to database");
-}
-
-$query = "SELECT @last_id := MAX(id) FROM admin_history";
-
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $last_id = $row['@last_id := MAX(id)'];
-}
-
-$query = "SELECT * FROM admin_history WHERE id=" . Trim($last_id);
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $last_date = $row['last_date'];
-    $last_ip = $row['ip'];
-}
-
-if ($last_ip == $ip) {
-    if ($last_date == $date) {
-
-    } else {
-        $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
-        mysqli_query($con, $query);
-    }
-} else {
-    $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
-    mysqli_query($con, $query);
-}
 ?>
 
 <!DOCTYPE html>
@@ -162,24 +110,19 @@ if ($last_ip == $ip) {
                 <div class="panel panel-widget">
                     <?php
                     if (isset($_GET['details'])) {
+                        $row = $conn->querySelectOne('SELECT username, platform, verified, banned, date, ip FROM users WHERE id = ?', [$_GET['details']]);
+                        $user_username = $row['username'];
+                        $user_full_name = $row['full_name'];
+                        $user_platform = Trim($row['platform']);
+                        $user_date = $row['date'];
+                        $user_ip = $row['ip'];
                         $detail_id = htmlentities(Trim($_GET['details']));
-                        $query = "SELECT * FROM users WHERE id='$detail_id'";
-                        $result = mysqli_query($con, $query);
-                        while ($row = mysqli_fetch_array($result)) {
-                            $user_username = $row['username'];
-                            $user_full_name = $row['full_name'];
-                            $user_platform = Trim($row['platform']);
-                            $user_verified = $row['verified'];
-                            $user_date = $row['date'];
-                            $user_ip = $row['ip'];
-                        }
-
-                        if ($user_verified == '0') {
-                            $user_verified = "Unverified";
-                        } elseif ($user_verified == '1') {
-                            $user_verified = "Verified";
-                        } elseif ($user_verified == '2') {
-                            $user_verified = "Banned";
+                        if ($row['banned']) {
+                            $user_verified = 'Banned';
+                        } elseif ($row['verified']) {
+                            $user_verified = 'Verified';
+                        } else {
+                            $user_verified = 'Unverified';
                         }
                         ?>
                         <div class="panel-body">
