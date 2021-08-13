@@ -12,39 +12,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License in GPL.txt for more details.
  */
-session_start();
+define('IN_PONEPASTE', 1);
+require_once(__DIR__  . '/../includes/common.php');
 
-require_once('../includes/config.php');
-
-$conn = new PDO(
-    "mysql:host=$db_host;dbname=$db_schema;charset=utf8",
-    $db_user,
-    $db_pass,
-    $db_opts
-);
-
-$query = $conn->query('SELECT user, pass FROM admin');
-
-while ($row = $query->fetch()) {
-    $adminid = Trim($row['user']);
-    $password = Trim($row['pass']);
-}
+$row = $conn->querySelectOne('SELECT user, pass FROM admin LIMIT 1');
+$adminid = $row['user'];
+$password = $row['pass'];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if ($adminid == htmlentities(trim($_POST['username']))) {
-        if (password_verify($_POST['password'], $password)) {
-            header("Location: dashboard.php");
-            $_SESSION['login'] = true;
-        } else {
-            $msg = '<div class="paste-alert alert6" style="text-align:center;">
-						Wrong User/Password
-					</div>';
-        }
+    if ($adminid === trim($_POST['username']) && password_verify($_POST['password'], $password)) {
+        $_SESSION['login'] = true;
+        header("Location: dashboard.php");
+        exit();
     } else {
         $msg = '<div class="paste-alert alert6" style="text-align:center;">
 						Wrong User/Password
 					</div>';
-
     }
 }
 ?>

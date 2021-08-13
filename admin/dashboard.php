@@ -169,20 +169,18 @@ for ($loop = 0; $loop <= 6; $loop++) {
                             foreach ($res as $row) {
                                 $title = Trim($row['title']);
                                 $p_id = Trim($row['id']);
-                                $p_date = $row['date']->format('jS F Y h:i:s A');
+                                $p_date = new DateTime($row['created_at']);
+                                $p_date_formatted = $p_date->format('jS F Y h:i:s A');
                                 $p_ip = Trim($row['ip']);
                                 $p_member = Trim($row['member']);
                                 $p_view = Trim($row['views']);
-                                $p_time = Trim($row['now_time']);
-                                $nowtime1 = time();
-                                $oldtime1 = $p_time;
-                                $p_time = conTime($nowtime1 - $oldtime1);
+                                $p_time = friendlyDateDifference($p_date, new DateTime());
                                 $title = truncate($title, 5, 30);
                                 echo "
 										  <tr>
 											<td>$p_id</td>
 											<td>$p_member</td>
-											<td>$p_date</td>
+											<td>$p_date_formatted</td>
 											<td><span class='label label-default'>$p_ip</span></td>
 											<td>$p_view</td>
 										  </tr> ";

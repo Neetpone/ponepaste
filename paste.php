@@ -212,7 +212,7 @@ if ($p_password == "NONE" || $p_password === null) {
 
 
     // View counter
-    if ($_SESSION['not_unique'] !== $paste_id) {
+    if (@$_SESSION['not_unique'] !== $paste_id) {
         $_SESSION['not_unique'] = $paste_id;
         $conn->query("UPDATE pastes SET views = (views + 1) where id = ?", [$paste_id]);
     }
