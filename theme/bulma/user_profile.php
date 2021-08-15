@@ -109,10 +109,10 @@ $protocol = paste_protocol();
                 if (isset($_GET['del'])) {
                     if (isset($success)) {
                         // Deleted
-                        echo '<p class="help is-success subtitle is-6">' . $success . '</p>';
+                        echo '<div class="notification is-info"><i class="fa fa-exclamation-circle" aria-hidden=" true"></i>  ' . $success . '</div>';
                     } // Errors
                     elseif (isset($error)) {
-                        echo '<p class="help is-danger subtitle is-6">' . $error . '</p>';
+                        echo '<div class="notification is-danger"><i class="fa fa-exclamation-circle" aria-hidden=" true"></i>  ' . $error . '</div>';
                     }
                 }
                 ?>
@@ -191,6 +191,7 @@ $protocol = paste_protocol();
                                 2 => $lang['private']
                             };
                             $p_link = urlForPaste($p_id);
+                            $p_delete_message = "'Are you sure you want to delete this paste?'";
                             $p_delete_link = (PP_MOD_REWRITE) ? "user.php?del&user=$profile_username&id=$p_id" : "user.php?del&user=$profile_username&id=$p_id";
                             $p_tag_link = (PP_MOD_REWRITE) ? "user.php?user=$profile_username&q=$p_tags" : "user.php?user=$profile_username&q=$tags";
                             $title = truncate($title, 20, 50);
@@ -224,7 +225,7 @@ $protocol = paste_protocol();
                             } else {
                                 echo '<tr> 
                                                 <td>
-                                                    <a href="' . $protocol . $baseurl . '/' . $p_link . '" title="' . $title . '">' . ($title) . '</a>
+                                                       <a href="' . urlForPaste($p_id) . '" title="' . $title . '">' . ($title) . '</a>
                                                 </td>    
                                                 <td data-sort="' . $p_date->format('U') . '" class="td-center">
                                                 <span>' . $p_dateui . '</span>
@@ -238,8 +239,8 @@ $protocol = paste_protocol();
                                                 <td class="td-center">
                                                     ' . strtoupper($p_code) . '
                                                 </td>
-                                                <td class="td-center">
-                                                    <a href="' . $protocol . $baseurl . '/' . $p_delete_link . '" title="' . $title . '"><i class="far fa-trash-alt fa-lg" aria-hidden="true"></i></a>
+                                                <td class="td-center">                                         
+                                                    <a href="' . $protocol . $baseurl . '/' . $p_delete_link . '" title="' . $title . '" onClick="return confirm(' . $p_delete_message. ')"><i class="far fa-trash-alt fa-lg" aria-hidden="true"></i></a>
                                                 </td>    
 						            </tr>';
                             }
