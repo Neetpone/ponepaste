@@ -18,6 +18,8 @@ $protocol = paste_protocol();
 <script>
     $(document).ready(function () {
         $("#archive").dataTable({
+        rowReorder: { selector: 'td:nth-child(2)'},
+        responsive: true,
             pageLength: 50,
             autoWidth: false,
             initComplete: function () {
@@ -34,16 +36,23 @@ $protocol = paste_protocol();
 </script>
 <?php if ($current_user) { ?>
     <script>
-        $(document).ready(function () {
-            $('#favs').DataTable({
-                "autoWidth": false,
-                "pageLength": 50,
-                "order": [
-                    [1, "desc"]
-                ]
-            });
-        });
-
+    $(document).ready(function () {
+        $("#favs").dataTable({
+        rowReorder: { selector: 'td:nth-child(2)'},
+        responsive: true,
+            pageLength: 50,
+            autoWidth: false,
+            initComplete: function () {
+                var search = new URLSearchParams(window.location.search);
+                var query = search.get('q');
+                if (query) {
+                    $("#archive_filter input")
+                        .val(query)
+                        .trigger("input");
+                }
+            }
+        })
+    });
     </script>
 <?php } ?>
 <main class="bd-main">

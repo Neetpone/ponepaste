@@ -17,6 +17,8 @@
 <script>
     $(document).ready(function () {
         $("#archive").dataTable({
+            rowReorder: { selector: 'td:nth-child(2)'},
+            responsive: true,
             processing: true,
             autoWidth: false,
             ajax: "api/ajax_pastes.php",

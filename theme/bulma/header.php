@@ -45,13 +45,26 @@ $start = $time;
             src="<?php echo '//' . $baseurl . '/theme/' . $default_theme; ?>/js/paste.js"></script>
     <script type="text/javascript"
             src="<?php echo '//' . $baseurl . '/theme/' . $default_theme; ?>/js/modal-fx.min.js"></script>
+    
+    
     <script type="text/javascript"
             src="<?php echo '//' . $baseurl . '/theme/' . $default_theme; ?>/js/datatables.min.js"></script>
+                
+    <script type="text/javascript"
+            src="<?php echo '//' . $baseurl . '/theme/' . $default_theme; ?>/js/table-responsive.js"></script>
+                
+    <script type="text/javascript"
+            src="<?php echo '//' . $baseurl . '/theme/' . $default_theme; ?>/js/table-reorder.js"></script>
+    <link href="<?php echo '//' . $baseurl . '/theme/' . $default_theme; ?>/css/table-responsive.css" rel="stylesheet"
+          type="text/css"/>
+    <link href="<?php echo '//' . $baseurl . '/theme/' . $default_theme; ?>/css/table-row-orders.css" rel="stylesheet"
+    type="text/css"/>
     <?php
     if (isset($ges_style)) {
         echo $ges_style;
     }
     ?>
+
 </head>
 
 <body>
