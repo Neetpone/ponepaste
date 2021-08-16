@@ -65,6 +65,7 @@ if (!$row) {
         'code' => $paste_code,
         'tags' => getPasteTags($conn, $paste_id)
     ];
+    var_dump($paste);
     $p_content = $row['content'];
     $p_visible = $row['visible'];
     $p_expiry = Trim($row['expiry']);

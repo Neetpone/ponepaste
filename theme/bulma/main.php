@@ -19,29 +19,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="theme/bulma/js/bulma-tagsinput.min.js"></script>
 <script>
-function setupTagsInput() {
+    function setupTagsInput() {
+        BulmaTagsInput.attach();
         const tagsInput = document.getElementById('tags-with-source');
         new BulmaTagsInput(tagsInput, {
-                allowDuplicates: false,
-                caseSensitive: false,
-                clearSelectionOnTyping: false,
-                closeDropdownOnItemSelect: true,
-                delimiter: ',',
-                freeInput: true,
-                highlightDuplicate: true,
-                highlightMatchesString: true,
-                itemText: 'name',
-                maxTags: 10,
-                maxChars: 40,
-                minChars: 1,
-                noResultsLabel: 'No results found',
-                placeholder: '10',
-                removable: true,
-                searchMinChars: 1,
-                searchOn: 'text',
-                selectable: true,
-                tagClass: 'is-rounded',
-                trim: true,
             source: async function (value) {
                 // Value equal input value
                 // We can then use it to request data from external API
@@ -189,7 +170,7 @@ function setupTagsInput() {
                 <?php if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     if (isset($error)) { ?>
                         <!-- Error Panel -->
-                        <div class="notification is-info"><i class="fa fa-exclamation-circle" aria-hidden=" true"></i> <?php echo $error; ?></div>
+                        <i class="fa fa-exclamation-circle" aria-hidden=" true"></i> <?php echo $error; ?>
                     <?php }
                 }
                 ?>
@@ -265,6 +246,10 @@ function setupTagsInput() {
                                         <label class="label">Tags</label>
                                         <div class="control">
                                             <input id="tags-with-source" name="tag_input" class="input"
+                                                   data-max-tags="10"
+                                                   data-max-chars="40" type="text" data-item-text="name"
+                                                   data-item-value="name"
+                                                   data-case-sensitive="false" placeholder="10 Tags Maximum"
                                                    value="<?php echo (isset($_POST['tag_input'])) ? $_POST['tag_input'] : ''; // Pre-populate if we come here on an error" ?>">
                                         </div>
                                     </div>
