@@ -2,20 +2,45 @@
 <link rel="stylesheet" href="theme/bulma/css/bulma-tagsinput.min.css"/>
 <script src="theme/bulma/js/bulma-tagsinput.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        BulmaTagsInput.attach();
-    });
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
+function setupTagsInput() {
         const tagsInput = document.getElementById('tags-with-source');
         new BulmaTagsInput(tagsInput, {
-            autocomplete: {
-                <!-- Json to be completed -->
-                source: "",
+                allowDuplicates: false,
+                caseSensitive: false,
+                clearSelectionOnTyping: false,
+                closeDropdownOnItemSelect: true,
+                delimiter: ',',
+                freeInput: true,
+                highlightDuplicate: true,
+                highlightMatchesString: true,
+                itemText: 'name',
+                maxTags: 10,
+                maxChars: 40,
+                minChars: 1,
+                noResultsLabel: 'No results found',
+                placeholder: '10 Tags Maximum"',
+                removable: true,
+                searchMinChars: 1,
+                searchOn: 'text',
+                selectable: true,
+                tagClass: 'is-rounded',
+                trim: true,
+            source: async function (value) {
+                // Value equal input value
+                // We can then use it to request data from external API
+                return await fetch("/api/tags_autocomplete.php?tag=" + encodeURIComponent(value))
+                    .then(function (response) {
+                        return response.json();
+                    });
             }
         });
-    }, false);
+    }
+
+    if (document.readyState !== 'loading') {
+        setupTagsInput();
+    } else {
+        document.addEventListener('DOMContentLoaded', setupTagsInput);
+    }
 </script>
 <script>
     function openreport() {
@@ -234,7 +259,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                     </div>
                     <br>
                     <?php if (isset($error)) {
-                        echo '<p class="help is-danger subtitle is-6">' . $error . '</p>';
+                        echo '<div class="notification is-danger"><i class="fa fa-exclamation-circle" aria-hidden=" true"></i><p>' . $error . '</p></div>';
                     } else {
                         if ($paste['code'] != "pastedown") {
                             echo '
@@ -283,8 +308,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                 <?php } else { ?>
                 <!-- Paste Panel -->
                 <hr>
-                <h1 class="title is-6 mx-1"><?php echo $lang['modpaste']; ?>
-                    <h1>
+                <h1 class="title is-6 mx-1"><?php echo $lang['modpaste']; ?></h1>
                         <form class="form-horizontal" name="mainForm" action="index.php" method="POST">
                             <nav class="level">
                                 <div class="level-left">
@@ -292,8 +316,8 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     <div class="level-item is-pulled-left mx-1">
                                         <p class="control has-icons-left">
                                             <input type="text" class="input" name="title"
-                                                   placeholder="<?php echo $lang['pastetitle']; ?>"
-                                                   value="<?php echo($p_title); ?>">
+                                                   placeholder="<?= $paste['title'] ?>"
+                                                   value="<?= $paste['title'] ?>">
                                             <span class="icon is-small is-left">
 															<i class="fa fa-font"></i></a>
 														</span>
@@ -343,24 +367,24 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             <p id="charNum"><b>File Size: </b><span style="color: green;">1000/1000Kb</span></p>
                             <br>
 
-                            <div class='rows'>
-                                <div class='row is-full'>
+
                                     <div class="columns">
                                         <div class="column">
                                             <div class="field">
                                                 <label class="label">Tags</label>
                                                 <div class="control">
                                                     <input id="tags-with-source" name="tags" class="input"
-                                                           data-max-tags="10" data-max-chars="40" type="text"
-                                                           data-item-text="name" data-case-sensitive="false"
-                                                           placeholder="10 Tags Maximum"
-                                                           value="<?php echo pp_html_encode(join(',', $paste['tags'])); ?>">
+                                                           value="<?php
+                                                            $inputtags = $paste['tags'];
+                                                            foreach ($inputtags as $tag) {
+                                                            $tagsName = ucfirst(pp_html_escape($tag['name']));
+                                                            echo  ','.$tagsName.'';
+                                                            }?>">
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+
                             <nav class="level">
                                 <div class="level-left">
                                     <div class="level-item is-pulled-left mr-1">
@@ -448,7 +472,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                             <?php echo $lang['encrypt']; ?>
                                         </label>
                                         <?php
-                                        if ($current_user && ($current_user['id'] === $paste['user_id'])) {
+                                        if ($current_user->user_id == $paste['user_id']) {
                                             ?>
                                             <input class="button is-info" type="submit" name="edit" id="edit"
                                                    value="<?php echo $lang['editpaste']; ?>"/>
@@ -467,12 +491,13 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                         </form>
                         <?php } ?>
 
-            </div>
-            <?php require_once('theme/' . $default_theme . '/sidebar.php'); ?>
+                        </div>
+
         </div>
     </div>
-
-
+    </div>
+</div>
+</div>
 </main>
 
 <script>
