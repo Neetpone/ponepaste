@@ -421,7 +421,6 @@ function setupTagsInput() {
                                         </div>
                                     </div>
                                 <?php endif; ?>
-                                } ?>
                             </div>
                         </div>
                 </form>

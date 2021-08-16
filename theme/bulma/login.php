@@ -36,7 +36,7 @@
                     }
                 } // Errors
                 elseif (isset($error)) {
-                    echo '<p class="help is-danger subtitle is-6">' . $error . '</p>';
+                    echo '<div class="notification is-info"><i class="fa fa-exclamation-circle" aria-hidden=" true"></i> ' . $error . '</p></div>';
                 }
                 // Login page
                 if (isset($_GET['login'])) {

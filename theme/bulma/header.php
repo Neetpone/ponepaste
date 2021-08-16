@@ -241,7 +241,7 @@ $start = $time;
                 </form>
             </section>
             <footer class="modal-card-foot">
-                <a href="../login.php?forgot">Forgot Password?</a>
+                <a href="../login.php?forgotpassw">Forgot Password?</a>
             </footer>
         </div>
         <div id="regid" class="content-tab" style="display:none">
