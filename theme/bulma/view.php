@@ -373,7 +373,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                             <div class="field">
                                                 <label class="label">Tags</label>
                                                 <div class="control">
-                                                    <input id="tags-with-source" name="tags" class="input"
+                                                    <input id="tags-with-source" name="tag_input" class="input"
                                                            value="<?php
                                                             $inputtags = $paste['tags'];
                                                             foreach ($inputtags as $tag) {
