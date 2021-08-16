@@ -481,7 +481,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                        <?php 
                                              //Fork function not working
                                              // <input class="button is-info" type="submit" name="submit" id="submit"
-                                             //value="<?php echo $lang['forkpaste']; ?>"/> ?>
+                                             //value="<?php echo $lang['forkpaste'];"/> ?>
                                     </div>
                                     <br/>
                             </nav>
