@@ -6,27 +6,6 @@ define('IN_PONEPASTE', 1);
 require_once('../includes/common.php');
 require_once('../includes/NonRetardedSSP.class.php');
 
-function tagsToHtml(string $tags) : string {
-    $output = "";
-    $tagsSplit = explode(",", $tags);
-    foreach ($tagsSplit as $tag) {
-        if (stripos($tag, 'nsfw') !== false) {
-            $tag = strtoupper($tag);
-            $tagcolor = "tag is-danger";
-        } elseif (stripos($tag, 'SAFE') !== false) {
-            $tag = strtoupper($tag);
-            $tagcolor = "tag is-success";
-        } elseif (str_contains($tag, '/')) {
-            $tagcolor = "tag is-primary";
-        } else {
-            $tagcolor = "tag is-info";
-        }
-        $output .= '<a href="/archive?q=' . urlencode($tag) . '"><span class="' . $tagcolor . '">' . pp_html_escape(ucfirst($tag)) . '</span></a>';
-    }
-    return $output;
-}
-
-
 function transformDataRow($row) {
     $titleHtml = '<a href="/' . urlencode($row[0]) . '">' . pp_html_escape($row[1]) . '</a>';
     $authorHtml = '<a href="' . urlencode($row[2]) . '">' . pp_html_escape($row[2]) . '</a>';

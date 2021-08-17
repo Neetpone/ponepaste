@@ -21,6 +21,8 @@ header('Content-Type: text/html; charset=utf-8');
 
 
 function transformPasteRow(array $row) : array {
+    global $conn;
+
     return [
         'id' => $row['id'],
         'title' => $row['title'],
@@ -28,7 +30,8 @@ function transformPasteRow(array $row) : array {
         'time' => $row['created_at'],
         'time_update' => $row['updated_at'],
         'friendly_update_time' => friendlyDateDifference(new DateTime($row['updated_at']), new DateTime()),
-        'friendly_time' => friendlyDateDifference(new DateTime($row['created_at']), new DateTime())
+        'friendly_time' => friendlyDateDifference(new DateTime($row['created_at']), new DateTime()),
+        'tags' => getPasteTags($conn, $row['id'])
     ];
 }
 

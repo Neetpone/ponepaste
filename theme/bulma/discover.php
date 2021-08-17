@@ -55,8 +55,8 @@
                                                                 <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
                                                             </p>
                                                             <?php
-                                                            if (!empty($paste['tags'])) {
-                                                                echo sandwitch($paste['tags']);
+                                                            if (count($paste['tags']) !== 0) {
+                                                                echo tagsToHtml($paste['tags']);
                                                             } else {
                                                                 echo ' <span class="tag is-warning">No tags</span>';
                                                             }
@@ -93,8 +93,8 @@
                                                                 <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
                                                             </p>
                                                             <?php
-                                                            if (!empty($paste['tags'])) {
-                                                                echo sandwitch($paste['tags']);
+                                                            if (count($paste['tags']) !== 0) {
+                                                                echo tagsToHtml($paste['tags']);
                                                             } else {
                                                                 echo ' <span class="tag is-warning">No tags</span>';
                                                             }
@@ -132,8 +132,8 @@
                                                                 <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
                                                             </p>
                                                             <?php
-                                                            if (!empty($paste['tags'])) {
-                                                                echo sandwitch($paste['tags']);
+                                                            if (count($paste['tags']) !== 0) {
+                                                                echo tagsToHtml($paste['tags']);
                                                             } else {
                                                                 echo ' <span class="tag is-warning">No tags</span>';
                                                             }
@@ -171,8 +171,8 @@
                                                                 <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_update_time'] ?></time>
                                                             </p>
                                                             <?php
-                                                            if (!empty($paste['tags'])) {
-                                                                echo sandwitch($paste['tags']);
+                                                            if (count($paste['tags']) !== 0) {
+                                                                echo tagsToHtml($paste['tags']);
                                                             } else {
                                                                 echo ' <span class="tag is-warning">No tags</span>';
                                                             }
@@ -210,8 +210,8 @@
                                                                 <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
                                                             </p>
                                                             <?php
-                                                            if (!empty($paste['tags'])) {
-                                                                echo sandwitch($paste['tags']);
+                                                            if (count($paste['tags']) !== 0) {
+                                                                echo tagsToHtml($paste['tags']);
                                                             } else {
                                                                 echo ' <span class="tag is-warning">No tags</span>';
                                                             }
