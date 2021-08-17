@@ -140,7 +140,9 @@ if (in_array($lang_file, scandir(__DIR__ . '/../langs/'))) {
 
 // Check if IP is banned
 $ip = $_SERVER['REMOTE_ADDR'];
-if (is_banned($conn, $ip)) die($lang['banned']); // "You have been banned from ".$site_name;
+if ($conn->query('SELECT 1 FROM ban_user WHERE ip = ?', [$ip])->fetch()) {
+    die($lang['banned']); // "You have been banned from " . $site_name;
+}
 
 $site_ads = getSiteAds($conn);
 $total_pastes = getSiteTotalPastes($conn);

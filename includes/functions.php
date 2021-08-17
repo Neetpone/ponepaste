@@ -50,27 +50,6 @@ function getreports($conn, $count = 10) {
     return $query->fetchAll();
 }
 
-function sandwitch($str) {
-    $output = "";
-    $arr = explode(",", $str);
-    foreach ($arr as $word) {
-        $word = ucfirst($word);
-        if (stripos($word, 'nsfw') !== false) {
-            $word = strtoupper($word);
-            $tagcolor = "tag is-danger";
-        } elseif (stripos($word, 'SAFE') !== false) {
-            $word = strtoupper($word);
-            $tagcolor = "tag is-success";
-        } elseif (strstr($word, '/')) {
-            $tagcolor = "tag is-primary";
-        } else {
-            $tagcolor = "tag is-info";
-        }
-        $output .= '<a href="/archive?q=' . trim($word) . '"><span class="' . $tagcolor . '">' . trim($word) . '</span></a>';
-    }
-    return $output;
-}
-
 
 function tagsToHtml(string | array $tags) : string {
     $output = "";
@@ -161,41 +140,15 @@ function getUserRecom(DatabaseHandle $conn, int $user_id) : array {
     return $query->fetchAll();
 }
 
-function recentupdate($conn, $count) {
-    $query = $conn->prepare(
-        "SELECT pastes.id AS id, visible, title, created_at, updated_at, users.username AS member
-            FROM pastes
-            INNER JOIN users ON users.id = pastes.user_id
-            WHERE visible = '0' ORDER BY updated_at DESC
-            LIMIT ?");
-    $query->execute([$count]);
-    return $query->fetchAll();
-}
 
-function monthpop($conn, $count) {
-    $query = $conn->prepare(
-        "SELECT pastes.id AS id, views, title, created_at, updated_at, visible, users.username AS member 
-            FROM pastes
-            INNER JOIN users ON users.id = pastes.user_id
-            WHERE MONTH(created_at) = MONTH(NOW()) AND visible = '0' ORDER BY views DESC LIMIT ?");
-    $query->execute([$count]);
-    return $query->fetchAll();
-}
+
+
 
 function formatBytes($size, $precision = 2) {
     $base = log($size, 1024);
     $suffixes = array('B', 'KB', 'MB', 'GB', 'TB');
 
     return round(pow(1024, $base - floor($base)), $precision) . ' ' . $suffixes[floor($base)];
-}
-
-function str_conntains($haystack, $needle, $ignoreCase = false) {
-    if ($ignoreCase) {
-        $haystack = strtolower($haystack);
-        $needle = strtolower($needle);
-    }
-    $needlePos = strpos($haystack, $needle);
-    return ($needlePos === false ? false : ($needlePos + 1));
 }
 
 function encrypt(string $value) : string {
@@ -210,17 +163,7 @@ function decrypt(string $value) : string {
     return openssl_decrypt($value, "AES-256-CBC", $sec_key);
 }
 
-function getRecent($conn, $count) {
-    $query = $conn->prepare("
-        SELECT pastes.id, visible, title, created_at, updated_at, users.username AS member 
-        FROM pastes
-        INNER JOIN users ON pastes.user_id = users.id
-        WHERE visible = '0'
-        ORDER BY created_at DESC
-        LIMIT ?");
-    $query->execute([$count]);
-    return $query->fetchAll();
-}
+
 
 function getRecentadmin($conn, $count = 5) {
     $query = $conn->prepare(
@@ -233,29 +176,7 @@ function getRecentadmin($conn, $count = 5) {
     return $query->fetchAll();
 }
 
-function getpopular(DatabaseHandle $conn, int $count) : array {
-    $query = $conn->prepare("
-        SELECT pastes.id AS id, visible, title, pastes.created_at AS created_at, updated_at, views, users.username AS member
-            FROM pastes INNER JOIN users ON users.id = pastes.user_id
-            WHERE visible = '0'
-            ORDER BY views DESC 
-            LIMIT ?
-    ");
-    $query->execute([$count]);
-    return $query->fetchAll();
-}
 
-function getrandom(DatabaseHandle $conn, int $count) : array {
-    $query = $conn->prepare("
-        SELECT pastes.id, visible, title, created_at, updated_at, views, users.username AS member
-            FROM pastes
-            INNER JOIN users ON users.id = pastes.user_id
-            WHERE visible = '0'
-            ORDER BY RAND()
-            LIMIT ?");
-    $query->execute([$count]);
-    return $query->fetchAll();
-}
 
 function getUserPastes(DatabaseHandle $conn, int $user_id) : array {
     return $conn->query(
@@ -299,40 +220,6 @@ function friendlyDateDifference(DateTime $lesser, DateTime $greater) : string {
     }
 
     return trim($friendly) . ' ago';
-}
-
-function conTime($secs) {
-    // round up to 1 seconnd
-    if ($secs == 0) {
-        $secs = 1;
-    }
-
-    $bit = array(
-        ' year' => $secs / 31556926 % 12,
-        ' week' => $secs / 604800 % 52,
-        ' day' => $secs / 86400 % 7,
-        ' hour' => $secs / 3600 % 24,
-        ' min' => $secs / 60 % 60,
-        ' sec' => $secs % 60
-    );
-
-    foreach ($bit as $k => $v) {
-        if ($v > 1)
-            $ret[] = $v . $k . 's';
-        if ($v == 1)
-            $ret[] = $v . $k;
-    }
-    array_splice($ret, count($ret) - 1, 0, 'and');
-    $ret[] = 'ago';
-
-    $val = join(' ', $ret);
-    if (!str_conntains($val, "week")) {
-        $val = str_replace("and", "", $val);
-    }
-    if (Trim($val) == "ago") {
-        $val = "1 sec ago";
-    }
-    return $val;
 }
 
 function truncate(string $input, int $maxWords, int $maxChars) : string {
@@ -493,6 +380,4 @@ function paste_protocol() : string {
     return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? 'https://' : 'http://';
 }
 
-function is_banned(DatabaseHandle $conn, string $ip) : bool {
-    return (bool)$conn->query('SELECT 1 FROM ban_user WHERE ip = ?', [$ip])->fetch();
-}
+

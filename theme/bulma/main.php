@@ -83,7 +83,7 @@
                                         <div class="panel-body">
                                             <div class="list-widget pagination-content">
                                                 <?php
-                                                $res = getrandom($conn, 10);
+                                                $res = getRandomPastes($conn, 10);
                                                 foreach ($res
 
                                                 as $index => $row) {
@@ -124,7 +124,7 @@
                                         <div class="panel-body">
                                             <div class="list-widget pagination-content">
                                                 <?php
-                                                $res = getrandom($conn, 10);
+                                                $res = getRandomPastes($conn, 10);
                                                 foreach ($res
 
                                                 as $index => $row) {
