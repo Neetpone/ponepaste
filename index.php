@@ -139,16 +139,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $p_password = password_hash($p_password, PASSWORD_DEFAULT);
     }
 
-    $p_encrypt = trim(htmlspecialchars($_POST['encrypted']));
+    $p_encrypt = $_POST['encrypted'] === '1';
 
     $tag_input = $_POST['tag_input'];
 
-    if (empty($p_encrypt)) {
-        $p_encrypt = "0";
-    } else {
-        // Encrypt option
-        $p_encrypt = "1";
-        $p_content = encrypt($p_content);
+    if ($p_encrypt) {
+        $p_content = openssl_encrypt($p_content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY);
     }
 
     // Set expiry time

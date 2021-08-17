@@ -122,7 +122,7 @@ if (isset($_POST['forgot'])) {
         $error = $lang['missingfields']; // "All fields must be filled out";
     } elseif (strlen($username) > $chara_max) {
         $error = $lang['maxnamelimit']; // "Username already taken.";
-    } elseif (!isValidUsername($username)) {
+    } elseif (preg_match('/[^A-Za-z0-9._\\-$]/', $str)) {
         $error = $lang['usrinvalid']; // "Username not valid. Usernames can't contain special characters.";
     } else {
         if ($conn->querySelectOne('SELECT 1 FROM users WHERE username = ?', [$username])) {

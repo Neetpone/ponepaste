@@ -118,16 +118,6 @@ function linkify($value, $protocols = array('http', 'mail'), array $attributes =
     }, $value);
 }
 
-
-function getRecentreport($conn, $count) {
-    $query = $conn->prepare("SELECT id, m_report, p_report, rep_reason, t_report FROM user_reports
-    ORDER BY id DESC
-    LIMIT 0 , ?");
-    $query->execute([$count]);
-    return $query->fetchAll();
-}
-
-
 function getUserRecom(DatabaseHandle $conn, int $user_id) : array {
     $query = $conn->prepare(
         "SELECT pastes.id AS id, users.username AS member, title, visible
@@ -140,30 +130,12 @@ function getUserRecom(DatabaseHandle $conn, int $user_id) : array {
     return $query->fetchAll();
 }
 
-
-
-
-
 function formatBytes($size, $precision = 2) {
     $base = log($size, 1024);
     $suffixes = array('B', 'KB', 'MB', 'GB', 'TB');
 
     return round(pow(1024, $base - floor($base)), $precision) . ' ' . $suffixes[floor($base)];
 }
-
-function encrypt(string $value) : string {
-    global $sec_key;
-
-    return openssl_encrypt($value, "AES-256-CBC", $sec_key);
-}
-
-function decrypt(string $value) : string {
-    global $sec_key;
-
-    return openssl_decrypt($value, "AES-256-CBC", $sec_key);
-}
-
-
 
 function getRecentadmin($conn, $count = 5) {
     $query = $conn->prepare(
@@ -175,8 +147,6 @@ function getRecentadmin($conn, $count = 5) {
 
     return $query->fetchAll();
 }
-
-
 
 function getUserPastes(DatabaseHandle $conn, int $user_id) : array {
     return $conn->query(
@@ -192,10 +162,6 @@ function getTotalPastes(DatabaseHandle $conn, int $user_id) : int {
     $query->execute([$user_id]);
 
     return intval($query->fetch(PDO::FETCH_NUM)[0]);
-}
-
-function isValidUsername(string $str) : bool {
-    return !preg_match('/[^A-Za-z0-9._\\-$]/', $str);
 }
 
 function friendlyDateDifference(DateTime $lesser, DateTime $greater) : string {
@@ -266,21 +232,6 @@ function doDownload($paste_id, $p_title, $p_member, $p_conntent, $p_code) {
     return $stats;
 }
 
-function rawView($paste_id, $p_title, $p_conntent, $p_code) {
-    $stats = false;
-    if ($p_code) {
-        // Raw
-        header('content-type: text/plain');
-        echo $p_conntent;
-        $stats = true;
-    } else {
-        // 404
-        header('HTTP/1.1 404 Not Found');
-    }
-    return $stats;
-}
-
-
 function embedView($paste_id, $p_title, $p_conntent, $p_code, $title, $baseurl, $ges_style, $lang) {
     $stats = false;
     if ($p_conntent) {
@@ -332,7 +283,7 @@ function embedView($paste_id, $p_title, $p_conntent, $p_code, $title, $baseurl, 
             }";
         $output .= "</style>";
         $output .= "$ges_style"; // Dynamic GeSHI Style
-        $output .= $p_conntent; // Paste conntent
+        $output .= $p_conntent; // Paste content
         $output .= "<div class='paste_embed_footer'>";
         $output .= "<a href='https://ponepaste.org/$paste_id'>$p_title</a> " . $lang['embed-hosted-by'] . " <a href='https://ponepaste.org'>$title</a> | <a href='https://ponepaste.org/raw/$paste_id'>" . strtolower($lang['view-raw']) . "</a>";
         $output .= "</div>";

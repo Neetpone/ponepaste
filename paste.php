@@ -28,6 +28,15 @@ require_once('includes/Parsedown/Parsedown.php');
 require_once('includes/Parsedown/ParsedownExtra.php');
 require_once('includes/Parsedown/SecureParsedown.php');
 
+function rawView($content, $p_code) {
+    if ($p_code) {
+        header('Content-Type: text/plain');
+        echo $content;
+    } else {
+        header('HTTP/1.1 404 Not Found');
+    }
+}
+
 $paste_id = intval(trim($_REQUEST['id']));
 
 updatePageViews($conn);
@@ -70,7 +79,7 @@ if (!$row) {
     $p_visible = $row['visible'];
     $p_expiry = Trim($row['expiry']);
     $p_password = $row['password'];
-    $p_encrypt = $row['encrypt'];
+    $p_encrypt = (bool) $row['encrypt'];
 
 
     $is_private = $row['visible'] === '2';
@@ -92,8 +101,8 @@ if (!$row) {
         }
     }
 
-    if (!empty($p_encrypt)) {
-        $p_content = decrypt($p_content);
+    if ($p_encrypt) {
+        $p_content = openssl_decrypt($p_content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY);
     }
 
     $op_content = Trim(htmlspecialchars_decode($p_content));
@@ -120,12 +129,12 @@ if (!$row) {
     // Raw view
     if (isset($_GET['raw'])) {
         if ($p_password == "NONE" || $p_password === null) {
-            rawView($paste_id, $paste_title, $op_content, $paste_code);
+            rawView($op_content, $paste_code);
             exit();
         } else {
             if (isset($_GET['password'])) {
                 if (pp_password_verify($_GET['password'], $p_password)) {
-                    rawView($paste_id, $paste_title, $op_content, $paste_code);
+                    rawView($op_content, $paste_code);
                     exit();
                 } else {
                     $error = $lang['wrongpassword']; // 'Wrong password';
