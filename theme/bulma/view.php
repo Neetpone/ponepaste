@@ -246,7 +246,6 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                     <div class="columns is-desktop is-centered">
                         <?php
                         $tags = $paste['tags'];
-                        var_dump($tags);
                         if (count($tags) != 0) {
                             foreach ($tags as $tag) {
                                 $tagName = ucfirst(pp_html_escape($tag['name']));
