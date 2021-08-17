@@ -26,10 +26,10 @@ class DatabaseHandle {
         return $stmt;
     }
 
-    public function querySelectOne(string $query, array $params = null) : array|null {
+    public function querySelectOne(string $query, array $params = null, int $fetchMode = PDO::FETCH_ASSOC) : array|null {
         $stmt = $this->query($query, $params);
 
-        if ($row = $stmt->fetch()) {
+        if ($row = $stmt->fetch($fetchMode)) {
             return $row;
         }
 
