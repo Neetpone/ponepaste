@@ -281,9 +281,8 @@ $protocol = paste_protocol();
                             $f_dateui = $f_date->format("d F Y");
                             $Recent_update = new DateTime($row['updated_at']);
                             $Recent_update_u = date_format($Recent_update, 'U');
-                            $f_tags = Trim($row['tagsys']);
-                            $ftagArray = explode(',', $f_tags);
-                            $ftagArray = array_filter($ftagArray);
+                            $tagArray2 = array_map(function ($tag) { return $tag['name'];}, getPasteTags($conn, $f_id));
+                            $f_tags = implode(',', $tagArray2);
                             //$p_link = ($mod_rewrite == '1') ? "$f_id" : "paste.php?favdel=$fu_id";
                             //$f_delete_link = ($mod_rewrite == '1') ? "user.php?favdel&user=$profile_username&fid=$f_id" : "user.php?favdel&user=$profile_username&fid=$f_id";
                             $title = truncate($title, 20, 50);
@@ -307,13 +306,13 @@ $protocol = paste_protocol();
                                                 
                                                 </td>
                                                 <td class="td-left">';
-                            if (strlen($f_tags) > 0) {
-                                foreach ($ftagArray as $key => $ftags) {
-                                    echo '<span class="tag is-info">' . trim($ftags) . '</span>';
-                                }
-                            } else {
-                                echo ' <span class="tag is-warning">No tags</span>';
-                            }
+                                    if (strlen($f_tags) > 0) {
+                                        foreach ($tagArray2 as $tags) {
+                                            echo '<a href="' . $protocol . $baseurl . '/user.php?user=' . $profile_username . '&q=' . $tags . '"><span class="tag is-info">' . trim($tags) . '</span></a>';
+                                        }
+                                    } else {
+                                        echo ' <span class="tag is-warning">No tags</span>';
+                                    }
 
 
                             echo '</td> 
