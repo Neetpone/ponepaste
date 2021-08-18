@@ -20,11 +20,12 @@ function transformDataRow($row) {
 
 $data = NonRetardedSSP::run(
     $conn, $_GET,
-    'SELECT COUNT(*) FROM pastes',
+    'SELECT COUNT(*) FROM pastes WHERE pastes.visible = \'0\' AND pastes.title != \'\'',
     'SELECT pastes.id AS id, title, users.username, GROUP_CONCAT(tags.name SEPARATOR \',\') AS tagsys FROM pastes
                 INNER JOIN users ON users.id = pastes.user_id
                 INNER JOIN paste_taggings on pastes.id = paste_taggings.paste_id
                 INNER JOIN tags ON tags.id = paste_taggings.tag_id
+                WHERE pastes.visible = \'0\' AND pastes.title != \'\'
                 GROUP BY pastes.id'
 );
 
