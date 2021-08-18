@@ -8,7 +8,7 @@ require_once('../includes/NonRetardedSSP.class.php');
 
 function transformDataRow($row) {
     $titleHtml = '<a href="/' . urlencode($row[0]) . '">' . pp_html_escape($row[1]) . '</a>';
-    $authorHtml = '<a href="' . urlencode($row[2]) . '">' . pp_html_escape($row[2]) . '</a>';
+    $authorHtml = '<a href="/user/' . urlencode($row[2]) . '">' . pp_html_escape($row[2]) . '</a>';
     $tagsHtml = tagsToHtml($row[3]);
 
     return [
