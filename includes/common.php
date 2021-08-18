@@ -94,7 +94,7 @@ function updatePageViews(DatabaseHandle $conn) : void {
 
 session_start();
 
-$conn = new DatabaseHandle("mysql:host=$db_host;dbname=$db_schema;charset=utf8", $db_user, $db_pass);
+$conn = new DatabaseHandle("mysql:host=$db_host;dbname=$db_schema;charset=utf8mb4", $db_user, $db_pass);
 
 // Setup site info
 $site_info = getSiteInfo();
