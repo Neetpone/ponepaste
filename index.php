@@ -132,6 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $p_code = trim(htmlspecialchars($_POST['format']));
     $p_expiry = trim(htmlspecialchars($_POST['paste_expire_date']));
     $p_password = $_POST['pass'];
+    $tag_input = $_POST['tag_input'];
 
     if (empty($p_password)) {
         $p_password = null;
@@ -139,13 +140,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $p_password = password_hash($p_password, PASSWORD_DEFAULT);
     }
 
-    $p_encrypt = $_POST['encrypted'] === '1';
-
-    $tag_input = $_POST['tag_input'];
-
-    if ($p_encrypt) {
+    $p_encrypt = $_POST['encrypted'];
+    if ($p_encrypt == "" || $p_encrypt == null) {
+       $p_encrypt = "0";
+        } else {
+        // Encrypt option
+        $p_encrypt = "1";
         $p_content = openssl_encrypt($p_content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY);
-    }
+   }
 
     // Set expiry time
     $expires = calculatePasteExpiry($p_expiry);

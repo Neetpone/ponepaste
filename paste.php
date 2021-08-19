@@ -57,13 +57,9 @@ $row = $conn->querySelectOne(
 // This is used in the theme files.
 $totalpastes = getSiteTotalPastes($conn);
 
-$notfound = null;
-$is_private = false;
-
-if ($row === null) {
+if (!$row) {
     header('HTTP/1.1 404 Not Found');
     $notfound = $lang['notfound']; // "Not found";
-    goto Not_Valid_Paste;
 } else {
     $paste_title = $row['title'];
     $paste_code = $row['code'];
@@ -105,7 +101,7 @@ if ($row === null) {
         }
     }
 
-    if ($p_encrypt) {
+    if ($p_encrypt == 1) {
         $p_content = openssl_decrypt($p_content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY);
     }
 
@@ -260,7 +256,7 @@ if ($p_password == "NONE" || $p_password === null) {
 
 Not_Valid_Paste:
 // Private paste not valid
-if ($is_private || $notfound) {
+if ($is_private == '1') {
     // Display errors
     require_once('theme/' . $default_theme . '/header.php');
     require_once('theme/' . $default_theme . '/errors.php');
