@@ -13,6 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License in GPL.txt for more details. 
  */
+ $date = time();
 $statrttime = microtime();
 $time = explode(' ', $statrttime);
 $time = $time[1] + $time[0];
@@ -144,7 +145,7 @@ $start = $time;
                         }
                         ?>
                         <hr class="navbar-divider"/>
-                        <form action="logout.php" method="POST">
+                        <form action="../logout.php" method="POST">
                             <input class="button navbar-link" type="submit" value="Logout"
                                    style="border:none;padding: 0.375rem 1rem;"/>
                         </form>
