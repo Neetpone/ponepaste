@@ -23,16 +23,8 @@ function setupTagsInput() {
                 searchMinChars: 1,
                 searchOn: 'text',
                 selectable: true,
-                tagClass: 'is-rounded',
+                tagClass: 'is-info',
                 trim: true,
-            source: async function (value) {
-                // Value equal input value
-                // We can then use it to request data from external API
-                return await fetch("/api/tags_autocomplete.php?tag=" + encodeURIComponent(value))
-                    .then(function (response) {
-                        return response.json();
-                    });
-            }
         });
     }
 
@@ -246,15 +238,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                     <div class="columns is-desktop is-centered">
                         <?php
                         $tags = $paste['tags'];
-                        if (count($tags) != 0) {
-                            foreach ($tags as $tag) {
-                                $tagName = ucfirst(pp_html_escape($tag['name']));
-                                echo '<a href="/archive?q=' . $tagName . '"><span class="tag is-info">' . $tagName . '</span></a>';
-                            }
-                        } else {
-                            echo ' <span class="tag is-warning">No tags</span>';
-                        }
-
+                        echo tagsToHtml($tags);
                         ?>
                     </div>
                     <br>
