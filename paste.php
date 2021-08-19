@@ -80,6 +80,7 @@ if ($row === null) {
         'tags' => getPasteTags($conn, $paste_id)
     ];
 
+    $p_member = $row['member'];
     $p_content = $row['content'];
     $p_visible = $row['visible'];
     $p_expiry = Trim($row['expiry']);
