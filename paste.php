@@ -61,6 +61,7 @@ if (!$row) {
     header('HTTP/1.1 404 Not Found');
     $notfound = $lang['notfound']; // "Not found";
 } else {
+    $paste_owner_id = (int) $row['user_id'];
     $paste_title = $row['title'];
     $paste_code = $row['code'];
 
@@ -68,7 +69,7 @@ if (!$row) {
         'title' => $paste_title,
         'created_at' => (new DateTime($row['created_at']))->format('jS F Y h:i:s A'),
         'updated_at' => (new DateTime($row['updated_at']))->format('jS F Y h:i:s A'),
-        'user_id' => $row['user_id'],
+        'user_id' => $paste_owner_id,
         'member' => $row['member'],
         'views' => $row['views'],
         'code' => $paste_code,
@@ -85,7 +86,7 @@ if (!$row) {
     $is_private = $row['visible'] === '2';
     $private_error = false;
 
-    if ($is_private && (!$current_user || $current_user['id'] !== $row['user_id'])) {
+    if ($is_private && (!$current_user || $current_user->user_id !== $paste_owner_id)) {
         $notfound = $lang['privatepaste']; //" This is a private paste. If you created this paste, please login to view it.";
         $private_error = true;
         goto Not_Valid_Paste;
@@ -105,7 +106,7 @@ if (!$row) {
         $p_content = openssl_decrypt($p_content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY);
     }
 
-    $op_content = Trim(htmlspecialchars_decode($p_content));
+    $op_content = trim(htmlspecialchars_decode($p_content));
 
     // Download the paste
     if (isset($_GET['download'])) {

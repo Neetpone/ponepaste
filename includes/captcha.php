@@ -98,7 +98,6 @@ function captcha($color, $mode, $mul, $allowed) : array {
         'code' => $captcha_config['code'],
         'image_src' => $image_src
     ];
-
 }
 
 if (!function_exists('hex2rgb')) {
