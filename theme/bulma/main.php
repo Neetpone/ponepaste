@@ -353,7 +353,7 @@
                                             <div class="column">
                                                 <input type="text" class="input" name="pass" id="pass"
                                                        placeholder="<?php echo $lang['pwopt']; ?>"
-                                                       value="<?php echo (isset($_POST['pass'])) ? pp_html_escape($_POST['pass']) : ''; ?>">
+                                                       value="<?php echo (isset($_POST['pass'])) ? pp_html_escape($_POST['pass']) : ''; ?>" />
                                             </div>
                                         </div>
                                     </div>
