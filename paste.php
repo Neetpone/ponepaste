@@ -168,27 +168,6 @@ if ($paste_code === "pastedown") {
     $hl = new Highlighter();
     $highlighted = $hl->highlight($paste_code == 'text' ? 'plaintext' : $paste_code, $p_content)->value;
     $lines = HighlightUtilities\splitCodeIntoArray($highlighted);
-    //$highlight = new Highlighter();
-    //$p_content = $highlight->highlight($paste_code, $p_content)->value;
-
-    //$p_content = linkify($p_content);
-
-    $geshi = new GeSHi($p_content, $paste_code, 'includes/geshi/');
-
-    $geshi->enable_classes();
-    $geshi->set_header_type(GESHI_HEADER_DIV);
-    $geshi->set_line_style('color: #aaaaaa; width:auto;');
-    $geshi->set_code_style('color: #757584;');
-    if (count($highlight)) {
-        $geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
-        $geshi->highlight_lines_extra($highlight);
-        $geshi->set_highlight_lines_extra_style('color:#399bff;background:rgba(38,92,255,0.14);');
-    } else {
-        $geshi->enable_line_numbers(GESHI_FANCY_LINE_NUMBERS, 2);
-    }
-    $p_content = $geshi->parse_code();
-    $style = $geshi->get_stylesheet();
-    $ges_style = '<style>' . $style . '</style>';
 }
 
 // Embed view after highlighting is applied so that $p_code is syntax highlighted as it should be.

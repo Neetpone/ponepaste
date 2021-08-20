@@ -2,40 +2,48 @@
 <link rel="stylesheet" href="theme/bulma/css/bulma-tagsinput.min.css"/>
 <script src="theme/bulma/js/bulma-tagsinput.min.js"></script>
 <script>
-    function setupTagsInput() {
-        const tagsInput = document.getElementById('tags-with-source');
-        new BulmaTagsInput(tagsInput, {
-            allowDuplicates: false,
-            caseSensitive: false,
-            clearSelectionOnTyping: false,
-            closeDropdownOnItemSelect: true,
-            delimiter: ',',
-            freeInput: true,
-            highlightDuplicate: true,
-            highlightMatchesString: true,
-            itemText: 'name',
-            maxTags: 10,
-            maxChars: 40,
-            minChars: 1,
-            noResultsLabel: 'No results found',
-            placeholder: '10 Tags Maximum"',
-            removable: true,
-            searchMinChars: 1,
-            searchOn: 'text',
-            selectable: true,
-            tagClass: 'is-rounded',
-            trim: true,
-            source: async function (value) {
-                // Value equal input value
-                // We can then use it to request data from external API
-                return await fetch("/api/tags_autocomplete.php?tag=" + encodeURIComponent(value))
-                    .then(function (response) {
-                        return response.json();
-                    });
-            }
-        });
+    function preloaderFadeOutInit() {
+        document.querySelector('main').id = '';
+        document.querySelector('.preloader').classList.add('preloader-hidden');
+    }
 
+    function setupTagsInput() {
         preloaderFadeOutInit();
+
+        const tagsInput = document.getElementById('tags-with-source');
+
+        if (tagsInput) {
+            new BulmaTagsInput(tagsInput, {
+                allowDuplicates: false,
+                caseSensitive: false,
+                clearSelectionOnTyping: false,
+                closeDropdownOnItemSelect: true,
+                delimiter: ',',
+                freeInput: true,
+                highlightDuplicate: true,
+                highlightMatchesString: true,
+                itemText: 'name',
+                maxTags: 10,
+                maxChars: 40,
+                minChars: 1,
+                noResultsLabel: 'No results found',
+                placeholder: '10 Tags Maximum"',
+                removable: true,
+                searchMinChars: 1,
+                searchOn: 'text',
+                selectable: true,
+                tagClass: 'is-rounded',
+                trim: true,
+                source: async function (value) {
+                    // Value equal input value
+                    // We can then use it to request data from external API
+                    return await fetch("/api/tags_autocomplete.php?tag=" + encodeURIComponent(value))
+                        .then(function (response) {
+                            return response.json();
+                        });
+                }
+            });
+        }
     }
 
     if (document.readyState !== 'loading') {
@@ -62,10 +70,7 @@
         }
     }
 
-    function preloaderFadeOutInit() {
-        document.querySelector('main').classList.remove('stop-scrolling');
-        document.querySelector('.preloader').classList.add('preloader-hidden');
-    }
+
 </script>
 <?php if ($using_highlighter): ?>
     <link rel="stylesheet" href="/vendor/scrivo/highlight.php/styles/default.css" />
@@ -99,12 +104,12 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
         transition: visibility 0s 1.25s, opacity 1.25s linear;
     }
 
-    .stop-scrolling {
+    #stop-scrolling {
         height: 100%;
         overflow: hidden;
     }
 </style>
-<main class="bd-main stop-scrolling">
+<main class="bd-main" id="stop-scrolling">
     <div class="preloader"></div>
     <div class="bd-side-background"></div>
     <div class="bd-main-container container">
@@ -251,14 +256,12 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     <?php foreach ($lines as $num => $line):
                                         $line = trim($line); ?>
                                         <li class="<?= $num == 0 ? 'li1 ln-xtra' : 'li1' ?>" id="<?= $num + 1 ?>">
-                                            <div class="de1"><?= $line === '' ? '&nbsp;' : $line ?></div>
+                                            <div class="de1"><?= $line === '' ? '&nbsp;' : linkify($line) ?></div>
                                         </li>
                                     <?php endforeach; ?>
                                 </ol>
                             </div>
                         </div>
-                        <div id="paste" style="line-height:1!important;"><?= $p_content  ?></div>
-
                     <?php else: ?>
                         <div id="paste" style="line-height:1!important;"><?= $p_content  ?></div>
                     <?php endif; ?>
