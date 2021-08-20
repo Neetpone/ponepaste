@@ -24,11 +24,6 @@ require_once('includes/functions.php');
 require_once('includes/Tag.class.php');
 require_once('includes/passwords.php');
 
-
-require_once('includes/Parsedown/Parsedown.php');
-require_once('includes/Parsedown/ParsedownExtra.php');
-require_once('includes/Parsedown/SecureParsedown.php');
-
 use Highlight\Highlighter;
 
 function rawView($content, $p_code) {
