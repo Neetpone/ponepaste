@@ -29,12 +29,12 @@
                         <?php if (isset($error)) { ?>
                             <p class="help is-danger subtitle is-6"><?php echo $error; ?></p>
                         <?php } ?>
-                        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+                        <form action="" method="post">
                             <div class="field has-addons">
                                 <div class="control">
-                                    <input type="hidden" name="id" value="<?php echo $paste_id; ?>">
+                                    <input type="hidden" name="id" value="<?php echo $paste_id; ?>" />
                                     <input type="password" class="input" name="mypass"
-                                           placeholder="<?php echo $lang['enterpwd']; ?>">
+                                           placeholder="<?php echo $lang['enterpwd']; ?>" />
                                 </div>
                             </div>
                             <button type="submit" name="submit" class="button is-info">Submit</button>
