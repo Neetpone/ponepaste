@@ -2,29 +2,29 @@
 <link rel="stylesheet" href="theme/bulma/css/bulma-tagsinput.min.css"/>
 <script src="theme/bulma/js/bulma-tagsinput.min.js"></script>
 <script>
-function setupTagsInput() {
+    function setupTagsInput() {
         const tagsInput = document.getElementById('tags-with-source');
         new BulmaTagsInput(tagsInput, {
-                allowDuplicates: false,
-                caseSensitive: false,
-                clearSelectionOnTyping: false,
-                closeDropdownOnItemSelect: true,
-                delimiter: ',',
-                freeInput: true,
-                highlightDuplicate: true,
-                highlightMatchesString: true,
-                itemText: 'name',
-                maxTags: 10,
-                maxChars: 40,
-                minChars: 1,
-                noResultsLabel: 'No results found',
-                placeholder: '10 Tags Maximum"',
-                removable: true,
-                searchMinChars: 1,
-                searchOn: 'text',
-                selectable: true,
-                tagClass: 'is-rounded',
-                trim: true,
+            allowDuplicates: false,
+            caseSensitive: false,
+            clearSelectionOnTyping: false,
+            closeDropdownOnItemSelect: true,
+            delimiter: ',',
+            freeInput: true,
+            highlightDuplicate: true,
+            highlightMatchesString: true,
+            itemText: 'name',
+            maxTags: 10,
+            maxChars: 40,
+            minChars: 1,
+            noResultsLabel: 'No results found',
+            placeholder: '10 Tags Maximum"',
+            removable: true,
+            searchMinChars: 1,
+            searchOn: 'text',
+            selectable: true,
+            tagClass: 'is-rounded',
+            trim: true,
             source: async function (value) {
                 // Value equal input value
                 // We can then use it to request data from external API
@@ -34,6 +34,8 @@ function setupTagsInput() {
                     });
             }
         });
+
+        preloaderFadeOutInit();
     }
 
     if (document.readyState !== 'loading') {
@@ -41,8 +43,7 @@ function setupTagsInput() {
     } else {
         document.addEventListener('DOMContentLoaded', setupTagsInput);
     }
-</script>
-<script>
+
     function openreport() {
         var x = document.getElementById("panel");
         if (x.style.display === "none") {
@@ -60,42 +61,18 @@ function setupTagsInput() {
             x.style.display = "none";
         }
     }
-</script>
-<script>
-    function preloaderFadeOutInit() {
-        $('.preloader').fadeOut('slow');
-        $('main').attr('id', '');
-    }
 
-    // Window load function
-    jQuery(window).on('load', function () {
-        (function ($) {
-            preloaderFadeOutInit();
-        })(jQuery);
-    });
+    function preloaderFadeOutInit() {
+        document.querySelector('main').classList.remove('stop-scrolling');
+        document.querySelector('.preloader').classList.add('preloader-hidden');
+    }
 </script>
 <?php if ($using_highlighter): ?>
     <link rel="stylesheet" href="/vendor/scrivo/highlight.php/styles/default.css" />
 <?php endif; ?>
 <?php
-/*
- * Paste <https://github.com/jordansamuel/PASTE> - Bulma theme
- * Theme by wsehl <github.com/wsehl> (January, 2021)
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License in GPL.txt for more details.
- */
 $protocol = paste_protocol();
-
 $bg = array('/img/loader.gif', '/img/loader2.gif', '/img/loader3.gif'); // array of filenames
-
 $i = rand(0, count($bg) - 1); // generate random number size of the array
 $selectedloader = "$bg[$i]"; // set variable equal to which random filename was chosen
 ?>
@@ -110,19 +87,24 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
         width: 100%;
         height: 100vh;
         z-index: 99999999;
-        background-image: url('<?php echo $selectedloader; ?>'); /* your icon gif file path */
+        background-image: url('<?= $selectedloader ?>'); /* your icon gif file path */
         background-repeat: no-repeat;
         background-color: #FFF;
         background-position: center;
     }
 
-    #stop-scrolling {
-        height: 100% !important;
-        overflow: hidden !important;
+    .preloader-hidden {
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0s 1.25s, opacity 1.25s linear;
     }
 
+    .stop-scrolling {
+        height: 100%;
+        overflow: hidden;
+    }
 </style>
-<main class="bd-main" id="stop-scrolling">
+<main class="bd-main stop-scrolling">
     <div class="preloader"></div>
     <div class="bd-side-background"></div>
     <div class="bd-main-container container">
@@ -130,7 +112,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
             <div class="bd-lead">
                 <div class="content panel">
                     <article class="message is-danger" id="panel" style="display: none;">
-                        <div class="message-header" style="margin-bottom: 0px;">
+                        <div class="message-header" style="margin-bottom: 0;">
                             <p style="margin-bottom: 1px;">Report Paste</p>
                             <button class="delete" onclick="closereport()" aria-label="delete"></button>
                         </div>
@@ -163,8 +145,6 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                id="report" value="Report Paste"/>
                                     </div>
                                 </div>
-                                </form>
-
                             </div>
                         </div>
                     </article>
@@ -268,7 +248,8 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                         <div id="paste" style="line-height:1!important;">
                             <div class="<?= pp_html_escape($paste['code']) ?>">
                                 <ol>
-                                    <?php foreach ($lines as $num => $line): ?>
+                                    <?php foreach ($lines as $num => $line):
+                                        $line = trim($line); ?>
                                         <li class="<?= $num == 0 ? 'li1 ln-xtra' : 'li1' ?>" id="<?= $num + 1 ?>">
                                             <div class="de1"><?= $line === '' ? '&nbsp;' : $line ?></div>
                                         </li>
@@ -318,200 +299,193 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                     </p>
 
                 <?php } else { ?>
-                <!-- Paste Panel -->
-                <hr>
-                <h1 class="title is-6 mx-1"><?php echo $lang['modpaste']; ?></h1>
-                        <form class="form-horizontal" name="mainForm" action="index.php" method="POST">
-                            <nav class="level">
-                                <div class="level-left">
-                                    <!-- Title -->
-                                    <div class="level-item is-pulled-left mx-1">
-                                        <p class="control has-icons-left">
-                                            <input type="text" class="input" name="title"
-                                                   placeholder="<?= $paste['title'] ?>"
-                                                   value="<?= $paste['title'] ?>">
-                                            <span class="icon is-small is-left">
-															<i class="fa fa-font"></i></a>
+                    <!-- Paste Panel -->
+                    <hr>
+                    <h1 class="title is-6 mx-1"><?php echo $lang['modpaste']; ?></h1>
+                    <form class="form-horizontal" name="mainForm" action="index.php" method="POST">
+                        <nav class="level">
+                            <div class="level-left">
+                                <!-- Title -->
+                                <div class="level-item is-pulled-left mx-1">
+                                    <p class="control has-icons-left">
+                                        <input type="text" class="input" name="title"
+                                               placeholder="<?= $paste['title'] ?>"
+                                               value="<?= $paste['title'] ?>" />
+                                        <span class="icon is-small is-left">
+															<i class="fa fa-font"></i>
 														</span>
-                                        </p>
-                                    </div>
-                                    <!-- Format -->
-                                    <div class="level-item is-pulled-left mx-1">
+                                    </p>
+                                </div>
+                                <!-- Format -->
+                                <div class="level-item is-pulled-left mx-1">
+                                    <div class="select">
                                         <div class="select">
-                                            <div class="select">
-                                                <select data-live-search="true" name="format">
-                                                    <?php // Show popular GeSHi formats
-                                                    foreach ($geshiformats as $code => $name) {
-                                                        if (in_array($code, $popular_formats)) {
-                                                            $sel = ($paste['code'] == $code) ? 'selected="selected"' : ' ';
-                                                            echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
-                                                        }
+                                            <select data-live-search="true" name="format">
+                                                <?php // Show popular GeSHi formats
+                                                foreach ($geshiformats as $code => $name) {
+                                                    if (in_array($code, $popular_formats)) {
+                                                        $sel = ($paste['code'] == $code) ? 'selected="selected"' : ' ';
+                                                        echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
                                                     }
+                                                }
 
-                                                    // Show all GeSHi formats.
-                                                    foreach ($geshiformats as $code => $name) {
-                                                        if (!in_array($code, $popular_formats)) {
-                                                            $sel = ($paste['code'] == $code) ? 'selected="selected"' : '';
-                                                            echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
-                                                        }
+                                                // Show all GeSHi formats.
+                                                foreach ($geshiformats as $code => $name) {
+                                                    if (!in_array($code, $popular_formats)) {
+                                                        $sel = ($paste['code'] == $code) ? 'selected="selected"' : '';
+                                                        echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
                                                     }
-                                                    ?>
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="level-item is-pulled-left mx-1">
+                                    <input class="button is-info" type="hidden" name="paste_id"
+                                           value="<?php echo $paste_id; ?>"/>
+                                </div>
+                                <div class="level-item is-pulled-left mx-1">
+                                    <a class="button"
+                                       onclick="highlight(document.getElementById('code')); return false;"><i
+                                                class="fa fa-indent"></i>&nbspHighlight</a>
+                                </div>
+                            </div>
+                        </nav>
+                        <!-- Text area -->
+                        <textarea style="line-height: 1.2;" class="textarea mx-1" rows="13" id="code"
+                                  name="paste_data" onkeyup="countChars(this);"
+                                  onkeydown="return catchTab(this,event)"
+                                  placeholder="helloworld"><?php echo htmlentities($op_content, ENT_QUOTES, 'UTF-8'); ?></textarea>
+                        <p id="charNum"><b>File Size: </b><span style="color: green;">1000/1000Kb</span></p>
+                        <br>
+
+
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <label class="label">Tags</label>
+                                    <div class="control">
+                                        <input id="tags-with-source" name="tag_input" class="input"
+                                               value="<?php
+                                               $inputtags = $paste['tags'];
+                                               foreach ($inputtags as $tag) {
+                                                   $tagsName = ucfirst(pp_html_escape($tag['name']));
+                                                   echo  ','.$tagsName.'';
+                                               }?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <nav class="level">
+                            <div class="level-left">
+                                <div class="level-item is-pulled-left mr-1">
+                                    <div class="field">
+                                        <div class="subtitle has-text-weight-semibold "
+                                             style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;"><?php echo $lang['expiration']; ?></div>
+                                        <div class="control">
+                                            <!-- Expiry -->
+                                            <div class="select">
+                                                <select name="paste_expire_date">
+                                                    <option value="N" selected="selected">Never</option>
+                                                    <option value="self">View Once</option>
+                                                    <option value="10M">10 Minutes</option>
+                                                    <option value="1H">1 Hour</option>
+                                                    <option value="1D">1 Day</option>
+                                                    <option value="1W">1 Week</option>
+                                                    <option value="2W">2 Weeks</option>
+                                                    <option value="1M">1 Month</option>
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="level-item is-pulled-left mx-1">
-                                        <input class="button is-info" type="hidden" name="paste_id"
-                                               value="<?php echo $paste_id; ?>"/>
-                                    </div>
-                                    <div class="level-item is-pulled-left mx-1">
-                                        <a class="button"
-                                           onclick="highlight(document.getElementById('code')); return false;"><i
-                                                    class="fa fa-indent"></i>&nbspHighlight</a>
-                                    </div>
                                 </div>
-                            </nav>
-                            <!-- Text area -->
-                            <textarea style="line-height: 1.2;" class="textarea mx-1" rows="13" id="code"
-                                      name="paste_data" onkeyup="countChars(this);"
-                                      onkeydown="return catchTab(this,event)"
-                                      placeholder="helloworld"><?php echo htmlentities($op_content, ENT_QUOTES, 'UTF-8'); ?></textarea>
-                            <p id="charNum"><b>File Size: </b><span style="color: green;">1000/1000Kb</span></p>
-                            <br>
-
-
-                                    <div class="columns">
-                                        <div class="column">
-                                            <div class="field">
-                                                <label class="label">Tags</label>
-                                                <div class="control">
-                                                    <input id="tags-with-source" name="tag_input" class="input"
-                                                           value="<?php
-                                                            $inputtags = $paste['tags'];
-                                                            foreach ($inputtags as $tag) {
-                                                            $tagsName = ucfirst(pp_html_escape($tag['name']));
-                                                            echo  ','.$tagsName.'';
-                                                            }?>">
-                                                </div>
-                                            </div>
+                                <div class="level-item is-pulled-left mx-1">
+                                    <div class="field">
+                                        <div class="subtitle has-text-weight-semibold "
+                                             style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;"><?php echo $lang['visibility']; ?>
+                                            &nbsp;&nbsp;
                                         </div>
-                                    </div>
-
-                            <nav class="level">
-                                <div class="level-left">
-                                    <div class="level-item is-pulled-left mr-1">
-                                        <div class="field">
-                                            <div class="subtitle has-text-weight-semibold "
-                                                 style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;"><?php echo $lang['expiration']; ?></div>
-                                            <div class="control">
-                                                <!-- Expiry -->
-                                                <div class="select">
-                                                    <select name="paste_expire_date">
-                                                        <option value="N" selected="selected">Never</option>
-                                                        <option value="self">View Once</option>
-                                                        <option value="10M">10 Minutes</option>
-                                                        <option value="1H">1 Hour</option>
-                                                        <option value="1D">1 Day</option>
-                                                        <option value="1W">1 Week</option>
-                                                        <option value="2W">2 Weeks</option>
-                                                        <option value="1M">1 Month</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="level-item is-pulled-left mx-1">
-                                        <div class="field">
-                                            <div class="subtitle has-text-weight-semibold "
-                                                 style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;"><?php echo $lang['visibility']; ?>
-                                                &nbsp;&nbsp;
-                                            </div>
-                                            <div class="control">
-                                                <!-- Visibility -->
-                                                <div class="select">
-                                                    <select name="visibility">
-                                                        <option value="0" <?php echo ($p_visible == "0") ? 'selected="selected"' : ''; ?>>
-                                                            Public
+                                        <div class="control">
+                                            <!-- Visibility -->
+                                            <div class="select">
+                                                <select name="visibility">
+                                                    <option value="0" <?php echo ($p_visible == "0") ? 'selected="selected"' : ''; ?>>
+                                                        Public
+                                                    </option>
+                                                    <option value="1" <?php echo ($p_visible == "1") ? 'selected="selected"' : ''; ?>>
+                                                        Unlisted
+                                                    </option>
+                                                    <?php if ($current_user) { ?>
+                                                        <option value="2" <?php echo ($p_visible == "2") ? 'selected="selected"' : ''; ?>>
+                                                            Private
                                                         </option>
-                                                        <option value="1" <?php echo ($p_visible == "1") ? 'selected="selected"' : ''; ?>>
-                                                            Unlisted
-                                                        </option>
-                                                        <?php if ($current_user) { ?>
-                                                            <option value="2" <?php echo ($p_visible == "2") ? 'selected="selected"' : ''; ?>>
-                                                                Private
-                                                            </option>
-                                                        <?php } else { ?>
-                                                            <option disabled>Private</option>
-                                                        <?php } ?>
-                                                    </select>
-                                                </div>
+                                                    <?php } else { ?>
+                                                        <option disabled>Private</option>
+                                                    <?php } ?>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </nav>
-                            <nav>
-                                <div class="level-left">
-                                    <!-- Password -->
-                                    <div class="columns">
-                                        <div class="column">
-                                            <input type="text" class="input" name="pass" id="pass" value=""
-                                                   placeholder="<?php echo $lang['pwopt']; ?>">
-                                        </div>
+                            </div>
+                        </nav>
+                        <nav>
+                            <div class="level-left">
+                                <!-- Password -->
+                                <div class="columns">
+                                    <div class="column">
+                                        <input type="text" class="input" name="pass" id="pass" value=""
+                                               placeholder="<?php echo $lang['pwopt']; ?>" />
                                     </div>
                                 </div>
-                            </nav>
-                            <br>
-                            <nav>
-                                <div class="level-left">
-                                    <!-- Encrypted -->
-                                    <div class="b-checkbox is-info is-inline">
-                                        <?php
-                                        $encrypted_checked = "";
-                                        if ($_POST) {
-                                            // We came here from an error, carry the checkbox setting forward
-                                            if (isset($_POST['encrypted'])) {
-                                                $encrypted_checked = "checked";
-                                            }
-                                        } else {
-                                            // Fresh paste. Default to encrypted on
+                            </div>
+                        </nav>
+                        <br>
+                        <nav>
+                            <div class="level-left">
+                                <!-- Encrypted -->
+                                <div class="b-checkbox is-info is-inline">
+                                    <?php
+                                    $encrypted_checked = "";
+                                    if ($_POST) {
+                                        // We came here from an error, carry the checkbox setting forward
+                                        if (isset($_POST['encrypted'])) {
                                             $encrypted_checked = "checked";
                                         }
+                                    } else {
+                                        // Fresh paste. Default to encrypted on
+                                        $encrypted_checked = "checked";
+                                    }
+                                    ?>
+                                    <input class="is-checkradio is-info" id="encrypt" name="encrypted"
+                                           type="checkbox" <?php echo $encrypted_checked; ?>>
+                                    <label for="encrypt">
+                                        <?php echo $lang['encrypt']; ?>
+                                    </label>
+                                    <?php
+                                    if ($current_user->user_id == $paste['user_id']) {
                                         ?>
-                                        <input class="is-checkradio is-info" id="encrypt" name="encrypted"
-                                               type="checkbox" <?php echo $encrypted_checked; ?>>
-                                        <label for="encrypt">
-                                            <?php echo $lang['encrypt']; ?>
-                                        </label>
+                                        <input class="button is-info" type="submit" name="edit" id="edit"
+                                               value="<?php echo $lang['editpaste']; ?>"/>
                                         <?php
-                                        if ($current_user->user_id == $paste['user_id']) {
-                                            ?>
-                                            <input class="button is-info" type="submit" name="edit" id="edit"
-                                                   value="<?php echo $lang['editpaste']; ?>"/>
-                                            <?php
-                                        } ?>
-                                       <?php 
-                                             //Fork function not working
-                                             // <input class="button is-info" type="submit" name="submit" id="submit"
-                                             //value="<?php echo $lang['forkpaste'];"/> ?>
-                                    </div>
-                                    <br/>
-                            </nav>
-                            <?php
-                            if (isset($site_ads)) {
-                                echo $site_ads['ads_2'];
-                            }
-                            ?>
-                        </form>
-                        <?php } ?>
+                                    } ?>
+                                </div>
+                                <br/>
+                        </nav>
+                        <?php
+                        if (isset($site_ads)) {
+                            echo $site_ads['ads_2'];
+                        }
+                        ?>
+                    </form>
+                <?php } ?>
 
-                        </div>
+            </div>
 
         </div>
     </div>
-    </div>
-</div>
-</div>
 </main>
 
 <script>
