@@ -1,0 +1,19 @@
+{
+  "name": "aftercase/ponepaste",
+  "description": "PonePaste can store green",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "aftercase"
+    },
+    {
+      "name": "appledash"
+    }
+  ],
+  "require": {
+    "scrivo/highlight.php": "v9.18.1.7",
+    "ext-pdo": "*",
+    "ext-openssl": "*"
+  }
+}

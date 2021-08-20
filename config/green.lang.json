@@ -1,0 +1,10 @@
+{
+  "aliases": ["greentext"],
+  "contains": [
+    {
+      "className": "comment",
+      "begin": ">",
+      "end": "$"
+    }
+  ]
+}

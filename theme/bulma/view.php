@@ -74,6 +74,9 @@ function setupTagsInput() {
         })(jQuery);
     });
 </script>
+<?php if ($using_highlighter): ?>
+    <link rel="stylesheet" href="/vendor/scrivo/highlight.php/styles/default.css" />
+<?php endif; ?>
 <?php
 /*
  * Paste <https://github.com/jordansamuel/PASTE> - Bulma theme
@@ -98,8 +101,6 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
 ?>
 
 <style>
-
-
     .preloader {
         position: absolute;
         top: 0;
@@ -208,7 +209,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                         echo checkFavorite($conn, $paste_id, $current_user->user_id);
                                     }
                                     ?>
-                                    <a class="icon tool-icon" class="flip" onclick="openreport()"><i
+                                    <a class="icon tool-icon flip" onclick="openreport()"><i
                                                 class="far fa-flag fa-lg has-text-grey" title="Report Paste"></i></a>
                                     <?php if ($paste['code'] != "pastedown") { ?>
                                         <a class="icon tool-icon" href="javascript:togglev();"><i
@@ -236,7 +237,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                } else {
                                                    echo 'paste.php?embed&id=';
                                                }
-                                               echo $paste_id . '"></script>'; ?>' readonly>
+                                               echo $paste_id . '"></script>'; ?>' readonly />
                                     </div>
                                 </div>
                             </div>
@@ -258,17 +259,28 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                         ?>
                     </div>
                     <br>
-                    <?php if (isset($error)) {
-                        echo '<div class="notification is-danger"><i class="fa fa-exclamation-circle" aria-hidden=" true"></i><p>' . $error . '</p></div>';
-                    } else {
-                        if ($paste['code'] != "pastedown") {
-                            echo '
-						<div id="paste" style="line-height:1!important;">' . linkify($p_content) . '</div>';
-                        } else {
-                            echo '
-						<div id="paste" style="line-height:1!important;">' . $p_content . '</div>';
-                        }
-                    } ?>
+                    <?php if (isset($error)): ?>
+                        <div class="notification is-danger">
+                            <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                            <p><?= pp_html_escape($error) ?></p>
+                        </div>
+                    <?php elseif ($using_highlighter): ?>
+                        <div id="paste" style="line-height:1!important;">
+                            <div class="<?= pp_html_escape($paste['code']) ?>">
+                                <ol>
+                                    <?php foreach ($lines as $num => $line): ?>
+                                        <li class="<?= $num == 0 ? 'li1 ln-xtra' : 'li1' ?>" id="<?= $num + 1 ?>">
+                                            <div class="de1"><?= $line === '' ? '&nbsp;' : $line ?></div>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ol>
+                            </div>
+                        </div>
+                        <div id="paste" style="line-height:1!important;"><?= $p_content  ?></div>
+
+                    <?php else: ?>
+                        <div id="paste" style="line-height:1!important;"><?= $p_content  ?></div>
+                    <?php endif; ?>
                 </div>
                 <!-- Guests -->
                 <?php if ($current_user === null || $current_user->user_id !== $paste['user_id']) { ?>
