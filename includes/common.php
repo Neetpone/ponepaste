@@ -134,8 +134,8 @@ $captcha_enabled = (bool)$captcha_config['enabled'];
 
 // Prevent a potential LFI (you never know :p)
 $lang_file = "${default_lang}.php";
-if (in_array($lang_file, scandir(__DIR__ . '/../langs/'))) {
-    require_once(__DIR__ . "/../langs/${lang_file}");
+if (in_array($lang_file, scandir(__DIR__ . '/langs/'))) {
+    require_once(__DIR__ . "/langs/${lang_file}");
 }
 
 // Check if IP is banned
