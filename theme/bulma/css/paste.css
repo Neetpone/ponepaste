@@ -12,6 +12,11 @@
 /* DataTables.js */
 @import url("datatables.min.css");
 
+/* make numbers grey again*/
+.li1::marker {
+    color: #bfbfbf;
+}
+
 .theme-switch-wrapper {
     display: flex;
     align-items: center;
