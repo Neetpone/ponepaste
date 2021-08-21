@@ -1,4 +1,3 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <link rel="stylesheet" href="theme/bulma/css/bulma-tagsinput.min.css"/>
 <script src="theme/bulma/js/bulma-tagsinput.min.js"></script>
 <script>
