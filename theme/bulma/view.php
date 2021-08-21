@@ -102,6 +102,11 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
         visibility: hidden;
         opacity: 0;
         transition: visibility 0s 1.25s, opacity 1.25s linear;
+        display: none;
+    }
+
+    .preloader-hiddener {
+        display: none;
     }
 
     #stop-scrolling {
@@ -109,7 +114,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
         overflow: hidden;
     }
 </style>
-<main class="bd-main" id="stop-scrolling">
+<main class="bd-main">
     <div class="preloader"></div>
     <div class="bd-side-background"></div>
     <div class="bd-main-container container">
