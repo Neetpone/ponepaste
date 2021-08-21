@@ -185,9 +185,9 @@
                                 <p class="control has-icons-left">
                                     <input type="text" class="input" name="title" onchange="getFileName()"
                                            placeholder="<?php echo $lang['pastetitle']; ?>"
-                                           value="<?php echo (isset($_POST['title'])) ? $_POST['title'] : ''; ?>">
+                                           value="<?php echo (isset($_POST['title'])) ? pp_html_escape($_POST['title']) : ''; ?>">
                                     <span class="icon is-small is-left">
-											<i class="fa fa-font"></i></a>
+											<i class="fa fa-font"></i>
 										</span>
                                 </p>
                             </div>
@@ -234,7 +234,7 @@
                     <!-- Text area -->
                     <textarea class="textarea" rows="15" id="code" name="paste_data" onkeyup="countChars(this);"
                               onkeydown="return catchTab(this,event)"
-                              placeholder="Paste Or Drop Text File Here."><?php echo (isset($_POST['paste_data'])) ? $_POST['paste_data'] : ''; ?></textarea>
+                              placeholder="Paste Or Drop Text File Here."><?php echo (isset($_POST['paste_data'])) ? pp_html_escape($_POST['paste_data']) : ''; ?></textarea>
                     <p id="charNum"><b>File Size: </b><span style="color: green;">1000/1000Kb</span></p>
                     <br>
                     <!-- Tag system -->
@@ -250,7 +250,7 @@
                                                    data-max-chars="40" type="text" data-item-text="name"
                                                    data-item-value="name"
                                                    data-case-sensitive="false" placeholder="10 Tags Maximum"
-                                                   value="<?php echo (isset($_POST['tag_input'])) ? $_POST['tag_input'] : ''; // Pre-populate if we come here on an error" ?>">
+                                                   value="<?php echo (isset($_POST['tag_input'])) ? pp_html_escape($_POST['tag_input']) : ''; // Pre-populate if we come here on an error" ?>">
                                         </div>
                                     </div>
                                 </div>
@@ -353,7 +353,7 @@
                                             <div class="column">
                                                 <input type="text" class="input" name="pass" id="pass"
                                                        placeholder="<?php echo $lang['pwopt']; ?>"
-                                                       value="<?php echo (isset($_POST['pass'])) ? $_POST['pass'] : ''; ?>">
+                                                       value="<?php echo (isset($_POST['pass'])) ? pp_html_escape($_POST['pass']) : ''; ?>" />
                                             </div>
                                         </div>
                                     </div>

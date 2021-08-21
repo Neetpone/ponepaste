@@ -1,0 +1,41 @@
+<?php return array(
+    'root' => array(
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'reference' => 'b39634998fff5e87ee8838d349a11ca2a315aec7',
+        'name' => 'aftercase/ponepaste',
+        'dev' => true,
+    ),
+    'versions' => array(
+        'aftercase/ponepaste' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'reference' => 'b39634998fff5e87ee8838d349a11ca2a315aec7',
+            'dev_requirement' => false,
+        ),
+        'erusev/parsedown' => array(
+            'pretty_version' => '1.7.4',
+            'version' => '1.7.4.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../erusev/parsedown',
+            'aliases' => array(),
+            'reference' => 'cb17b6477dfff935958ba01325f2e8a2bfa6dab3',
+            'dev_requirement' => false,
+        ),
+        'scrivo/highlight.php' => array(
+            'pretty_version' => 'v9.18.1.7',
+            'version' => '9.18.1.7',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../scrivo/highlight.php',
+            'aliases' => array(),
+            'reference' => '05996fcc61e97978d76ca7d1ac14b65e7cd26f91',
+            'dev_requirement' => false,
+        ),
+    ),
+);
