@@ -142,6 +142,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 </div>
                             </div>
                         </div>
+                        </form>
                     </article>
 
                     <div class="columns is-multiline">
