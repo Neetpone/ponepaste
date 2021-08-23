@@ -114,11 +114,9 @@ $lang_and_theme = $site_info['interface'];
 $default_lang = $lang_and_theme['language'];
 $default_theme = $lang_and_theme['theme'];
 
-// site permissions
+// Site permissions
 $site_permissions = $site_info['permissions'];
 
-// $siteprivate, $privatesite
-// $disableguest, $noguests
 if ($site_permissions) {
     $site_is_private = (bool) $site_permissions['private'];
     $site_disable_guest = (bool) $site_permissions['disable_guest'];
@@ -129,7 +127,7 @@ if ($site_permissions) {
 
 // CAPTCHA configuration
 $captcha_config = $site_info['captcha'];
-$captcha_enabled = (bool)$captcha_config['enabled'];
+$captcha_enabled = (bool) $captcha_config['enabled'];
 
 // Prevent a potential LFI (you never know :p)
 $lang_file = "${default_lang}.php";

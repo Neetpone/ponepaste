@@ -57,7 +57,7 @@ function setupTagsInput() {
         <div class="bd-duo">
             <div class="bd-lead">
                 <!-- Guests -->
-                <?php if (isset($noguests) && $noguests == "on") { // Site permissions
+                <?php if ($site_disable_guests) { // Site permissions
                     ?>
                     <section class="hero is-medium">
                         <div class="">

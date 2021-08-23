@@ -254,7 +254,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                           action="<?php echo $_SERVER['PHP_SELF']; ?>">
 
                                         <div class="checkbox checkbox-primary">
-                                            <input <?php if ($disableguest == "on") echo 'checked="true"'; ?>
+                                            <input <?php if ($site_disable_guests) echo 'checked="true"'; ?>
                                                     type="checkbox" name="disableguest" id="disableguest">
                                             <label for="disableguest">
                                                 Only allow registered users to paste
