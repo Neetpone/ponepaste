@@ -3,9 +3,6 @@ define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/functions.php');
 
-// UTF-8
-header('Content-Type: text/html; charset=utf-8');
-
 function getMonthPopularPastes(DatabaseHandle $conn, int $count) : array {
     $query = $conn->prepare(
         "SELECT pastes.id AS id, title, created_at, updated_at, users.username AS member

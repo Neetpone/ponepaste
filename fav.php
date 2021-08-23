@@ -3,9 +3,6 @@ define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/functions.php');
 
-// UTF-8
-header('Content-Type: text/html; charset=utf-8');
-
 if ($current_user && !empty($_POST['fid'])) {
     $paste_id = intval($_POST['fid']);
     $query = $conn->prepare('SELECT 1 FROM pins WHERE paste_id = ? AND user_id = ?');

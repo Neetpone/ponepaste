@@ -3,12 +3,6 @@ define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/functions.php');
 
-// UTF-8
-header('Content-Type: text/html; charset=utf-8');
-
-$date = date('jS F Y');
-$ip = $_SERVER['REMOTE_ADDR'];
-
 updatePageViews($conn);
 
 if (isset($_GET['page'])) {

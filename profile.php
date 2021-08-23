@@ -4,13 +4,6 @@ require_once('includes/common.php');
 require_once('includes/functions.php');
 require_once('includes/passwords.php');
 
-// UTF-8
-header('Content-Type: text/html; charset=utf-8');
-
-$date = date('jS F Y');
-$ip = $_SERVER['REMOTE_ADDR'];
-
-
 $p_title = $lang['myprofile']; //"My Profile";
 
 // Check if already logged in

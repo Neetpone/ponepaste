@@ -60,13 +60,6 @@ function validatePasteFields() : string|null {
     return null;
 }
 
-// UTF-8
-header('Content-Type: text/html; charset=utf-8');
-
-// Current date & user IP
-$date = date('jS F Y');
-$ip = $_SERVER['REMOTE_ADDR'];
-
 // Sitemap
 $site_sitemap_rows = $conn->query('SELECT * FROM sitemap_options LIMIT 1');
 if ($row = $site_sitemap_rows->fetch()) {

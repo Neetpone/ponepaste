@@ -2,9 +2,6 @@
 define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 
-// UTF-8
-header('Content-Type: text/html; charset=utf-8');
-
 $date = date('jS F Y');
 
 // Temp count for untagged pastes
