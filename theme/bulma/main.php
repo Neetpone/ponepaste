@@ -1,36 +1,8 @@
 <link rel="stylesheet" href="theme/bulma/css/bulma-tagsinput.min.css"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="theme/bulma/js/bulma-tagsinput.min.js"></script>
 <script src="/js/tag_input.js"></script>
 <script>
     function setupTagsInput() {
-
-        const tagsInput = document.getElementById('tags-with-source');
-
-        new TagsInput(tagsInput).attach();
-
-        /*new BulmaTagsInput(tagsInput, {
-            allowDuplicates: false,
-            caseSensitive: false,
-            clearSelectionOnTyping: false,
-            closeDropdownOnItemSelect: true,
-            delimiter: ',',
-            freeInput: true,
-            highlightDuplicate: true,
-            highlightMatchesString: true,
-            itemText: 'name',
-            maxTags: 10,
-            maxChars: 40,
-            minChars: 1,
-            noResultsLabel: 'No results found',
-            placeholder: '10 Tags Maximum"',
-            removable: true,
-            searchMinChars: 1,
-            searchOn: 'text',
-            selectable: true,
-            tagClass: 'is-info',
-            trim: true,
-        });*/
+        new TagsInput(document.getElementById('tags-with-source')).attach();
     }
 
     if (document.readyState !== 'loading') {
@@ -402,22 +374,22 @@
     }
 
     function countChars(obj) {
-// True limit
-        var maxLength = 1000000;
-        var strLength = obj.value.length;
-        var charRemain = (maxLength - strLength);
-        var char2kb = charRemain / 1000;
-        var charDisplay = roundToTwo(char2kb);
-// Grace limit    
-        var gracelimit = 11480;
-        var newstrLength = obj.value.length - 1000000;
-        var graceRemain = (gracelimit - newstrLength);
-        var grace2kb = graceRemain / 1000;
-        var graceDisplay = roundToTwo(grace2kb);
+        // True limit
+        const maxLength = 1000000;
+        const strLength = obj.value.length;
+        const charRemain = (maxLength - strLength);
+        const char2kb = charRemain / 1000;
+        const charDisplay = roundToTwo(char2kb);
+        // Grace limit
+        const gracelimit = 11480;
+        const newstrLength = obj.value.length - 1000000;
+        const graceRemain = (gracelimit - newstrLength);
+        const grace2kb = graceRemain / 1000;
+        const graceDisplay = roundToTwo(grace2kb);
 
         if (graceRemain < 0) {
             document.getElementById("charNum").innerHTML = '<b>File Size: </b><span style="color: red;">File Size limit reached</span>';
-        } else if ((charRemain < 0)) {
+        } else if (charRemain < 0) {
             document.getElementById("charNum").innerHTML = '<b>File Size: </b><span style="color: orange;">' + graceDisplay + '/24Kb Grace Limit</span>';
         } else {
             document.getElementById("charNum").innerHTML = '<b>File Size: </b><span style="color: green;">' + charDisplay + '/1000Kb</span>';

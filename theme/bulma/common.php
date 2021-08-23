@@ -32,7 +32,7 @@ $start = $time;
     </title>
     <meta name="description" content="<?= pp_html_escape($global_site_info['description']) ?>"/>
     <meta name="keywords" content="<?= pp_html_escape($global_site_info['keywords']) ?>"/>
-    <link rel="shortcut icon" href="<?php echo '//' . $baseurl . '/theme/' . $default_theme; ?>/img/favicon.ico">
+    <link rel="shortcut icon" href="//<?= $baseurl ?>/theme/bulma/img/favicon.ico">
     <link href="//<?= $baseurl ?>/theme/bulma/css/paste.css" rel="stylesheet"/>
     <link href="//<?= $baseurl ?>/theme/bulma/css/table-responsive.css" rel="stylesheet"/>
     <link href="//<?= $baseurl ?>/theme/bulma/css/table-row-orders.css" rel="stylesheet"/>
@@ -41,7 +41,7 @@ $start = $time;
     <script src="//<?= $baseurl ?>/theme/bulma/js/paste.js"></script>
     <script src="//<?= $baseurl ?>/theme/bulma/js/modal-fx.min.js"></script>
     <script src="//<?= $baseurl ?>/theme/bulma/js/datatables.min.js"></script>
-    <script src=//<?= $baseurl ?>/theme/bulma/js/table-responsive.js"></script>
+    <script src="//<?= $baseurl ?>/theme/bulma/js/table-responsive.js"></script>
     <script src="//<?= $baseurl ?>/theme/bulma/js/table-reorder.js"></script>
 </head>
 
@@ -50,12 +50,12 @@ $start = $time;
     <div class="container">
         <div class="navbar-brand">
             <a style="font-size: 24px;"
-               href="<?php echo '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\'); ?>"
-               class="navbar-item mx-1"><?php echo $site_name; ?></a>
+               href="<?= paste_protocol() . pp_html_escape($baseurl) ?>"
+               class="navbar-item mx-1"><?= pp_html_escape($site_name); ?></a>
             <div class="theme-switch-wrapper">
                 <label class="theme-switch" for="checkbox">
                     <input type="checkbox" id="checkbox"/>
-                    <div class="slider round"></div>
+                    <span class="slider round"></span>
                 </label>
             </div>
             <div id="navbarBurger" class="navbar-burger burger" data-target="navMenuDocumentation">
@@ -227,20 +227,20 @@ $start = $time;
             <section class="modal-card-body">
                 <form method="POST" action="../login.php?register">
                     <div class="field">
-                        <label class="label"><?php echo $lang['username']; ?></label>
+                        <label class="label"><?= $lang['username']; ?></label>
                         <div class="control has-icons-left has-icons-right">
                             <input type="text" class="input" name="username"
-                                   placeholder="<?php echo $lang['username']; ?>">
+                                   placeholder="<?= $lang['username']; ?>">
                             <span class="icon is-small is-left">
 									<i class="fas fa-user"></i>
 								</span>
                         </div>
                     </div>
                     <div class="field">
-                        <label class="label"><?php echo $lang['newpwd']; ?></label>
+                        <label class="label"><?= $lang['newpwd']; ?></label>
                         <div class="control has-icons-left has-icons-right">
                             <input type="password" class="input" name="password"
-                                   placeholder="<?php echo $lang['newpwd']; ?>">
+                                   placeholder="<?= $lang['newpwd']; ?>">
                             <span class="icon is-small is-left">
 									<i class="fas fa-key"></i>
 								</span>
@@ -255,16 +255,15 @@ $start = $time;
                         </div>
                         <div class="field">
                             <div class="notification">
-                                <span class="tags are-large"><?php echo '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA" class="imagever">'; ?></span>
+                                <span class="tags are-large"><?= '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA" class="imagever">'; ?></span>
                                 <input type="text" class="input" name="scode" value=""
-                                       placeholder="<?php echo $lang['entercode']; ?>">
+                                       placeholder="<?= $lang['entercode']; ?>">
                                 <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press
                                     "Enter"</p>
                             </div>
                         </div>
                     </div>
-                    <input class="button is-link is-fullwidth my-4" type="submit" name="signup" value="Register"
-                           value="<?php echo md5($date . $ip); ?>">
+                    <input class="button is-link is-fullwidth my-4" type="submit" name="signup" />
                     <div class="field">
                         <p style="float:left;">By signing up you agree to our <a href="page/privacy">Privacy policy </a>
                             and <a href="page/rules">Site rules</a>. This site may contain material not sutible for
@@ -276,15 +275,9 @@ $start = $time;
     </div>
 </div>
 
-
-<!--
-
-CONTENT HERE!
-
--->
-
+<!-- Main page content begin -->
 <?php require_once(__DIR__ . '/' . $page_template . '.php'); ?>
-
+<!-- Main page content end -->
 
 <footer class="footer has-background-white" style="border-top: 1px solid #ebeaeb">
     <div class="container">
