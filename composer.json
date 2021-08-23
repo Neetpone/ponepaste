@@ -16,6 +16,7 @@
     "ext-pdo": "*",
     "ext-openssl": "*",
     "erusev/parsedown": "^1.7",
-    "ext-gd": "*"
+    "ext-gd": "*",
+    "ext-mbstring": "*"
   }
 }
