@@ -307,19 +307,9 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                         <div class="select">
                                             <select data-live-search="true" name="format">
                                                 <?php // Show popular GeSHi formats
-                                                foreach ($geshiformats as $code => $name) {
-                                                    if (in_array($code, $popular_formats)) {
+                                                foreach (PP_HIGHLIGHT_FORMATS as $code => $name) {
                                                         $sel = ($paste['code'] == $code) ? 'selected="selected"' : ' ';
                                                         echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
-                                                    }
-                                                }
-
-                                                // Show all GeSHi formats.
-                                                foreach ($geshiformats as $code => $name) {
-                                                    if (!in_array($code, $popular_formats)) {
-                                                        $sel = ($paste['code'] == $code) ? 'selected="selected"' : '';
-                                                        echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
-                                                    }
                                                 }
                                                 ?>
                                             </select>

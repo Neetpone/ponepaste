@@ -27,7 +27,6 @@ $ip = $_SERVER['REMOTE_ADDR'];
 
 $p_title = $lang['myprofile']; //"My Profile";
 
-
 // Check if already logged in
 if ($current_user === null) {
     header("Location: ./login.php");
@@ -68,6 +67,6 @@ updatePageViews($conn);
 $total_user_pastes = getTotalPastes($conn, $current_user->user_id);
 
 // Theme
-require_once('theme/' . $default_theme . '/header.php');
-require_once('theme/' . $default_theme . '/profile.php');
-require_once('theme/' . $default_theme . '/footer.php');
+$page_template = 'profile';
+require_once('theme/' . $default_theme . '/common.php');
+

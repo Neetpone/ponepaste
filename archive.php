@@ -30,6 +30,5 @@ updatePageViews($conn);
 $p_title = $lang['archive']; // "Pastes Archive";
 
 // Theme
-require_once('theme/' . $default_theme . '/header.php');
-require_once('theme/' . $default_theme . '/archive.php');
-require_once('theme/' . $default_theme . '/footer.php');
+$page_template = 'archive';
+require_once('theme/' . $default_theme . '/common.php');

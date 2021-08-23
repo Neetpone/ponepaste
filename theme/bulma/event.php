@@ -152,7 +152,7 @@
                                                 <div class="panel-body">
                                                     <div class="list-widget pagination-content">
                                                         <?php
-                                                        $res = getevent($con, 100);
+                                                        $res = getevent($conn, 100);
                                                         while ($row = mysqli_fetch_array($res)) {
                                                             $title = Trim($row['title']);
                                                             $p_member = Trim($row['member']);

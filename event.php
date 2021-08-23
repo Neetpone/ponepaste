@@ -20,12 +20,9 @@ require_once('includes/functions.php');
 // UTF-8
 header('Content-Type: text/html; charset=utf-8');
 
-$date = date('jS F Y');
-$ip = $_SERVER['REMOTE_ADDR'];
 
 $p_title = $lang['archive']; // "Pastes Archive";
 
 // Theme
-require_once('theme/' . $default_theme . '/header.php');
-require_once('theme/' . $default_theme . '/event.php');
-require_once('theme/' . $default_theme . '/footer.php');
+$page_template = 'event';
+require_once('theme/' . $default_theme . '/common.php');

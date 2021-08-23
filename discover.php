@@ -99,6 +99,6 @@ $random_pastes = array_map('transformPasteRow', getRandomPastes($conn, 10));
 
 // Theme
 $p_title = $lang['archive']; // "Pastes Archive";
-require_once('theme/' . $default_theme . '/header.php');
-require_once('theme/' . $default_theme . '/discover.php');
-require_once('theme/' . $default_theme . '/footer.php');
+$page_template = 'discover';
+require_once('theme/' . $default_theme . '/common.php');
+

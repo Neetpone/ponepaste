@@ -45,21 +45,12 @@ if (gethostname() === 'thunderlane') {
 const PP_ENCRYPTION_ALGO = 'AES-256-CBC';
 const PP_ENCRYPTION_KEY = '';
 
-
-// Available GeSHi formats
-$geshiformats = [
+const PP_HIGHLIGHT_FORMATS = [
     'green' => 'Green Text',
     'text' => 'Plain Text',
     'pastedown' => 'pastedown',
     'pastedown_old' => 'pastedown old'
 ];
 
-// Popular formats that are listed first.
-$popular_formats = [
-    'green',
-    'text',
-    'pastedown',
-    'pastedown_old'
-];
 
 // Cookie - I want a cookie, can I have one?

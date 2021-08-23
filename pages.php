@@ -38,7 +38,7 @@ if (isset($_GET['page'])) {
     }
 }
 // Theme
-require_once('theme/' . $default_theme . '/header.php');
-require_once('theme/' . $default_theme . '/pages.php');
-require_once('theme/' . $default_theme . '/footer.php');
+$page_template = 'pages';
+require_once('theme/' . $default_theme . '/common.php');
+
 

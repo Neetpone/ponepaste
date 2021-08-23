@@ -206,28 +206,14 @@ function setupTagsInput() {
                             <div class="level-item is-pulled-left mx-1">
                                 <div class="select">
                                     <select data-live-search="true" name="format">
-                                        <?php // Show popular GeSHi formats
-                                        foreach ($geshiformats as $code => $name) {
-                                            if (in_array($code, $popular_formats)) {
+                                        <?php
+                                        foreach (PP_HIGHLIGHT_FORMATS as $code => $name) {
                                                 if (isset($_POST['format'])) {
                                                     $sel = ($_POST['format'] == $code) ? 'selected="selected"' : ''; // Pre-populate if we come here on an error
                                                 } else {
                                                     $sel = ($code == "markdown") ? 'selected="selected"' : '';
                                                 }
                                                 echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
-                                            }
-                                        }
-                                        echo '<option value="text">__________________</option>';
-                                        // Show all GeSHi formats.
-                                        foreach ($geshiformats as $code => $name) {
-                                            if (!in_array($code, $popular_formats)) {
-                                                if (isset($_POST['format'])) {
-                                                    $sel = ($_POST['format'] == $code) ? 'selected="selected"' : ''; // Pre-populate if we come here on an error
-                                                } else {
-                                                    $sel = ($code == "text") ? 'selected="selected"' : '';
-                                                }
-                                                echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
-                                            }
                                         }
                                         ?>
                                     </select>

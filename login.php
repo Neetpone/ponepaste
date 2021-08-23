@@ -140,6 +140,7 @@ if (isset($_POST['forgot'])) {
     }
 }
 // Theme
-require_once('theme/' . $default_theme . '/header.php');
-require_once('theme/' . $default_theme . '/login.php');
-require_once('theme/' . $default_theme . '/footer.php');
+$page_template = 'login';
+require_once('theme/' . $default_theme . '/common.php');
+
+

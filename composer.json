@@ -15,6 +15,7 @@
     "scrivo/highlight.php": "v9.18.1.7",
     "ext-pdo": "*",
     "ext-openssl": "*",
-    "erusev/parsedown": "^1.7"
+    "erusev/parsedown": "^1.7",
+    "ext-gd": "*"
   }
 }

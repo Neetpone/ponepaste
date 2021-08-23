@@ -172,11 +172,10 @@ if ($paste_code === "pastedown") {
 
 // Embed view after highlighting is applied so that $p_code is syntax highlighted as it should be.
 if (isset($_GET['embed'])) {
-    embedView($paste_id, $paste_title, $p_content, $paste_code, $title, $baseurl, $ges_style, $lang);
+    embedView($paste_id, $paste_title, $p_content, $paste_code, $title, $baseurl, $lang);
     exit();
 }
 
-require_once('theme/' . $default_theme . '/header.php');
 if ($password_required && $password_valid) {
     /* base64 here means that the password is exposed in the URL, technically - how to handle this better? */
     $p_download = "paste.php?download&id=$paste_id&password=" . base64_encode($password_candidate);
@@ -201,16 +200,15 @@ if (@$_SESSION['not_unique'] !== $paste_id) {
     $conn->query("UPDATE pastes SET views = (views + 1) where id = ?", [$paste_id]);
 }
 
-require_once('theme/' . $default_theme . '/view.php');
+$page_template = 'view';
 
 Not_Valid_Paste:
 
 if ($is_private || $notfound || !$password_valid) {
+    // FIXME
     // Display errors
-    require_once('theme/' . $default_theme . '/header.php');
-    require_once('theme/' . $default_theme . '/errors.php');
+    $page_template = 'errors';
 }
 
-// Footer
-    require_once('theme/' . $default_theme . '/footer.php');
+require_once('theme/' . $default_theme . '/common.php');
 

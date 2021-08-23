@@ -192,7 +192,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 OutPut:
-// Theme
-require_once('theme/' . $default_theme . '/header.php');
-require_once('theme/' . $default_theme . '/main.php');
-require_once('theme/' . $default_theme . '/footer.php');
+$page_template = 'main';
+require_once('theme/' . $default_theme . '/common.php');

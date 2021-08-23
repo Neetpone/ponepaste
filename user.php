@@ -116,6 +116,5 @@ if (isset($_GET['del'])) {
 }
 
 // Theme
-require_once('theme/' . $default_theme . '/header.php');
-require_once('theme/' . $default_theme . '/user_profile.php');
-require_once('theme/' . $default_theme . '/footer.php');
+$page_template = 'user_profile';
+require_once('theme/' . $default_theme . '/common.php');

@@ -7,6 +7,7 @@ require_once(__DIR__ . '/config.php');
 require_once(__DIR__ . '/functions.php');
 require_once(__DIR__ . '/DatabaseHandle.class.php');
 require_once(__DIR__ . '/User.class.php');
+require_once(__DIR__ . '/ViewBag.class.php');
 
 /* View functions */
 function urlForPaste($paste_id) : string {
@@ -98,11 +99,10 @@ $conn = new DatabaseHandle("mysql:host=$db_host;dbname=$db_schema;charset=utf8mb
 
 // Setup site info
 $site_info = getSiteInfo();
+$global_site_info = $site_info['site_info'];
 $row = $site_info['site_info'];
 $title = Trim($row['title']);
-$des = Trim($row['description']);
 $baseurl = Trim($row['baseurl']);
-$keyword = Trim($row['keywords']);
 $site_name = Trim($row['site_name']);
 $email = Trim($row['email']);
 $ga = Trim($row['google_analytics']);
@@ -124,9 +124,6 @@ if ($site_permissions) {
     $siteprivate = 'off';
     $disableguest = 'off';
 }
-
-$privatesite = $siteprivate;
-$noguests = $disableguest;
 
 // CAPTCHA configuration
 $captcha_config = $site_info['captcha'];
@@ -151,10 +148,8 @@ $total_unique_views = getSiteTotal_unique_views($conn);
 
 $current_user = User::current($conn);
 
-if ($current_user) {
-    $noguests = "off";
-}
-
 /* Security headers */
 header('X-Frame-Options: SAMEORIGIN');
 header('X-Content-Type-Options: nosniff');
+
+//ob_start();
