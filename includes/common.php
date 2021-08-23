@@ -119,10 +119,10 @@ $site_permissions = $site_info['permissions'];
 
 if ($site_permissions) {
     $site_is_private = (bool) $site_permissions['private'];
-    $site_disable_guest = (bool) $site_permissions['disable_guest'];
+    $site_disable_guests = (bool) $site_permissions['disable_guest'];
 } else {
     $site_is_private = false;
-    $site_disable_guest = false;
+    $site_disable_guests = false;
 }
 
 // CAPTCHA configuration

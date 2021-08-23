@@ -1,10 +1,15 @@
 <link rel="stylesheet" href="theme/bulma/css/bulma-tagsinput.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="theme/bulma/js/bulma-tagsinput.min.js"></script>
+<script src="/js/tag_input.js"></script>
 <script>
     function setupTagsInput() {
+
         const tagsInput = document.getElementById('tags-with-source');
-        new BulmaTagsInput(tagsInput, {
+
+        new TagsInput(tagsInput).attach();
+
+        /*new BulmaTagsInput(tagsInput, {
             allowDuplicates: false,
             caseSensitive: false,
             clearSelectionOnTyping: false,
@@ -25,7 +30,7 @@
             selectable: true,
             tagClass: 'is-info',
             trim: true,
-        });
+        });*/
     }
 
     if (document.readyState !== 'loading') {
