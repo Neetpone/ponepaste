@@ -117,12 +117,14 @@ $default_theme = $lang_and_theme['theme'];
 // site permissions
 $site_permissions = $site_info['permissions'];
 
+// $siteprivate, $privatesite
+// $disableguest, $noguests
 if ($site_permissions) {
-    $siteprivate = $site_permissions['private'];
-    $disableguest = $site_permissions['disable_guest'];
+    $site_is_private = (bool) $site_permissions['private'];
+    $site_disable_guest = (bool) $site_permissions['disable_guest'];
 } else {
-    $siteprivate = 'off';
-    $disableguest = 'off';
+    $site_is_private = false;
+    $site_disable_guest = false;
 }
 
 // CAPTCHA configuration

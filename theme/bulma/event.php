@@ -56,7 +56,7 @@
                 <!-- Start Row -->
                 <div class="row">
                     <!-- Start Panel -->
-                    <?php if ($privatesite == "on") { // Site permissions ?>
+                    <?php if ($site_is_private) { // Site permissions ?>
                         <div class="col-md-12">
                             <div class="panel panel-default" style="padding-bottom: 100px;">
                                 <div class="error-pages">
@@ -69,7 +69,7 @@
                     <?php } else { ?>
 
                     <?php }
-                    if (!isset($privatesite) || $privatesite != "on") { ?>
+                    if (!$site_is_private) { ?>
                     <div class="notification is-warning">
                         <strong id="headline">Entries Deadline</strong>
                         <div id="countdown">
@@ -216,7 +216,7 @@
 
 <!-- End Panel -->
 <?php }
-if ($privatesite != "on") {
+if (!$site_is_private) {
     return;
 } elseif (isset($site_ads)) {
     echo $site_ads['ads_2'];

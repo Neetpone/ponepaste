@@ -47,7 +47,7 @@
                         There are <strong><?php echo $total_untagged ?></strong> pastes that still need to be tagged.
                     </div>
                 </article>
-                <?php if ($privatesite == "on") { // Site permissions
+                <?php if ($site_is_private) { // Site permissions
                     ?>
                     <h1 class="title is-5"><?php echo $lang['siteprivate']; ?></h1>
                 <?php } else { ?>
@@ -78,7 +78,7 @@
                 ?>
             </div>
             <?php }
-            if ($privatesite != "on") {
+            if (!$site_is_private) {
                 require_once('theme/' . $default_theme . '/sidebar.php');
             }
             ?>

@@ -22,5 +22,5 @@ if ($current_user && !empty($_POST['fid'])) {
 }
 
 // Theme
-require_once('theme/' . $default_theme . '/header.php');
-require_once('theme/' . $default_theme . '/report.php');
+$page_template = 'report';
+require_once('theme/' . $default_theme . '/common.php');

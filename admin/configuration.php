@@ -262,7 +262,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         </div>
 
                                         <div class="checkbox checkbox-primary">
-                                            <input <?php if ($siteprivate == "on") echo 'checked="true"'; ?>
+                                            <input <?php if ($site_is_private) echo 'checked="true"'; ?>
                                                     type="checkbox" name="siteprivate" id="siteprivate">
                                             <label for="siteprivate">
                                                 Make site private (no Recent Pastes or Archives)

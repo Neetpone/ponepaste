@@ -1,5 +1,4 @@
 <?php
-
 /* prevent inclusion of arbitrary files */
 $template_candidates = scandir(__DIR__);
 if (!in_array($page_template . '.php', $template_candidates)) {
@@ -67,7 +66,7 @@ $start = $time;
             <div class="navbar-end">
                 <div class="navbar-item">
                     <?php if ($current_user !== null) {
-                        if (!isset($privatesite) || $privatesite !== "on") {
+                        if (!$site_is_private) {
                             if (PP_MOD_REWRITE) {
                                 echo '  <a class="button navbar-item mx-2" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/">
 											<span class="icon has-text-info">
@@ -131,7 +130,7 @@ $start = $time;
                     <?php } else { ?>
                         <div class="buttons">
                             <?php
-                            if (!isset($privatesite) || $privatesite != "on") {
+                            if (!$site_is_private) {
                                 if (PP_MOD_REWRITE) {
                                     echo '<a class="button navbar-item mx-2" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/archive">
 											<span class="icon has-text-info">
@@ -284,7 +283,7 @@ CONTENT HERE!
 
 -->
 
-<?php require_once($page_template . '.php'); ?>
+<?php require_once(__DIR__ . '/' . $page_template . '.php'); ?>
 
 
 <footer class="footer has-background-white" style="border-top: 1px solid #ebeaeb">
