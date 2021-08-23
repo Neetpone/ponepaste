@@ -16,7 +16,7 @@ $start = $time;
 <!DOCTYPE html>
 <html lang="<?php echo basename($default_lang, ".php"); ?>">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>
@@ -33,9 +33,9 @@ $start = $time;
     <meta name="description" content="<?= pp_html_escape($global_site_info['description']) ?>"/>
     <meta name="keywords" content="<?= pp_html_escape($global_site_info['keywords']) ?>"/>
     <link rel="shortcut icon" href="<?php echo '//' . $baseurl . '/theme/' . $default_theme; ?>/img/favicon.ico">
-    <link href="//<?= $baseurl ?>/theme/bulma/css/paste.css" rel="stylesheet" />
-    <link href="//<?= $baseurl ?>/theme/bulma/css/table-responsive.css" rel="stylesheet" />
-    <link href="//<?= $baseurl ?>/theme/bulma/css/table-row-orders.css" rel="stylesheet" />
+    <link href="//<?= $baseurl ?>/theme/bulma/css/paste.css" rel="stylesheet"/>
+    <link href="//<?= $baseurl ?>/theme/bulma/css/table-responsive.css" rel="stylesheet"/>
+    <link href="//<?= $baseurl ?>/theme/bulma/css/table-row-orders.css" rel="stylesheet"/>
     <script src="//<?= $baseurl ?>/theme/bulma/js/jquery.min.js"></script>
     <script src="//<?= $baseurl ?>/theme/bulma/js/jquery-ui.min.js"></script>
     <script src="//<?= $baseurl ?>/theme/bulma/js/paste.js"></script>
@@ -54,7 +54,7 @@ $start = $time;
                class="navbar-item mx-1"><?php echo $site_name; ?></a>
             <div class="theme-switch-wrapper">
                 <label class="theme-switch" for="checkbox">
-                    <input type="checkbox" id="checkbox" />
+                    <input type="checkbox" id="checkbox"/>
                     <div class="slider round"></div>
                 </label>
             </div>
@@ -353,7 +353,6 @@ CONTENT HERE!
         </div>
     </div>
 </footer>
-
 
 
 <script>

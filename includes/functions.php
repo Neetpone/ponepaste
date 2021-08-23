@@ -37,10 +37,12 @@ function getreports($conn, $count = 10) {
 }
 
 
-function tagsToHtml(string | array $tags) : string {
+function tagsToHtml(string|array $tags) : string {
     $output = "";
     if (is_array($tags)) {
-        $tagsSplit = array_map(function($tag) { return $tag['name']; }, $tags);
+        $tagsSplit = array_map(function ($tag) {
+            return $tag['name'];
+        }, $tags);
     } else {
         $tagsSplit = explode(",", $tags);
     }
@@ -85,7 +87,7 @@ function linkify($value, $protocols = array('http', 'mail'), array $attributes =
     }, $value);
 
     // Extract text links for each protocol
-    foreach ((array)$protocols as $protocol) {
+    foreach ((array) $protocols as $protocol) {
         $value = match ($protocol) {
             'http', 'https' => preg_replace_callback('~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) {
                 if ($match[1]) $protocol = $match[1];

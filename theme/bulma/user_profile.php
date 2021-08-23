@@ -1,8 +1,8 @@
 <script>
     $(document).ready(function () {
         $("#archive").dataTable({
-        rowReorder: { selector: 'td:nth-child(2)'},
-        responsive: true,
+            rowReorder: {selector: 'td:nth-child(2)'},
+            responsive: true,
             pageLength: 50,
             autoWidth: false,
             initComplete: function () {
@@ -19,23 +19,23 @@
 </script>
 <?php if ($current_user) { ?>
     <script>
-    $(document).ready(function () {
-        $("#favs").dataTable({
-        rowReorder: { selector: 'td:nth-child(2)'},
-        responsive: true,
-            pageLength: 50,
-            autoWidth: false,
-            initComplete: function () {
-                var search = new URLSearchParams(window.location.search);
-                var query = search.get('q');
-                if (query) {
-                    $("#archive_filter input")
-                        .val(query)
-                        .trigger("input");
+        $(document).ready(function () {
+            $("#favs").dataTable({
+                rowReorder: {selector: 'td:nth-child(2)'},
+                responsive: true,
+                pageLength: 50,
+                autoWidth: false,
+                initComplete: function () {
+                    var search = new URLSearchParams(window.location.search);
+                    var query = search.get('q');
+                    if (query) {
+                        $("#archive_filter input")
+                            .val(query)
+                            .trigger("input");
+                    }
                 }
-            }
-        })
-    });
+            })
+        });
     </script>
 <?php } ?>
 <main class="bd-main">
@@ -232,7 +232,7 @@
                                                     ' . strtoupper($p_code) . '
                                                 </td>
                                                 <td class="td-center">                                         
-                                                    <a href="' . $protocol . $baseurl . '/' . $p_delete_link . '" title="' . $title . '" onClick="return confirm(' . $p_delete_message. ')"><i class="far fa-trash-alt fa-lg" aria-hidden="true"></i></a>
+                                                    <a href="' . $protocol . $baseurl . '/' . $p_delete_link . '" title="' . $title . '" onClick="return confirm(' . $p_delete_message . ')"><i class="far fa-trash-alt fa-lg" aria-hidden="true"></i></a>
                                                 </td>    
 						            </tr>';
                             }
@@ -264,7 +264,9 @@
                             $f_dateui = $f_date->format("d F Y");
                             $Recent_update = new DateTime($row['updated_at']);
                             $Recent_update_u = date_format($Recent_update, 'U');
-                            $tagArray2 = array_map(function ($tag) { return $tag['name'];}, getPasteTags($conn, $f_id));
+                            $tagArray2 = array_map(function ($tag) {
+                                return $tag['name'];
+                            }, getPasteTags($conn, $f_id));
                             $f_tags = implode(',', $tagArray2);
                             //$p_link = ($mod_rewrite == '1') ? "$f_id" : "paste.php?favdel=$fu_id";
                             //$f_delete_link = ($mod_rewrite == '1') ? "user.php?favdel&user=$profile_username&fid=$f_id" : "user.php?favdel&user=$profile_username&fid=$f_id";
@@ -289,13 +291,13 @@
                                                 
                                                 </td>
                                                 <td class="td-left">';
-                                    if (strlen($f_tags) > 0) {
-                                        foreach ($tagArray2 as $tags) {
-                                            echo '<a href="' . $protocol . $baseurl . '/user.php?user=' . $profile_username . '&q=' . $tags . '"><span class="tag is-info">' . trim($tags) . '</span></a>';
-                                        }
-                                    } else {
-                                        echo ' <span class="tag is-warning">No tags</span>';
-                                    }
+                            if (strlen($f_tags) > 0) {
+                                foreach ($tagArray2 as $tags) {
+                                    echo '<a href="' . $protocol . $baseurl . '/user.php?user=' . $profile_username . '&q=' . $tags . '"><span class="tag is-info">' . trim($tags) . '</span></a>';
+                                }
+                            } else {
+                                echo ' <span class="tag is-warning">No tags</span>';
+                            }
 
 
                             echo '</td> 

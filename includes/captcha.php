@@ -101,7 +101,7 @@ function captcha($color, $mode, $mul, $allowed) : array {
 }
 
 if (!function_exists('hex2rgb')) {
-    function hex2rgb($hex_str) : array | null {
+    function hex2rgb($hex_str) : array|null {
         $hex_str = preg_replace("/[^0-9A-Fa-f]/", '', $hex_str); // Gets a proper hex string
 
         if (strlen($hex_str) == 6) {

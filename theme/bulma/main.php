@@ -2,29 +2,29 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="theme/bulma/js/bulma-tagsinput.min.js"></script>
 <script>
-function setupTagsInput() {
+    function setupTagsInput() {
         const tagsInput = document.getElementById('tags-with-source');
         new BulmaTagsInput(tagsInput, {
-                allowDuplicates: false,
-                caseSensitive: false,
-                clearSelectionOnTyping: false,
-                closeDropdownOnItemSelect: true,
-                delimiter: ',',
-                freeInput: true,
-                highlightDuplicate: true,
-                highlightMatchesString: true,
-                itemText: 'name',
-                maxTags: 10,
-                maxChars: 40,
-                minChars: 1,
-                noResultsLabel: 'No results found',
-                placeholder: '10 Tags Maximum"',
-                removable: true,
-                searchMinChars: 1,
-                searchOn: 'text',
-                selectable: true,
-                tagClass: 'is-info',
-                trim: true,
+            allowDuplicates: false,
+            caseSensitive: false,
+            clearSelectionOnTyping: false,
+            closeDropdownOnItemSelect: true,
+            delimiter: ',',
+            freeInput: true,
+            highlightDuplicate: true,
+            highlightMatchesString: true,
+            itemText: 'name',
+            maxTags: 10,
+            maxChars: 40,
+            minChars: 1,
+            noResultsLabel: 'No results found',
+            placeholder: '10 Tags Maximum"',
+            removable: true,
+            searchMinChars: 1,
+            searchOn: 'text',
+            selectable: true,
+            tagClass: 'is-info',
+            trim: true,
         });
     }
 
@@ -191,12 +191,12 @@ function setupTagsInput() {
                                     <select data-live-search="true" name="format">
                                         <?php
                                         foreach (PP_HIGHLIGHT_FORMATS as $code => $name) {
-                                                if (isset($_POST['format'])) {
-                                                    $sel = ($_POST['format'] == $code) ? 'selected="selected"' : ''; // Pre-populate if we come here on an error
-                                                } else {
-                                                    $sel = ($code == "markdown") ? 'selected="selected"' : '';
-                                                }
-                                                echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
+                                            if (isset($_POST['format'])) {
+                                                $sel = ($_POST['format'] == $code) ? 'selected="selected"' : ''; // Pre-populate if we come here on an error
+                                            } else {
+                                                $sel = ($code == "markdown") ? 'selected="selected"' : '';
+                                            }
+                                            echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
                                         }
                                         ?>
                                     </select>
@@ -329,7 +329,7 @@ function setupTagsInput() {
                                             <div class="column">
                                                 <input type="text" class="input" name="pass" id="pass"
                                                        placeholder="<?php echo $lang['pwopt']; ?>"
-                                                       value="<?php echo (isset($_POST['pass'])) ? pp_html_escape($_POST['pass']) : ''; ?>" />
+                                                       value="<?php echo (isset($_POST['pass'])) ? pp_html_escape($_POST['pass']) : ''; ?>"/>
                                             </div>
                                         </div>
                                     </div>

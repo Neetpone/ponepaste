@@ -1,4 +1,5 @@
 <?php
+
 class NonRetardedSSP {
     public static function run(DatabaseHandle $conn, array $request, string $countQuery, string $query) {
         /* Some of these parameters might not be passed; zero is an OK default */

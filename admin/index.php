@@ -1,6 +1,6 @@
 <?php
 define('IN_PONEPASTE', 1);
-require_once(__DIR__  . '/../includes/common.php');
+require_once(__DIR__ . '/../includes/common.php');
 
 $row = $conn->querySelectOne('SELECT user, pass FROM admin LIMIT 1');
 $adminid = $row['user'];

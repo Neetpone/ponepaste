@@ -62,12 +62,12 @@ $paste = [
     'tags' => getPasteTags($conn, $paste_id)
 ];
 
-    $p_member = $row['member'];
-    $p_content = $row['content'];
-    $p_visible = $row['visible'];
-    $p_expiry = $row['expiry'];
-    $p_password = $row['password'];
-    $p_encrypt = (bool) $row['encrypt'];
+$p_member = $row['member'];
+$p_content = $row['content'];
+$p_visible = $row['visible'];
+$p_expiry = $row['expiry'];
+$p_password = $row['password'];
+$p_encrypt = (bool) $row['encrypt'];
 
 
 $is_private = $row['visible'] === '2';
@@ -85,7 +85,7 @@ $password_candidate = '';
 if ($password_required) {
     if (!empty($_POST['mypass'])) {
         $password_candidate = $_POST['mypass'];
-    } else if (!empty($_GET['password'])) {
+    } elseif (!empty($_GET['password'])) {
         $password_candidate = @base64_decode($_GET['password']);
     }
 

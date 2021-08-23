@@ -6,7 +6,7 @@ class Tag {
     public string $slug;
 
     public function __construct(array $row) {
-        $this->id = (int)$row['id'];
+        $this->id = (int) $row['id'];
         $this->name = $row['name'];
         $this->slug = $row['slug'];
     }

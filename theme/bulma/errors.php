@@ -15,9 +15,9 @@
                         <form action="" method="post">
                             <div class="field has-addons">
                                 <div class="control">
-                                    <input type="hidden" name="id" value="<?php echo $paste_id; ?>" />
+                                    <input type="hidden" name="id" value="<?php echo $paste_id; ?>"/>
                                     <input type="password" class="input" name="mypass"
-                                           placeholder="<?php echo $lang['enterpwd']; ?>" />
+                                           placeholder="<?php echo $lang['enterpwd']; ?>"/>
                                 </div>
                             </div>
                             <button type="submit" name="submit" class="button is-info">Submit</button>

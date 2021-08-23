@@ -120,12 +120,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $p_encrypt = $_POST['encrypted'];
     if ($p_encrypt == "" || $p_encrypt == null) {
-       $p_encrypt = "0";
-        } else {
+        $p_encrypt = "0";
+    } else {
         // Encrypt option
         $p_encrypt = "1";
         $p_content = openssl_encrypt($p_content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY);
-   }
+    }
 
     // Set expiry time
     $expires = calculatePasteExpiry($p_expiry);
@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Edit existing paste or create new?
     if ($editing) {
         if ($current_user &&
-            $current_user->user_id === (int)$conn->querySelectOne('SELECT user_id FROM pastes WHERE id = ?', [$_POST['paste_id']])['user_id']) {
+            $current_user->user_id === (int) $conn->querySelectOne('SELECT user_id FROM pastes WHERE id = ?', [$_POST['paste_id']])['user_id']) {
             $paste_id = intval($_POST['paste_id']);
 
             $conn->query(

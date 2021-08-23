@@ -34,7 +34,8 @@
                                 </div>
                             </div>
                             <div class="field">
-                                <button disabled type="submit" name="Gen_key" class="button is-info">Generate New Key</button>
+                                <button disabled type="submit" name="Gen_key" class="button is-info">Generate New Key
+                                </button>
                                 <br>
                                 <small>Coming soon</small>
                             </div>

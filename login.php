@@ -47,7 +47,7 @@ if (isset($_POST['forgot'])) {
     }
 } elseif (isset($_POST['signin'])) { // Login process
     if (!empty($_POST['username']) && !empty($_POST['password'])) {
-        $remember_me = (bool)$_POST['remember_me'];
+        $remember_me = (bool) $_POST['remember_me'];
         $username = trim($_POST['username']);
         $row = $conn->query("SELECT id, password, banned FROM users WHERE username = ?", [$username])
             ->fetch();
@@ -72,7 +72,7 @@ if (isset($_POST['forgot'])) {
                 $error = $lang['banned'];
             } else {
                 // Login successful
-                $_SESSION['user_id'] = (string)$user_id;
+                $_SESSION['user_id'] = (string) $user_id;
 
                 if ($remember_me) {
                     $remember_token = pp_random_token();
@@ -81,7 +81,7 @@ if (isset($_POST['forgot'])) {
                     $conn->query('INSERT INTO user_sessions (user_id, token, expire_at) VALUES (?, ?, FROM_UNIXTIME(?))', [$user_id, $remember_token, $expire_at->format('U')]);
 
                     setcookie(User::REMEMBER_TOKEN_COOKIE, $remember_token, [
-                        'expires' => (int)$expire_at->format('U'),
+                        'expires' => (int) $expire_at->format('U'),
                         'secure' => !empty($_SERVER['HTTPS']), /* Local dev environment is non-HTTPS */
                         'httponly' => true,
                         'samesite' => 'Lax'
