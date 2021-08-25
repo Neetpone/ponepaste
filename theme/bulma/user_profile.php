@@ -21,6 +21,7 @@ $protocol = paste_protocol();
         rowReorder: { selector: 'td:nth-child(2)'},
         responsive: true,
             pageLength: 50,
+            order: [[ 1, "desc" ]],
             autoWidth: false,
             initComplete: function () {
                 var search = new URLSearchParams(window.location.search);
@@ -40,6 +41,7 @@ $protocol = paste_protocol();
         $("#favs").dataTable({
         rowReorder: { selector: 'td:nth-child(2)'},
         responsive: true,
+            order: [[ 2, "desc" ]],
             pageLength: 50,
             autoWidth: false,
             initComplete: function () {
@@ -220,9 +222,7 @@ $protocol = paste_protocol();
                                                 </td>
                                                 <td class="td-left">';
                                     if (strlen($p_tags) > 0) {
-                                        foreach ($tagArray as $tags) {
-                                            echo '<a href="' . $protocol . $baseurl . '/user.php?user=' . $profile_username . '&q=' . $tags . '"><span class="tag is-info">' . trim($tags) . '</span></a>';
-                                        }
+                                    echo tagsToHtmlUser($p_tags,$profile_username);
                                     } else {
                                         echo ' <span class="tag is-warning">No tags</span>';
                                     }
@@ -307,9 +307,7 @@ $protocol = paste_protocol();
                                                 </td>
                                                 <td class="td-left">';
                                     if (strlen($f_tags) > 0) {
-                                        foreach ($tagArray2 as $tags) {
-                                            echo '<a href="' . $protocol . $baseurl . '/user.php?user=' . $profile_username . '&q=' . $tags . '"><span class="tag is-info">' . trim($tags) . '</span></a>';
-                                        }
+                                    echo tagsToHtmlUser($f_tags,$profile_username);
                                     } else {
                                         echo ' <span class="tag is-warning">No tags</span>';
                                     }
