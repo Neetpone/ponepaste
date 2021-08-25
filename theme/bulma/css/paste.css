@@ -17,6 +17,13 @@
     color: #bfbfbf;
 }
 
+/* For future use
+.li1 {
+    padding-left: 0.5em;
+    text-indent: -0.5em;
+}
+*/
+
 .theme-switch-wrapper {
     display: flex;
     align-items: center;
@@ -105,8 +112,27 @@ input:checked + .slider:before {
     padding: 20px;
 }
 
+@media only screen and (max-width: 600px) {
 .panel {
-    background-color: white;
+    background-color: #ffffff;
+    border: none !important;
+    border-style: none !important;
+    padding: 0px !important;
+    border-width: 0px !important;
+    box-shadow: none !important;
+    word-wrap: break-word;
+  }
+}
+
+
+.panel {
+    background-color: #ffffff;
+    border: #eeeeee;
+    border-style: solid;
+    padding: 10px;
+    border-width: 2px;
+    box-shadow: 5px 10px #eee;
+    word-wrap: break-word;
 }
 
 .tool-icon {

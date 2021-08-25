@@ -218,7 +218,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             </div>
                         </div>
                     </div>
-                    <!-- Tag display  -->
+                     <!-- Tag display  -->
                     <div class="columns is-desktop is-centered">
                         <?php
                         $tags = $paste['tags'];
@@ -232,7 +232,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             <p><?= pp_html_escape($error) ?></p>
                         </div>
                     <?php elseif ($using_highlighter): ?>
-                        <div id="paste" style="line-height:1!important;">
+                        <div id="paste" style="line-height:18px !important;">
                             <div class="<?= pp_html_escape($paste['code']) ?>">
                                 <ol>
                                     <?php foreach ($lines as $num => $line):
@@ -245,7 +245,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             </div>
                         </div>
                     <?php else: ?>
-                        <div id="paste" style="line-height:1!important;"><?= $p_content  ?></div>
+                            <div id="paste" style="line-height:18px !important;"><?= $p_content  ?></div>
                     <?php endif; ?>
                 </div>
                 <!-- Guests -->
