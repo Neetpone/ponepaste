@@ -2,7 +2,6 @@
 header('Content-Type: application/json; charset=UTF-8');
 
 define('IN_PONEPASTE', 1);
-//require_once('../includes/config.php');
 require_once('../includes/common.php');
 require_once('../includes/NonRetardedSSP.class.php');
 

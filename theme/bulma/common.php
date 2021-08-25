@@ -5,19 +5,14 @@ if (!in_array($page_template . '.php', $template_candidates)) {
     die('Failed to find template');
 }
 
-//$page_content = ob_get_clean();
-$date = time();
-$statrttime = microtime();
-$time = explode(' ', $statrttime);
-$time = $time[1] + $time[0];
-$start = $time;
+$start = microtime(true);
 ?>
 
 <!DOCTYPE html>
 <html lang="<?php echo basename($default_lang, ".php"); ?>">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>
         <?php
@@ -43,6 +38,7 @@ $start = $time;
     <script src="//<?= $baseurl ?>/theme/bulma/js/datatables.min.js"></script>
     <script src="//<?= $baseurl ?>/theme/bulma/js/table-responsive.js"></script>
     <script src="//<?= $baseurl ?>/theme/bulma/js/table-reorder.js"></script>
+    <script src="//<?= $baseurl ?>/assets/<?= PP_DEBUG ? 'bundle.js' : 'bundle.min.js' ?>"></script>
 </head>
 
 <body>
@@ -209,8 +205,7 @@ $start = $time;
 								</span>
                         </div>
                     </div>
-                    <input class="button is-link is-fullwidth my-4" type="submit" name="signin" value="Login"
-                           value="<?php echo md5($date . $ip); ?>">
+                    <input class="button is-link is-fullwidth my-4" type="submit" name="signin" value="Login"/>
                     <div class="checkbox checkbox-primary">
                         <input id="rememberme" name="remember_me" type="checkbox" checked="">
                         <label for="rememberme">
@@ -321,24 +316,10 @@ $start = $time;
                 <div class="columns">
                     <div class="column">
                         <ul>
-                            <li> <?php
-                                $endtime = microtime();
-                                $time = explode(' ', $endtime);
-                                $time = $time[1] + $time[0];
-                                $finish = $time;
-                                $total_time = round(($finish - $start), 4);
-                                echo 'Page load: ' . $total_time . 's';
-                                ?>
-                            </li>
-                            <li>
-                                <?php echo 'Page Hits Today: ' . $total_page_views . ''; ?>
-                            </li>
-                            <li>
-                                <?php echo 'Unique Visitors Today: ' . $total_unique_views . ''; ?>
-                            </li>
-                            <li>
-                                <?php echo 'Total Pastes: ' . $total_pastes . ''; ?>
-                            </li>
+                            <li>Page load: <?= round((microtime(true) - $start), 4) ?>s</li>
+                            <li>Page Hits Today: <?= $total_page_views ?></li>
+                            <li>Unique Visitors Today: <?= $total_unique_views ?></li>
+                            <li>Total Pastes: <?= $total_pastes ?></li>
                         </ul>
                     </div>
                 </div>

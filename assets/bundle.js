@@ -19,7 +19,7 @@ class TagsInput {
     constructor(element, options = {}) {
         this.element = element;
         this.tags = [];
-        this.options = options
+        this.options = options;
 
         this.maxTags = options.maxTags || 10;
         this.inputNode = null;
@@ -94,7 +94,7 @@ class TagsInput {
         } else if (evt.key === ',') {
             this.addTag(tagValue);
 
-            this.inputNode.value = ''
+            this.inputNode.value = '';
             this.updateHiddenInputValue();
 
             evt.preventDefault();
@@ -109,4 +109,18 @@ class TagsInput {
     }
 }
 
-export { TagsInput };
+class Meme {
+    constructor() {
+        alert('xss');
+    }
+
+    meme() {
+        console.log('meme');
+    }
+}
+
+const meme = new Meme();
+
+meme.meme();
+
+new TagsInput(null);

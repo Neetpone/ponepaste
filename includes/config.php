@@ -1,18 +1,6 @@
 <?php
-/*
- * $ID Project: Paste 2.0 - J.Samuel
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License in LIC.txt for more details.
- */
-if (gethostname() === 'thunderlane') {
+define("PP_DEBUG", (gethostname() === 'thunderlane'));
+if (PP_DEBUG) {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
 }
@@ -32,7 +20,7 @@ $db_user = 'P0nedbAcc0unt';
 $db_pass = '1NWO6Tp17IFz9lbl';
 
 // I'm sorry, I didn't want to edit this file and check it in, but I may need to make other changes to it, so I did this
-if (gethostname() === 'thunderlane') {
+if (PP_DEBUG) {
     $db_host = 'localhost';
     $db_schema = 'ponepaste';
     $db_user = 'ponepaste';
