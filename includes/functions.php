@@ -64,6 +64,30 @@ function tagsToHtml(string|array $tags) : string {
     return $output;
 }
 
+function tagsToHtmlUser(string | array $tags, $profile_username) : string {
+    $output = "";
+    if (is_array($tags)) {
+        $tagsSplit = array_map(function($tag) { return $tag['name']; }, $tags);
+    } else {
+        $tagsSplit = explode(",", $tags);
+    }
+
+    foreach ($tagsSplit as $tag) {
+        if (stripos($tag, 'nsfw') !== false) {
+            $tag = strtoupper($tag);
+            $tagcolor = "tag is-danger";
+        } elseif (stripos($tag, 'SAFE') !== false) {
+            $tag = strtoupper($tag);
+            $tagcolor = "tag is-success";
+        } elseif (str_contains($tag, '/')) {
+            $tagcolor = "tag is-primary";
+        } else {
+            $tagcolor = "tag is-info";
+        }
+        $output .= '<a href="/user.php?user=' . $profile_username . '&q=' . urlencode($tag) . '"><span class="' . $tagcolor . '">' . pp_html_escape(ucfirst($tag)) . '</span></a>';
+    }
+    return $output;
+}
 
 function getevent($conn, $event_name, $count) {
     $query = $conn->prepare("SELECT id, visible, title, date, now_time, views, member FROM pastes WHERE visible='1' AND tagsys LIKE '%?%' 

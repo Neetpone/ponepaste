@@ -212,7 +212,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                } else {
                                                    echo 'paste.php?embed&id=';
                                                }
-                                               echo $paste_id . '"></script>'; ?>' readonly/>
+                                               echo $paste_id . '"></script>'; ?>' readonly />
                                     </div>
                                 </div>
                             </div>
@@ -232,7 +232,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             <p><?= pp_html_escape($error) ?></p>
                         </div>
                     <?php elseif ($using_highlighter): ?>
-                        <div id="paste" style="line-height:1!important;">
+                        <div id="paste" style="line-height:18px !important;">
                             <div class="<?= pp_html_escape($paste['code']) ?>">
                                 <ol>
                                     <?php foreach ($lines as $num => $line):
@@ -245,7 +245,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             </div>
                         </div>
                     <?php else: ?>
-                        <div id="paste" style="line-height:1!important;"><?= $p_content ?></div>
+                            <div id="paste" style="line-height:18px !important;"><?= $p_content  ?></div>
                     <?php endif; ?>
                 </div>
                 <!-- Guests -->
@@ -295,7 +295,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     <p class="control has-icons-left">
                                         <input type="text" class="input" name="title"
                                                placeholder="<?= $paste['title'] ?>"
-                                               value="<?= $paste['title'] ?>"/>
+                                               value="<?= $paste['title'] ?>" />
                                         <span class="icon is-small is-left">
 															<i class="fa fa-font"></i>
 														</span>
@@ -412,7 +412,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 <div class="columns">
                                     <div class="column">
                                         <input type="text" class="input" name="pass" id="pass" value=""
-                                               placeholder="<?php echo $lang['pwopt']; ?>"/>
+                                               placeholder="<?php echo $lang['pwopt']; ?>" />
                                     </div>
                                 </div>
                             </div>

@@ -4,6 +4,7 @@
             rowReorder: {selector: 'td:nth-child(2)'},
             responsive: true,
             pageLength: 50,
+            order: [[ 1, "desc" ]],
             autoWidth: false,
             initComplete: function () {
                 var search = new URLSearchParams(window.location.search);
@@ -19,23 +20,24 @@
 </script>
 <?php if ($current_user) { ?>
     <script>
-        $(document).ready(function () {
-            $("#favs").dataTable({
-                rowReorder: {selector: 'td:nth-child(2)'},
-                responsive: true,
-                pageLength: 50,
-                autoWidth: false,
-                initComplete: function () {
-                    var search = new URLSearchParams(window.location.search);
-                    var query = search.get('q');
-                    if (query) {
-                        $("#archive_filter input")
-                            .val(query)
-                            .trigger("input");
-                    }
+    $(document).ready(function () {
+        $("#favs").dataTable({
+        rowReorder: { selector: 'td:nth-child(2)'},
+        responsive: true,
+            order: [[ 2, "desc" ]],
+            pageLength: 50,
+            autoWidth: false,
+            initComplete: function () {
+                var search = new URLSearchParams(window.location.search);
+                var query = search.get('q');
+                if (query) {
+                    $("#archive_filter input")
+                        .val(query)
+                        .trigger("input");
                 }
-            })
-        });
+            }
+        })
+    });
     </script>
 <?php } ?>
 <main class="bd-main">
@@ -203,9 +205,7 @@
                                                 </td>
                                                 <td class="td-left">';
                                     if (strlen($p_tags) > 0) {
-                                        foreach ($tagArray as $tags) {
-                                            echo '<a href="' . $protocol . $baseurl . '/user.php?user=' . $profile_username . '&q=' . $tags . '"><span class="tag is-info">' . trim($tags) . '</span></a>';
-                                        }
+                                    echo tagsToHtmlUser($p_tags,$profile_username);
                                     } else {
                                         echo ' <span class="tag is-warning">No tags</span>';
                                     }
@@ -291,13 +291,11 @@
                                                 
                                                 </td>
                                                 <td class="td-left">';
-                            if (strlen($f_tags) > 0) {
-                                foreach ($tagArray2 as $tags) {
-                                    echo '<a href="' . $protocol . $baseurl . '/user.php?user=' . $profile_username . '&q=' . $tags . '"><span class="tag is-info">' . trim($tags) . '</span></a>';
-                                }
-                            } else {
-                                echo ' <span class="tag is-warning">No tags</span>';
-                            }
+                                    if (strlen($f_tags) > 0) {
+                                    echo tagsToHtmlUser($f_tags,$profile_username);
+                                    } else {
+                                        echo ' <span class="tag is-warning">No tags</span>';
+                                    }
 
 
                             echo '</td> 
