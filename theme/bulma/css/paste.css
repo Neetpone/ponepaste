@@ -17,12 +17,15 @@
     color: #bfbfbf;
 }
 
-/* For future use
-.li1 {
-    padding-left: 0.5em;
-    text-indent: -0.5em;
+.li1:target{
+    transition:background-color 1s ease-in;
+    -webkit-transition:background-color 1s ease-in;
+    -moz-transition:background-color 1s ease-in;
+    background-color: rgba(50, 152, 220, 0.3);
+    scroll-margin-top: 100px;
+    color: white !important;
 }
-*/
+
 
 .theme-switch-wrapper {
     display: flex;
