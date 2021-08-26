@@ -33,23 +33,23 @@
                 </article>
                 <?php if ($site_is_private) { // Site permissions
                     ?>
-                    <h1 class="title is-5"><?php echo $lang['siteprivate']; ?></h1>
+                    <h1 class="title is-5">This pastebin is private.</h1>
                 <?php } else { ?>
-                <h1 class="title is-4"><?php echo $lang['archives']; ?></h1>
+                <h1 class="title is-4">Pastes Archive</h1>
                 <table id="archive" class="table is-fullwidth is-hoverable">
                     <thead>
-                    <tr>
-                        <th><?php echo $lang['pastetitle']; ?></th>
-                        <th><?php echo $lang['author']; ?></th>
-                        <th><?php echo $lang['tags']; ?></th>
-                    </tr>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Tags</th>
+                        </tr>
                     </thead>
                     <tfoot>
-                    <tr>
-                        <th><?php echo $lang['pastetitle']; ?></th>
-                        <th><?php echo $lang['author']; ?></th>
-                        <th><?php echo $lang['tags']; ?></th>
-                    </tr>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Tags</th>
+                        </tr>
                     </tfoot>
                     <tbody>
                     </tbody>

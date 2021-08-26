@@ -39,7 +39,7 @@ $is_private = false;
 
 if ($row === null) {
     header('HTTP/1.1 404 Not Found');
-    $notfound = $lang['notfound']; // "Not found";
+    $notfound = 'Not found';
     goto Not_Valid_Paste;
 }
 
@@ -70,7 +70,7 @@ $p_encrypt = (bool) $row['encrypt'];
 $is_private = $row['visible'] === '2';
 
 if ($is_private && (!$current_user || $current_user->user_id !== $paste_owner_id)) {
-    $notfound = $lang['privatepaste']; //" This is a private paste. If you created this paste, please login to view it.";
+    $notfound = 'This is a private paste. If you created this paste, please log in to view it.';
     goto Not_Valid_Paste;
 }
 
@@ -88,11 +88,11 @@ if ($password_required) {
 
     if (empty($password_candidate)) {
         $password_valid = false;
-        $error = $lang['pwdprotected']; // 'Password protected paste';
+        $error = 'This paste is password protected.';
         goto Not_Valid_Paste;
     } elseif (!pp_password_verify($password_candidate, $p_password)) {
         $password_valid = false;
-        $error = $lang['wrongpassword']; // 'Wrong password';
+        $error = 'The provided password is incorrect.';
         goto Not_Valid_Paste;
     }
 }
@@ -101,7 +101,7 @@ if (!empty($p_expiry) && $p_expiry !== 'SELF') {
     $input_time = $p_expiry;
     $current_time = mktime(date("H"), date("i"), date("s"), date("n"), date("j"), date("Y"));
     if ($input_time < $current_time) {
-        $notfound = $lang['expired'];
+        $notfound = 'This paste has expired.';
         goto Not_Valid_Paste;
     }
 }

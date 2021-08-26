@@ -296,7 +296,7 @@ function embedView($paste_id, $p_title, $content, $p_code, $title, $baseurl, $la
         $output .= "</style>";
         $output .= $content; // Paste content
         $output .= "<div class='paste_embed_footer'>";
-        $output .= "<a href='https://ponepaste.org/$paste_id'>$p_title</a> " . $lang['embed-hosted-by'] . " <a href='https://ponepaste.org'>$title</a> | <a href='https://ponepaste.org/raw/$paste_id'>" . strtolower($lang['view-raw']) . "</a>";
+        $output .= "<a href='https://ponepaste.org/$paste_id'>$p_title</a> Hosted by <a href='https://ponepaste.org'>$title</a> | <a href='https://ponepaste.org/raw/$paste_id'>view raw</a>";
         $output .= "</div>";
         $output .= "</div>";
 

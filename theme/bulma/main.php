@@ -129,7 +129,7 @@
                 }
                 ?>
                 <h1 class="subtitle is-4">
-                    <?php echo $lang['newpaste']; ?>
+                    New Paste
                 </h1>
                 <form name="mainForm" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
                     <nav class="level">
@@ -138,7 +138,7 @@
                             <div class="level-item is-pulled-left" style="margin-right: 5px;">
                                 <p class="control has-icons-left">
                                     <input type="text" class="input" name="title" onchange="getFileName()"
-                                           placeholder="<?php echo $lang['pastetitle']; ?>"
+                                           placeholder="Title"
                                            value="<?php echo (isset($_POST['title'])) ? pp_html_escape($_POST['title']) : ''; ?>">
                                     <span class="icon is-small is-left">
 											<i class="fa fa-font"></i>
@@ -203,7 +203,7 @@
                                         <div class="level-item is-pulled-left mr-1">
                                             <div class="field">
                                                 <div class="subtitle has-text-weight-semibold "
-                                                     style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;"><?php echo $lang['expiration']; ?></div>
+                                                     style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;">Expiry</div>
                                                 <div class="control">
                                                     <div class="select">
                                                         <?php
@@ -229,7 +229,7 @@
                                         <div class="level-item is-pulled-left mx-1">
                                             <div class="field">
                                                 <div class="subtitle has-text-weight-semibold "
-                                                     style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;"><?php echo $lang['visibility']; ?>
+                                                     style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;">Visibility
                                                     &nbsp;&nbsp;
                                                 </div>
                                                 <div class="control">
@@ -269,7 +269,7 @@
                                         <div class="columns">
                                             <div class="column">
                                                 <input type="text" class="input" name="pass" id="pass"
-                                                       placeholder="<?php echo $lang['pwopt']; ?>"
+                                                       placeholder="Password"
                                                        value="<?php echo (isset($_POST['pass'])) ? pp_html_escape($_POST['pass']) : ''; ?>"/>
                                             </div>
                                         </div>
@@ -295,7 +295,7 @@
                                             <input class="is-checkradio is-info has-background-color" id="encrypt"
                                                    name="encrypted" type="checkbox" <?php echo $encrypted_checked; ?>>
                                             <label for="encrypt">
-                                                <?php echo $lang['encrypt']; ?>
+                                                Encrypt on Server
                                             </label>
                                         </div>
                                     </div>
@@ -317,7 +317,7 @@
                                         <div class="notification">
                                             <span class="tags are-large"><?php echo '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA" class="imagever">'; ?></span>
                                             <input type="text" class="input" name="scode" value=""
-                                                   placeholder="<?php echo $lang['entercode']; ?>">
+                                                   placeholder="Enter the CAPTCHA">
                                             <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press
                                                 "Enter"</p>
                                         </div>

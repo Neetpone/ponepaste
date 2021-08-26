@@ -47,7 +47,7 @@
                             <div class="panel panel-default" style="padding-bottom: 100px;">
                                 <div class="error-pages">
                                     <i class="fa fa-lock fa-5x" aria-hidden="true"></i>
-                                    <h1><?php echo $lang['siteprivate']; ?></h1>
+                                    <h1>This pastebin is private.</h1>
                                 </div>
                             </div>
                         </div>

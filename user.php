@@ -21,7 +21,7 @@ if (!$profile_info) {
     die();
 }
 
-$p_title = $profile_username . $lang['user_public_pastes']; // "Username's Public Pastes"
+$p_title = $profile_username . "'s Public Pastes";
 
 // Favorite Counts
 $query = $conn->prepare(
@@ -84,14 +84,14 @@ if (isset($_GET['del'])) {
         $result = $query->fetch();
 
         if (empty($result) || $result['user_id'] !== $current_user->user_id) {
-            $error = $lang['delete_error_invalid']; // Does not exist or not paste owner
+            $error = 'That paste does not exist, or you are not the owner of it.';
         } else {
             $query = $conn->prepare('DELETE FROM pastes WHERE id = ?');
             $query->execute([$paste_id]);
-            $success = $lang['pastedeleted']; // "Paste deleted successfully."
+            $success = 'Paste deleted successfully.';
         }
     } else {
-        $error = $lang['not_logged_in']; // Must be logged in to do that
+        $error = 'You must be logged in to do that.';
     }
 }
 

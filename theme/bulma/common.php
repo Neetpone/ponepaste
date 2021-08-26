@@ -9,7 +9,7 @@ $start = microtime(true);
 ?>
 
 <!DOCTYPE html>
-<html lang="<?php echo basename($default_lang, ".php"); ?>">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -18,8 +18,8 @@ $start = microtime(true);
         <?php
         $title = $global_site_info['title'];
 
-        if (isset($paste_title)) {
-            $title = $paste_title . ' - ' . $title;
+        if (isset($page_title)) {
+            $title = $page_title . ' - ' . $title;
         }
 
         echo pp_html_escape($title);
@@ -186,20 +186,20 @@ $start = microtime(true);
             <section class="modal-card-body">
                 <form method="POST" action="../login.php">
                     <div class="field">
-                        <label class="label"><?php echo $lang['username']; ?></label>
+                        <label class="label">Username</label>
                         <div class="control has-icons-left has-icons-right">
                             <input type="text" class="input" name="username" autocomplete="on"
-                                   placeholder="<?php echo $lang['username']; ?>">
+                                   placeholder="Username">
                             <span class="icon is-small is-left">
 									<i class="fas fa-user"></i>
 								</span>
                         </div>
                     </div>
                     <div class="field">
-                        <label class="label"><?php echo $lang['curpwd']; ?></label>
+                        <label class="label">Password</label>
                         <div class="control has-icons-left has-icons-right">
                             <input type="password" class="input" name="password" autocomplete="on"
-                                   placeholder="<?php echo $lang['curpwd']; ?>">
+                                   placeholder="Password">
                             <span class="icon is-small is-left">
 									<i class="fas fa-key"></i>
 								</span>
@@ -209,7 +209,7 @@ $start = microtime(true);
                     <div class="checkbox checkbox-primary">
                         <input id="rememberme" name="remember_me" type="checkbox" checked="">
                         <label for="rememberme">
-                            <?php echo $lang['rememberme']; ?>
+                            Remember Me
                         </label>
                     </div>
                 </form>
@@ -222,20 +222,20 @@ $start = microtime(true);
             <section class="modal-card-body">
                 <form method="POST" action="../login.php?register">
                     <div class="field">
-                        <label class="label"><?= $lang['username']; ?></label>
+                        <label class="label">Username</label>
                         <div class="control has-icons-left has-icons-right">
                             <input type="text" class="input" name="username"
-                                   placeholder="<?= $lang['username']; ?>">
+                                   placeholder="Username">
                             <span class="icon is-small is-left">
 									<i class="fas fa-user"></i>
 								</span>
                         </div>
                     </div>
                     <div class="field">
-                        <label class="label"><?= $lang['newpwd']; ?></label>
+                        <label class="label">Password</label>
                         <div class="control has-icons-left has-icons-right">
                             <input type="password" class="input" name="password"
-                                   placeholder="<?= $lang['newpwd']; ?>">
+                                   placeholder="Password">
                             <span class="icon is-small is-left">
 									<i class="fas fa-key"></i>
 								</span>
@@ -252,7 +252,7 @@ $start = microtime(true);
                             <div class="notification">
                                 <span class="tags are-large"><?= '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA" class="imagever">'; ?></span>
                                 <input type="text" class="input" name="scode" value=""
-                                       placeholder="<?= $lang['entercode']; ?>">
+                                       placeholder="Enter the CAPTCHA">
                                 <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press
                                     "Enter"</p>
                             </div>

@@ -131,10 +131,8 @@ $ga = Trim($row['google_analytics']);
 $additional_scripts = Trim($row['additional_scripts']);
 
 
-// Setup theme and language
-$lang_and_theme = $site_info['interface'];
-$default_lang = $lang_and_theme['language'];
-$default_theme = $lang_and_theme['theme'];
+// Setup theme
+$default_theme = 'bulma';
 
 // Site permissions
 $site_permissions = $site_info['permissions'];
@@ -151,16 +149,10 @@ if ($site_permissions) {
 $captcha_config = $site_info['captcha'];
 $captcha_enabled = (bool) $captcha_config['enabled'];
 
-// Prevent a potential LFI (you never know :p)
-$lang_file = "${default_lang}.php";
-if (in_array($lang_file, scandir(__DIR__ . '/langs/'))) {
-    require_once(__DIR__ . "/langs/${lang_file}");
-}
-
 // Check if IP is banned
 $ip = $_SERVER['REMOTE_ADDR'];
 if ($conn->query('SELECT 1 FROM ban_user WHERE ip = ?', [$ip])->fetch()) {
-    die($lang['banned']); // "You have been banned from " . $site_name;
+    die('You have been banned.');
 }
 
 $site_ads = getSiteAds($conn);

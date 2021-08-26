@@ -8,7 +8,7 @@
                         if (isset($stats)) {
                             echo $page_content;
                         } else {
-                            echo '<p class="help is-danger subtitle is-6">' . $lang['notfound'] . '</p>';
+                            echo '<p class="help is-danger subtitle is-6">Not Found</p>';
                         }
 
                         if (isset($site_ads)) {

@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 import { getBabelOutputPlugin } from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 

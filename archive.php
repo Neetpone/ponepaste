@@ -9,9 +9,7 @@ $total_untagged = intval($conn->query("SELECT COUNT(*) from pastes WHERE tagsys 
 
 updatePageViews($conn);
 
-
-$p_title = $lang['archive']; // "Pastes Archive";
-
 // Theme
 $page_template = 'archive';
+$page_title = 'Pastes Archive';
 require_once('theme/' . $default_theme . '/common.php');

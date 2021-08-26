@@ -4,8 +4,6 @@ require_once('includes/common.php');
 require_once('includes/functions.php');
 require_once('includes/passwords.php');
 
-$p_title = $lang['myprofile']; //"My Profile";
-
 // Check if already logged in
 if ($current_user === null) {
     header("Location: ./login.php");
@@ -32,12 +30,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $conn->prepare('UPDATE users SET password = ? WHERE id = ?')
                 ->execute([$user_new_cpass, $user_id]);
 
-            $success = $lang['profileupdated']; //"  Your profile information is updated ";
+            $success = 'Your profile has been updated.';
         } else {
-            $error = $lang['oldpasswrong']; // "  Your old password is wrong.";
+            $error = 'Your old password is incorrect.';
         }
     } else {
-        $error = $lang['error']; //"Something went wrong.";
+        $error = 'All fields must be filled out.';
     }
 }
 
@@ -47,5 +45,6 @@ $total_user_pastes = getTotalPastes($conn, $current_user->user_id);
 
 // Theme
 $page_template = 'profile';
+$page_title = 'My Profile';
 require_once('theme/' . $default_theme . '/common.php');
 

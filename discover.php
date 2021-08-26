@@ -82,7 +82,7 @@ $updated_pastes = array_map('transformPasteRow', getRecentUpdatesPastes($conn, 1
 $random_pastes = array_map('transformPasteRow', getRandomPastes($conn, 10));
 
 // Theme
-$p_title = $lang['archive']; // "Pastes Archive";
 $page_template = 'discover';
+$page_title = 'Discover';
 require_once('theme/' . $default_theme . '/common.php');
 

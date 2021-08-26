@@ -7,14 +7,13 @@ require_once('includes/Tag.class.php');
 
 function verifyCaptcha() : string|bool {
     global $captcha_config;
-    global $lang;
     global $current_user;
 
     if ($captcha_config['enabled'] && !$current_user) {
-        $scode = strtolower(htmlentities(Trim($_POST['scode'])));
+        $scode = strtolower(trim($_POST['scode']));
         $cap_code = strtolower($_SESSION['captcha']['code']);
         if ($cap_code !== $scode) {
-            return $lang['image_wrong']; // Wrong captcha.
+            return 'Wrong CAPTCHA.';
         }
     }
 
@@ -43,18 +42,17 @@ function calculatePasteExpiry(string $expiry) {
 }
 
 function validatePasteFields() : string|null {
-    global $lang;
 
     if (empty($_POST["paste_data"]) || trim($_POST['paste_data'] === '')) { /* Empty paste input */
-        return $lang['empty_paste'];
+        return 'You cannot post an empty paste.';
     } elseif (!isset($_POST['title'])) { /* No paste title POSTed */
-        return $lang['error'];
+        return 'All fields must be filled out.';
     } elseif (empty($_POST["tag_input"])) { /* No tags provided */
-        return $lang['notags'];
+        return 'No tags were provided.';
     } elseif (strlen($_POST["title"]) > 70) { /* Paste title too long */
-        return $lang['titlelen'];
+        return 'Paste title is too long.';
     } elseif (mb_strlen($_POST["paste_data"], '8bit') > PP_PASTE_LIMIT_BYTES) { /* Paste size too big */
-        return $lang['large_paste'];
+        return 'Your paste is too large. The maximum size is ' . PP_PASTE_LIMIT_BYTES . ' bytes.';
     }
 
     return null;
@@ -137,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             Tag::replacePasteTags($conn, $paste_id, Tag::parseTagInput($tag_input));
         } else {
-            $error = $lang['loginwarning']; //"You must be logged in to do that."
+            $error = 'You must be logged in to do that.';
         }
     } else {
         $paste_owner = $current_user ? $current_user->user_id : 1; /* 1 is the guest user's user ID */

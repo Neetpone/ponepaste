@@ -279,14 +279,14 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
 
                     // Display a message if the pastebin is empty
                     if ($totalpastes === 0) {
-                        echo $lang['emptypastebin'];
+                        echo 'There are no pastes to show.';
                     } ?>
                     </p>
 
                 <?php } else { ?>
                     <!-- Paste Panel -->
                     <hr>
-                    <h1 class="title is-6 mx-1"><?php echo $lang['modpaste']; ?></h1>
+                    <h1 class="title is-6 mx-1">Edit Paste</h1>
                     <form class="form-horizontal" name="mainForm" action="index.php" method="POST">
                         <nav class="level">
                             <div class="level-left">
@@ -294,11 +294,11 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 <div class="level-item is-pulled-left mx-1">
                                     <p class="control has-icons-left">
                                         <input type="text" class="input" name="title"
-                                               placeholder="<?= $paste['title'] ?>"
-                                               value="<?= $paste['title'] ?>" />
+                                               placeholder="<?= pp_html_escape($paste['title']) ?>"
+                                               value="<?= pp_html_escape($paste['title']) ?>" />
                                         <span class="icon is-small is-left">
-															<i class="fa fa-font"></i>
-														</span>
+                                            <i class="fa fa-font"></i>
+                                        </span>
                                     </p>
                                 </div>
                                 <!-- Format -->
@@ -358,7 +358,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 <div class="level-item is-pulled-left mr-1">
                                     <div class="field">
                                         <div class="subtitle has-text-weight-semibold "
-                                             style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;"><?php echo $lang['expiration']; ?></div>
+                                             style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;">Expiry</div>
                                         <div class="control">
                                             <!-- Expiry -->
                                             <div class="select">
@@ -379,7 +379,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 <div class="level-item is-pulled-left mx-1">
                                     <div class="field">
                                         <div class="subtitle has-text-weight-semibold "
-                                             style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;"><?php echo $lang['visibility']; ?>
+                                             style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;">Visibility
                                             &nbsp;&nbsp;
                                         </div>
                                         <div class="control">
@@ -412,7 +412,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 <div class="columns">
                                     <div class="column">
                                         <input type="text" class="input" name="pass" id="pass" value=""
-                                               placeholder="<?php echo $lang['pwopt']; ?>" />
+                                               placeholder="Password" />
                                     </div>
                                 </div>
                             </div>
@@ -437,13 +437,13 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     <input class="is-checkradio is-info" id="encrypt" name="encrypted"
                                            type="checkbox" <?php echo $encrypted_checked; ?>>
                                     <label for="encrypt">
-                                        <?php echo $lang['encrypt']; ?>
+                                        Encrypt on Server
                                     </label>
                                     <?php
                                     if ($current_user->user_id == $paste['user_id']) {
                                         ?>
                                         <input class="button is-info" type="submit" name="edit" id="edit"
-                                               value="<?php echo $lang['editpaste']; ?>"/>
+                                               value="Edit"/>
                                         <?php
                                     } ?>
                                 </div>

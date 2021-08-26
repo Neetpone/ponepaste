@@ -15,9 +15,6 @@ if ($current_user !== null) {
     die();
 }
 
-// Page title
-$p_title = $lang['login/register']; // "Login/Register";
-
 updatePageViews($conn);
 
 if (isset($_POST['forgot'])) {
@@ -40,10 +37,10 @@ if (isset($_POST['forgot'])) {
 
             $success = 'Your password has been changed. A new recovery code has also been generated. Please note the recovery code and then sign in with the new password.';
         } else {
-            $error = $lang['incorrect'];
+            $error = 'Incorrect username or password.';
         }
     } else {
-        $error = $lang['missingfields']; // "All fields must be filled out";
+        $error = 'All fields must be filled out.';
     }
 } elseif (isset($_POST['signin'])) { // Login process
     if (!empty($_POST['username']) && !empty($_POST['password'])) {
@@ -69,7 +66,7 @@ if (isset($_POST['forgot'])) {
 
             if ($row['banned']) {
                 // User is banned
-                $error = $lang['banned'];
+                $error = 'You are banned.';
             } else {
                 // Login successful
                 $_SESSION['user_id'] = (string) $user_id;
@@ -93,25 +90,24 @@ if (isset($_POST['forgot'])) {
             }
         } else {
             // Username not found or password incorrect.
-            $error = $lang['incorrect'];
+            $error = 'Incorrect username or password.';
         }
     } else {
-        $error = $lang['missingfields']; // "All fields must be filled out.";
+        $error = 'All fields must be filled out.';
     }
 } elseif (isset($_POST['signup'])) { // Registration process
     $username = htmlentities(trim($_POST['username'], ENT_QUOTES));
     $password = pp_password_hash($_POST['password']);
-    $chara_max = 25;   //characters for max input
 
     if (empty($_POST['password']) || empty($_POST['username'])) {
-        $error = $lang['missingfields']; // "All fields must be filled out";
-    } elseif (strlen($username) > $chara_max) {
-        $error = $lang['maxnamelimit']; // "Username already taken.";
+        $error = 'All fields must be filled out.';
+    } elseif (strlen($username) > 25) {
+        $error = 'Username too long.'; // "Username already taken.";
     } elseif (preg_match('/[^A-Za-z0-9._\\-$]/', $username)) {
-        $error = $lang['usrinvalid']; // "Username not valid. Usernames can't contain special characters.";
+        $error = 'Username is invalid - please use A-Za-z0-9, periods, hyphens, and underscores only.';
     } else {
         if ($conn->querySelectOne('SELECT 1 FROM users WHERE username = ?', [$username])) {
-            $error = $lang['userexists']; // "Username already taken.";
+            $error = 'That username has already been taken.';
         } else {
             $recovery_code = pp_random_token();
             $recovery_code_hash = pp_password_hash($recovery_code);
@@ -120,12 +116,13 @@ if (isset($_POST['forgot'])) {
                 [$username, $password, $recovery_code_hash, $date, $ip]
             );
 
-            $success = $lang['registered']; // "Your account was successfully registered.";
+            $success = 'Your account was successfully registered.';
         }
     }
 }
 // Theme
 $page_template = 'login';
+$page_title = 'Login / Register';
 require_once('theme/' . $default_theme . '/common.php');
 
 

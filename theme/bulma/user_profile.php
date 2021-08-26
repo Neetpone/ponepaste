@@ -45,8 +45,8 @@
     <div class="bd-main-container container">
         <div class="bd-duo">
             <div class="bd-lead">
-                <h1 class="title is-5"><?php echo $profile_username . $lang['user_public_pastes']; ?></h1>
-                <h1 class="subtitle is-6"><?php echo $lang['membersince'] . $profile_join_date; ?></h1>
+                <h1 class="title is-5"><?= $profile_username ?>'s Pastes</h1>
+                <h1 class="subtitle is-6">joined: <?= $profile_join_date; ?></h1>
                 <!-- Badges system -->
                 <div class="box">
                     <h2 class="title is-5">Badges</h2>
@@ -111,55 +111,53 @@
                 }
                 ?>
 
-                <?php
-                if ($current_user && $current_user->username === $profile_username) {
-                    ?>
-                    <?php echo $lang['profile-stats']; ?><br/>
-                    <?php echo $lang['totalpastes'] . ' ' . $profile_total_pastes; ?> &mdash;
-                    <?php echo $lang['profile-total-pub'] . ' ' . $profile_total_public; ?> &mdash;
-                    <?php echo $lang['profile-total-unl'] . ' ' . $profile_total_unlisted; ?> &mdash;
-                    <?php echo $lang['profile-total-pri'] . ' ' . $profile_total_private; ?> &mdash;
-                    <?php echo $lang['profile-total-views'] . ' ' . $profile_total_paste_views; ?>
-                    <br>
-                    <?php echo $lang['pastfavs-total'] . ' ' . $total_pfav; ?> &mdash;
-                    <?php echo $lang['yourfavs-total'] . ' ' . $total_yfav; ?><br>
-                    <br>
+                <?php if ($current_user && $current_user->username === $profile_username): ?>
+                    Some of your statistics:
+                    <br />
+                    Total pastes: <?= $profile_total_pastes ?> &mdash;
+                    Total public pastes: <?= $profile_total_public ?> &mdash;
+                    Total unlisted pastes: <?= $profile_total_unlisted ?> &mdash;
+                    Total private pastes: <?= $profile_total_private ?> &mdash;
+                    Total views of all your pastes: <?= $profile_total_paste_views ?>
+                    <br />
+                    Total favourites of all your pastes: <?= $total_pfav ?> &mdash;
+                    Total favorites you have given: <?= $total_yfav ?>
+                    <br />
+                    <br />
                     <div class="tabs">
                         <ul class="tabs-menu">
                             <li class="is-active" data-target="first-tab"><a>My Pastes</a></li>
                             <li data-target="second-tab"><a>Favorites</a></li>
                         </ul>
                     </div>
-                    <?php
-                }
-                ?>
+                    <?php endif;?>
                 <div class="tab-content" id="first-tab">
                     <table id="archive" class="table is-fullwidth is-hoverable">
                         <thead>
                         <tr>
-                            <td class="td-right"><?php echo $lang['pastetitle']; ?></td>
-                            <td class="td-center"><?php echo $lang['pastetime']; ?></td>
+                            <td class="td-right">Title</td>
+                            <td class="td-center">Paste Time</td>
                             <?php if ($is_current_user) {
-                                echo "<td class='td-center'>" . $lang['visibility'] . "</td>";
+                                echo "<td class='td-center'>Visibility</td>";
                             } ?>
-                            <td class="td-center"><?php echo $lang['pasteviews']; ?></td>
-                            <td class="td-center"><?php echo $lang['tags']; ?></td>
+                            <td class="td-center">Views</td>
+                            <td class="td-center">Tags</td>
                             <?php if ($is_current_user) {
-                                echo "<td class='td-center'>" . $lang['delete'] . "</td>";
+                                echo "<td class='td-center'>Delete</td>";
                             } ?>
                         </tr>
                         </thead>
                         <tfoot>
                         <tr>
-                            <td class="td-center"><?php echo $lang['pastetitle']; ?></td>
-                            <td class="td-center"><?php echo $lang['pastedate']; ?></td>
+                            <td class="td-center">Title</td>
+                            <td class="td-center">Paste Time</td>
                             <?php if ($is_current_user) {
-                                echo "<td class='td-center'>" . $lang['visibility'] . "</td>";
+                                echo "<td class='td-center'>Visibility</td>";
                             } ?>
-                            <td class="td-center"><?php echo $lang['pasteviews']; ?></td>
-                            <td class="td-center"><?php echo $lang['tags']; ?></td>
+                            <td class="td-center">Views</td>
+                            <td class="td-center">Tags</td>
                             <?php if ($is_current_user) {
-                                echo "<td class='td-center'>" . $lang['delete'] . "</td>";
+                                echo "<td class='td-center'>Delete</td>";
                             } ?>
                         </tr>
                         </tfoot>
@@ -180,9 +178,9 @@
 
 
                             $p_visible = match ($p_visible) {
-                                0 => $lang['public'],
-                                1 => $lang['unlisted'],
-                                2 => $lang['private']
+                                0 => 'Public',
+                                1 => 'Unlisted',
+                                2 => 'Private'
                             };
                             $p_link = urlForPaste($p_id);
                             $p_delete_message = "'Are you sure you want to delete this paste?'";
@@ -246,12 +244,12 @@
                     <table id="favs" class="table is-fullwidth is-hoverable">
                         <thead>
                         <tr>
-                            <td class="td-right"><?php echo $lang['pastetitle']; ?></td>
-                            <td class="td-center"><?php echo $lang['datefav']; ?></td>
-                            <td class="td-center"><?php echo $lang['pastestatus']; ?></td>
-                            <td class="td-center"><?php echo $lang['tags']; ?></td>
+                            <td class="td-right">Title</td>
+                            <td class="td-center">Date Favourited</td>
+                            <td class="td-center">Status</td>
+                            <td class="td-center">Tags</td>
                             <?php //if (isset($_SESSION) && $_SESSION['username'] == $profile_username) {
-                            //echo "<td>" . $lang['delete'] . "</td>";
+                            //echo "<td>Delete</td>";
                             //} ?>
                         </tr>
                         </thead>

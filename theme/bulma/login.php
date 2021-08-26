@@ -52,13 +52,12 @@
                                         <input class="is-checkradio is-info" id="rememberme" name="remember_me"
                                                type="checkbox" checked="">
                                         <label for="rememberme">
-                                            <?php echo $lang['rememberme']; ?>
+                                            Remember Me
                                         </label>
                                     </div>
                                 </div>
                                 <div class="field">
-                                    <input class="button is-info" type="submit" name="signin" value="Login"
-                                           value="<?php echo md5($date . $ip); ?>">
+                                    <input class="button is-info" type="submit" name="signin" value="Login" />
                                 </div>
                                 <hr>
                             </div>
@@ -109,14 +108,13 @@
                                     <div class="notification">
                                         <span class="tags are-large"><?php echo '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA" class="imagever">'; ?></span>
                                         <input type="text" class="input" name="scode" value=""
-                                               placeholder="<?php echo $lang['entercode']; ?>">
+                                               placeholder="Enter the CAPTCHA">
                                         <p class="is-size-6	has-text-grey-light has-text-left mt-2">and
                                             press"Enter"</p>
                                     </div>
                                 </div>
                                 <div class="field">
-                                    <input class="button is-info" type="submit" name="signup" value="Register"
-                                           value="<?php echo md5($date . $ip); ?>">
+                                    <input class="button is-info" type="submit" name="signup" value="Register" />
                                 </div>
                                 <hr>
                             </div>

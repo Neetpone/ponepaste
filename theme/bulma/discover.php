@@ -21,7 +21,7 @@
                         <!-- Pop Pastes -->
                         <div class="tab-content" id="first-tab">
                             <div class="panel panel-default">
-                                <h1 class="title is-4"><?php echo $lang['popular']; ?></h1>
+                                <h1 class="title is-4">Popular Pastes</h1>
                                 <div class="columns is-multiline">
                                     <?php foreach ($popular_pastes as $paste): ?>
                                         <div class="column is-half">
@@ -59,7 +59,7 @@
                         <!-- mPop Pastes -->
                         <div class="tab-content" id="second-tab">
                             <div class="panel panel-default">
-                                <h1 class="title is-4"><?php echo $lang['monthpopular']; ?></h1>
+                                <h1 class="title is-4">This month's popular pastes</h1>
                                 <div class="columns is-multiline">
                                     <?php foreach ($monthly_popular_pastes as $paste): ?>
                                         <div class="column is-half">
@@ -98,7 +98,7 @@
                         <!-- New Pastes -->
                         <div class="tab-content" id="third-tab">
                             <div class="panel panel-default">
-                                <h1 class="title is-4"><?php echo $lang['recentpastes']; ?></h1>
+                                <h1 class="title is-4">New Pastes</h1>
                                 <div class="columns is-multiline">
                                     <?php foreach ($recent_pastes as $paste): ?>
                                         <div class="column is-half">
@@ -137,7 +137,7 @@
                         <!-- Updated Pastes -->
                         <div class="tab-content" id="forth-tab">
                             <div class="panel panel-default">
-                                <h1 class="title is-4"><?php echo $lang['updatedgreen']; ?></h1>
+                                <h1 class="title is-4">Recently Updated Pastes</h1>
                                 <div class="columns is-multiline">
                                     <?php foreach ($updated_pastes as $paste): ?>
                                         <div class="column is-half">
@@ -176,7 +176,7 @@
                         <!-- Random Pastes -->
                         <div class="tab-content" id="fifth-tab">
                             <div class="panel panel-default">
-                                <h1 class="title is-4"><?php echo $lang['random']; ?></h1>
+                                <h1 class="title is-4">Random Pastes</h1>
                                 <div class="columns is-multiline">
                                     <?php foreach ($random_pastes as $paste): ?>
                                         <div class="column is-half">
