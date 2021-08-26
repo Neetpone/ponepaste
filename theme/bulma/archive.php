@@ -17,12 +17,19 @@
 <script>
     $(document).ready(function () {
         $("#archive").dataTable({
-            rowReorder: { selector: 'td:nth-child(2)'},
+            rowReorder: {selector: 'td:nth-child(2)'},
             responsive: true,
             processing: true,
-            language: {processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '},
+            language: {
+                processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><br><span>Loading...</span> ',
+                infoFiltered:   "(filtered from _MAX_ total pastes)",
+                info:           "Showing _START_ to _END_ of _TOTAL_ pastes",
+                search:         '<i class="fa fa-search"></i>',
+                lengthMenu:     "Show _MENU_ Pastes",
+                zeroRecords:    '<i class="fa fa-times fa-3x"></i><br><span>No Results</span>',
+                },
             autoWidth: false,
-            ajax: "api/ajax_pastes.php",
+            ajax: "../api/ajax_pastes.php",
             initComplete: function () {
                 var search = new URLSearchParams(window.location.search);
                 var query = search.get('q');
