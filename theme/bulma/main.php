@@ -1,16 +1,4 @@
 <link rel="stylesheet" href="theme/bulma/css/bulma-tagsinput.min.css"/>
-<script src="/js/tag_input.js"></script>
-<script>
-    function setupTagsInput() {
-        new TagsInput(document.getElementById('tags-with-source')).attach();
-    }
-
-    if (document.readyState !== 'loading') {
-        setupTagsInput();
-    } else {
-        document.addEventListener('DOMContentLoaded', setupTagsInput);
-    }
-</script>
 <main class="bd-main">
     <div class="bd-side-background"></div>
     <div class="bd-main-container container">
@@ -202,7 +190,7 @@
                                     <div class="field">
                                         <label class="label">Tags</label>
                                         <div class="control">
-                                            <input id="tags-with-source" name="tag_input" class="input"
+                                            <input name="tag_input" class="input js-tag-input"
                                                    value="<?php echo (isset($_POST['tag_input'])) ? pp_html_escape($_POST['tag_input']) : ''; // Pre-populate if we come here on an error" ?>">
                                         </div>
                                     </div>
@@ -213,7 +201,6 @@
 
 
                     <div class='row is-full'>
-
                         <div class="columns">
                             <div class="column is-5">
                                 <nav class="level">

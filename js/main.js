@@ -1,17 +1,14 @@
-import  { TagsInput } from './tag_input';
+import { $$ } from './dom';
+import { TagsInput } from "./tag_input";
 
-class Meme {
-    constructor() {
-        alert('xss');
-    }
+const setupSite = function() {
+    Array.prototype.forEach.call($$('.js-tag-input'), (el) => {
+        new TagsInput(el).attach();
+    });
+};
 
-    meme() {
-        console.log('meme');
-    }
+if (document.readyState !== 'loading') {
+    setupSite();
+} else {
+    document.addEventListener('DOMContentLoaded', setupSite);
 }
-
-const meme = new Meme();
-
-meme.meme();
-
-new TagsInput(null);

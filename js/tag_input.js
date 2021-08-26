@@ -1,19 +1,4 @@
-function htmlToElement(html) {
-    const template = document.createElement('template');
-
-    template.innerHTML = html.trim();
-
-    return template.content.firstChild;
-}
-
-function escapeHtml(unsafe) {
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
+import { makeEl, escape } from "./dom";
 
 class TagsInput {
     constructor(element, options = {}) {
@@ -29,11 +14,18 @@ class TagsInput {
     attach() {
         this.element.style.display = 'none';
 
-        this.containerNode = htmlToElement('<div class="tags-input"></div>');
-        this.inputNode = htmlToElement('<input class="input" type="text" placeholder="10 tags maximum" value="" />');
+        this.containerNode = makeEl('<div class="tags-input"></div>');
+        this.inputNode = makeEl('<input class="input" type="text" placeholder="10 tags maximum" value="" />');
         this.containerNode.appendChild(this.inputNode);
 
         this.element.parentNode.insertBefore(this.containerNode, this.element.nextSibling);
+
+        /* Load existing tags from input */
+        if (this.element.value) {
+            for (const tag of this.element.value.split(',')) {
+                this.addTag(tag);
+            }
+        }
 
         /* Handle addition and removal of tags via key-presses */
         this.containerNode.addEventListener('keydown', this._handleInputKeyUp.bind(this));
@@ -70,7 +62,7 @@ class TagsInput {
             this.tags.push(tagValue.toLowerCase());
 
             this.inputNode.parentNode.insertBefore(
-                htmlToElement('<span class="tag is-info" data-value="' + escapeHtml(tagValue) + '">' + escapeHtml(tagValue) + '<span class="delete is-small" /></span>'),
+                makeEl('<span class="tag is-info" data-value="' + escape(tagValue) + '">' + escape(tagValue) + '<span class="delete is-small" /></span>'),
                 this.inputNode
             );
 
