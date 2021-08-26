@@ -1,4 +1,28 @@
-.btn1 {
+greentext:before {
+  content:">";  
+  float: left;
+}
+redtext:before {
+  content:"<";  
+  float: left;
+}
+purpletext:before {
+  content:"@";  
+  float: left;
+}
+
+
+.content greentext {
+    color: #789922;
+    content: ">";
+}
+
+.content redtext {
+    color: #d12222;
+}
+
+.content purpletext {
+    color: #9f14ae;
 }
 
 html {
