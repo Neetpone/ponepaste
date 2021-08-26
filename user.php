@@ -40,9 +40,9 @@ $total_yfav = intval($query->fetch(PDO::FETCH_NUM)[0]);
 
 // Badges
 $profile_badge = match ($profile_info['badge']) {
-    1 => '<img src = "/img/badges/donate.png" title="[Donated] Donated to Ponepaste" style="margin:5px">',
-    2 => '<img src = "/img/badges/spoon.png" title="[TheWoodenSpoon] You had one job" style="margin:5px">',
-    3 => '<img src = "/img/badges/abadge.png" title="[>AFuckingBadge] Won a PasteJam Competition" style="margin:5px">',
+    1 => '<img src="/img/badges/donate.png" title="[Donated] Donated to Ponepaste" style="margin:5px" alt="Donated to PonePaste" />',
+    2 => '<img src="/img/badges/spoon.png" title="[TheWoodenSpoon] You had one job" style="margin:5px" alt="You had one job" />',
+    3 => '<img src="/img/badges/abadge.png" title="[>AFuckingBadge] Won a PasteJam Competition" style="margin:5px" alt="Won a PasteJam competition" />',
     default => '',
 };
 

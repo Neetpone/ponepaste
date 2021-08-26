@@ -10,6 +10,16 @@ require_once(__DIR__ . '/User.class.php');
 require_once(__DIR__ . '/ViewBag.class.php');
 
 /* View functions */
+function urlForPage($page = '') : string {
+    if (!PP_MOD_REWRITE) {
+        $page .= '.php';
+    }
+
+    return (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/' . $page;
+}
+
+
+
 function urlForPaste($paste_id) : string {
     if (PP_MOD_REWRITE) {
         return "/${paste_id}";

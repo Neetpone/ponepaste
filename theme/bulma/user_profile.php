@@ -147,20 +147,7 @@
                             } ?>
                         </tr>
                         </thead>
-                        <tfoot>
-                        <tr>
-                            <td class="td-center">Title</td>
-                            <td class="td-center">Paste Time</td>
-                            <?php if ($is_current_user) {
-                                echo "<td class='td-center'>Visibility</td>";
-                            } ?>
-                            <td class="td-center">Views</td>
-                            <td class="td-center">Tags</td>
-                            <?php if ($is_current_user) {
-                                echo "<td class='td-center'>Delete</td>";
-                            } ?>
-                        </tr>
-                        </tfoot>
+
                         <tbody>
                         <?php
                         foreach ($profile_pastes as $row) {
@@ -237,6 +224,20 @@
                         }
                         ?>
                         </tbody>
+                        <tfoot>
+                        <tr>
+                            <td class="td-center">Title</td>
+                            <td class="td-center">Paste Time</td>
+                            <?php if ($is_current_user) {
+                                echo "<td class='td-center'>Visibility</td>";
+                            } ?>
+                            <td class="td-center">Views</td>
+                            <td class="td-center">Tags</td>
+                            <?php if ($is_current_user) {
+                                echo "<td class='td-center'>Delete</td>";
+                            } ?>
+                        </tr>
+                        </tfoot>
                     </table>
                 </div>
                 <?php if ($is_current_user) { ?>

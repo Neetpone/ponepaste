@@ -7,7 +7,6 @@ if (!in_array($page_template . '.php', $template_candidates)) {
 
 $start = microtime(true);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,107 +60,71 @@ $start = microtime(true);
         <div id="navMenuDocumentation" class="navbar-menu">
             <div class="navbar-end">
                 <div class="navbar-item">
-                    <?php if ($current_user !== null) {
-                        if (!$site_is_private) {
-                            if (PP_MOD_REWRITE) {
-                                echo '  <a class="button navbar-item mx-2" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/">
-											<span class="icon has-text-info">
-												<i class="fa fa-clipboard" aria-hidden="true"></i>
-											</span><span>New Paste</span>
-                                            </a><a class="button navbar-item mx-2" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/archive">
-											<span class="icon has-text-info">
-												<i class="fa fa-book" aria-hidden="true"></i>
-											</span>
-											<span>Archive</span></a>
-                                            <a class="button navbar-item mx-2" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/discover">
-                                                <span class="icon has-text-info">
-                                                    <i class="fa fa-compass" aria-hidden="true"></i>
-                                                </span>
-                                            <span>Discover</span></a>
-                                            <a class="button navbar-item mx-2" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/event">
-                                                <span class="icon has-text-info">
-                                                    <i class="fa fa-calendar" aria-hidden="true"></i>
-                                                </span>
-                                            <span>Events</span></a>';
-                            } else {
-                                echo '
-											</span>
-											<span>Archive</span></a>
-                                            <a class="button navbar-item mx-2" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/archive">
-											<span class="icon has-text-info">
-												<i class="fa fa-book" aria-hidden="true"></i>
-											</span>
-											<span>Lightmode</span>
-										</a>
-                                        <a class="button navbar-item mx-2" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/discover">
-											<span class="icon has-text-info">
-												<i class="fa fa-book" aria-hidden="true"></i>
-											</span>
-											<span>Lightmode</span>
-										</a>
-                                        <span>Discover</span></a>
-                                            <a class="button navbar-item mx-2" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/event">
-                                                <span class="icon has-text-info">
-                                                    <i class="fa fa-calendar" aria-hidden="true"></i>
-                                                </span>
-                                        <span>Events</span></a>';
-                            }
-                        }
-                        echo '<div class="navbar-item has-dropdown is-hoverable">
-										<a class="navbar-link" role="presentation">' . pp_html_escape($current_user->username) . '</a>
-											<div class="navbar-dropdown">';
-                        if (PP_MOD_REWRITE) {
-                            echo '<a class="navbar-item" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/user/' . urlencode($current_user->username) . '">Pastes</a>';
-                            echo '<a class="navbar-item" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/profile">Settings</a>';
-                        } else {
-                            echo '<a class="navbar-item" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/user.php?user=' . urlencode($current_user->username) . '">Pastes</a>';
-                            echo '<a class="navbar-item" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/profile.php">Settings</a>';
-                        }
-                        ?>
-                        <hr class="navbar-divider"/>
-                        <form action="../logout.php" method="POST">
-                            <input class="button navbar-link" type="submit" value="Logout"
-                                   style="border:none;padding: 0.375rem 1rem;"/>
-                        </form>
-                    <?php } else { ?>
+                    <?php if ($current_user !== null): ?>
+                        <?php if (!$site_is_private): ?>
+                            <a class="button navbar-item mx-2" href="<?= urlForPage() ?>">
+                                <span class="icon has-text-info">
+                                    <i class="fa fa-clipboard" aria-hidden="true"></i>
+                                </span>
+                                <span>New Paste</span>
+                            </a>
+                            <a class="button navbar-item mx-2" href="<?= urlForPage('archive') ?>">
+                                <span class="icon has-text-info">
+                                    <i class="fa fa-book" aria-hidden="true"></i>
+                                </span>
+                                <span>Archive</span>
+                            </a>
+                            <a class="button navbar-item mx-2" href="<?= urlForPage('discover') ?>">
+                                <span class="icon has-text-info">
+                                    <i class="fa fa-compass" aria-hidden="true"></i>
+                                </span>
+                                <span>Discover</span>
+                            </a>
+                            <a class="button navbar-item mx-2" href="<?= urlForPage('event') ?>">
+                                <span class="icon has-text-info">
+                                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                                </span>
+                                <span>Events</span>
+                            </a>
+                        <?php endif; /* !$site_is_private */ ?>
+
+                        <div class="navbar-item has-dropdown is-hoverable">
+                            <a class="navbar-link" role="presentation"><?= pp_html_escape($current_user->username) ?></a>
+                            <div class="navbar-dropdown">
+                                <a class="navbar-item" href="<?= urlForMember($current_user->username) ?>">Pastes</a>
+                                <a class="navbar-item" href="<?= urlForPage('profile') ?>">Settings</a>
+                                <hr class="navbar-divider"/>
+                                <form action="<?= urlForPage('logout') ?>" method="POST">
+                                    <input class="button navbar-link" type="submit" value="Logout"
+                                        style="border:none;padding: 0.375rem 1rem;" />
+                                </form>
+                            </div>
+                        </div>
+                    <?php else: /* $current_user !== null */ ?>
                         <div class="buttons">
-                            <?php
-                            if (!$site_is_private) {
-                                if (PP_MOD_REWRITE) {
-                                    echo '<a class="button navbar-item mx-2" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/archive">
-											<span class="icon has-text-info">
-												<i class="fa fa-book" aria-hidden="true"></i>
-											</span>
-											<span>Archive</span></a>
-                                            
-                                            <a class="button navbar-item mx-2" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/discover">
-                                                <span class="icon has-text-info">
-                                                    <i class="fa fa-compass" aria-hidden="true"></i>
-                                                </span>
-											<span>Discover</span></a>
-                                            <a class="button navbar-item mx-2" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/event">
-                                                <span class="icon has-text-info">
-                                                    <i class="fa fa-calendar" aria-hidden="true"></i>
-                                                </span>
-                                        <span>Events</span>';
-                                } else {
-                                    echo '<a class="button" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/discover.php">
-											<span class="icon has-text-info">
-												<i class="fa fa-book" aria-hidden="true"></i>
-											</span>
-											<span>Archive</span>
-									</a>
-                                         <a class="button navbar-item mx-2" href="' . '//' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/event.php">
-                                                <span class="icon has-text-info">
-                                                    <i class="fa fa-calendar" aria-hidden="true"></i>
-                                                </span>
-                                        <span>Events</span>';
-                                }
-                            }
-                            ?>
+                            <?php if (!$site_is_private): ?>
+                                <a class="button navbar-item mx-2" href="<?= urlForPage('archive') ?>">
+                                    <span class="icon has-text-info">
+                                        <i class="fa fa-book" aria-hidden="true"></i>
+                                    </span>
+                                    <span>Archive</span>
+                                </a>
+                                <a class="button navbar-item mx-2" href="<?= urlForPage('discover') ?>r">
+                                    <span class="icon has-text-info">
+                                        <i class="fa fa-compass" aria-hidden="true"></i>
+                                    </span>
+                                    <span>Discover</span>
+                                </a>
+                                <a class="button navbar-item mx-2" href="<?= urlForPage('event') ?>">
+                                    <span class="icon has-text-info">
+                                        <i class="fa fa-calendar" aria-hidden="true"></i>
+                                    </span>
+                                    <span>Events</span>
+                                </a>
+                            <?php endif; ?>
                             <a class="button is-info modal-button" data-target="#signin">Sign In</a>
                         </div>
-                    <?php } ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -250,7 +213,7 @@ $start = microtime(true);
                         </div>
                         <div class="field">
                             <div class="notification">
-                                <span class="tags are-large"><?= '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA" class="imagever">'; ?></span>
+                                <span class="tags are-large"><img src="<?= $_SESSION['captcha']['image_src'] ?>" alt="CAPTCHA" class="imagever" /></span>
                                 <input type="text" class="input" name="scode" value=""
                                        placeholder="Enter the CAPTCHA">
                                 <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press
@@ -282,8 +245,8 @@ $start = microtime(true);
                 <div class="columns is-mobile is-centered">
                     <h5 class="title is-5">Support PonePaste</h5>
                 </div>
-                <a href='https://liberapay.com/Ponepaste/donate' target='_blank'><img src='../img/lib.png'/></a>
-                <a href='https://ko-fi.com/V7V02K3I2' target='_blank'><img src='../img/kofi.png'/></a>
+                <a href='https://liberapay.com/Ponepaste/donate' target='_blank'><img src='../img/lib.png' alt="LiberaPay logo" /></a>
+                <a href='https://ko-fi.com/V7V02K3I2' target='_blank'><img src='../img/kofi.png' alt="Ko-Fi logo" /></a>
             </div>
             <div class="column">
                 <hr>

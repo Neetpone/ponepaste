@@ -83,7 +83,7 @@
                                 <b> What do I win? </b>
                                 <p style="color:green;"> >A fucking badge, plus the best pony game the host can
                                     find.</p>
-                                <img src="/img/prize.png">
+                                <img src="/img/prize.png" alt="Prize" />
                                 <p>Note: This is a steam game, winner will be sent a cdkey</p>
                                 <br>
                                 <b> What do I have to do? </b>

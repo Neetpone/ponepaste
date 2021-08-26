@@ -106,7 +106,7 @@
                                 </div>
                                 <div class="field">
                                     <div class="notification">
-                                        <span class="tags are-large"><?php echo '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA" class="imagever">'; ?></span>
+                                        <span class="tags are-large"><img src="<?= $_SESSION['captcha']['image_src'] ?>" alt="CAPTCHA" class="imagever" /></span>
                                         <input type="text" class="input" name="scode" value=""
                                                placeholder="Enter the CAPTCHA">
                                         <p class="is-size-6	has-text-grey-light has-text-left mt-2">and

@@ -323,7 +323,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 <div class="level-item is-pulled-left mx-1">
                                     <a class="button"
                                        onclick="highlight(document.getElementById('code')); return false;"><i
-                                                class="fa fa-indent"></i>&nbspHighlight</a>
+                                                class="fa fa-indent"></i>&nbsp;Highlight</a>
                                 </div>
                             </div>
                         </nav>

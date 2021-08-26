@@ -164,7 +164,7 @@
                             </div>
                             <div class="level-item is-pulled-left mx-1">
                                 <a class="button" onclick="highlight(document.getElementById('code')); return false;"><i
-                                            class="fas fa-indent"></i>&nbspHighlight</a>
+                                            class="fas fa-indent"></i>&nbsp;Highlight</a>
                             </div>
                             <div class="level-item is-pulled-left mx-1">
                                 <input class="button is-info" type="submit" name="submit" id="submit" value="Paste"/>
@@ -183,10 +183,10 @@
                             <div class="columns">
                                 <div class="column">
                                     <div class="field">
-                                        <label class="label">Tags</label>
+                                        <label class="label" for="field_tags">Tags</label>
                                         <div class="control">
-                                            <input name="tag_input" class="input js-tag-input"
-                                                   value="<?php echo (isset($_POST['tag_input'])) ? pp_html_escape($_POST['tag_input']) : ''; // Pre-populate if we come here on an error" ?>">
+                                            <input name="tag_input" class="input js-tag-input" id="field_tags"
+                                                   value="<?= (isset($_POST['tag_input'])) ? pp_html_escape($_POST['tag_input']) : ''; ?>" />
                                         </div>
                                     </div>
                                 </div>
@@ -315,7 +315,7 @@
                                 <?php if ($captcha_config['enabled'] && $current_user === null): ?>
                                     <div class="is-one-quarter">
                                         <div class="notification">
-                                            <span class="tags are-large"><?php echo '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA" class="imagever">'; ?></span>
+                                            <span class="tags are-large"><img src="<?= $_SESSION['captcha']['image_src'] ?>" alt="CAPTCHA" class="imagever" /></span>
                                             <input type="text" class="input" name="scode" value=""
                                                    placeholder="Enter the CAPTCHA">
                                             <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press
@@ -325,6 +325,7 @@
                                 <?php endif; ?>
                             </div>
                         </div>
+                    </div>
                 </form>
             </div>
         </div>

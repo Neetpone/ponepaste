@@ -44,6 +44,9 @@
                             <th>Tags</th>
                         </tr>
                     </thead>
+                    <tbody>
+                        <!-- Filled by DataTables -->
+                    </tbody>
                     <tfoot>
                         <tr>
                             <th>Title</th>
@@ -51,8 +54,6 @@
                             <th>Tags</th>
                         </tr>
                     </tfoot>
-                    <tbody>
-                    </tbody>
                 </table>
 
                 <?php
