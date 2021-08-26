@@ -17,21 +17,16 @@
                                     <div class="content is-normal">
                                         <ul>
                                             <li>Ponepaste has now a favorite system. You can now favorite pastes and
-                                                bookmark them on your userpage under "Favorites"
-                                            </li>
+                                                bookmark them on your user page under "Favorites"</li>
                                             <li>Report function and UI has been overhauled.</li>
                                             <li>The archive page has now been updated, tags are now clickable for a
-                                                faster search.
-                                            </li>
+                                                faster search.</li>
                                             <li>Tags UI has been overhauled. Tags containing "SAFE" and "NSFW" will
-                                                appear green and red.
-                                            </li>
+                                                appear green and red.</li>
                                             <li>When Creating paste the tag input box has been updated with a new visual
-                                                style.
-                                            </li>
+                                                style.</li>
                                             <li>Tags are now being canonized, if you see your tags change, it's just the
-                                                admin working in the background
-                                            </li>
+                                                admin working in the background</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -220,30 +215,12 @@
                                                         }
                                                         ?>
                                                         <select name="paste_expire_date">
-                                                            <option value="N" <?php echo ($post_expire == "N") ? 'selected="selected"' : ''; ?>>
-                                                                Never
-                                                            </option>
-                                                            <option value="self" <?php echo ($post_expire == "self") ? 'selected="selected"' : ''; ?>>
-                                                                View Once
-                                                            </option>
-                                                            <option value="10M" <?php echo ($post_expire == "10M") ? 'selected="selected"' : ''; ?>>
-                                                                10 Minutes
-                                                            </option>
-                                                            <option value="1H" <?php echo ($post_expire == "1H") ? 'selected="selected"' : ''; ?>>
-                                                                1 Hour
-                                                            </option>
-                                                            <option value="1D" <?php echo ($post_expire == "1D") ? 'selected="selected"' : ''; ?>>
-                                                                1 Day
-                                                            </option>
-                                                            <option value="1W" <?php echo ($post_expire == "1W") ? 'selected="selected"' : ''; ?>>
-                                                                1 Week
-                                                            </option>
-                                                            <option value="2W" <?php echo ($post_expire == "2W") ? 'selected="selected"' : ''; ?>>
-                                                                2 Weeks
-                                                            </option>
-                                                            <option value="1M" <?php echo ($post_expire == "1M") ? 'selected="selected"' : ''; ?>>
-                                                                1 Month
-                                                            </option>
+
+                                                        <?= optionsForSelect(
+                                                                    ['Never', 'View Once', '10 minutes', '1 hour', '1 day', '1 week', '2 weeks', '1 month'],
+                                                                    ['N',     'self',      '10M',        '1H',     '1D',    '1W',     '2W',      '1M'],
+                                                                    $post_expire
+                                                        ); ?>
                                                         </select>
                                                     </div>
                                                 </div>

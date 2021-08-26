@@ -26,6 +26,28 @@ function urlForMember(string $member_name) : string {
     return '/user.php?name=' . urlencode($member_name);
 }
 
+function optionsForSelect(array $displays, array $values, string $currentSelection = null) : string {
+    $size = count($displays);
+
+    if (count($values) !== $size) {
+        throw new Exception('Option names and option values must be the same count');
+    }
+
+    $html = '';
+
+    for ($i = 0; $i < $size; $i++) {
+        $html .= '<option value="' . pp_html_escape($values[$i]) . '"';
+
+        if ($currentSelection === $values[$i]) {
+            $html .= ' selected="selected"';
+        }
+
+        $html .= '>' . pp_html_escape($displays[$i]) . '</option>';
+    }
+
+    return $html;
+}
+
 /* Database functions */
 function getSiteInfo() : array {
     return require(__DIR__ . '/../config/site.php');
