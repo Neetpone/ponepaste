@@ -9,9 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || $current_user === null) {
 }
 
 /* Destroy remember token */
-$current_user->destroySession($conn, $_COOKIE[User::REMEMBER_TOKEN_COOKIE]);
-unset($_COOKIE[User::REMEMBER_TOKEN_COOKIE]);
-setcookie(User::REMEMBER_TOKEN_COOKIE, null, time() - 3600);
+\PonePaste\Helpers\SessionHelper::destroySession();
 
 /* Destroy PHP session */
 unset($_SESSION['user_id']);

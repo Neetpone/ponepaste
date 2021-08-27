@@ -2,7 +2,6 @@
 define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/functions.php');
-require_once('includes/Tag.class.php');
 require_once('includes/passwords.php');
 require_once('includes/models/Paste.php');
 

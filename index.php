@@ -3,7 +3,6 @@ define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/captcha.php');
 require_once('includes/functions.php');
-require_once('includes/Tag.class.php');
 
 function verifyCaptcha() : string|bool {
     global $captcha_config;

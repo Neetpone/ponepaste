@@ -16,7 +16,5 @@ class User extends Model {
     /*public function pastes() {
         return $this->hasMany(Paste::class);
     }*/
-
-
 }
 

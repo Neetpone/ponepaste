@@ -3,66 +3,7 @@ define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/functions.php');
 
-function getMonthPopularPastes(DatabaseHandle $conn, int $count) : array {
-    $query = $conn->prepare(
-        "SELECT pastes.id AS id, title, created_at, updated_at, users.username AS member
-            FROM pastes
-            INNER JOIN users ON users.id = pastes.user_id
-            WHERE MONTH(created_at) = MONTH(NOW()) AND visible = '0' ORDER BY views DESC LIMIT ?");
-    $query->execute([$count]);
-    return $query->fetchAll();
-}
-
-function getRecentUpdatesPastes(DatabaseHandle $conn, int $count) : array {
-    $query = $conn->prepare(
-        "SELECT pastes.id AS id, title, created_at, updated_at, users.username AS member
-            FROM pastes
-            INNER JOIN users ON users.id = pastes.user_id
-            WHERE visible = '0' ORDER BY updated_at DESC
-            LIMIT ?");
-    $query->execute([$count]);
-    return $query->fetchAll();
-}
-
-function getRecentCreatedPastes(DatabaseHandle $conn, int $count) : array {
-    $query = $conn->prepare("
-        SELECT pastes.id, title, created_at, updated_at, users.username AS member
-        FROM pastes
-        INNER JOIN users ON pastes.user_id = users.id
-        WHERE visible = '0'
-        ORDER BY created_at DESC
-        LIMIT ?");
-    $query->execute([$count]);
-    return $query->fetchAll();
-}
-
-function getMostViewedPastes(DatabaseHandle $conn, int $count) : array {
-    $query = $conn->prepare("
-        SELECT pastes.id AS id, title, created_at, updated_at, views, users.username AS member
-            FROM pastes INNER JOIN users ON users.id = pastes.user_id
-            WHERE visible = '0'
-            ORDER BY views DESC 
-            LIMIT ?
-    ");
-    $query->execute([$count]);
-    return $query->fetchAll();
-}
-
-function getRandomPastes(DatabaseHandle $conn, int $count) : array {
-    $query = $conn->prepare("
-        SELECT pastes.id, title, created_at, updated_at, views, users.username AS member
-            FROM pastes
-            INNER JOIN users ON users.id = pastes.user_id
-            WHERE visible = '0'
-            ORDER BY RAND()
-            LIMIT ?");
-    $query->execute([$count]);
-    return $query->fetchAll();
-}
-
-function transformPasteRow(array $row) : array {
-    global $conn;
-
+function transformPasteRow(Paste $row) : array {
     return [
         'id' => $row['id'],
         'title' => $row['title'],
@@ -71,15 +12,15 @@ function transformPasteRow(array $row) : array {
         'time_update' => $row['updated_at'],
         'friendly_update_time' => friendlyDateDifference(new DateTime($row['updated_at']), new DateTime()),
         'friendly_time' => friendlyDateDifference(new DateTime($row['created_at']), new DateTime()),
-        'tags' => getPasteTags($conn, $row['id'])
+        'tags' => $row->tags
     ];
 }
 
-$popular_pastes = array_map('transformPasteRow', getMostViewedPastes($conn, 10));
-$monthly_popular_pastes = array_map('transformPasteRow', getMonthPopularPastes($conn, 10));
-$recent_pastes = array_map('transformPasteRow', getRecentCreatedPastes($conn, 10));
-$updated_pastes = array_map('transformPasteRow', getRecentUpdatesPastes($conn, 10));
-$random_pastes = array_map('transformPasteRow', getRandomPastes($conn, 10));
+$popular_pastes = Paste::getMostViewed()->map('transformPasteRow');
+$monthly_popular_pastes = Paste::getMonthPopular()->map('transformPasteRow');
+$recent_pastes = Paste::getRecent()->map('transformPasteRow');
+$updated_pastes = Paste::getRecentlyUpdated()->map('transformPasteRow');
+$random_pastes = Paste::getRandom()->map('transformPasteRow');
 
 // Theme
 $page_template = 'discover';

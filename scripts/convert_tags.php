@@ -1,7 +1,6 @@
 <?php
 define('IN_PONEPASTE', 1);
 require_once('../includes/common.php');
-require_once('../includes/Tag.class.php');
 
 function upgrade_tagsys(DatabaseHandle $conn) {
     $result = $conn->query('SELECT id, tagsys FROM pastes')

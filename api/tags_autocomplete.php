@@ -2,7 +2,6 @@
 define('IN_PONEPASTE', 1);
 
 require_once(__DIR__ . '/../includes/common.php');
-require_once(__DIR__ . '/../includes/Tag.class.php');
 
 /* get rid of unintended wildcards in a parameter to LIKE queries; not a security issue, just unexpected behaviour. */
 function escapeLikeQuery(string $query) : string {

@@ -24,6 +24,15 @@ class SessionHelper {
         return null;
     }
 
+    public static function destroySession() {
+        $token = $_COOKIE[SessionHelper::REMEMBER_TOKEN_COOKIE];
+
+        \UserSession::where('token', $token)->delete();
+
+        unset($_COOKIE[SessionHelper::REMEMBER_TOKEN_COOKIE]);
+        setcookie(SessionHelper::REMEMBER_TOKEN_COOKIE, null, time() - 3600);
+    }
+
     private static function currentUserFromRememberToken(string $remember_token) {
         $session = \UserSession
             ::with('user')
@@ -53,9 +62,5 @@ class SessionHelper {
 
 
         return \User::find(intval($_SESSION['user_id']));
-    }
-
-    public static function destroySession(DatabaseHandle $conn, string $token) {
-        $conn->query('DELETE FROM user_sessions WHERE user_id = ? AND token = ?', [$this->user_id, $token]);
     }
 }
