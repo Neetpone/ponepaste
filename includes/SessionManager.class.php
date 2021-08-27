@@ -1,0 +1,61 @@
+<?php
+namespace PonePaste\Helpers;
+
+use DateTime;
+
+require_once(__DIR__ . '/models/UserSession.php');
+
+class SessionHelper {
+    public const REMEMBER_TOKEN_COOKIE = '_ponepaste_token';
+
+    public static function currentUser() {
+        $session_user = SessionHelper::currentUserFromPhpSession();
+
+        if ($session_user !== null) {
+            return $session_user;
+        }
+
+        if (!empty($_COOKIE[self::REMEMBER_TOKEN_COOKIE]) &&
+            ($session = SessionHelper::currentUserFromRememberToken($_COOKIE[self::REMEMBER_TOKEN_COOKIE]))) {
+            $_SESSION['user_id'] = $session->user_id;
+            return $session;
+        }
+
+        return null;
+    }
+
+    private static function currentUserFromRememberToken(string $remember_token) {
+        $session = \UserSession
+            ::with('user')
+            ->where('token', $remember_token)
+            ->first();
+
+        if (!$session) {
+            return null;
+        }
+
+        $session_expiry = $session->expire_at;
+        $now = new DateTime();
+
+        /* Session is expired (diff is negative) */
+        if ($now->diff($session_expiry)->invert === 1) {
+            $session->delete();
+            return null;
+        }
+
+        return $session->user;
+    }
+
+    private static function currentUserFromPhpSession() {
+        if (empty($_SESSION['user_id'])) {
+            return null;
+        }
+
+
+        return \User::find(intval($_SESSION['user_id']));
+    }
+
+    public static function destroySession(DatabaseHandle $conn, string $token) {
+        $conn->query('DELETE FROM user_sessions WHERE user_id = ? AND token = ?', [$this->user_id, $token]);
+    }
+}

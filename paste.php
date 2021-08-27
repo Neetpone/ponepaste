@@ -4,6 +4,7 @@ require_once('includes/common.php');
 require_once('includes/functions.php');
 require_once('includes/Tag.class.php');
 require_once('includes/passwords.php');
+require_once('includes/models/Paste.php');
 
 use Highlight\Highlighter;
 
@@ -24,52 +25,56 @@ updatePageViews($conn);
 $totalpastes = getSiteTotalPastes($conn);
 
 // Get paste favorite count
-$fav_count = $conn->querySelectOne('SELECT COUNT(*) FROM pins WHERE paste_id = ?', [$paste_id], PDO::FETCH_NUM)[0];
+$fav_count = $conn->querySelectOne('SELECT COUNT(*) FROM user_favourites WHERE paste_id = ?', [$paste_id], PDO::FETCH_NUM)[0];
 
 // Get paste info
-$row = $conn->querySelectOne(
+/*$row = $conn->querySelectOne(
     'SELECT title, content, visible, code, expiry, pastes.password AS password, created_at, updated_at, encrypt, views, users.username AS member, users.id AS user_id
         FROM pastes
         INNER JOIN users ON users.id = pastes.user_id
-        WHERE pastes.id = ?', [$paste_id]);
+        WHERE pastes.id = ?', [$paste_id]);*/
+
+
+$paste = Paste::find($paste_id);
 
 
 $notfound = null;
 $is_private = false;
 
-if ($row === null) {
+if (!$paste) {
     header('HTTP/1.1 404 Not Found');
     $notfound = 'Not found';
     goto Not_Valid_Paste;
 }
 
-$paste_owner_id = (int) $row['user_id'];
-$paste_title = $row['title'];
-$paste_code = $row['code'];
+//var_dump($paste);
+
+$paste_owner_id = $paste->user->id;
+$paste_title = $paste->title;
+$paste_code = $paste->code;
 $using_highlighter = $paste_code !== 'pastedown';
 
-$paste = [
+/*$paste = [
     'title' => $paste_title,
-    'created_at' => (new DateTime($row['created_at']))->format('jS F Y h:i:s A'),
-    'updated_at' => (new DateTime($row['updated_at']))->format('jS F Y h:i:s A'),
+    'created_at' => $paste->created_at->format('jS F Y h:i:s A'),
+    'updated_at' => $paste->created_at->format('jS F Y h:i:s A'),
     'user_id' => $paste_owner_id,
-    'member' => $row['member'],
     'views' => $row['views'],
     'code' => $paste_code,
     'tags' => getPasteTags($conn, $paste_id)
-];
+];*/
 
-$p_member = $row['member'];
-$p_content = $row['content'];
-$p_visible = $row['visible'];
-$p_expiry = $row['expiry'];
-$p_password = $row['password'];
-$p_encrypt = (bool) $row['encrypt'];
+//$p_member = $row['member'];
+$p_content = $paste->content;
+$p_visible = $paste->visible;
+$p_expiry = $paste->expiry;
+$p_password = $paste->password;
+$p_encrypt = (bool) $paste->encrypt;
 
 
-$is_private = $row['visible'] === '2';
+$is_private = $p_visible === '2';
 
-if ($is_private && (!$current_user || $current_user->user_id !== $paste_owner_id)) {
+if ($is_private && (!$current_user || $current_user->id !== $paste_owner_id)) {
     $notfound = 'This is a private paste. If you created this paste, please log in to view it.';
     goto Not_Valid_Paste;
 }
@@ -122,6 +127,18 @@ if (isset($_GET['download'])) {
 if (isset($_GET['raw'])) {
     rawView($op_content, $paste_code);
     exit();
+}
+
+// Deletion
+if (isset($_POST['delete'])) {
+    if (!$current_user || ($paste_owner_id !== $current_user->user_id)) {
+        flashError('You must be logged in and own this paste to delete it.');
+    } else {
+        $conn->query('DELETE FROM pastes WHERE id = ?', [$paste_id]);
+        flashSuccess('Paste deleted.');
+        header('Location: ' . urlForMember($current_user->username));
+        die();
+    }
 }
 
 // Preprocess

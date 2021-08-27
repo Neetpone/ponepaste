@@ -100,14 +100,12 @@
                 </div>
 
                 <?php
-                if (isset($_GET['del'])) {
-                    if (isset($success)) {
-                        // Deleted
-                        echo '<div class="notification is-info"><i class="fa fa-exclamation-circle" aria-hidden=" true"></i>  ' . $success . '</div>';
-                    } // Errors
-                    elseif (isset($error)) {
-                        echo '<div class="notification is-danger"><i class="fa fa-exclamation-circle" aria-hidden=" true"></i>  ' . $error . '</div>';
-                    }
+                foreach ($flashes['success'] as $success) {
+                    echo '<div class="notification is-info"><i class="fa fa-exclamation-circle" aria-hidden=" true"></i>  ' . $success . '</div>';
+                }
+
+                foreach ($flashes['error'] as $error) {
+                    echo '<div class="notification is-danger"><i class="fa fa-exclamation-circle" aria-hidden=" true"></i>  ' . $error . '</div>';
                 }
                 ?>
 
@@ -171,6 +169,7 @@
                             };
                             $p_link = urlForPaste($p_id);
                             $p_delete_message = "'Are you sure you want to delete this paste?'";
+
                             $p_delete_link = (PP_MOD_REWRITE) ? "user.php?del&user=$profile_username&id=$p_id" : "user.php?del&user=$profile_username&id=$p_id";
                             $p_tag_link = (PP_MOD_REWRITE) ? "user.php?user=$profile_username&q=$p_tags" : "user.php?user=$profile_username&q=$tags";
                             $title = truncate($title, 20, 50);
@@ -199,28 +198,31 @@
                                     echo '</td> 
                                                  </tr>';
                                 }
-                            } else {
-                                echo '<tr> 
+                            } else { ?>
+                                <tr>
                                                 <td>
-                                                       <a href="' . urlForPaste($p_id) . '" title="' . $title . '">' . ($title) . '</a>
+                                                       <a href="<?= urlForPaste($p_id) ?>" title="<?= $title ?>"><?= $title ?></a>
                                                 </td>    
-                                                <td data-sort="' . $p_date->format('U') . '" class="td-center">
-                                                <span>' . $p_dateui . '</span>
+                                                <td data-sort="<?= $p_date->format('U') ?>" class="td-center">
+                                                    <span><?= $p_dateui ?></span>
                                                 </td>
                                                 <td class="td-center">
-                                                    ' . $p_visible . '
+                                                    <?= $p_visible ?>
                                                 </td>
                                                 <td class="td-center">
-                                                    ' . $p_views . '
+                                                    <?= $p_views ?>
                                                 </td>
                                                 <td class="td-center">
-                                                    ' . strtoupper($p_code) . '
+                                                    <?= strtoupper($p_code) ?>
                                                 </td>
-                                                <td class="td-center">                                         
+                                                <td class="td-center">      
+                                                    <form action="' . urlForPaste($p_id) . '" method="POST">
+
+</form>
                                                     <a href="' . $protocol . $baseurl . '/' . $p_delete_link . '" title="' . $title . '" onClick="return confirm(' . $p_delete_message . ')"><i class="far fa-trash-alt fa-lg" aria-hidden="true"></i></a>
                                                 </td>    
-						            </tr>';
-                            }
+						            </tr>
+                            <?php }
                         }
                         ?>
                         </tbody>

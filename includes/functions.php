@@ -17,11 +17,8 @@ function getUserFavs(DatabaseHandle $conn, int $user_id) : array {
     return $query->fetchAll();
 }
 
-function checkFavorite(DatabaseHandle $conn, int $paste_id, int $user_id) : string {
-    $query = $conn->prepare("SELECT 1 FROM pins WHERE user_id = ? AND paste_id = ?");
-    $query->execute([$user_id, $paste_id]);
-
-    if ($query->fetch()) {
+function checkFavorite($user, $paste_id) : string {
+    if ($user->favourites->where('paste_id', $paste_id)->first()) {
         return "<a  href='#' id='favorite' class='icon tool-icon' data-fid='" . $paste_id . "'><i class='fas fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
     } else {
         return "<a  href='#' id='favorite' class='icon tool-icon' data-fid='" . $paste_id . "'><i class='far fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
@@ -37,17 +34,10 @@ function getreports($conn, $count = 10) {
 }
 
 
-function tagsToHtml(string|array $tags) : string {
+function tagsToHtml($tags) : string {
     $output = "";
-    if (is_array($tags)) {
-        $tagsSplit = array_map(function ($tag) {
-            return $tag['name'];
-        }, $tags);
-    } else {
-        $tagsSplit = explode(",", $tags);
-    }
-
-    foreach ($tagsSplit as $tag) {
+    foreach ($tags as $tagObj) {
+        $tag = $tagObj->name;
         if (stripos($tag, 'nsfw') !== false) {
             $tag = strtoupper($tag);
             $tagcolor = "tag is-danger";

@@ -11,9 +11,7 @@ if (empty($_GET['user'])) {
 
 $profile_username = trim($_GET['user']);
 
-$query = $conn->prepare('SELECT id, date, badge FROM users WHERE username = ?');
-$query->execute([$profile_username]);
-$profile_info = $query->fetch();
+$profile_info = User::with('favourites')->where('username', $profile_username)->select('id', 'date', 'badge')->first();
 
 if (!$profile_info) {
     // Invalid username
@@ -23,20 +21,10 @@ if (!$profile_info) {
 
 $p_title = $profile_username . "'s Public Pastes";
 
-// Favorite Counts
-$query = $conn->prepare(
-    'SELECT COUNT(*) FROM pins INNER JOIN pastes ON pastes.id = pins.paste_id WHERE pins.paste_id = ?'
-);
-$query->execute([$profile_info['id']]);
-$total_pfav = intval($query->fetch(PDO::FETCH_NUM)[0]);
+// FIXME: This should be incoming faves
+$total_pfav = $profile_info->favourites->count();
 
-$query = $conn->prepare(
-    'SELECT COUNT(*)
-        FROM pins INNER JOIN users ON users.id = pins.user_id
-        WHERE users.id = ?'
-);
-$query->execute([$profile_info['id']]);
-$total_yfav = intval($query->fetch(PDO::FETCH_NUM)[0]);
+$total_yfav = $profile_info->favourites->count();
 
 // Badges
 $profile_badge = match ($profile_info['badge']) {
@@ -70,8 +58,8 @@ $profile_total_paste_views = intval($query->fetch(PDO::FETCH_NUM)[0]);
 $profile_join_date = $profile_info['date'];
 
 $profile_pastes = getUserPastes($conn, $profile_info['id']);
-$profile_favs = getUserFavs($conn, $profile_info['id']);
-$is_current_user = ($current_user !== null) && ($profile_info['id'] == $current_user->user_id);
+$profile_favs = $profile_info->favourites;
+$is_current_user = ($current_user !== null) && ($profile_info->id == $current_user->id);
 
 updatePageViews($conn);
 

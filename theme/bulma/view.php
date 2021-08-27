@@ -181,7 +181,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 <div class="panel-tools">
                                     <?php
                                     if ($current_user !== null) {
-                                        echo checkFavorite($conn, $paste_id, $current_user->user_id);
+                                        echo checkFavorite($current_user, $paste->id);
                                     }
                                     ?>
                                     <a class="icon tool-icon flip" onclick="openreport()"><i
@@ -220,10 +220,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                     </div>
                     <!-- Tag display  -->
                     <div class="columns is-desktop is-centered">
-                        <?php
-                        $tags = $paste['tags'];
-                        echo tagsToHtml($tags);
-                        ?>
+                        <?= tagsToHtml($paste->tags); ?>
                     </div>
                     <br>
                     <?php if (isset($error)): ?>

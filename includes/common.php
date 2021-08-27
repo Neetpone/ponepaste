@@ -6,8 +6,13 @@ require_once(__DIR__ . '/../vendor/autoload.php');
 require_once(__DIR__ . '/config.php');
 require_once(__DIR__ . '/functions.php');
 require_once(__DIR__ . '/DatabaseHandle.class.php');
-require_once(__DIR__ . '/User.class.php');
+//require_once(__DIR__ . '/User.class.php');
 require_once(__DIR__ . '/ViewBag.class.php');
+require_once(__DIR__ . '/models/User.php');
+require_once(__DIR__ . '/SessionManager.class.php');
+
+use Illuminate\Database\Capsule\Manager as Capsule;
+use PonePaste\Helpers\SessionHelper;
 
 /* View functions */
 function urlForPage($page = '') : string {
@@ -17,8 +22,6 @@ function urlForPage($page = '') : string {
 
     return (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/' . $page;
 }
-
-
 
 function urlForPaste($paste_id) : string {
     if (PP_MOD_REWRITE) {
@@ -56,6 +59,42 @@ function optionsForSelect(array $displays, array $values, string $currentSelecti
     }
 
     return $html;
+}
+
+function flash(string $level, string $message) {
+    if (!isset($_SESSION['flashes'])) {
+        $_SESSION['flashes'] = [
+            'success' => [],
+            'warning' => []
+        ];
+    }
+
+    if (!array_key_exists($level, $_SESSION['flashes'])) {
+        throw new Exception('Invalid flash level ' . $level);
+    }
+
+    array_push($_SESSION['flashes'][$level], $message);
+}
+
+
+function flashError(string $message) {
+    flash('error', $message);
+}
+
+function flashSuccess(string $message) {
+    flash('success', $message);
+}
+
+function getFlashes() {
+    if (!isset($_SESSION['flashes'])) {
+        return ['success' => [], 'error' => []];
+    }
+
+    $flashes = $_SESSION['flashes'];
+
+    unset($_SESSION['flashes']);
+
+    return $flashes;
 }
 
 /* Database functions */
@@ -128,6 +167,20 @@ function updatePageViews(DatabaseHandle $conn) : void {
 session_start();
 
 $conn = new DatabaseHandle("mysql:host=$db_host;dbname=$db_schema;charset=utf8mb4", $db_user, $db_pass);
+$capsule = new Capsule();
+
+$capsule->addConnection([
+    'driver' => 'mysql',
+    'host' => $db_host,
+    'database' => $db_schema,
+    'username' => $db_user,
+    'password' => $db_pass ,
+    'charset' => 'utf8mb4',
+    'prefix' => ''
+]);
+$capsule->setAsGlobal();
+$capsule->bootEloquent();
+
 
 // Setup site info
 $site_info = getSiteInfo();
@@ -170,7 +223,7 @@ $total_pastes = getSiteTotalPastes($conn);
 $total_page_views = getSiteTotalviews($conn);
 $total_unique_views = getSiteTotal_unique_views($conn);
 
-$current_user = User::current($conn);
+$current_user = SessionHelper::currentUser();
 
 /* Security headers */
 header('X-Frame-Options: SAMEORIGIN');

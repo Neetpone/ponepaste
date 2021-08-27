@@ -6,6 +6,8 @@ if (!in_array($page_template . '.php', $template_candidates)) {
 }
 
 $start = microtime(true);
+
+$flashes = getFlashes();
 ?>
 <!DOCTYPE html>
 <html lang="en">
