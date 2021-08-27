@@ -8,7 +8,7 @@
 @import url("bulma.tooltip.min.css");
 @import url("bulma.checkradio.min.css");
 @import url("bulma.social.all.min.css");
-
+ 
 /* DataTables.js */
 @import url("datatables.min.css");
 
@@ -17,12 +17,119 @@
     color: #bfbfbf;
 }
 
+
+/* Pastedown formating */
+
+.content exclamation-triangle-icon {}
+exclamation-triangle-icon:before { 
+    font-family: 'Font Awesome\ 5 Free';
+    font-weight: 900;
+    content:"\f071";
+    color: #3298dc;
+    float: left;
+}
+
+.content check-icon {}
+check-icon:before { 
+    font-family: 'Font Awesome\ 5 Free';
+    font-weight: 900;
+    content:"\f00c";
+    color: #3298dc;
+    float: left;
+}
+
+.content times-icon {}
+times-icon:before { 
+    font-family: 'Font Awesome\ 5 Free';
+    font-weight: 900;
+    content:"\f00d";
+    color: #3298dc;
+    float: left;
+}
+
+.content star-icon {}
+star-icon:before { 
+    font-family: 'Font Awesome\ 5 Free';
+    font-weight: 900;
+    content:"\f005";
+    color: #3298dc;
+    float: left;
+}
+
+.content glass-icon {}
+glass-icon:before { 
+    font-family: 'Font Awesome\ 5 Free';
+    font-weight: 900;
+    content:"\f000";
+    color: #3298dc;
+    float: left;
+}
+
+.content music-icon {}
+music-icon:before { 
+    font-family: 'Font Awesome\ 5 Free';
+    font-weight: 900;
+    content:"\f001";
+    color: #3298dc;
+    float: left;
+}
+
+.content heart-icon {}
+heart-icon:before { 
+    font-family: 'Font Awesome\ 5 Free';
+    font-weight: 900;
+    content:"\f004";
+    color: #3298dc;
+    float: left;
+}
+
+.content film-icon {}
+film-icon:before { 
+    font-family: 'Font Awesome\ 5 Free';
+    font-weight: 900;
+    content:"\f008";
+    color: #3298dc;
+    float: left;
+}
+
+.content music-icon {}
+music-icon:before { 
+    font-family: 'Font Awesome\ 5 Free';
+    font-weight: 900;
+    content:"\f001";
+    color: #3298dc;
+    float: left;
+}
+
+.content greentext {color: #789922;}
+greentext:before {
+  content:">";  
+  float: left;
+  color: #789922;
+}
+
+.content redtext {color: #d12222;}
+redtext:before {
+  color: #d12222;
+  content:"<";  
+  float: left;
+}
+.content purpletext {color: #9f14ae;}
+purpletext:before {
+  color: #9f14ae;
+  content:"@";  
+  float: left;
+}
+
+
+/*DataTables*/
+
 .li1:target{
     transition:background-color 1s ease-in;
     -webkit-transition:background-color 1s ease-in;
     -moz-transition:background-color 1s ease-in;
     background-color: rgba(50, 152, 220, 0.3);
-    scroll-margin-top: 130px;
+    scroll-margin-top: 100px;
     color: white !important;
 }
 
