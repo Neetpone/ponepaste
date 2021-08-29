@@ -2,8 +2,8 @@
 namespace PonePaste\Helpers;
 
 use DateTime;
-
-require_once(__DIR__ . '/models/UserSession.php');
+use PonePaste\Models\User;
+use PonePaste\Models\UserSession;
 
 class SessionHelper {
     public const REMEMBER_TOKEN_COOKIE = '_ponepaste_token';
@@ -27,14 +27,14 @@ class SessionHelper {
     public static function destroySession() {
         $token = $_COOKIE[SessionHelper::REMEMBER_TOKEN_COOKIE];
 
-        \UserSession::where('token', $token)->delete();
+        UserSession::where('token', $token)->delete();
 
         unset($_COOKIE[SessionHelper::REMEMBER_TOKEN_COOKIE]);
         setcookie(SessionHelper::REMEMBER_TOKEN_COOKIE, null, time() - 3600);
     }
 
     private static function currentUserFromRememberToken(string $remember_token) {
-        $session = \UserSession
+        $session = UserSession
             ::with('user')
             ->where('token', $remember_token)
             ->first();
@@ -61,6 +61,6 @@ class SessionHelper {
         }
 
 
-        return \User::find(intval($_SESSION['user_id']));
+        return User::find(intval($_SESSION['user_id']));
     }
 }

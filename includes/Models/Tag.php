@@ -1,32 +1,22 @@
 <?php
+namespace PonePaste\Models;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model {
     protected $table = 'tags';
 
-    public static function getOrCreateByName(DatabaseHandle $conn, string $name) : Tag {
+    public static function getOrCreateByName(string $name) : Tag {
         $name = Tag::cleanTagName($name);
 
-        if ($row = $conn->querySelectOne('SELECT id, name, slug FROM tags WHERE name = ?', [$name])) {
-            return new Tag($row);
+        if ($tag = Tag::where('name', $name)->first()) {
+            return $tag;
         }
 
-        $new_slug = Tag::encodeSlug($name);
-        $new_tag_id = $conn->queryInsert('INSERT INTO tags (name, slug) VALUES (?, ?)', [$name, $new_slug]);
-
-        return new Tag([
-            'id' => $new_tag_id,
+        return Tag::create([
             'name' => $name,
-            'slug' => $new_slug
+            'slug' => Tag::encodeSlug($name)
         ]);
-    }
-
-    public static function findBySlug(DatabaseHandle $conn, string $slug) : Tag|null {
-        if ($row = $conn->querySelectOne('SELECT id, name, slug FROM tags WHERE slug = ?', [$slug])) {
-            return new Tag($row);
-        }
-
-        return null;
     }
 
     public static function replacePasteTags(DatabaseHandle $conn, int $pasteId, array $tags) {

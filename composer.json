@@ -19,5 +19,10 @@
     "scrivo/highlight.php": "v9.18.1.7",
     "erusev/parsedown": "^1.7",
     "illuminate/database": "^8.56"
+  },
+  "autoload": {
+    "psr-4": {
+      "PonePaste\\": "includes/"
+    }
   }
 }

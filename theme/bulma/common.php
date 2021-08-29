@@ -93,7 +93,7 @@ $flashes = getFlashes();
                         <div class="navbar-item has-dropdown is-hoverable">
                             <a class="navbar-link" role="presentation"><?= pp_html_escape($current_user->username) ?></a>
                             <div class="navbar-dropdown">
-                                <a class="navbar-item" href="<?= urlForMember($current_user->username) ?>">Pastes</a>
+                                <a class="navbar-item" href="<?= urlForMember($current_user) ?>">Pastes</a>
                                 <a class="navbar-item" href="<?= urlForPage('profile') ?>">Settings</a>
                                 <hr class="navbar-divider"/>
                                 <form action="<?= urlForPage('logout') ?>" method="POST">

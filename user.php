@@ -1,7 +1,12 @@
 <?php
+
+
 define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/functions.php');
+
+use PonePaste\Models\User;
+
 
 if (empty($_GET['user'])) {
     // No username provided

@@ -1,6 +1,7 @@
 <?php
+namespace PonePaste\Models;
+
 use Illuminate\Database\Eloquent\Model;
-require_once(__DIR__  . '/Paste.php');
 
 class User extends Model {
     protected $table = 'users';
@@ -13,8 +14,8 @@ class User extends Model {
         return $this->belongsToMany(Paste::class, 'user_favourites');
     }
 
-    /*public function pastes() {
+    public function pastes() {
         return $this->hasMany(Paste::class);
-    }*/
+    }
 }
 

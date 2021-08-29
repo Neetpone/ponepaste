@@ -6,13 +6,11 @@ require_once(__DIR__ . '/../vendor/autoload.php');
 require_once(__DIR__ . '/config.php');
 require_once(__DIR__ . '/functions.php');
 require_once(__DIR__ . '/DatabaseHandle.class.php');
-//require_once(__DIR__ . '/User.class.php');
-require_once(__DIR__ . '/ViewBag.class.php');
-require_once(__DIR__ . '/models/User.php');
-require_once(__DIR__ . '/SessionManager.class.php');
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use PonePaste\Helpers\SessionHelper;
+use PonePaste\Models\Paste;
+use PonePaste\Models\User;
 
 /* View functions */
 function urlForPage($page = '') : string {
@@ -23,15 +21,15 @@ function urlForPage($page = '') : string {
     return (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/' . $page;
 }
 
-function urlForPaste($paste_id) : string {
+function urlForPaste(Paste $paste) : string {
     if (PP_MOD_REWRITE) {
-        return "/${paste_id}";
+        return "/{$paste->id}";
     }
 
-    return "/paste.php?id=${paste_id}";
+    return "/paste.php?id={$paste->id}";
 }
 
-function urlForMember(string $member_name) : string {
+function urlForMember(User $member_name) : string {
     if (PP_MOD_REWRITE) {
         return '/user/' . urlencode($member_name);
     }

@@ -1,4 +1,6 @@
 <?php
+namespace PonePaste\Models;
+
 use Illuminate\Database\Eloquent\Model;
 
 class UserSession extends Model {

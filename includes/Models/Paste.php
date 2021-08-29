@@ -1,12 +1,14 @@
 <?php
+namespace PonePaste\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-
-require_once(__DIR__ . '/Tag.php');
+use Watson\Validating\ValidatingTrait;
 
 class Paste extends Model {
     protected $table = 'pastes';
+
+    protected $guarded = [];
 
     public function user() {
         return $this->belongsTo(User::class);
@@ -14,6 +16,19 @@ class Paste extends Model {
 
     public function tags() {
         return $this->belongsToMany(Tag::class, 'paste_taggings');
+    }
+
+    public function replaceTags(array $tags) {
+        $this->tags()->detach();
+
+        foreach ($tags as $tagName) {
+            $tag = Tag::getOrCreateByName($tagName);
+            $this->tags()->attach($tag);
+        }
+
+        // FIXME: We need to get rid of tagsys.
+        $this->tagsys = implode(',', $tags);
+        $this->save();
     }
 
     public static function getRecent(int $count = 10) : Collection {
