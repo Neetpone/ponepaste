@@ -5,6 +5,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model {
     protected $table = 'tags';
+    protected $fillable = ['name', 'slug'];
+    public $timestamps = false;
 
     public static function getOrCreateByName(string $name) : Tag {
         $name = Tag::cleanTagName($name);
@@ -17,19 +19,6 @@ class Tag extends Model {
             'name' => $name,
             'slug' => Tag::encodeSlug($name)
         ]);
-    }
-
-    public static function replacePasteTags(DatabaseHandle $conn, int $pasteId, array $tags) {
-        $conn->query('DELETE FROM paste_taggings WHERE paste_id = ?', [$pasteId]);
-
-        foreach ($tags as $tagName) {
-            $tag = Tag::getOrCreateByName($conn, $tagName);
-
-            $conn->query('INSERT INTO paste_taggings (paste_id, tag_id) VALUES (?, ?)', [$pasteId, $tag->id]);
-        }
-
-        // FIXME: We need to get rid of tagsys.
-        $conn->query('UPDATE pastes SET tagsys = ? WHERE id = ?', [implode(',', $tags), $pasteId]);
     }
 
     /**

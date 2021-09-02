@@ -221,7 +221,7 @@
     const tabSystem = {
         init() {
             document.querySelectorAll('.tabs-menu').forEach(tabMenu => {
-                Array.from(tabMenu.children).forEach((child, ind) => {
+                Array.from(tabMenu.children).forEach(child => {
                     child.addEventListener('click', () => {
                         tabSystem.toggle(child.dataset.target);
                     });

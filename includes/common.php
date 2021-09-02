@@ -8,6 +8,8 @@ require_once(__DIR__ . '/functions.php');
 require_once(__DIR__ . '/DatabaseHandle.class.php');
 
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use PonePaste\Helpers\SessionHelper;
 use PonePaste\Models\Paste;
 use PonePaste\Models\User;

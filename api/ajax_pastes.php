@@ -1,14 +1,17 @@
 <?php
+
+use PonePaste\Models\Paste;
+
 header('Content-Type: application/json; charset=UTF-8');
 
 define('IN_PONEPASTE', 1);
 require_once('../includes/common.php');
 require_once('../includes/NonRetardedSSP.class.php');
 
-function transformDataRow($row) {
-    $titleHtml = '<a href="/' . urlencode($row[0]) . '">' . pp_html_escape($row[1]) . '</a>';
-    $authorHtml = '<a href="/user/' . urlencode($row[2]) . '">' . pp_html_escape($row[2]) . '</a>';
-    $tagsHtml = tagsToHtml($row[3]);
+function transformPaste(Paste $paste) {
+    $titleHtml = '<a href="/' . urlencode($paste->id) . '">' . pp_html_escape($paste->title) . '</a>';
+    $authorHtml = '<a href="/user/' . urlencode($paste->user->username) . '">' . pp_html_escape($paste->user->username) . '</a>';
+    $tagsHtml = '';//tagsToHtml($row[3]);
 
     return [
         $titleHtml,
@@ -17,18 +20,19 @@ function transformDataRow($row) {
     ];
 }
 
+$pastes = Paste::with([
+        'user' => function($query) {
+            $query->select('users.id', 'username');
+        },
+        'tags' => function($query) {
+            $query->select('tags.id', 'name', 'slug');
+        }
+    ])->select(['id', 'user_id', 'title']);
+
 $data = NonRetardedSSP::run(
-    $conn, $_GET,
-    'SELECT COUNT(*) FROM pastes WHERE pastes.visible = \'0\' AND pastes.title != \'\'',
-    'SELECT pastes.id AS id, title, users.username, GROUP_CONCAT(tags.name SEPARATOR \',\') AS tagsys FROM pastes
-                INNER JOIN users ON users.id = pastes.user_id
-                INNER JOIN paste_taggings on pastes.id = paste_taggings.paste_id
-                INNER JOIN tags ON tags.id = paste_taggings.tag_id
-                WHERE pastes.visible = \'0\' AND pastes.title != \'\'
-                GROUP BY pastes.id'
+    $conn, $_GET, $pastes
 );
 
-
-$data['data'] = array_map('transformDataRow', $data['data']);
+$data['data'] = $data['data']->map('transformPaste');
 
 echo json_encode($data);

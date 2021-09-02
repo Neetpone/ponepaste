@@ -1,31 +1,31 @@
 <?php
 
+use Illuminate\Database\Eloquent\Builder;
+
 class NonRetardedSSP {
-    public static function run(DatabaseHandle $conn, array $request, string $countQuery, string $query) {
+    public static function run(DatabaseHandle $conn, array $request, Builder $builder) {
         /* Some of these parameters might not be passed; zero is an OK default */
         $draw = (int) @$request['draw'];
         $start = (int) @$request['start'];
         $length = (int) @$request['length'];
 
+
         /* figure out total records */
-        $recordsTotal = (int) $conn->querySelectOne($countQuery, [], PDO::FETCH_NUM)[0];
+        $recordsTotal = $builder->count();
 
         /* build query */
         $params = [];
 
         if ($length != 0) {
-            $query .= ' LIMIT ?';
-            array_push($params, $length);
+            $builder = $builder->limit($length);
 
             if ($start != 0) {
-                $query .= ' OFFSET ?';
-                array_push($params, $start);
+                $builder = $builder->offset($start);
             }
         }
 
         /* fire it off */
-        $stmt = $conn->query($query, $params);
-        $data = $stmt->fetchAll(PDO::FETCH_NUM);
+        $data = $builder->get();
 
         return [
             'draw' => $draw,
