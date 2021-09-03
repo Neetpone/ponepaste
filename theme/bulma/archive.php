@@ -1,5 +1,5 @@
 <script>
-    $(document).ready(function () {
+    /*$(document).ready(function () {
         $("#archive").dataTable({
             rowReorder: {selector: 'td:nth-child(2)'},
             responsive: true,
@@ -17,8 +17,21 @@
                 }
             }
         })
-    });
+    });*/
+
+
 </script>
+
+<style>
+    .paginator > a {
+        margin: 0.25rem;
+    }
+
+    .paginator > a.disabled {
+        pointer-events: none;
+        color: gray;
+    }
+</style>
 
 <main class="bd-main">
     <div class="preloader"></div>
@@ -38,23 +51,26 @@
                 <h1 class="title is-4">Pastes Archive</h1>
                 <table id="archive" class="table is-fullwidth is-hoverable">
                     <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Author</th>
-                            <th>Tags</th>
-                        </tr>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Tags</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <!-- Filled by DataTables -->
+                    <!-- Filled by DataTables -->
                     </tbody>
                     <tfoot>
-                        <tr>
-                            <th>Title</th>
-                            <th>Author</th>
-                            <th>Tags</th>
-                        </tr>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Tags</th>
+                    </tr>
                     </tfoot>
                 </table>
+
+                <div class="paginator"></div>
+
 
                 <?php
                 if (isset($site_ads)) {
@@ -70,3 +86,6 @@
         </div>
     </div>
 </main>
+<script>
+
+</script>

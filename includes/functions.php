@@ -1,4 +1,7 @@
 <?php
+
+use Illuminate\Database\Eloquent\Collection;
+
 function getPasteTags(DatabaseHandle $conn, int $paste_id) : array {
     return $conn->query(
         'SELECT name, slug FROM tags
@@ -34,7 +37,7 @@ function getreports($conn, $count = 10) {
 }
 
 
-function tagsToHtml($tags) : string {
+function tagsToHtml(array | Collection $tags) : string {
     $output = "";
     foreach ($tags as $tagObj) {
         $tag = $tagObj->name;

@@ -14,6 +14,12 @@ const makeEl = function(html) {
     return template.content.firstChild;
 };
 
+const clearEl = function(el) {
+    while (el.firstChild) {
+        el.removeChild(el.firstChild);
+    }
+};
+
 const escape = function(unsafe) {
     return unsafe
         .replace(/&/g, "&amp;")
@@ -24,4 +30,4 @@ const escape = function(unsafe) {
 }
 
 
-export { $, $$, makeEl, escape };
+export { $, $$, makeEl, clearEl, escape };
