@@ -36,9 +36,6 @@ $flashes = getFlashes();
     <script src="//<?= $baseurl ?>/theme/bulma/js/jquery-ui.min.js"></script>
     <script src="//<?= $baseurl ?>/theme/bulma/js/paste.js"></script>
     <script src="//<?= $baseurl ?>/theme/bulma/js/modal-fx.min.js"></script>
-    <script src="//<?= $baseurl ?>/theme/bulma/js/datatables.min.js"></script>
-    <script src="//<?= $baseurl ?>/theme/bulma/js/table-responsive.js"></script>
-    <script src="//<?= $baseurl ?>/theme/bulma/js/table-reorder.js"></script>
     <script src="//<?= $baseurl ?>/assets/<?= PP_DEBUG ? 'bundle.js' : 'bundle.min.js' ?>"></script>
 </head>
 

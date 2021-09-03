@@ -9,43 +9,37 @@ jQuery(window).on('load', function () {
         preloaderFadeOutInit();
     })(jQuery);
 });
-// PANEL TOOLS
+
+
 $(document).ready(function () {
+    // PANEL TOOLS
     $(".panel-tools .minimise-tool").click(function (event) {
         $(this).parents(".panel").find(".panel-body").slideToggle(100);
 
         return false;
     });
-});
 
-$(document).ready(function () {
     $(".panel-tools .closed-tool").click(function (event) {
         $(this).parents(".panel").fadeToggle(400);
 
         return false;
     });
-});
 
-// Search
-$(document).ready(function () {
+    // Search
     $(".panel-tools .search-tool").click(function (event) {
         $(this).parents(".panel").find(".panel-search").toggle(100);
 
         return false;
     });
-});
 
-// Embed
-$(document).ready(function () {
+    // Embed
     $(".panel-tools .embed-tool").click(function (event) {
         $(this).parents(".panel").find(".panel-embed").toggle(100);
 
         return false;
     });
-});
 
-// Expand
-$(document).ready(function () {
+    // Expand
     $(".panel-tools .expand-tool").on("click", function () {
         if ($(this).parents(".panel").hasClass("panel-fullsize")) {
             $(this).parents(".panel").removeClass("panel-fullsize");
@@ -53,18 +47,13 @@ $(document).ready(function () {
             $(this).parents(".panel").addClass("panel-fullsize");
         }
     });
-});
 
-// Widget tools
-$(document).ready(function () {
+    // Widget tools
     $(".widget-tools .closed-tool").click(function (event) {
         $(this).parents(".widget").fadeToggle(400);
 
         return false;
     });
-});
-
-$(document).ready(function () {
     $(".widget-tools .expand-tool").on("click", function () {
         if ($(this).parents(".widget").hasClass("widget-fullsize")) {
             $(this).parents(".widget").removeClass("widget-fullsize");
@@ -72,48 +61,30 @@ $(document).ready(function () {
             $(this).parents(".widget").addClass("widget-fullsize");
         }
     });
-});
 
-// Alerts
-$(document).ready(function () {
     $(".paste-alert .closed").click(function (event) {
         $(this).parents(".paste-alert").fadeToggle(350);
 
         return false;
     });
-});
 
-$(document).ready(function () {
     $(".paste-alert-click").click(function (event) {
         $(this).fadeToggle(350);
 
         return false;
     });
-});
-/*
-// Tooltips
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip();
-});
 
+    $('[data-target~="#signin"],[data-target~="#signup"]').click(function () {
+        $(".modal").addClass("is-active");
+    });
 
-$(function () {
-  $('[data-toggle="popover"]').popover();
-});
-*/
-
-$('[data-target~="#signin"],[data-target~="#signup"]').click(function () {
-    $(".modal").addClass("is-active");
+    $(".modal-close").click(function () {
+        $(".modal").removeClass("is-active");
+    });
 });
 
-$(".modal-close").click(function () {
-    $(".modal").removeClass("is-active");
-});
 
-// Import from Paste 1.9
-function showdiv(e) {
-    document.getElementById(e).style.display = "inline";
-}
+
 
 function selectText(e) {
     if (document.selection) {
@@ -287,28 +258,5 @@ function togglev() {
         document.getElementsByTagName("ol")[0].style.listStyle = "decimal";
     } else {
         document.getElementsByTagName("ol")[0].style.listStyle = "none";
-    }
-}
-
-function getElementsByClassName(e, t) {
-    if (e.getElementsByClassName) {
-        return e.getElementsByClassName(t);
-    } else {
-        return (function n(e, t) {
-            if (t == null) t = document;
-            var n = [],
-                r = t.getElementsByTagName("*"),
-                i = r.length,
-                s = new RegExp("(^|\\s)" + e + "(\\s|$)"),
-                o,
-                u;
-            for (o = 0, u = 0; o < i; o++) {
-                if (s.test(r[o].className)) {
-                    n[u] = r[o];
-                    u++;
-                }
-            }
-            return n;
-        })(t, e);
     }
 }
