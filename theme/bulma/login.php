@@ -197,7 +197,6 @@
                     </div>
                 <?php } ?>
             </div>
-            <?php require_once('theme/' . $default_theme . '/sidebar.php'); ?>
         </div>
     </div>
 </main>

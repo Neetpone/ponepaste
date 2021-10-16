@@ -10,7 +10,6 @@
                         <a href="./archive" class="btn btn-default">Archive</a><br>
                         <a href="./discover" class="btn btn-default">Discover</a>
             </div>
-            <?php require_once('theme/' . $default_theme . '/sidebar.php'); ?>
         </div>
     </div>
 </main>

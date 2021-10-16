@@ -44,10 +44,9 @@
                         There are <strong><?php echo $total_untagged ?></strong> pastes that still need to be tagged.
                     </div>
                 </article>
-                <?php if ($site_is_private) { // Site permissions
-                    ?>
+                <?php if ($site_is_private): ?>
                     <h1 class="title is-5">This pastebin is private.</h1>
-                <?php } else { ?>
+                <?php else: ?>
                 <h1 class="title is-4">Pastes Archive</h1>
                 <table id="archive" class="table is-fullwidth is-hoverable">
                     <thead>
@@ -78,11 +77,7 @@
                 }
                 ?>
             </div>
-            <?php }
-            if (!$site_is_private) {
-                require_once('theme/' . $default_theme . '/sidebar.php');
-            }
-            ?>
+            <?php endif; ?>
         </div>
     </div>
 </main>

@@ -211,7 +211,6 @@ class DataTable {
     attach() {
         this.paginator.attach(this._updatePage.bind(this));
         this._loadEntries();
-
     }
 
     /* Load the requested data from the server, and when done, update the DOM. */
@@ -246,6 +245,10 @@ class DataTable {
         this.currentPage = n;
         this.paginator.update(this.totalRecords, this.perPage, this.currentPage);
         this._updateEntries({data: this.data});
+    }
+
+    _updateSort(field, direction) {
+
     }
 }
 

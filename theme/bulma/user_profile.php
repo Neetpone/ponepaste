@@ -40,12 +40,47 @@
     });
     </script>
 <?php } ?>
+
+<?php
+    $public_paste_badges = [
+        50 => '[ProbablyAutistic] Have more than Fifty pastes',
+        25 => '[Writefag] Have Twenty Five or more pastes',
+        5  => '[NewWritefag] Have Five or more pastes',
+        0  => '[NewFriend] Have less than Five pastes',
+    ];
+
+    $unlisted_paste_badges = [
+        10 => '',
+        5 => ''
+    ];
+
+    $paste_view_badges = [
+        50000 => '[HorseAyylmao] Have more than 50,000 total views',
+        10000 => '[HorseIlluminatii] Have more than 10,000 total views',
+        5000  => '[HorseMaster] Have more than 5000 total views',
+        3000  => '[Horseidol] Have more than 3000 total views',
+        2000  => '[HorseFamous] Have more than 2000 total views',
+        1000  => '[HorseWriter] Have more than 1000 total views'
+    ];
+
+
+
+    function outputBadges(array $badgeCandidates, int $actualValue, string $imagePrefix) {
+        foreach ($badgeCandidates as $threshold => $badgeTitle) {
+            if ($actualValue >= $threshold) {
+                echo "<img src=\"/img/badges/${imagePrefix}_${threshold}.png\" title='$badgeTitle' alt='$badgeTitle' style='margin: 5px;' />";
+                break;
+            }
+        }
+    }
+
+?>
 <main class="bd-main">
     <div class="bd-side-background"></div>
     <div class="bd-main-container container">
         <div class="bd-duo">
             <div class="bd-lead">
-                <h1 class="title is-5"><?= $profile_username ?>'s Pastes</h1>
+                <h1 class="title is-5"><?= pp_html_escape($profile_username) ?>'s Pastes</h1>
                 <h1 class="subtitle is-6">joined: <?= $profile_join_date; ?></h1>
                 <!-- Badges system -->
                 <div class="box">
@@ -62,33 +97,8 @@
                         echo $profile_badge;
                     }
 
-
-                    //Paste count badges
-                    if ($profile_total_public <= 4) {
-                        echo '<img src = "/img/badges/totpastes.png" title="[NewFriend] Have less than Five pastes" style="margin:5px">';
-                    } elseif (($profile_total_public >= 5) && ($profile_total_public <= 24)) {
-                        echo '<img src = "/img/badges/totpastes2.png" title="[NewWritefag] Have Five or more pastes" style="margin:5px">';
-                    } elseif (($profile_total_public >= 25) && ($profile_total_public <= 49)) {
-                        echo '<img src = "/img/badges/totpastes3.png" title="[Writefag] Have more than Twenty Five pastes" style="margin:5px">';
-                    } elseif (($profile_total_public >= 50) && ($profile_total_public)) {
-                        echo '<img src = "/img/badges/totpastes4.png" title="[ProbablyAutistic] Have more than Fifty pastes" style="margin:5px">';
-                    }
-
-                    //Pasteviews badges
-
-                    if (($profile_total_paste_views >= 1000) && ($profile_total_paste_views <= 2999)) {
-                        echo '<img src = "/img/badges/pasteviews.png" title="[HorseWriter] Have more than 1000 total views" style="margin:5px">';
-                    } elseif (($profile_total_paste_views >= 2000) && ($profile_total_paste_views <= 2999)) {
-                        echo '<img src = "/img/badges/pasteviews2.png" title="[HorseFamous] Have more than 2000 total views" style="margin:5px">';
-                    } elseif (($profile_total_paste_views >= 3000) && ($profile_total_paste_views <= 4999)) {
-                        echo '<img src = "/img/badges/pasteviews3.png" title="[Horseidol] Have more than 3000 total views" style="margin:5px">';
-                    } elseif (($profile_total_paste_views >= 5000) && ($profile_total_paste_views <= 9999)) {
-                        echo '<img src = "/img/badges/pasteviews4.png" title="[HorseMaster] Have more than 5000 total views" style="margin:5px">';
-                    } elseif (($profile_total_paste_views >= 10000) && ($profile_total_paste_views <= 49999)) {
-                        echo '<img src = "/img/badges/pasteviews5.png" title="[HorseIlluminatii] Have more than 10,000 total views" style="margin:5px">';
-                    } elseif ($profile_total_paste_views >= 50000) {
-                        echo '<img src = "/img/badges/pasteviews6.png" title="[HorseAyylmao] Have more than 50,000 total views" style="margin:5px">';
-                    }
+                    outputBadges($public_paste_badges, $profile_total_public, 'total_pastes');
+                    outputBadges($paste_view_badges, $profile_total_paste_views, 'total_views');
 
                     if (($profile_total_unlisted >= 5) && ($profile_total_unlisted <= 9)) {
                         echo '<img src = "/img/badges/pastehidden.png" title="[ShadowWriter] Have more than Five unlisted pastes" style="margin:5px">';
@@ -101,11 +111,11 @@
 
                 <?php
                 foreach ($flashes['success'] as $success) {
-                    echo '<div class="notification is-info"><i class="fa fa-exclamation-circle" aria-hidden=" true"></i>  ' . $success . '</div>';
+                    echo '<div class="notification is-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>' . pp_html_escape($success) . '</div>';
                 }
 
                 foreach ($flashes['error'] as $error) {
-                    echo '<div class="notification is-danger"><i class="fa fa-exclamation-circle" aria-hidden=" true"></i>  ' . $error . '</div>';
+                    echo '<div class="notification is-danger"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>' . pp_html_escape($error) . '</div>';
                 }
                 ?>
 
@@ -313,7 +323,6 @@
                 }
                 ?>
             </div>
-            <?php require_once('theme/' . $default_theme . '/sidebar.php'); ?>
         </div>
     </div>
 </main>
