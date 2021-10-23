@@ -57,12 +57,21 @@ function tagsToHtml(array | Collection $tags) : string {
     return $output;
 }
 
-function tagsToHtmlUser(string | array $tags, $profile_username) : string {
+function tagsToHtmlUser(string | array | Collection $tags, $profile_username) : string {
     $output = "";
+
+    if (is_a($tags, Collection::class)) {
+        $tags = $tags->toArray();
+    }
+
     if (is_array($tags)) {
         $tagsSplit = array_map(function($tag) { return $tag['name']; }, $tags);
     } else {
         $tagsSplit = explode(",", $tags);
+    }
+
+    if (count($tagsSplit) === 0) {
+        return '<span class="tag is-warning">No tags</span>';
     }
 
     foreach ($tagsSplit as $tag) {

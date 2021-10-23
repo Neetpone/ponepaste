@@ -1,12 +1,10 @@
 <?php
-
-
 define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/functions.php');
 
 use PonePaste\Models\User;
-
+use PonePaste\Models\Paste;
 
 if (empty($_GET['user'])) {
     // No username provided
@@ -28,7 +26,6 @@ $p_title = $profile_username . "'s Public Pastes";
 
 // FIXME: This should be incoming faves
 $total_pfav = $profile_info->favourites->count();
-
 $total_yfav = $profile_info->favourites->count();
 
 // Badges
@@ -39,22 +36,11 @@ $profile_badge = match ($profile_info['badge']) {
     default => '',
 };
 
-$query = $conn->prepare('SELECT COUNT(*) FROM pastes WHERE user_id = ?');
-$query->execute([$profile_info['id']]);
-$profile_total_pastes = intval($query->fetch(PDO::FETCH_NUM)[0]);
+$profile_total_pastes = $profile_info->pastes->count();
+$profile_total_public = $profile_info->pastes->where('visible', 0)->count();
+$profile_total_unlisted = $profile_info->pastes->where('visible', 1)->count();
+$profile_total_private = $profile_info->pastes->where('visible', 2)->count();
 
-
-$query = $conn->prepare('SELECT COUNT(*) FROM pastes WHERE user_id = ? AND visible = 0');
-$query->execute([$profile_info['id']]);
-$profile_total_public = intval($query->fetch(PDO::FETCH_NUM)[0]);
-
-$query = $conn->prepare('SELECT COUNT(*) FROM pastes WHERE user_id = ? AND visible = 1');
-$query->execute([$profile_info['id']]);
-$profile_total_unlisted = intval($query->fetch(PDO::FETCH_NUM)[0]);
-
-$query = $conn->prepare('SELECT COUNT(*) FROM pastes WHERE user_id = ? AND visible = 2');
-$query->execute([$profile_info['id']]);
-$profile_total_private = intval($query->fetch(PDO::FETCH_NUM)[0]);
 
 $query = $conn->prepare('SELECT SUM(views) FROM pastes WHERE user_id = ?');
 $query->execute([$profile_info['id']]);
@@ -62,7 +48,7 @@ $profile_total_paste_views = intval($query->fetch(PDO::FETCH_NUM)[0]);
 
 $profile_join_date = $profile_info['date'];
 
-$profile_pastes = getUserPastes($conn, $profile_info['id']);
+$profile_pastes = $profile_info->pastes;
 $profile_favs = $profile_info->favourites;
 $is_current_user = ($current_user !== null) && ($profile_info->id == $current_user->id);
 

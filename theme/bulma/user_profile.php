@@ -119,7 +119,7 @@
                 }
                 ?>
 
-                <?php if ($current_user && $current_user->username === $profile_username): ?>
+                <?php if ($is_current_user): ?>
                     Some of your statistics:
                     <br />
                     Total pastes: <?= $profile_total_pastes ?> &mdash;
@@ -138,7 +138,7 @@
                             <li data-target="second-tab"><a>Favorites</a></li>
                         </ul>
                     </div>
-                    <?php endif;?>
+                <?php endif;?>
                 <div class="tab-content" id="first-tab">
                     <table id="archive" class="table is-fullwidth is-hoverable">
                         <thead>
@@ -155,86 +155,28 @@
                             } ?>
                         </tr>
                         </thead>
-
                         <tbody>
-                        <?php
-                        foreach ($profile_pastes as $row) {
-                            $title = Trim($row['title']);
-                            $p_id = $row['id'];
-                            $p_code = Trim($row['code']);
-                            $p_date = new DateTime($row['created_at']);
-                            $p_dateui = $p_date->format("d F Y");
-                            $p_views = Trim($row['views']);
-                            $p_visible = intval($row['visible']);
-                            $tagArray = array_map(function ($tag) {
-                                return $tag['name'];
-                            }, getPasteTags($conn, $p_id));
-                            $p_tags = implode(',', $tagArray);
-
-
-                            $p_visible = match ($p_visible) {
-                                0 => 'Public',
-                                1 => 'Unlisted',
-                                2 => 'Private'
-                            };
-                            $p_link = urlForPaste($p_id);
-                            $p_delete_message = "'Are you sure you want to delete this paste?'";
-
-                            $p_delete_link = (PP_MOD_REWRITE) ? "user.php?del&user=$profile_username&id=$p_id" : "user.php?del&user=$profile_username&id=$p_id";
-                            $p_tag_link = (PP_MOD_REWRITE) ? "user.php?user=$profile_username&q=$p_tags" : "user.php?user=$profile_username&q=$tags";
-                            $title = truncate($title, 20, 50);
-
-                            // Guests only see public pastes
-                            if (!$is_current_user) {
-                                if ($row['visible'] == 0) {
-                                    echo '<tr> 
-                                                <td>
-                                                    <a href="' . urlForPaste($p_id) . '" title="' . $title . '">' . ($title) . '</a>
-                                                </td>    
-                                                <td data-sort="' . $p_date->format('U') . '" class="td-center">
-                                                <span>' . $p_dateui . '</span>
-                                                </td>
-                                                <td class="td-center">
-                                                    ' . $p_views . '
-                                                </td>
-                                                <td class="td-left">';
-                                    if (strlen($p_tags) > 0) {
-                                    echo tagsToHtmlUser($p_tags,$profile_username);
-                                    } else {
-                                        echo ' <span class="tag is-warning">No tags</span>';
-                                    }
-
-
-                                    echo '</td> 
-                                                 </tr>';
-                                }
-                            } else { ?>
+                        <?php foreach ($profile_pastes as $paste): ?>
+                            <?php
+                                $escaped_title = pp_html_escape(truncate($paste->title, 20, 50));
+                                $p_date = new DateTime($paste->created_at);
+                                $p_visible = match (intval($paste->visible)) {
+                                    0 => 'Public',
+                                    1 => 'Unlisted',
+                                    2 => 'Private'
+                                };
+                            ?>
+                            <?php if ($is_current_user || $row['visible'] == Paste::VISIBILITY_PUBLIC): ?>
                                 <tr>
-                                                <td>
-                                                       <a href="<?= urlForPaste($p_id) ?>" title="<?= $title ?>"><?= $title ?></a>
-                                                </td>    
-                                                <td data-sort="<?= $p_date->format('U') ?>" class="td-center">
-                                                    <span><?= $p_dateui ?></span>
-                                                </td>
-                                                <td class="td-center">
-                                                    <?= $p_visible ?>
-                                                </td>
-                                                <td class="td-center">
-                                                    <?= $p_views ?>
-                                                </td>
-                                                <td class="td-center">
-                                                    <?= strtoupper($p_code) ?>
-                                                </td>
-                                                <td class="td-center">      
-                                                    <form action="' . urlForPaste($p_id) . '" method="POST">
-
-</form>
-                                                    <a href="' . $protocol . $baseurl . '/' . $p_delete_link . '" title="' . $title . '" onClick="return confirm(' . $p_delete_message . ')"><i class="far fa-trash-alt fa-lg" aria-hidden="true"></i></a>
-                                                </td>    
-						            </tr>
-                            <?php }
-                        }
-                        ?>
+                                    <td><a href="<?= urlForPaste($paste) ?>" title="<?= $escaped_title ?>"><?= $escaped_title ?></a></td>
+                                    <td data-sort="<?= $p_date->format('U') ?>" class="td-center"><?= $p_date->format('d F Y') ?></td>
+                                    <td class="td-center"><?= $p_visible; ?></td>
+                                    <td class="td-center"><?= $paste->views ?></td>
+                                    <td class="td-left"><?= tagsToHtmlUser($paste->tags, $profile_username); ?></td>
+                                    <!-- Delete button here? -->
+                                </tr>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
                         </tbody>
                         <tfoot>
                         <tr>
@@ -261,11 +203,35 @@
                             <td class="td-center">Date Favourited</td>
                             <td class="td-center">Status</td>
                             <td class="td-center">Tags</td>
-                            <?php //if (isset($_SESSION) && $_SESSION['username'] == $profile_username) {
-                            //echo "<td>Delete</td>";
-                            //} ?>
                         </tr>
                         </thead>
+                        <tbody>
+                        <?php foreach ($profile_favs as $paste): ?>
+                            <?php
+                            $escaped_title = pp_html_escape(truncate($paste->title, 20, 50));
+                            $p_date = new DateTime($paste->created_at);
+                            ?>
+                            <?php if ($is_current_user || $row['visible'] == Paste::VISIBILITY_PUBLIC): ?>
+                                <tr>
+                                    <td><a href="<?= urlForPaste($paste) ?>" title="<?= $escaped_title ?>"><?= $escaped_title ?></a></td>
+                                    <td data-sort="<?= $p_date->format('U') ?>" class="td-center"><?= $p_date->format('d F Y') ?></td>
+                                    <td class="td-center"><?= $p_visible; ?></td>
+                                    <td class="td-center"><?= $paste->views ?></td>
+                                    <td class="td-left"><?= tagsToHtmlUser($paste->tags, $profile_username); ?></td>
+                                    <!-- Delete button here? -->
+                                </tr>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td class="td-right">Title</td>
+                            <td class="td-center">Date Favourited</td>
+                            <td class="td-center">Status</td>
+                            <td class="td-center">Tags</td>
+                        </tr>
+                        </tfoot>
+
                         <tbody>
                         <?php
                         foreach ($profile_favs as $row) {
@@ -303,14 +269,13 @@
                                                 </td>
                                                 <td class="td-left">';
                                     if (strlen($f_tags) > 0) {
-                                    echo tagsToHtmlUser($f_tags,$profile_username);
+                                        echo tagsToHtmlUser($f_tags,$profile_username);
                                     } else {
                                         echo ' <span class="tag is-warning">No tags</span>';
                                     }
 
 
-                            echo '</td> 
-						            </tr>';
+                            echo '</td></tr>';
                         }
                         }
                         ?>

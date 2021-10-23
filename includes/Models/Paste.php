@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Watson\Validating\ValidatingTrait;
 
 class Paste extends Model {
+    public const VISIBILITY_PUBLIC   = 0;
+    public const VISIBILITY_UNLISTED = 1;
+    public const VISIBILITY_PRIVATE  = 2;
+
     protected $table = 'pastes';
 
     protected $guarded = [];

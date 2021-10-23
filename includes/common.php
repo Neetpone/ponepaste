@@ -31,12 +31,12 @@ function urlForPaste(Paste $paste) : string {
     return "/paste.php?id={$paste->id}";
 }
 
-function urlForMember(User $member_name) : string {
+function urlForMember(User $user) : string {
     if (PP_MOD_REWRITE) {
-        return '/user/' . urlencode($member_name);
+        return '/user/' . urlencode($user->username);
     }
 
-    return '/user.php?name=' . urlencode($member_name);
+    return '/user.php?name=' . urlencode($user->username);
 }
 
 function optionsForSelect(array $displays, array $values, string $currentSelection = null) : string {
@@ -190,9 +190,7 @@ $title = Trim($row['title']);
 $baseurl = Trim($row['baseurl']);
 $site_name = Trim($row['site_name']);
 $email = Trim($row['email']);
-$ga = Trim($row['google_analytics']);
 $additional_scripts = Trim($row['additional_scripts']);
-
 
 // Setup theme
 $default_theme = 'bulma';
