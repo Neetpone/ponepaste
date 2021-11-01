@@ -3,7 +3,6 @@ namespace PonePaste\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Watson\Validating\ValidatingTrait;
 
 class Paste extends Model {
     public const VISIBILITY_PUBLIC   = 0;

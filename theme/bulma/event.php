@@ -133,7 +133,7 @@
                                 <!-- Submitted Pastes -->
                                 <div class="col-md-9 col-lg-10">
                                     <div class="panel panel-default">
-                                        <h1 class="title is-4">Submited Entries
+                                        <h1 class="title is-4">Submitted Entries
                                             <h1>
                                                 <div class="panel-body">
                                                     <div class="list-widget pagination-content">
@@ -164,18 +164,7 @@
                                                                 '</header>';
                                                             ?>
 
-                                                        <?php }
-                                                        // Display a message if the pastebin is empty
-                                                        $query = "SELECT count(*) as count FROM pastes";
-                                                        $result = mysqli_query($con, $query);
-                                                        while ($row = mysqli_fetch_array($result)) {
-                                                            $totalpastes = $row['count'];
-                                                        }
-
-                                                        if ($totalpastes == '0') {
-                                                            echo "None submitted";
-                                                        } ?>
-                                                        </p>
+                                                        <?php } ?>
                                                     </div>
                                                 </div>
                                                 <div class="notification is-warning">
@@ -201,10 +190,4 @@
 
 
 <!-- End Panel -->
-<?php }
-if (!$site_is_private) {
-    return;
-} elseif (isset($site_ads)) {
-    echo $site_ads['ads_2'];
-}// Remove sidebar if site is private
-?>
+<?php } ?>

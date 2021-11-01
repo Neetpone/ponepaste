@@ -1,33 +1,5 @@
 <?php
-
 use Illuminate\Database\Eloquent\Collection;
-
-function getPasteTags(DatabaseHandle $conn, int $paste_id) : array {
-    return $conn->query(
-        'SELECT name, slug FROM tags
-            INNER JOIN paste_taggings ON paste_taggings.tag_id = tags.id
-            WHERE paste_taggings.paste_id = ?',
-        [$paste_id])->fetchAll();
-}
-
-function getUserFavs(DatabaseHandle $conn, int $user_id) : array {
-    $query = $conn->prepare(
-        "SELECT pins.f_time, pastes.id, pins.paste_id, pastes.title, pastes.created_at, pastes.updated_at
-            FROM pins
-            INNER JOIN pastes ON pastes.id = pins.paste_id
-            WHERE pins.user_id = ?");
-    $query->execute([$user_id]);
-    return $query->fetchAll();
-}
-
-function checkFavorite($user, $paste_id) : string {
-    if ($user->favourites->where('paste_id', $paste_id)->first()) {
-        return "<a  href='#' id='favorite' class='icon tool-icon' data-fid='" . $paste_id . "'><i class='fas fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
-    } else {
-        return "<a  href='#' id='favorite' class='icon tool-icon' data-fid='" . $paste_id . "'><i class='far fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
-    }
-}
-
 
 function getreports($conn, $count = 10) {
     $query = $conn->prepare('SELECT * FROM user_reports LIMIT ?');
@@ -162,21 +134,6 @@ function getRecentadmin($conn, $count = 5) {
     return $query->fetchAll();
 }
 
-function getUserPastes(DatabaseHandle $conn, int $user_id) : array {
-    return $conn->query(
-        "SELECT id, title, visible, code, created_at, views FROM pastes
-            WHERE user_id = ?
-            ORDER by pastes.id DESC", [$user_id])->fetchAll();
-}
-
-function getTotalPastes(DatabaseHandle $conn, int $user_id) : int {
-    $query = $conn->prepare("SELECT COUNT(*) AS total_pastes
-            FROM pastes INNER JOIN users ON users.id = pastes.user_id
-            WHERE users.id = ?");
-    $query->execute([$user_id]);
-
-    return intval($query->fetch(PDO::FETCH_NUM)[0]);
-}
 
 function friendlyDateDifference(DateTime $lesser, DateTime $greater) : string {
     $delta = $greater->diff($lesser, true);

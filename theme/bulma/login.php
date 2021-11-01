@@ -64,11 +64,6 @@
                             <div class="column">
                             </div>
                             <div class="column">
-                                <?php
-                                if (isset($site_ads) && $current_user === null) {
-                                    echo $site_ads['ads_2'];
-                                }
-                                ?>
                             </div>
                         </div>
                     </form>
@@ -121,11 +116,6 @@
                             <div class="column">
                             </div>
                             <div class="column">
-                                <?php
-                                if (isset($site_ads) && $current_user === null) {
-                                    echo $site_ads['ads_2'];
-                                }
-                                ?>
                             </div>
                         </div>
                         <div class="field">
@@ -169,11 +159,6 @@
                             <div class="column">
                             </div>
                             <div class="column">
-                                <?php
-                                if (isset($site_ads) && $current_user === null) {
-                                    echo $site_ads['ads_2'];
-                                }
-                                ?>
                             </div>
                         </div>
                     </form>
@@ -188,11 +173,6 @@
                         <div class="column">
                         </div>
                         <div class="column">
-                            <?php
-                            if (isset($site_ads) && $current_user === null) {
-                                echo $site_ads['ads_2'];
-                            }
-                            ?>
                         </div>
                     </div>
                 <?php } ?>

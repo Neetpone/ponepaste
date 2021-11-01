@@ -69,13 +69,6 @@
                 </table>
 
                 <div class="paginator"></div>
-
-
-                <?php
-                if (isset($site_ads)) {
-                    echo $site_ads['ads_2'];
-                }
-                ?>
             </div>
             <?php endif; ?>
         </div>

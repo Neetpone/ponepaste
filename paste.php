@@ -21,7 +21,7 @@ $paste_id = intval(trim($_REQUEST['id']));
 updatePageViews($conn);
 
 // This is used in the theme files.
-$totalpastes = getSiteTotalPastes($conn);
+$totalpastes = Paste::count();
 
 // Get paste favorite count
 $fav_count = $conn->querySelectOne('SELECT COUNT(*) FROM user_favourites WHERE paste_id = ?', [$paste_id], PDO::FETCH_NUM)[0];
@@ -46,8 +46,6 @@ if (!$paste) {
     goto Not_Valid_Paste;
 }
 
-//var_dump($paste);
-
 $paste_owner_id = $paste->user->id;
 $paste_title = $paste->title;
 $paste_code = $paste->code;
@@ -69,6 +67,7 @@ $p_visible = $paste->visible;
 $p_expiry = $paste->expiry;
 $p_password = $paste->password;
 $p_encrypt = (bool) $paste->encrypt;
+$paste_is_favourited = $current_user !== null && $current_user->favourites->where('paste_id', $paste->id)->count() === 1;
 
 
 $is_private = $p_visible === '2';
@@ -110,6 +109,15 @@ if (!empty($p_expiry) && $p_expiry !== 'SELF') {
     }
 }
 
+/* handle favouriting */
+if (isset($_POST['fave'])) {
+    if ($paste_is_favourited) {
+        $current_user->favourites()->detach($paste->id);
+    } else {
+        $current_user->favourites()->attach($paste->id);
+    }
+}
+
 if ($p_encrypt == 1) {
     $p_content = openssl_decrypt($p_content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY);
 }
@@ -133,7 +141,7 @@ if (isset($_POST['delete'])) {
     if (!$current_user || ($paste_owner_id !== $current_user->user_id)) {
         flashError('You must be logged in and own this paste to delete it.');
     } else {
-        $conn->query('DELETE FROM pastes WHERE id = ?', [$paste_id]);
+        $paste->delete();
         flashSuccess('Paste deleted.');
         header('Location: ' . urlForMember($current_user->username));
         die();
@@ -195,7 +203,8 @@ if ($password_required && $password_valid) {
 // View counter
 if (@$_SESSION['not_unique'] !== $paste_id) {
     $_SESSION['not_unique'] = $paste_id;
-    $conn->query("UPDATE pastes SET views = (views + 1) where id = ?", [$paste_id]);
+    $paste->views += 1;
+    $paste->save();
 }
 
 $page_template = 'view';

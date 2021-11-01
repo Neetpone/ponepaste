@@ -68,11 +68,11 @@
                                                     <div class="media">
                                                         <div class="media-content" style="overflow: hidden">
                                                             <p class="title is-5">
-                                                                <a href="<?= urlForPaste($paste['id']) ?>"
-                                                                   title="<?= $paste['title'] ?>"> <?= $paste['title'] ?> </a>
+                                                                <a href="<?= urlForPaste($paste) ?>"
+                                                                   title="<?= pp_html_escape($paste->title) ?>"> <?= pp_html_escape($paste->title) ?> </a>
                                                             </p>
                                                             <p class="subtitle is-6">
-                                                                <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
+                                                                <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
                                                                 <br>
                                                                 <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
                                                             </p>
@@ -107,11 +107,11 @@
                                                     <div class="media">
                                                         <div class="media-content" style="overflow: hidden">
                                                             <p class="title is-5">
-                                                                <a href="<?= urlForPaste($paste['id']) ?>"
-                                                                   title="<?= $paste['title'] ?>"> <?= $paste['title'] ?> </a>
+                                                                <a href="<?= urlForPaste($paste) ?>"
+                                                                   title="<?= pp_html_escape($paste->title) ?>"> <?= pp_html_escape($paste->title) ?> </a>
                                                             </p>
                                                             <p class="subtitle is-6">
-                                                                <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
+                                                                <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
                                                                 <br>
                                                                 <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
                                                             </p>
@@ -146,11 +146,11 @@
                                                     <div class="media">
                                                         <div class="media-content" style="overflow: hidden">
                                                             <p class="title is-5">
-                                                                <a href="<?= urlForPaste($paste['id']) ?>"
-                                                                   title="<?= $paste['title'] ?>"> <?= $paste['title'] ?> </a>
+                                                                <a href="<?= urlForPaste($paste) ?>"
+                                                                   title="<?= pp_html_escape($paste->title) ?>"> <?= pp_html_escape($paste->title) ?> </a>
                                                             </p>
                                                             <p class="subtitle is-6">
-                                                                <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
+                                                                <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
                                                                 <br>
                                                                 <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_update_time'] ?></time>
                                                             </p>
@@ -185,11 +185,11 @@
                                                     <div class="media">
                                                         <div class="media-content" style="overflow: hidden">
                                                             <p class="title is-5">
-                                                                <a href="<?= urlForPaste($paste['id']) ?>"
-                                                                   title="<?= $paste['title'] ?>"> <?= $paste['title'] ?> </a>
+                                                                <a href="<?= urlForPaste($paste) ?>"
+                                                                   title="<?= pp_html_escape($paste->title) ?>"> <?= pp_html_escape($paste->title) ?> </a>
                                                             </p>
                                                             <p class="subtitle is-6">
-                                                                <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
+                                                                <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
                                                                 <br>
                                                                 <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
                                                             </p>

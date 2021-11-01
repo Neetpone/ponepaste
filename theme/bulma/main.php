@@ -302,13 +302,6 @@
                                 </nav>
                             </div>
                             <div class="column is-3">
-                                <!-- $text_ads -->
-                                <?php
-                                // don't display ads for logged in users.
-                                if (!empty($site_ads) && $current_user === null) {
-                                    echo $site_ads['text_ads'];
-                                }
-                                ?>
                             </div>
                             <div class="column is-4">
                                 <!-- CAPTCHA -->

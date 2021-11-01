@@ -175,11 +175,12 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                         <div class="column is-4 has-text-right">
                             <div class="">
                                 <div class="panel-tools">
-                                    <?php
-                                    if ($current_user !== null) {
-                                        echo checkFavorite($current_user, $paste->id);
-                                    }
-                                    ?>
+                                    <?php if ($current_user !== null): ?>
+                                        <form action="" method="POST" class="form--inline">
+                                            <input type="hidden" name="fave" value="1" />
+                                            <button type="submit" class="icon tool-icon button--no-style"><i class="fas fa-star fa-lg <?= $paste_is_favourited ? '' : 'has-text-grey' ?>" title="Favourite"></i></button>
+                                        </form>
+                                    <?php endif; ?>
                                     <a class="icon tool-icon flip" onclick="openreport()"><i
                                                 class="far fa-flag fa-lg has-text-grey" title="Report Paste"></i></a>
                                     <?php if ($paste['code'] != "pastedown") { ?>
@@ -442,11 +443,6 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 </div>
                                 <br/>
                         </nav>
-                        <?php
-                        if (isset($site_ads)) {
-                            echo $site_ads['ads_2'];
-                        }
-                        ?>
                     </form>
                 <?php } ?>
 

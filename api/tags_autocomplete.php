@@ -1,7 +1,8 @@
 <?php
 define('IN_PONEPASTE', 1);
-
 require_once(__DIR__ . '/../includes/common.php');
+
+use PonePaste\Models\Tag;
 
 /* get rid of unintended wildcards in a parameter to LIKE queries; not a security issue, just unexpected behaviour. */
 function escapeLikeQuery(string $query) : string {

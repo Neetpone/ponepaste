@@ -4,6 +4,8 @@ require_once('includes/common.php');
 require_once('includes/functions.php');
 require_once('includes/passwords.php');
 
+use PonePaste\Models\Paste;
+
 // Check if already logged in
 if ($current_user === null) {
     header("Location: ./login.php");
@@ -11,14 +13,11 @@ if ($current_user === null) {
 }
 
 $user_username = $current_user->username;
-
-$query = $conn->query('SELECT * FROM users WHERE id = ?', [$current_user->user_id]);
 $row = $query->fetch();
-$user_id = $row['id'];
-$user_platform = Trim($row['platform']);
-$user_date = $row['date'];
-$user_ip = $row['ip'];
-$user_password = $row['password'];
+$user_id = $current_user->id;
+$user_date = $current_user->date;
+$user_ip = $current_user->ip;
+$user_password = $current_user->password;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['cpassword'])) {
@@ -41,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 updatePageViews($conn);
 
-$total_user_pastes = getTotalPastes($conn, $current_user->user_id);
+$total_user_pastes = Paste::where('user_id', $current_user->user_id)->count();
 
 // Theme
 $page_template = 'profile';

@@ -209,16 +209,22 @@
                         <?php foreach ($profile_favs as $paste): ?>
                             <?php
                             $escaped_title = pp_html_escape(truncate($paste->title, 20, 50));
-                            $p_date = new DateTime($paste->created_at);
+                            $f_date = new DateTime($paste->pivot->f_time);
+                            $update_date = new DateTime($paste->updated_at);
+                            $delta = $update_date->diff(new DateTime(), true);
                             ?>
                             <?php if ($is_current_user || $row['visible'] == Paste::VISIBILITY_PUBLIC): ?>
                                 <tr>
                                     <td><a href="<?= urlForPaste($paste) ?>" title="<?= $escaped_title ?>"><?= $escaped_title ?></a></td>
                                     <td data-sort="<?= $p_date->format('U') ?>" class="td-center"><?= $p_date->format('d F Y') ?></td>
-                                    <td class="td-center"><?= $p_visible; ?></td>
-                                    <td class="td-center"><?= $paste->views ?></td>
+                                    <td class="td-center">
+                                        <?php if ($delta->days <= 2): ?>
+                                            <i class='far fa-check-square fa-lg' aria-hidden='true'></i>
+                                        <?php else: ?>
+                                            <i class='far fa-minus-square fa-lg' aria-hidden='true'></i>
+                                        <?php endif; ?>
+                                    </td>
                                     <td class="td-left"><?= tagsToHtmlUser($paste->tags, $profile_username); ?></td>
-                                    <!-- Delete button here? -->
                                 </tr>
                             <?php endif; ?>
                         <?php endforeach; ?>
@@ -231,62 +237,9 @@
                             <td class="td-center">Tags</td>
                         </tr>
                         </tfoot>
-
-                        <tbody>
-                        <?php
-                        foreach ($profile_favs as $row) {
-                            $ftitle = Trim($row['title']);
-                            $f_id = Trim($row['paste_id']);
-                            $f_date = new DateTime($row['f_time']);
-                            $f_dateui = $f_date->format("d F Y");
-                            $Recent_update = new DateTime($row['updated_at']);
-                            $Recent_update_u = date_format($Recent_update, 'U');
-                            $tagArray2 = array_map(function ($tag) {
-                                return $tag['name'];
-                            }, getPasteTags($conn, $f_id));
-                            $f_tags = implode(',', $tagArray2);
-                            //$p_link = ($mod_rewrite == '1') ? "$f_id" : "paste.php?favdel=$fu_id";
-                            //$f_delete_link = ($mod_rewrite == '1') ? "user.php?favdel&user=$profile_username&fid=$f_id" : "user.php?favdel&user=$profile_username&fid=$f_id";
-                            $title = truncate($title, 20, 50);
-                            $current_time = time();
-                            $past = strtotime('-2 day', $current_time);
-                            if ($past <= $Recent_update_u && $Recent_update_u <= $current_time) {
-                                $updatenote = "<i class='far fa-check-square fa-lg' aria-hidden='true'></i>";
-                            } else {
-                                $updatenote = "<i class='far fa-minus-square fa-lg' aria-hidden='true'></i>";
-                            }
-
-                            echo '<tr> 
-                                                <td>
-                                                    <a href="' . $protocol . $baseurl . '/' . $f_id . '" title="' . $ftitle . '">' . ($ftitle) . '</a>
-                                                </td>    
-                                                <td  data-sort="' . date_format($f_date, 'U') . '" class="td-center">
-                                                <span>' . $f_dateui . '</span>
-                                                </td>
-                                               <td  data-sort="' . $Recent_update_u . '" class="td-center">
-                                                  <span>' . $updatenote . '</span>
-                                                
-                                                </td>
-                                                <td class="td-left">';
-                                    if (strlen($f_tags) > 0) {
-                                        echo tagsToHtmlUser($f_tags,$profile_username);
-                                    } else {
-                                        echo ' <span class="tag is-warning">No tags</span>';
-                                    }
-
-
-                            echo '</td></tr>';
-                        }
-                        }
-                        ?>
-                        </tbody>
+                        <?php } ?>
                     </table>
                 </div>
-                <?php
-                if (isset($site_ads)) {
-                    echo $site_ads['ads_2'];
-                }
-                ?>
             </div>
         </div>
     </div>

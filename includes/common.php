@@ -8,9 +8,9 @@ require_once(__DIR__ . '/functions.php');
 require_once(__DIR__ . '/DatabaseHandle.class.php');
 
 use Illuminate\Database\Capsule\Manager as Capsule;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Event;
 use PonePaste\Helpers\SessionHelper;
+use PonePaste\Models\IPBan;
+use PonePaste\Models\PageView;
 use PonePaste\Models\Paste;
 use PonePaste\Models\User;
 
@@ -102,22 +102,6 @@ function getSiteInfo() : array {
     return require(__DIR__ . '/../config/site.php');
 }
 
-function getSiteAds(DatabaseHandle $conn) : array|bool {
-    return $conn->query('SELECT text_ads, ads_1, ads_2 FROM ads LIMIT 1')->fetch();
-}
-
-function getSiteTotalPastes(DatabaseHandle $conn) : int {
-    return intval($conn->query('SELECT COUNT(*) FROM pastes')->fetch(PDO::FETCH_NUM)[0]);
-}
-
-function getSiteTotalviews(DatabaseHandle $conn) : int {
-    return intval($conn->query('SELECT tpage FROM page_view ORDER BY id DESC LIMIT 1')->fetch(PDO::FETCH_NUM)[0]);
-}
-
-function getSiteTotal_unique_views(DatabaseHandle $conn) : int {
-    return intval($conn->query('SELECT tvisit FROM page_view ORDER BY id DESC LIMIT 1')->fetch(PDO::FETCH_NUM)[0]);
-}
-
 /**
  * Specialization of `htmlentities()` that avoids double escaping and uses UTF-8.
  *
@@ -186,11 +170,11 @@ $capsule->bootEloquent();
 $site_info = getSiteInfo();
 $global_site_info = $site_info['site_info'];
 $row = $site_info['site_info'];
-$title = Trim($row['title']);
-$baseurl = Trim($row['baseurl']);
-$site_name = Trim($row['site_name']);
-$email = Trim($row['email']);
-$additional_scripts = Trim($row['additional_scripts']);
+$title = trim($row['title']);
+$baseurl = trim($row['baseurl']);
+$site_name = trim($row['site_name']);
+$email = trim($row['email']);
+$additional_scripts = trim($row['additional_scripts']);
 
 // Setup theme
 $default_theme = 'bulma';
@@ -212,14 +196,13 @@ $captcha_enabled = (bool) $captcha_config['enabled'];
 
 // Check if IP is banned
 $ip = $_SERVER['REMOTE_ADDR'];
-if ($conn->query('SELECT 1 FROM ban_user WHERE ip = ?', [$ip])->fetch()) {
+if (IPBan::where('ip', $ip)->first()) {
     die('You have been banned.');
 }
 
-$site_ads = getSiteAds($conn);
-$total_pastes = getSiteTotalPastes($conn);
-$total_page_views = getSiteTotalviews($conn);
-$total_unique_views = getSiteTotal_unique_views($conn);
+$total_pastes = Paste::count();
+$total_page_views = PageView::select('tpage')->orderBy('id', 'desc')->first()->tpage;
+$total_unique_views = PageView::select('tvisit')->orderBy('id', 'desc')->first()->tvisit;
 
 $current_user = SessionHelper::currentUser();
 
