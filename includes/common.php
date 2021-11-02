@@ -112,6 +112,7 @@ function pp_html_escape(string $unescaped) : string {
     return htmlspecialchars($unescaped, ENT_QUOTES, 'UTF-8', false);
 }
 
+/* I think there is one row for each day, and in that row, tpage = non-unique, tvisit = unique page views for that day */
 function updatePageViews(DatabaseHandle $conn) : void {
     $ip = $_SERVER['REMOTE_ADDR'];
     $date = date('jS F Y');

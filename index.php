@@ -46,7 +46,6 @@ function calculatePasteExpiry(string $expiry) {
 }
 
 function validatePasteFields() : string|null {
-
     if (empty($_POST["paste_data"]) || trim($_POST['paste_data'] === '')) { /* Empty paste input */
         return 'You cannot post an empty paste.';
     } elseif (!isset($_POST['title'])) { /* No paste title POSTed */
@@ -104,7 +103,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $paste_visibility = $_POST['visibility'];
     $paste_code = $_POST['format'];
     $paste_password = $_POST['pass'];
-    $paste_encrypt = $_POST['encrypted'] === 'on'; // TODO: Make sure this works!
 
     $p_expiry = trim(htmlspecialchars($_POST['paste_expire_date']));
     $tag_input = $_POST['tag_input'];
@@ -115,20 +113,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $paste_password = password_hash($paste_password, PASSWORD_DEFAULT);
     }
 
-    if ($paste_encrypt) {
-        $paste_content = openssl_encrypt($paste_content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY);
-    }
+    $paste_content = openssl_encrypt(
+        $_POST['paste_data'],
+        PP_ENCRYPTION_ALGO,
+        PP_ENCRYPTION_KEY
+    );
 
     // Set expiry time
     $expires = calculatePasteExpiry($p_expiry);
 
     // Edit existing paste or create new?
     if ($editing) {
+        $paste = Paste::find($_POST['paste_id']);
         if ($current_user &&
-            $current_user->user_id === (int) $conn->querySelectOne('SELECT user_id FROM pastes WHERE id = ?', [$_POST['paste_id']])['user_id']) {
-            $paste_id = intval($_POST['paste_id']);
-
-            $paste = Paste::find(intval($_POST['paste_id']));
+            $current_user->user_id === $paste->user_id) {
+            $paste_id = $paste->id;
             $paste->update([
                     'title' => $paste_title,
                     'content' => $paste_content,
@@ -136,7 +135,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'code' => $paste_code,
                     'expiry' => $expires,
                     'password' => $paste_password,
-                    'encrypt' => $paste_encrypt,
                     'ip' => $ip
             ]);
 
@@ -153,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'visible' => $paste_visibility,
             'expiry' => $expires,
             'password' => $paste_password,
-            'encrypt' => $paste_encrypt,
+            'encrypt' => true,
             'created_at' => date_create(),
             'ip' => $ip
         ]);

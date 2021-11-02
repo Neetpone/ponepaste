@@ -1,11 +1,11 @@
 <?php
+
+use PonePaste\Models\AdminLog;
+
 define('IN_PONEPASTE', 1);
 require_once('common.php');
 
 const CONFIG_FILE_PATH = '../config/site.php';
-
-
-updateAdminHistory($conn);
 
 function updateConfiguration(string $path, array $new_config) {
     $fp = fopen($path, 'w');
@@ -75,6 +75,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 									Captcha settings saved
 									</div>';
     }
+
+    updateAdminHistory($current_user, AdminLog::ACTION_EDIT_CONFIG);
 }
 ?>
 

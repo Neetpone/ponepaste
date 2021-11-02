@@ -35,10 +35,4 @@ class DatabaseHandle {
 
         return null;
     }
-
-    public function queryInsert(string $query, array $params = null) : int {
-        $this->query($query, $params);
-
-        return (int) $this->conn->lastInsertId();
-    }
 }

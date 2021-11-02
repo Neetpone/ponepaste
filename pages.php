@@ -18,6 +18,7 @@ if (isset($_GET['page'])) {
         $p_title = $page_title;
     }
 }
+
 // Theme
 $page_template = 'pages';
 require_once('theme/' . $default_theme . '/common.php');

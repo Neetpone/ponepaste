@@ -6,6 +6,7 @@ require_once('includes/passwords.php');
 
 use Highlight\Highlighter;
 use PonePaste\Models\Paste;
+use PonePaste\Models\User;
 
 function rawView($content, $p_code) {
     if ($p_code) {
@@ -16,6 +17,22 @@ function rawView($content, $p_code) {
     }
 }
 
+function getUserRecommended(User $user) {
+    return Paste::where('visible', '0')
+                ->where('user_id', $user->id)
+                ->orderBy('id')->limit(5)
+                ->get();
+    /*$query = $conn->prepare(
+        "SELECT pastes.id AS id, users.username AS member, title, visible
+            FROM pastes
+            INNER JOIN users ON pastes.user_id = users.id
+            WHERE pastes.visible = '0' AND users.id = ?
+            ORDER BY id DESC
+            LIMIT 0, 5");
+    $query->execute([$user_id]);
+    return $query->fetchAll();*/
+}
+
 $paste_id = intval(trim($_REQUEST['id']));
 
 updatePageViews($conn);
@@ -23,19 +40,7 @@ updatePageViews($conn);
 // This is used in the theme files.
 $totalpastes = Paste::count();
 
-// Get paste favorite count
-$fav_count = $conn->querySelectOne('SELECT COUNT(*) FROM user_favourites WHERE paste_id = ?', [$paste_id], PDO::FETCH_NUM)[0];
-
-// Get paste info
-/*$row = $conn->querySelectOne(
-    'SELECT title, content, visible, code, expiry, pastes.password AS password, created_at, updated_at, encrypt, views, users.username AS member, users.id AS user_id
-        FROM pastes
-        INNER JOIN users ON users.id = pastes.user_id
-        WHERE pastes.id = ?', [$paste_id]);*/
-
-
 $paste = Paste::find($paste_id);
-
 
 $notfound = null;
 $is_private = false;
@@ -50,6 +55,8 @@ $paste_owner_id = $paste->user->id;
 $paste_title = $paste->title;
 $paste_code = $paste->code;
 $using_highlighter = $paste_code !== 'pastedown';
+$fav_count = $paste->favouriters()->count();
+
 
 /*$paste = [
     'title' => $paste_title,
@@ -126,7 +133,9 @@ $op_content = trim(htmlspecialchars_decode($p_content));
 
 // Download the paste
 if (isset($_GET['download'])) {
-    doDownload($paste_id, $paste_title, $p_member, $op_content, $paste_code);
+    header('Content-Type: text/plain');
+    header('Content-Disposition: attachment; filename="' . $paste->id . '_' . pp_html_escape($paste->title) . '_' . pp_html_escape($paste->user->username) . '.txt"');
+    echo $op_content;
     exit();
 }
 
@@ -208,6 +217,7 @@ if (@$_SESSION['not_unique'] !== $paste_id) {
 }
 
 $page_template = 'view';
+$recommended_pastes = getUserRecommended($paste->user);
 
 Not_Valid_Paste:
 
@@ -216,6 +226,5 @@ if ($is_private || $notfound || !$password_valid) {
     // Display errors
     $page_template = 'errors';
 }
-
 require_once('theme/' . $default_theme . '/common.php');
 

@@ -367,7 +367,7 @@ $flashes = getFlashes();
 
 
 <!-- Additional Scripts -->
-<?php echo $additional_scripts; ?>
+<?php /* echo $additional_scripts; */ ?>
 
 </body>
 </html>

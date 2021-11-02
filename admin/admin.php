@@ -1,10 +1,6 @@
 <?php
 define('IN_PONEPASTE', 1);
 require_once('common.php');
-
-$query = $conn->query('SELECT user FROM admin LIMIT 1');
-$adminid = $query->fetch()['user'];
-
 ?>
 
 <!DOCTYPE html>
@@ -48,23 +44,13 @@ $adminid = $query->fetch()['user'];
         <!-- End Menu -->
 
         <?php
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $adminid = htmlentities(Trim($_POST['adminid']));
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['password'])) {
             $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-
-            $query = "UPDATE admin SET user='$adminid', pass='$password' WHERE id='1'";
-            mysqli_query($con, $query);
-
-            if (mysqli_errno($con)) {
-                $msg = '<div class="paste-alert alert6" style="text-align: center;">
-				 ' . mysqli_error($con) . '
-				 </div>';
-
-            } else {
-                $msg = '<div class="paste-alert alert3" style="text-align: center;">
+            $current_user->admin_password_hash = $password;
+            $current_user->save();
+            $msg = '<div class="paste-alert alert3" style="text-align: center;">
 					 Account details updated.
 					 </div>';
-            }
         }
         ?>
 
@@ -91,13 +77,8 @@ $adminid = $query->fetch()['user'];
                                               method="POST">
                                             <div class="form-area">
                                                 <div class="group">
-                                                    <input type="text" id="adminid" name="adminid" class="form-control"
-                                                           placeholder="Username" value="<?php echo $adminid; ?>">
-                                                    <i class="fa fa-user"></i>
-                                                </div>
-                                                <div class="group">
                                                     <input type="password" id="password" name="password"
-                                                           class="form-control" placeholder="Password">
+                                                           class="form-control" placeholder="Admin Password">
                                                     <i class="fa fa-key"></i>
                                                 </div>
                                                 <button type="submit" class="btn btn-default btn-block">Save</button>

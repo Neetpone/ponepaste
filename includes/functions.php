@@ -104,35 +104,14 @@ function linkify($value, $protocols = array('http', 'mail'), array $attributes =
     }, $value);
 }
 
-function getUserRecom(DatabaseHandle $conn, int $user_id) : array {
-    $query = $conn->prepare(
-        "SELECT pastes.id AS id, users.username AS member, title, visible
-            FROM pastes
-            INNER JOIN users ON pastes.user_id = users.id
-            WHERE pastes.visible = '0' AND users.id = ?
-            ORDER BY id DESC
-            LIMIT 0, 5");
-    $query->execute([$user_id]);
-    return $query->fetchAll();
-}
-
 function formatBytes($size, $precision = 2) {
     $base = log($size, 1024);
-    $suffixes = array('B', 'KB', 'MB', 'GB', 'TB');
+    $suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
 
     return round(pow(1024, $base - floor($base)), $precision) . ' ' . $suffixes[floor($base)];
 }
 
-function getRecentadmin($conn, $count = 5) {
-    $query = $conn->prepare(
-        'SELECT pastes.id AS id, pastes.ip AS ip, title, created_at, views, users.username AS member
-            FROM pastes
-            INNER JOIN users ON users.id = pastes.user_id
-            ORDER BY id DESC LIMIT 0, ?');
-    $query->execute([$count]);
 
-    return $query->fetchAll();
-}
 
 
 function friendlyDateDifference(DateTime $lesser, DateTime $greater) : string {
@@ -180,27 +159,6 @@ function truncate(string $input, int $maxWords, int $maxChars) : string {
     $result = implode(' ', $truncated);
 
     return $result . ($input == $result ? '' : '[...]');
-}
-
-function doDownload($paste_id, $p_title, $p_member, $p_conntent, $p_code) {
-    $stats = false;
-    if ($p_code) {
-        // Figure out extensions.
-        $ext = match ($p_code) {
-            default => 'txt',
-        };
-
-        // Download
-        $p_title = stripslashes($p_title);
-        header('content-type: text/plain');
-        header('content-Disposition: attachment; filename="' . $paste_id . '_' . $p_title . '_' . $p_member . '.' . $ext . '"');
-        echo $p_conntent;
-        $stats = true;
-    } else {
-        // 404
-        header('HTTP/1.1 404 Not Found');
-    }
-    return $stats;
 }
 
 function embedView($paste_id, $p_title, $content, $p_code, $title, $baseurl, $lang) {

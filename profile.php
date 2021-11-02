@@ -13,7 +13,6 @@ if ($current_user === null) {
 }
 
 $user_username = $current_user->username;
-$row = $query->fetch();
 $user_id = $current_user->id;
 $user_date = $current_user->date;
 $user_ip = $current_user->ip;
@@ -26,8 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (pp_password_verify($user_old_pass, $user_password)) {
             $user_new_cpass = pp_password_hash($_POST['password']);
 
-            $conn->prepare('UPDATE users SET password = ? WHERE id = ?')
-                ->execute([$user_new_cpass, $user_id]);
+            $current_user->password = $user_new_cpass;
+            $current_user->save();
 
             $success = 'Your profile has been updated.';
         } else {
@@ -40,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 updatePageViews($conn);
 
-$total_user_pastes = Paste::where('user_id', $current_user->user_id)->count();
+$total_user_pastes = Paste::where('user_id', $current_user->id)->count();
 
 // Theme
 $page_template = 'profile';

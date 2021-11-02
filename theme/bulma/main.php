@@ -280,22 +280,10 @@
                                     <div class="level-left">
                                         <!-- Encrypted -->
                                         <div class="field">
-                                            <?php
-                                            $encrypted_checked = "";
-                                            if ($_POST) {
-                                                // We came here from an error, carry the checkbox setting forward
-                                                if (isset($_POST['encrypted'])) {
-                                                    $encrypted_checked = "checked";
-                                                }
-                                            } else {
-                                                // Fresh paste. Default to encrypted on
-                                                $encrypted_checked = "checked";
-                                            }
-                                            ?>
                                             <input class="is-checkradio is-info has-background-color" id="encrypt"
-                                                   name="encrypted" type="checkbox" <?php echo $encrypted_checked; ?>>
+                                                   checked="checked" disabled="disabled" type="checkbox">
                                             <label for="encrypt">
-                                                Encrypt on Server
+                                                Encrypt on Server (always enabled)
                                             </label>
                                         </div>
                                     </div>

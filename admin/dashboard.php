@@ -8,8 +8,6 @@ $today_pastes_count = 0;
 require_once('../includes/common.php');
 require_once('../includes/functions.php');
 
-updateAdminHistory($conn);
-
 $query = $conn->query("SELECT @last_id := MAX(id) FROM page_view");
 $row = $query->fetch(PDO::FETCH_NUM);
 $page_last_id = intval($row[0]);
@@ -57,6 +55,12 @@ for ($loop = 0; $loop <= 6; $loop++) {
         $tpage[$loop] = $row['tpage'];
         $tvisit[$loop] = $row['tvisit'];
     }
+}
+
+function getRecentadmin($count = 5) {
+    return Paste::with('user')
+                ->orderBy('id')
+                ->limit($count)->get();
 }
 ?>
 
@@ -200,18 +204,15 @@ for ($loop = 0; $loop <= 6; $loop++) {
                             </thead>
                             <tbody>
                             <?php
-                            $most_recent_users = $conn->query('SELECT id, username, date, ip FROM users ORDER BY id DESC LIMIT 7')->fetchAll();
-                            $last_id = intval(
-                                $conn->query('SELECT MAX(id) FROM users')->fetch(PDO::FETCH_NUM)[0]
-                            );
+                            $most_recent_users = User::select('id', 'username', 'date', 'ip')->orderBy('id', 'desc')->limit(7);
 
                             foreach ($most_recent_users as $user) {
                                 echo "
 										  <tr>
-											<td>${user['id']}</td>
-											<td>${user['username']}</td>
-											<td>${user['date']}</td>
-											<td><span class='label label-default'>${user['ip']}</span></td>
+											<td>$user->id</td>
+											<td>" . pp_html_escape($user->username) . "</td>
+											<td>$user->date</td>
+											<td><span class='label label-default'>$user->ip</span></td>
 										  </tr> ";
                             }
 

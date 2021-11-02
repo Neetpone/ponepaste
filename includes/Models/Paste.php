@@ -21,6 +21,10 @@ class Paste extends Model {
         return $this->belongsToMany(Tag::class, 'paste_taggings');
     }
 
+    public function favouriters() {
+        return $this->belongsToMany(User::class, 'user_favourites');
+    }
+
     public function replaceTags(array $tags) {
         $this->tags()->detach();
 

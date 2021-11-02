@@ -243,40 +243,25 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                     <?php endif; ?>
                 </div>
                 <!-- Guests -->
-                <?php if ($current_user === null || $current_user->user_id !== $paste['user_id']) { ?>
+                <?php if ($totalpastes !== 0 && ($current_user === null || $current_user->user_id !== $paste['user_id'])) { ?>
                     <hr>
                     <label class="label">More from this Author </label>
                     <?php
-                    $rec = getUserRecom($conn, $paste['user_id']);
-                    foreach ($rec as $index => $row) {
+                    foreach ($recommended_pastes as $paste) {
                         $title = Trim($row['title']);
-                        $p_id = Trim($row['id']);
                         $titlehov = ($row['title']);
                         $long_title = pp_html_escape($row['title']);
                         $title = pp_html_escape(truncate($row['title'], 24, 60));
                         ?>
 
                         <p class="no-margin">
-                        <?php
-                        if (PP_MOD_REWRITE) {
-                            echo '<header class="bd-category-header my-1">
-									<a href="' . $p_id . '" title="' . $long_title . '">' . $title . ' </a>
-									<p class="subtitle is-7">' . 'by ' . '
-										<i>' . $row['member'] . '</i>' . '
-									</p>' .
-                                '</header>';
-                        } else {
-                            echo '<a href="' . $p_id . '" title="' . $titlehov . '">' . ucfirst($title) . '</a>';
-                        }
-                    }
-
-
-                    // Display a message if the pastebin is empty
-                    if ($totalpastes === 0) {
-                        echo 'There are no pastes to show.';
-                    } ?>
-                    </p>
-
+                        <header class="bd-category-header my-1">
+                            <a href="<?= urlForPaste($paste) ?>" title="<?= pp_html_escape($paste->title) ?>">
+                                <?= pp_html_escape(truncate($paste->title, 24, 60)) ?>
+                            </a>
+                            <p class="subtitle is-7">by <i><?= pp_html_escape($paste->user->username) ?></i></p>
+                        </header>
+                    <?php } ?>
                 <?php } else { ?>
                     <!-- Paste Panel -->
                     <hr>

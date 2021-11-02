@@ -96,56 +96,42 @@ require_once(__DIR__ . '/common.php');
                 <div class="panel panel-widget">
                     <?php
                     if (isset($_GET['details'])) {
-                        $row = $conn->querySelectOne('SELECT username, platform, verified, banned, date, ip FROM users WHERE id = ?', [$_GET['details']]);
-                        $user_username = $row['username'];
-                        $user_full_name = $row['full_name'];
-                        $user_platform = Trim($row['platform']);
+                        $user = User::find($_GET['details']);
                         $user_date = $row['date'];
-                        $user_ip = $row['ip'];
-                        $detail_id = htmlentities(Trim($_GET['details']));
-                        if ($row['banned']) {
+
+                        if ($user->banned) {
                             $user_verified = 'Banned';
-                        } elseif ($row['verified']) {
+                        } elseif ($user->verified) {
                             $user_verified = 'Verified';
                         } else {
                             $user_verified = 'Unverified';
                         }
+
                         ?>
                         <div class="panel-body">
                             <div class="panel-title">
-                                <?php echo $user_username . ' Details'; ?>
+                                <?= pp_html_escape($user->username) . ' Details'; ?>
                             </div>
 
                             <table class="table table-striped table-bordered">
                                 <tbody>
                                 <tr>
                                     <td> Username</td>
-                                    <td> <?php echo $user_username; ?> </td>
+                                    <td><?= pp_html_escape($user->username) ?> </td>
                                 </tr>
-
                                 <tr>
-                                    <td> Platform</td>
-                                    <td> <?php echo $user_platform; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> Status</td>
-                                    <td> <?php echo $user_verified; ?> </td>
+                                    <td>Status</td>
+                                    <td><?= $user_verified ?></td>
                                 </tr>
 
                                 <tr>
                                     <td> User IP</td>
-                                    <td> <?php echo $user_ip; ?> </td>
+                                    <td><?= $user->ip ?> </td>
                                 </tr>
 
                                 <tr>
-                                    <td> Date Registered</td>
-                                    <td> <?php echo $user_date; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> Full Name</td>
-                                    <td> <?php echo $user_full_name; ?> </td>
+                                    <td>Date Registered</td>
+                                    <td><?php echo $user_date; ?> </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -166,7 +152,6 @@ require_once(__DIR__ . '/common.php');
                                     <th>ID</th>
                                     <th>Username</th>
                                     <th>Date Registered</th>
-                                    <th>Platform</th>
                                     <th>Ban User</th>
                                     <th>Profile</th>
                                     <th>Delete</th>

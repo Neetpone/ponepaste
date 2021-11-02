@@ -42,9 +42,7 @@ $profile_total_unlisted = $profile_info->pastes->where('visible', 1)->count();
 $profile_total_private = $profile_info->pastes->where('visible', 2)->count();
 
 
-$query = $conn->prepare('SELECT SUM(views) FROM pastes WHERE user_id = ?');
-$query->execute([$profile_info['id']]);
-$profile_total_paste_views = intval($query->fetch(PDO::FETCH_NUM)[0]);
+$profile_total_paste_views = Paste::select('views')->where('user_id', $profile_info->id)->sum('views');
 
 $profile_join_date = $profile_info['date'];
 
@@ -57,16 +55,12 @@ updatePageViews($conn);
 if (isset($_GET['del'])) {
     if ($current_user !== null) { // Prevent unauthorized deletes
         $paste_id = intval(trim($_GET['id']));
+        $paste = Paste::find($paste_id);
 
-        $query = $conn->prepare('SELECT user_id FROM pastes WHERE id = ?');
-        $query->execute([$paste_id]);
-        $result = $query->fetch();
-
-        if (empty($result) || $result['user_id'] !== $current_user->user_id) {
+        if (!$paste || $paste->user_id !== $current_user->user_id) {
             $error = 'That paste does not exist, or you are not the owner of it.';
         } else {
-            $query = $conn->prepare('DELETE FROM pastes WHERE id = ?');
-            $query->execute([$paste_id]);
+            $paste->delete();
             $success = 'Paste deleted successfully.';
         }
     } else {

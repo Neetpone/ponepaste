@@ -2,27 +2,28 @@
 if (!defined('IN_PONEPASTE')) {
     die('This file may not be accessed directly.');
 }
+
 require_once('../includes/common.php');
 
-function updateAdminHistory($conn) {
-    $last_date = null;
-    $last_ip = null;
-    $ip = $_SERVER['REMOTE_ADDR'];
-    $date = date('jS F Y');
+use PonePaste\Models\AdminLog;
+use PonePaste\Models\User;
 
-    $query = $conn->query('SELECT ip, last_date FROM admin_history ORDER BY ID DESC LIMIT 1');
+function updateAdminHistory(User $admin, int $action) {
+    $log = new AdminLog([
+        'user_id' => $admin->user_id,
+        'action' => $action,
+        'ip' => $_SERVER['REMOTE_ADDR']
+    ]);
 
-    if ($row = $query->fetch()) {
-        $last_date = $row['last_date'];
-        $last_ip = $row['ip'];
-    }
-
-    if ($last_ip !== $ip || $last_date !== $date) {
-        $conn->prepare('INSERT INTO admin_history (ip, last_date) VALUES (?, ?)')->execute([$date, $ip]);
-    }
+    $log->save();
 }
 
-if (!isset($_SESSION['login'])) {
+if ($current_user === null || !$current_user->admin) {
+    header('Location: ..');
+    die();
+}
+
+if (!isset($_SESSION['admin_login'])) {
     header('Location: .');
     exit();
 }

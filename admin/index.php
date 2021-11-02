@@ -2,18 +2,23 @@
 define('IN_PONEPASTE', 1);
 require_once(__DIR__ . '/../includes/common.php');
 
-$row = $conn->querySelectOne('SELECT user, pass FROM admin LIMIT 1');
-$adminid = $row['user'];
-$password = $row['pass'];
+use PonePaste\Models\AdminLog;
+
+if ($current_user === null || !$current_user->admin) {
+    header('Location: ..');
+    die();
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if ($adminid === trim($_POST['username']) && password_verify($_POST['password'], $password)) {
-        $_SESSION['login'] = true;
+    if (password_verify($_POST['password'], $current_user->admin_password_hash)) {
+        updateAdminHistory($current_user, AdminLog::ACTION_LOGIN);
+        $_SESSION['admin_login'] = true;
         header("Location: dashboard.php");
         exit();
     } else {
+        updateAdminHistory($current_user, AdminLog::ACTION_FAIL_LOGIN);
         $msg = '<div class="paste-alert alert6" style="text-align:center;">
-						Wrong User/Password
+						Wrong Password
 					</div>';
     }
 }
@@ -25,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Paste - Login</title>
+    <title>PonePaste - Authenticate</title>
     <link href="css/paste.css" rel="stylesheet">
     <style>
         body {
@@ -42,11 +47,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     ?>
     <form action="." method="post">
         <div class="top">
-            <h1>Paste</h1>
+            <h1>PonePaste Admin Authentication</h1>
         </div>
         <div class="form-area">
             <div class="group">
-                <input type="text" class="form-control" id="username" name="username" placeholder="Username" value="">
+                <input type="text" class="form-control" id="username" name="username" disabled="disabled" value="<?= pp_html_escape($current_user->username); ?>">
                 <i class="fa fa-user"></i>
             </div>
             <div class="group">
@@ -54,13 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                        value="">
                 <i class="fa fa-key"></i>
             </div>
-            <!-- Not yet implemented
-              <div class="checkbox checkbox-primary">
-                      <input id="rememberme" type="checkbox" checked="">
-                      <label for="rememberme"> Remember Me</label>
-              </div>
-            -->
-            <button type="submit" class="btn btn-default btn-block">LOGIN</button>
+            <button type="submit" class="btn btn-default btn-block">Authenticate</button>
         </div>
     </form>
 </div>

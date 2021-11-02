@@ -17,8 +17,11 @@ if (empty($_GET['tag'])) {
 
 $tag_name = Tag::cleanTagName($_GET['tag']);
 
-$results = $conn->query('SELECT name FROM tags WHERE name LIKE ? AND name != ?', [escapeLikeQuery($tag_name) . '%', $tag_name]);
-$tags = $results->fetchAll(PDO::FETCH_ASSOC);
+$results = Tag::select('name')
+                ->where('name', 'LIKE', escapeLikeQuery($tag_name))
+                ->andWhere('name', '!=', $tag_name)
+                ->fetchAll()
+                ->toArray();
 
 array_push($tags, ['name' => $tag_name]);
 
