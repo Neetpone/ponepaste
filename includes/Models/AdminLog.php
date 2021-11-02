@@ -9,4 +9,10 @@ class AdminLog extends Model {
     public const ACTION_EDIT_CONFIG = 2;
     protected $table = 'admin_logs';
     protected $fillable = ['user_id', 'action', 'ip', 'time'];
+
+    public $timestamps = false;
+
+    public function user() {
+        return $this->belongsto(User::class);
+    }
 }

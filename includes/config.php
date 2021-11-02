@@ -14,6 +14,10 @@ const PP_PASSWORD_PEPPER = 'd791b6c6-91f2-4e8f-ba80-74ea968e4931';
 /* Whether to use friendly URLs that require mod_rewrite */
 const PP_MOD_REWRITE = true;
 
+/* Redis credentials */
+const PP_REDIS_HOST = '127.0.0.1';
+const PP_REDIS_DB = 'ponepaste';
+
 $db_host = 'localhost';
 $db_schema = 'p0nepast3s';
 $db_user = 'P0nedbAcc0unt';

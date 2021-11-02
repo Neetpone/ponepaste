@@ -1,6 +1,14 @@
 <?php
+
+use PonePaste\Models\AdminLog;
+
 define('IN_PONEPASTE', 1);
 require_once('common.php');
+
+$admin_logs = AdminLog::with('user')
+                      ->orderBy('time', 'DESC')
+                      ->limit(10)
+                      ->get();
 ?>
 
 <!DOCTYPE html>
@@ -91,26 +99,19 @@ require_once('common.php');
                                     <table class="table">
                                         <tbody>
                                         <tr>
-                                            <th>Login date</th>
+                                            <th>Time</th>
+                                            <th>User</th>
+                                            <th>Action</th>
                                             <th>IP</th>
                                         </tr>
-                                        <?php
-                                        $rec_limit = 10;
-
-                                        $query = $conn->query('SELECT COUNT(*) FROM admin_history');
-                                        $row = $query->fetch(PDO::FETCH_NUM);
-                                        $rec_count = $row[0];
-
-                                        $query = $conn->prepare('SELECT ip, last_date FROM admin_history ORDER BY `id` LIMIT ?');
-                                        $query->execute([$rec_limit]);
-
-                                        while ($row = $query->fetch()) {
-                                            echo '<tr>';
-                                            echo '<td>' . $row['last_date'] . '</td>';
-                                            echo '<td>' . $row['ip'] . '</td>';
-                                            echo '</tr>';
-                                        }
-                                        ?>
+                                        <?php foreach ($admin_logs as $log): ?>
+                                            <tr>
+                                                <td><?= $log->time; ?></td>
+                                                <td><?= $log->user->username; ?></td>
+                                                <td><?= $log->action; ?></td>
+                                                <td><?= $log->ip; ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
                                         </tbody>
                                     </table>
                                 </div>

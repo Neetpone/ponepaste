@@ -2,7 +2,18 @@
 define('IN_PONEPASTE', 1);
 require_once(__DIR__ . '/../includes/common.php');
 
+use PonePaste\Models\User;
 use PonePaste\Models\AdminLog;
+
+function updateAdminHistory(User $admin, int $action) {
+    $log = new AdminLog([
+        'user_id' => $admin->id,
+        'action' => $action,
+        'ip' => $_SERVER['REMOTE_ADDR']
+    ]);
+
+    $log->save();
+}
 
 if ($current_user === null || !$current_user->admin) {
     header('Location: ..');

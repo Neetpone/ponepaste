@@ -1,25 +1,28 @@
 <?php
 define('IN_PONEPASTE', 1);
-require_once('common.php');
+require_once(__DIR__  . '/common.php');
+use PonePaste\Models\User;
+use PonePaste\Models\Paste;
+use PonePaste\Models\PageView;
 
 $today_users_count = 0;
 $today_pastes_count = 0;
 
-require_once('../includes/common.php');
-require_once('../includes/functions.php');
+
 
 $query = $conn->query("SELECT @last_id := MAX(id) FROM page_view");
 $row = $query->fetch(PDO::FETCH_NUM);
 $page_last_id = intval($row[0]);
 
 
-$query = $conn->prepare('SELECT tpage, tvisit FROM page_view WHERE id = ?');
-$query->execute([$page_last_id]);
-
-while ($row = $query->fetch()) {
-    $today_page = $row['tpage'];
-    $today_visit = $row['tvisit'];
-}
+$query = $conn->prepare('SELECT tpage, tvisit FROM page_view ORDER BY id DESC LIMIT 1');
+$query->execute();
+$row = $query->fetch();
+$last_page_view = PageView::select('tpage', 'tvisit')
+                          ->orderBy('id', 'desc')
+                          ->first();
+$today_page = $last_page_view->tpage;
+$today_visit = $last_page_view->tvisit;
 
 $admin_email = getSiteInfo()['site_info']['email'];
 $c_date = date('jS F Y');
@@ -155,24 +158,18 @@ function getRecentadmin($count = 5) {
                             </thead>
                             <tbody>
                             <?php
-                            $res = getRecentadmin($conn, 7);
-                            foreach ($res as $row) {
-                                $title = Trim($row['title']);
-                                $p_id = Trim($row['id']);
-                                $p_date = new DateTime($row['created_at']);
+                            $res = getRecentadmin(7);
+                            foreach ($res as $paste) {
+                                $p_date = new DateTime($paste['created_at']);
                                 $p_date_formatted = $p_date->format('jS F Y h:i:s A');
-                                $p_ip = Trim($row['ip']);
-                                $p_member = Trim($row['member']);
-                                $p_view = Trim($row['views']);
-                                $p_time = friendlyDateDifference($p_date, new DateTime());
                                 $title = truncate($title, 5, 30);
                                 echo "
 										  <tr>
-											<td>$p_id</td>
-											<td>$p_member</td>
+											<td>$paste->id</td>
+											<td>" . pp_html_escape($paste->user->username) . "</td>
 											<td>$p_date_formatted</td>
-											<td><span class='label label-default'>$p_ip</span></td>
-											<td>$p_view</td>
+											<td><span class='label label-default'>$paste->ip</span></td>
+											<td>$paste->views</td>
 										  </tr> ";
                             }
                             ?>

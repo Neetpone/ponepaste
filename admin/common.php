@@ -10,7 +10,7 @@ use PonePaste\Models\User;
 
 function updateAdminHistory(User $admin, int $action) {
     $log = new AdminLog([
-        'user_id' => $admin->user_id,
+        'user_id' => $admin->id,
         'action' => $action,
         'ip' => $_SERVER['REMOTE_ADDR']
     ]);

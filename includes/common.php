@@ -114,43 +114,37 @@ function pp_html_escape(string $unescaped) : string {
 
 /* I think there is one row for each day, and in that row, tpage = non-unique, tvisit = unique page views for that day */
 function updatePageViews(DatabaseHandle $conn) : void {
+    global $redis;
+
     $ip = $_SERVER['REMOTE_ADDR'];
     $date = date('jS F Y');
-    $data_ip = file_get_contents('tmp/temp.tdata');
 
-    $last_page_view = $conn->query('SELECT * FROM page_view ORDER BY id DESC LIMIT 1')->fetch();
-    $last_date = $last_page_view['date'];
+    $last_page_view = PageView::orderBy('id', 'desc')->limit(1)->first();
 
-    if ($last_date == $date) {
-        $last_tpage = intval($last_page_view['tpage']) + 1;
+    if ($last_page_view && $last_page_view->date == $date) {
+        $last_tpage = intval($last_page_view->tpage) + 1;
 
-        if (str_contains($data_ip, $ip)) {
-            // IP already exists, Update view count
-            $statement = $conn->prepare("UPDATE page_view SET tpage = ? WHERE id = ?");
-            $statement->execute([$last_tpage, $last_page_view['id']]);
-        } else {
-            $last_tvisit = intval($last_page_view['tvisit']) + 1;
-
-            // Update both tpage and tvisit.
-            $statement = $conn->prepare("UPDATE page_view SET tpage = ?,tvisit = ? WHERE id = ?");
-            $statement->execute([$last_tpage, $last_tvisit, $last_page_view['id']]);
-            file_put_contents('tmp/temp.tdata', $data_ip . "\r\n" . $ip);
+        if (!$redis->sIsMember('page_view_ips', $ip)) {
+            $last_page_view->tvisit++;
+            $redis->sAdd('page_view_ips', $ip);
         }
+
+        $last_page_view->tpage++;
+        $last_page_view->save();
     } else {
-        // Delete the file and clear data_ip
-        unlink("tmp/temp.tdata");
+        $redis->del('page_view_ips');
 
         // New date is created
-        $statement = $conn->prepare("INSERT INTO page_view (date, tpage, tvisit) VALUES (?, '1', '1')");
-        $statement->execute([$date]);
+        $new_page_view = new PageView(['date' => $date]);
+        $new_page_view->save();
 
-        // Update the IP
-        file_put_contents('tmp/temp.tdata', $ip);
+        $redis->sAdd('page_view_ips', $ip);
     }
 }
 
 session_start();
 
+/* Set up the database and Eloquent ORM */
 $conn = new DatabaseHandle("mysql:host=$db_host;dbname=$db_schema;charset=utf8mb4", $db_user, $db_pass);
 $capsule = new Capsule();
 
@@ -166,6 +160,9 @@ $capsule->addConnection([
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
+/* Set up Redis */
+$redis = new Redis();
+$redis->pconnect(PP_REDIS_HOST);
 
 // Setup site info
 $site_info = getSiteInfo();
