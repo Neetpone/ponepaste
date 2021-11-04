@@ -8,8 +8,6 @@ use PonePaste\Models\PageView;
 $today_users_count = 0;
 $today_pastes_count = 0;
 
-
-
 $query = $conn->query("SELECT @last_id := MAX(id) FROM page_view");
 $row = $query->fetch(PDO::FETCH_NUM);
 $page_last_id = intval($row[0]);

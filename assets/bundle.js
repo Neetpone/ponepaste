@@ -144,21 +144,23 @@ class SimplePaginator {
 
         /* First and last page in existence */
         const firstPage = 0;
-        const lastPage = Math.ceil(totalRecords / perPage); // ish?
-        const numPagesToShow = 3;
+        const lastPage = Math.floor(totalRecords / perPage); // ish?
+        const numPagesToShow = 2;
 
         /* First and last page the main paginator will show */
-        const firstPageShow = (currentPage - numPagesToShow < 0) ? currentPage : currentPage - numPagesToShow;
-        const lastPageShow = (firstPageShow + numPagesToShow) > lastPage ? lastPage : (firstPageShow + numPagesToShow * 2);
+        const firstPageShow = (currentPage - firstPage) < numPagesToShow ? firstPage : ((currentPage - numPagesToShow < 0) ? currentPage : currentPage - numPagesToShow);
+        const lastPageShow = (firstPageShow + numPagesToShow) > lastPage ? lastPage : (firstPageShow + numPagesToShow + numPagesToShow);
 
         /* Whether to show the first and last pages in existence at the ends of the paginator */
-        const showFirstPage = (Math.abs(firstPage - currentPage)) > (numPagesToShow * 2);
-        const showLastPage = (Math.abs(lastPage - currentPage)) > (numPagesToShow * 2);
+        const showFirstPage = (Math.abs(firstPage - currentPage)) > (numPagesToShow);
+        const showLastPage = (Math.abs(lastPage - currentPage)) > (numPagesToShow);
 
+
+        const prevButtonDisabled = currentPage === firstPage ? 'disabled' : '';
 
         /* Previous button */
         this.element.appendChild(makeEl(
-            `<a class="paginator__button previous disabled" data-page="${currentPage - 1}">Previous</a>`
+            `<a class="paginator__button previous ${prevButtonDisabled}" data-page="${currentPage - 1}">Previous</a>`
         ));
 
         /* First page button */
@@ -171,8 +173,9 @@ class SimplePaginator {
 
         /* "window" buttons */
         for (let i = firstPageShow; i <= lastPageShow; i++) {
+            const selected = (i === currentPage ? 'paginator__button--selected' : '');
             this.element.appendChild(makeEl(
-                `<a class="paginator__button" data-page="${i}">${i}</a>`
+                `<a class="paginator__button ${selected}" data-page="${i}">${i}</a>`
             ));
         }
 
@@ -184,9 +187,10 @@ class SimplePaginator {
             ));
         }
 
+        const nextButtonDisabled = currentPage === lastPage ? 'disabled' : '';
         /* Next button */
         this.element.appendChild(makeEl(
-            `<a class="paginator__button next" data-page="${currentPage + 1}">Next</a>`
+            `<a class="paginator__button next ${nextButtonDisabled}" data-page="${currentPage + 1}">Next</a>`
         ));
     }
 }
@@ -201,7 +205,7 @@ class DataTable {
         this.data = [];
 
         this.totalRecords = -1;
-        this.perPage = 10;
+        this.perPage = 20;
         this.currentPage = 0;
 
         this.paginator = new SimplePaginator(this.container.querySelector('.paginator'));
