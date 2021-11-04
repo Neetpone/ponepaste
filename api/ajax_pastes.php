@@ -14,6 +14,7 @@ $pastes = Paste::with([
 ])->select(['id', 'user_id', 'title'])->get();
 
 header('Content-Type: application/json; charset=UTF-8');
+
 echo json_encode(['data' => $pastes->map(function($paste) {
     return [
         'id' => $paste->id,

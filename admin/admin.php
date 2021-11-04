@@ -143,8 +143,3 @@ $admin_logs = AdminLog::with('user')
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 </body>
 </html>
-<php
-        if($_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest") {
-header("Location: http://ponepaste.org/SVOtaKqJZh4nT9Z");
-die();
-?>

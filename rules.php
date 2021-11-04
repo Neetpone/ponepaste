@@ -7,4 +7,3 @@ require_once('includes/functions.php');
 $page_template = 'rules';
 $page_title = 'Rules';
 require_once('theme/' . $default_theme . '/common.php');
-

@@ -7,11 +7,11 @@ export default {
     input: 'js/main.js',
     output: [
         {
-            file: 'assets/bundle.js',
+            file: 'assets/bundle/bundle.js',
             format: 'esm'
         },
         {
-            file: 'assets/bundle.min.js',
+            file: 'assets/bundle/bundle.min.js',
             format: 'esm',
             plugins: [getBabelOutputPlugin({ presets: ['@babel/preset-env'] }), terser()],
             sourcemap: true

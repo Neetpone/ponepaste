@@ -25,5 +25,4 @@ $results = Tag::select('name')
 
 array_push($tags, ['name' => $tag_name]);
 
-
 echo json_encode($tags);
