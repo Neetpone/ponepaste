@@ -1,4 +1,4 @@
-import { $$, escape } from './dom';
+import { $, $$, escape, toggleEl } from './dom';
 import { TagsInput } from "./tag_input";
 import { DataTable } from "./data_tables";
 
@@ -40,6 +40,44 @@ const setupSite = function() {
             }
         });
         table.attach();
+    }
+
+    const signupButton = $('[data-target~="#signin"],[data-target~="#signup"]');
+
+    if (signupButton) {
+        signupButton.addEventListener('click', () => {
+            $('.modal').classList.add('is-active');
+        });
+
+        $('.modal-button-close').addEventListener('click', () => {
+            $('.modal').classList.remove('is-active');
+        });
+    }
+
+    const embedButton = $('.panel-tools .embed-tool');
+
+    if (embedButton){
+        embedButton.addEventListener('click', (evt) => {
+            if (evt.target && evt.target.closest('.panel-tools')) {
+                toggleEl(evt.target.closest('.panel-tools').querySelector('.panel-embed'));
+            }
+        });
+    }
+
+    const expandButton = $('.expand-tool');
+
+    if (expandButton) {
+        expandButton.addEventListener('click', (evt) => {
+            if (evt.target && evt.target.closest('.panel')) {
+                const panel = evt.target.closest('.panel');
+
+                if (panel.classList.contains('panel-fullsize')) {
+                    panel.classList.remove('panel-fullsize');
+                } else {
+                    panel.classList.add('panel-fullsize');
+                }
+            }
+        });
     }
 };
 

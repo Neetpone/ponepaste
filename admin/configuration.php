@@ -377,11 +377,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- End Footer -->
 </div>
 <!-- End content -->
-
-<script type="text/javascript" src="js/jquery.min.js"></script>
-<script type="text/javascript" src="js/bootstrap.min.js"></script>
-<script type="text/javascript" src="js/bootstrap-select.js"></script>
-
 <script>
     function show() {
         document.getElementById('smtp_pass').setAttribute('type', 'text');

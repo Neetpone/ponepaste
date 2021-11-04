@@ -1,5 +1,4 @@
 <link rel="stylesheet" href="theme/bulma/css/bulma-tagsinput.min.css"/>
-<script src="theme/bulma/js/bulma-tagsinput.min.js"></script>
 <script>
     function setupTagsInput() {
         const tagsInput = document.getElementById('tags-with-source');
@@ -63,7 +62,7 @@
     // Window load function
     jQuery(window).on('load', function () {
         (function ($) {
-            preloaderFadeOutInit();
+           // preloaderFadeOutInit();
         })(jQuery);
     });
 </script>
@@ -98,8 +97,8 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
         overflow: hidden !important;
     }
 </style>
-<main class="bd-main" id="stop-scrolling">
-    <div class="preloader"></div>
+<main class="bd-main" id="dstop-scrolling">
+    <!-- <div class="preloader"></div> -->
     <div class="bd-side-background"></div>
     <div class="bd-main-container container">
         <div class="bd-duo">
@@ -201,7 +200,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                 title="Embed This Paste"></i></a>
                                     <a class="icon tool-icon expand-tool"><i class="fas fa-expand-alt has-text-grey"
                                                                              title="Full Screen"></i></a>
-                                    <div class="panel-embed my-5" style="display:none;">
+                                    <div class="panel-embed my-5 is-hidden">
                                         <input type="text" class="input has-background-white-ter has-text-grey"
                                                value='<?php echo '<script src="' . $protocol . $baseurl . '/';
                                                if (PP_MOD_REWRITE) {
@@ -465,40 +464,4 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
         }
     }
 </script>
-<script>
-    $("#reportpaste").submit(function (e) {
-
-        e.preventDefault(); // avoid to execute the actual submit of the form.
-
-        var form = $(this);
-        var url = form.attr('action');
-
-        $.ajax({
-            type: "POST",
-            url: "report.php",
-            data: form.serialize(), // serializes the form's elements.
-            success: function (data) {
-                document.getElementById("reportbutton").innerHTML = '<input disabled class="button is-danger is-fullwidth"  type="submit" name="reportpaste" id="report" value="Reported" />';
-            }
-        });
-
-    });
-</script>
-<?php if ($current_user) { ?>
-    <script>
-        $(document).ready(function () {
-            $('#favorite').on('click', null, function () {
-                var _this = $(this);
-                var post_id = _this.data('fid');
-                $.ajax({
-                    type: 'POST',
-                    url: 'fav.php',
-                    dataType: 'json',
-                    data: 'fid=' + post_id,
-                });
-                location.reload(true)
-            });
-        });
-    </script>
-<?php } ?>
 

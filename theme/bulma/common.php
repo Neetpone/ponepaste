@@ -33,10 +33,8 @@ $flashes = getFlashes();
     <link href="//<?= $baseurl ?>/theme/bulma/css/table-responsive.css" rel="stylesheet"/>
     <link href="//<?= $baseurl ?>/theme/bulma/css/table-row-orders.css" rel="stylesheet"/>
     <script src="//<?= $baseurl ?>/theme/bulma/js/jquery.min.js"></script>
-    <script src="//<?= $baseurl ?>/theme/bulma/js/jquery-ui.min.js"></script>
     <script src="//<?= $baseurl ?>/theme/bulma/js/paste.js"></script>
-    <script src="//<?= $baseurl ?>/theme/bulma/js/modal-fx.min.js"></script>
-    <script src="//<?= $baseurl ?>/assets/<?= PP_DEBUG ? 'bundle.js' : 'bundle.min.js' ?>"></script>
+    <script src="//<?= $baseurl ?>/assets/bundle/<?= PP_DEBUG ? 'bundle.js' : 'bundle.min.js' ?>"></script>
 </head>
 
 <body>

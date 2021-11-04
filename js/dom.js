@@ -20,6 +20,14 @@ const clearEl = function(el) {
     }
 };
 
+const toggleEl = function(el) {
+    if (el.classList.contains('is-hidden')) {
+        el.classList.remove('is-hidden');
+    } else {
+        el.classList.add('is-hidden');
+    }
+};
+
 const escape = function(unsafe) {
     return unsafe
         .replace(/&/g, "&amp;")
@@ -30,4 +38,4 @@ const escape = function(unsafe) {
 }
 
 
-export { $, $$, makeEl, clearEl, escape };
+export { $, $$, makeEl, clearEl, toggleEl, escape };

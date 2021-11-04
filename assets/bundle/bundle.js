@@ -1,3 +1,7 @@
+const $ = function(selector) {
+    return document.querySelector(selector);
+};
+
 const $$ = function(selector) {
     return document.querySelectorAll(selector) || [];
 };
@@ -13,6 +17,14 @@ const makeEl = function(html) {
 const clearEl = function(el) {
     while (el.firstChild) {
         el.removeChild(el.firstChild);
+    }
+};
+
+const toggleEl = function(el) {
+    if (el.classList.contains('is-hidden')) {
+        el.classList.remove('is-hidden');
+    } else {
+        el.classList.add('is-hidden');
     }
 };
 
@@ -294,6 +306,44 @@ const setupSite = function() {
             }
         });
         table.attach();
+    }
+
+    const signupButton = $('[data-target~="#signin"],[data-target~="#signup"]');
+
+    if (signupButton) {
+        signupButton.addEventListener('click', () => {
+            $('.modal').classList.add('is-active');
+        });
+
+        $('.modal-button-close').addEventListener('click', () => {
+            $('.modal').classList.remove('is-active');
+        });
+    }
+
+    const embedButton = $('.panel-tools .embed-tool');
+
+    if (embedButton){
+        embedButton.addEventListener('click', (evt) => {
+            if (evt.target && evt.target.closest('.panel-tools')) {
+                toggleEl(evt.target.closest('.panel-tools').querySelector('.panel-embed'));
+            }
+        });
+    }
+
+    const expandButton = $('.expand-tool');
+
+    if (expandButton) {
+        expandButton.addEventListener('click', (evt) => {
+            if (evt.target && evt.target.closest('.panel')) {
+                const panel = evt.target.closest('.panel');
+
+                if (panel.classList.contains('panel-fullsize')) {
+                    panel.classList.remove('panel-fullsize');
+                } else {
+                    panel.classList.add('panel-fullsize');
+                }
+            }
+        });
     }
 };
 
