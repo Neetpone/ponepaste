@@ -32,9 +32,6 @@ $flashes = getFlashes();
     <link href="//<?= $baseurl ?>/theme/bulma/css/paste.css" rel="stylesheet"/>
     <link href="//<?= $baseurl ?>/theme/bulma/css/table-responsive.css" rel="stylesheet"/>
     <link href="//<?= $baseurl ?>/theme/bulma/css/table-row-orders.css" rel="stylesheet"/>
-    <script src="//<?= $baseurl ?>/theme/bulma/js/jquery.min.js"></script>
-    <script src="//<?= $baseurl ?>/theme/bulma/js/paste.js"></script>
-    <script src="//<?= $baseurl ?>/assets/bundle/<?= PP_DEBUG ? 'bundle.js' : 'bundle.min.js' ?>"></script>
 </head>
 
 <body>
@@ -288,16 +285,15 @@ $flashes = getFlashes();
     </div>
 </footer>
 
-
+<script src="//<?= $baseurl ?>/theme/bulma/js/paste.js"></script>
+<?php if (empty($script_bundles)): ?>
+    <?= javascriptIncludeTag('generic') ?>
+<?php else: ?>
+    <?php foreach ($script_bundles as $bundle): ?>
+        <?= javascriptIncludeTag($bundle) ?>
+    <?php endforeach; ?>
+<?php endif; ?>
 <script>
-    const whenReady = (callback) => {
-        if (document.readyState !== 'loading') {
-            callback();
-        } else {
-            document.addEventListener('DOMContentLoaded', callback);
-        }
-    };
-
     // Tabs function for popup login
     function openTab(evt, tabName) {
         const x = document.getElementsByClassName("content-tab");
@@ -313,30 +309,6 @@ $flashes = getFlashes();
         document.getElementById(tabName).style.display = "block";
         evt.currentTarget.className += " is-active";
     }
-
-    whenReady(() => {
-        // Notifications
-        (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
-            $notification = $delete.parentNode;
-
-            $delete.addEventListener('click', () => {
-                $notification.parentNode.removeChild($notification);
-            });
-        });
-
-        // Hamburger menu
-        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-        if ($navbarBurgers.length > 0) {
-            $navbarBurgers.forEach(el => {
-                el.addEventListener('click', () => {
-                    const target = el.dataset.target;
-                    const $target = document.getElementById(target);
-                    el.classList.toggle('is-active');
-                    $target.classList.toggle('is-active');
-                });
-            });
-        }
-    });
 </script>
 <script nonce="D4rkm0d3">
     const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
@@ -363,9 +335,6 @@ $flashes = getFlashes();
     toggleSwitch.addEventListener('change', switchTheme, false);
 </script>
 
-
-<!-- Additional Scripts -->
-<?php /* echo $additional_scripts; */ ?>
 
 </body>
 </html>

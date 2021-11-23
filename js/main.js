@@ -1,47 +1,7 @@
-import { $, $$, escape, toggleEl } from './dom';
+import { $, $$, toggleEl } from './dom';
 import { TagsInput } from "./tag_input";
-import { DataTable } from "./data_tables";
 
-const setupSite = function() {
-    Array.prototype.forEach.call($$('.js-tag-input'), (el) => {
-        new TagsInput(el).attach();
-    });
-
-    if (document.querySelector('#archive')) {
-        const table = new DataTable(document.querySelector('#archive'), {
-            ajaxCallback: (resolve) => {
-                fetch('/api/ajax_pastes.php')
-                    .then(r => r.json())
-                    .then(resolve);
-            },
-            rowCallback: (rowData) => {
-                const tags = rowData.tags.map((tagData) => {
-                    let tagColorClass;
-                    if (tagData.name.indexOf('nsfw') !== -1) {
-                        tagColorClass = 'is-danger';
-                    } else if (tagData.name.indexOf('safe') !== -1) {
-                        tagColorClass = 'is-success';
-                    } else if (tagData.name.indexOf('/') !== -1) {
-                        tagColorClass = 'is-primary';
-                    } else {
-                        tagColorClass = 'is-info';
-                    }
-
-                    return `<a href="/tags/${tagData.slug}">
-                                <span class="tag ${tagColorClass}">${escape(tagData.name)}</span>
-                            </a>`;
-                }).join('');
-
-                return `<tr>
-                            <td><a href="/${rowData.id}">${escape(rowData.title)}</a></td>
-                            <td><a href="/user/${escape(rowData.author)}">${escape(rowData.author)}</a></td>
-                            <td>${tags}</td>
-                        </tr>`;
-            }
-        });
-        table.attach();
-    }
-
+const setupSignupModal = () => {
     const signupButton = $('[data-target~="#signin"],[data-target~="#signup"]');
 
     if (signupButton) {
@@ -53,6 +13,14 @@ const setupSite = function() {
             $('.modal').classList.remove('is-active');
         });
     }
+}
+
+const globalSetup = () => {
+    Array.prototype.forEach.call($$('.js-tag-input'), (el) => {
+        new TagsInput(el).attach();
+    });
+
+    setupSignupModal();
 
     const embedButton = $('.panel-tools .embed-tool');
 
@@ -79,10 +47,36 @@ const setupSite = function() {
             }
         });
     }
-};
 
-if (document.readyState !== 'loading') {
-    setupSite();
-} else {
-    document.addEventListener('DOMContentLoaded', setupSite);
+    // Notifications
+    (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+        const $notification = $delete.parentNode;
+
+        $delete.addEventListener('click', () => {
+            $notification.parentNode.removeChild($notification);
+        });
+    });
+
+    // Hamburger menu
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    if ($navbarBurgers.length > 0) {
+        $navbarBurgers.forEach(el => {
+            el.addEventListener('click', () => {
+                const target = el.dataset.target;
+                const $target = document.getElementById(target);
+                el.classList.toggle('is-active');
+                $target.classList.toggle('is-active');
+            });
+        });
+    }
+
+    const preloader = $('.preloader');
+    const main = $('main');
+
+    if (preloader && main) {
+        preloader.remove();
+        main.id = '';
+    }
 }
+
+export { globalSetup };

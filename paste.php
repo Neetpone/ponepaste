@@ -8,6 +8,10 @@ use Highlight\Highlighter;
 use PonePaste\Models\Paste;
 use PonePaste\Models\User;
 
+function isRequesterLikelyBot() : bool {
+    return str_contains(strtolower($_SERVER['HTTP_USER_AGENT']), 'bot');
+}
+
 function rawView($content, $p_code) {
     if ($p_code) {
         header('Content-Type: text/plain');
@@ -147,7 +151,7 @@ if (isset($_GET['raw'])) {
 
 // Deletion
 if (isset($_POST['delete'])) {
-    if (!$current_user || ($paste_owner_id !== $current_user->user_id)) {
+    if (!$current_user || ($paste_owner_id !== $current_user->id)) {
         flashError('You must be logged in and own this paste to delete it.');
     } else {
         $paste->delete();
@@ -210,7 +214,7 @@ if ($password_required && $password_valid) {
 }
 
 // View counter
-if (@$_SESSION['not_unique'] !== $paste_id) {
+if (!isRequesterLikelyBot() && @$_SESSION['not_unique'] !== $paste_id) {
     $_SESSION['not_unique'] = $paste_id;
     $paste->views += 1;
     $paste->save();

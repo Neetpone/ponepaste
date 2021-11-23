@@ -15,6 +15,14 @@ use PonePaste\Models\Paste;
 use PonePaste\Models\User;
 
 /* View functions */
+function javascriptIncludeTag(string $name) : string {
+    if (PP_DEBUG) {
+        return "<script src=\"/assets/bundle/${name}.js\"></script>";
+    }
+
+    return "<script src=\"/assets/bundle/${name}.min.js\"></script>";
+}
+
 function urlForPage($page = '') : string {
     if (!PP_MOD_REWRITE) {
         $page .= '.php';
@@ -203,6 +211,8 @@ $total_page_views = PageView::select('tpage')->orderBy('id', 'desc')->first()->t
 $total_unique_views = PageView::select('tvisit')->orderBy('id', 'desc')->first()->tvisit;
 
 $current_user = SessionHelper::currentUser();
+
+$script_bundles = [];
 
 /* Security headers */
 header('X-Frame-Options: SAMEORIGIN');

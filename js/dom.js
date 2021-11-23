@@ -37,5 +37,12 @@ const escape = function(unsafe) {
         .replace(/'/g, "&#039;");
 }
 
+const whenReady = function(funcp) {
+    if (document.readyState !== 'loading') {
+        funcp();
+    } else {
+        document.addEventListener('DOMContentLoaded', funcp);
+    }
+}
 
-export { $, $$, makeEl, clearEl, toggleEl, escape };
+export { whenReady, $, $$, makeEl, clearEl, toggleEl, escape };

@@ -1,20 +1,27 @@
-// noinspection JSUnusedGlobalSymbols
+// noinspection JSUnusedGlobalSymbols,JSCheckFunctionSignatures
 
-import { getBabelOutputPlugin } from '@rollup/plugin-babel';
-import { terser } from 'rollup-plugin-terser';
+import {getBabelOutputPlugin} from '@rollup/plugin-babel';
+import {terser} from 'rollup-plugin-terser';
 
-export default {
-    input: 'js/main.js',
-    output: [
-        {
-            file: 'assets/bundle/bundle.js',
-            format: 'esm'
-        },
-        {
-            file: 'assets/bundle/bundle.min.js',
-            format: 'esm',
-            plugins: [getBabelOutputPlugin({ presets: ['@babel/preset-env'] }), terser()],
-            sourcemap: true
-        }
-    ]
+const output = (name) => {
+    return {
+        input: `js/${name}.js`,
+        output: [
+            {
+                file: `assets/bundle/${name}.js`,
+                format: 'esm'
+            },
+            {
+                file: `assets/bundle/${name}.min.js`,
+                format: 'esm',
+                plugins: [getBabelOutputPlugin({ presets: ['@babel/preset-env'] }), terser()],
+                sourcemap: true
+            }
+        ]
+    }
 };
+
+export default [
+    output('generic'),
+    output('archive')
+];

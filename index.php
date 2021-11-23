@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($editing) {
         $paste = Paste::find($_POST['paste_id']);
         if ($current_user &&
-            $current_user->user_id === $paste->user_id) {
+            $current_user->id === $paste->user_id) {
             $paste_id = $paste->id;
             $paste->update([
                     'title' => $paste_title,

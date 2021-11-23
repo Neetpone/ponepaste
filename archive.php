@@ -15,4 +15,5 @@ updatePageViews($conn);
 // Theme
 $page_template = 'archive';
 $page_title = 'Pastes Archive';
+array_push($script_bundles, 'archive');
 require_once('theme/' . $default_theme . '/common.php');

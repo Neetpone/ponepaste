@@ -1,40 +1,5 @@
 <link rel="stylesheet" href="theme/bulma/css/bulma-tagsinput.min.css"/>
 <script>
-    function setupTagsInput() {
-        const tagsInput = document.getElementById('tags-with-source');
-
-        if (tagsInput) {
-            new BulmaTagsInput(tagsInput, {
-                allowDuplicates: false,
-                caseSensitive: false,
-                clearSelectionOnTyping: false,
-                closeDropdownOnItemSelect: true,
-                delimiter: ',',
-                freeInput: true,
-                highlightDuplicate: true,
-                highlightMatchesString: true,
-                itemText: 'name',
-                maxTags: 10,
-                maxChars: 40,
-                minChars: 1,
-                noResultsLabel: 'No results found',
-                placeholder: '10 Tags Maximum"',
-                removable: true,
-                searchMinChars: 1,
-                searchOn: 'text',
-                selectable: true,
-                tagClass: 'is-info',
-                trim: true,
-            });
-        }
-    }
-
-    if (document.readyState !== 'loading') {
-        setupTagsInput();
-    } else {
-        document.addEventListener('DOMContentLoaded', setupTagsInput);
-    }
-
     function openreport() {
         var x = document.getElementById("panel");
         if (x.style.display === "none") {
@@ -52,19 +17,6 @@
             x.style.display = "none";
         }
     }
-</script>
-<script>
-    function preloaderFadeOutInit() {
-        $('.preloader').fadeOut('slow');
-        $('main').attr('id', '');
-    }
-
-    // Window load function
-    jQuery(window).on('load', function () {
-        (function ($) {
-           // preloaderFadeOutInit();
-        })(jQuery);
-    });
 </script>
 <?php if ($using_highlighter): ?>
     <link rel="stylesheet" href="/vendor/scrivo/highlight.php/styles/default.css"/>
@@ -242,7 +194,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                     <?php endif; ?>
                 </div>
                 <!-- Guests -->
-                <?php if ($totalpastes !== 0 && ($current_user === null || $current_user->user_id !== $paste['user_id'])) { ?>
+                <?php if ($totalpastes !== 0 && ($current_user === null || $current_user->id !== $paste_owner_id)) { ?>
                     <hr>
                     <label class="label">More from this Author </label>
                     <?php
@@ -313,19 +265,16 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                         <p id="charNum"><b>File Size: </b><span style="color: green;">1000/1000Kb</span></p>
                         <br>
 
-
                         <div class="columns">
                             <div class="column">
                                 <div class="field">
                                     <label class="label">Tags</label>
                                     <div class="control">
-                                        <input id="tags-with-source" name="tag_input" class="input"
-                                               value="<?php
-                                               $inputtags = $paste['tags'];
-                                               foreach ($inputtags as $tag) {
-                                                   $tagsName = ucfirst(pp_html_escape($tag['name']));
-                                                   echo ',' . $tagsName . '';
-                                               } ?>">
+                                        <label class="label" for="field_tags">Tags</label>
+                                        <div class="control">
+                                            <input name="tag_input" class="input js-tag-input" id="field_tags"
+                                                   value="<?= pp_html_escape($paste->tags->map(function($t) { return $t->name; })->join(',')) ?>" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -418,7 +367,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                         Encrypt on Server
                                     </label>
                                     <?php
-                                    if ($current_user->user_id == $paste['user_id']) {
+                                    if ($current_user->id == $paste['user_id']) {
                                         ?>
                                         <input class="button is-info" type="submit" name="edit" id="edit"
                                                value="Edit"/>

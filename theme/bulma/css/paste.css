@@ -4,10 +4,8 @@
 
 /* Bulma */
 @import url("bulma.min.css");
-@import url("bulma.modal-fx.min.css");
 @import url("bulma.tooltip.min.css");
 @import url("bulma.checkradio.min.css");
-@import url("bulma.social.all.min.css");
 
 /* DataTables.js */
 @import url("datatables.min.css");

@@ -57,7 +57,7 @@ if (isset($_GET['del'])) {
         $paste_id = intval(trim($_GET['id']));
         $paste = Paste::find($paste_id);
 
-        if (!$paste || $paste->user_id !== $current_user->user_id) {
+        if (!$paste || $paste->user_id !== $current_user->id) {
             $error = 'That paste does not exist, or you are not the owner of it.';
         } else {
             $paste->delete();

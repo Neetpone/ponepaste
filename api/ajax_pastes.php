@@ -11,7 +11,16 @@ $pastes = Paste::with([
     'tags' => function($query) {
         $query->select('tags.id', 'name', 'slug');
     }
-])->select(['id', 'user_id', 'title'])->get();
+])->select(['id', 'user_id', 'title']);
+
+if (!empty($_GET['q']) && is_string($_GET['q'])) {
+    $tags = explode(',', $_GET['q']);
+    $pastes = $pastes->whereHas('tags', function($query) use ($tags) {
+        $query->where('name', $tags);
+    });
+}
+
+$pastes = $pastes->get();
 
 header('Content-Type: application/json; charset=UTF-8');
 
