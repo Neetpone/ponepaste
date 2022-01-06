@@ -1,27 +1,3 @@
-<script>
-    /*$(document).ready(function () {
-        $("#archive").dataTable({
-            rowReorder: {selector: 'td:nth-child(2)'},
-            responsive: true,
-            processing: true,
-            language: {processing: ''},
-            autoWidth: false,
-            ajax: "api/ajax_pastes.php",
-            initComplete: function () {
-                var search = new URLSearchParams(window.location.search);
-                var query = search.get('q');
-                if (query) {
-                    $("#archive_filter input")
-                        .val(query)
-                        .trigger("input");
-                }
-            }
-        })
-    });*/
-
-
-</script>
-
 <style>
     .paginator > a {
         margin: 0.25rem;
@@ -41,13 +17,18 @@
             <div class="bd-lead">
                 <article class="message is-info">
                     <div class="message-body">
-                        There are <strong><?php echo $total_untagged ?></strong> pastes that still need to be tagged.
+                        There are <strong><?= $total_untagged ?></strong> pastes that still need to be tagged.
                     </div>
                 </article>
                 <?php if ($site_is_private): ?>
                     <h1 class="title is-5">This pastebin is private.</h1>
                 <?php else: ?>
                 <h1 class="title is-4">Pastes Archive</h1>
+                <div class="table_filterer">
+                    <label><i class="fa fa-search"></i>
+                        <input class="search" type="search" name="search" placeholder="Filter..."/>
+                    </label>
+                </div>
                 <table id="archive" class="table is-fullwidth is-hoverable">
                     <thead>
                     <tr>
@@ -75,6 +56,3 @@
         </div>
     </div>
 </main>
-<script>
-
-</script>

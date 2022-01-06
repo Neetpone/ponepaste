@@ -204,3 +204,30 @@ button.button--no-style {
 .paginator__button--selected {
     background-color: #ddd;
 }
+
+.table_filterer {
+    color: #fff;
+    background: #3298dc;
+    padding: 10px;
+    border-radius: 3px;
+}
+
+.table_filterer input {
+    margin-left: .5em;
+    height: 34px;
+    border-radius: 3px;
+    padding-left: 10px;
+    font-size: 14px;
+    font-family: arial,sans-serif;
+    font-weight: 400;
+    background: #fff;
+    border: 1px solid #bdc4c9;
+    width: 80%;
+    box-shadow: inset 0 1px 0 #f1f0f1;
+}
+
+.rules h2 {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    color: black;
+}

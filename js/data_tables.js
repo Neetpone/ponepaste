@@ -1,6 +1,5 @@
 import { makeEl, clearEl } from "./dom";
 
-
 class SimplePaginator {
     constructor(element) {
         this.element = element;
@@ -78,6 +77,7 @@ class DataTable {
 
         this.ajaxCallback = options.ajaxCallback;
         this.data = [];
+        this.unfilteredData = [];
 
         this.totalRecords = -1;
         this.perPage = 20;
@@ -85,9 +85,23 @@ class DataTable {
 
         this.paginator = new SimplePaginator(this.container.querySelector('.paginator'));
 
+        this.filterCallback = options.filterCallback;
     }
 
     attach() {
+        this.filterField = this.container.querySelector('input.search');
+        if (this.filterField && this.filterCallback) {
+            this.filterField.addEventListener('keyup', evt => {
+               if (evt.target) {
+                   this._updateFilter(evt.target.value);
+               }
+            });
+
+            if (this.options.preFilter) {
+                this.filterField.value = this.options.preFilter;
+            }
+        }
+
         this.paginator.attach(this._updatePage.bind(this));
         this._loadEntries();
     }
@@ -95,12 +109,15 @@ class DataTable {
     /* Load the requested data from the server, and when done, update the DOM. */
     _loadEntries() {
         new Promise(this.ajaxCallback)
-            .then(this._updateEntries.bind(this));
+            .then(data => {
+                this.unfilteredData = data.data;
+                this._updateFilter(this.options.preFilter);
+            });
     }
 
     /* Update the DOM to reflect the current state of the data we have loaded */
     _updateEntries(data) {
-        this.data = data.data;
+        this.data = data;
         this.totalRecords = this.data.length;
 
         const bodyElement = this.element.querySelector('tbody');
@@ -123,7 +140,25 @@ class DataTable {
     _updatePage(n) {
         this.currentPage = n;
         this.paginator.update(this.totalRecords, this.perPage, this.currentPage);
-        this._updateEntries({data: this.data});
+        this._updateEntries(this.data);
+    }
+
+    _updateFilter(query) {
+        /* clearing the query */
+        if (query === null || query === '') {
+            this._updateEntries(this.unfilteredData);
+            return;
+        }
+
+        let data = [];
+        for (const datum of this.unfilteredData) {
+            if (this.filterCallback(datum, query)) {
+                data.push(datum);
+            }
+        }
+
+        this._updatePage(0)
+        this._updateEntries(data);
     }
 
     _updateSort(field, direction) {

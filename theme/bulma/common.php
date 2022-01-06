@@ -250,8 +250,8 @@ $flashes = getFlashes();
                 <div class="columns">
                     <div class="column">
                         <ul>
-                            <li><a href="/page/rules" target="_blank">Site Rules</a></li>
-                            <li><a href="/page/privacy" target="_blank">Privacy Policy</a></li>
+                            <li><a href="/rules" target="_blank">Site Rules</a></li>
+                            <li><a href="/privacy" target="_blank">Privacy Policy</a></li>
                             <li><a href="mailto:admin@ponepaste.org">Contact</a></li>
                         </ul>
                     </div>
