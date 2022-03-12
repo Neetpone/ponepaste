@@ -209,8 +209,6 @@ if ($site_permissions) {
 $captcha_config = $site_info['captcha'];
 $captcha_enabled = (bool) $captcha_config['enabled'];
 
-
-
 $total_pastes = Paste::count();
 $total_page_views = PageView::select('tpage')->orderBy('id', 'desc')->first()->tpage;
 $total_unique_views = PageView::select('tvisit')->orderBy('id', 'desc')->first()->tvisit;
