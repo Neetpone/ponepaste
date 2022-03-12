@@ -19,7 +19,7 @@ if ($current_user !== null) {
     die();
 }
 
-updatePageViews($conn);
+updatePageViews();
 
 if (isset($_POST['forgot'])) {
     if (!empty($_POST['username']) && !empty($_POST['recovery_code'])) {

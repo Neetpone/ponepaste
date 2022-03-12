@@ -226,22 +226,14 @@ function embedView($paste_id, $p_title, $content, $p_code, $title, $baseurl, $la
     return $stats;
 }
 
-function addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite) {
+function addToSitemap(\PonePaste\Models\Paste $paste, $priority, $changefreq) {
     $c_date = date('Y-m-d');
     $site_data = file_get_contents("sitemap.xml");
     $site_data = str_replace("</urlset>", "", $site_data);
-    // which protocol are we on
-    $protocol = paste_protocol();
-
-    if (PP_MOD_REWRITE) {
-        $server_name = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/" . $paste_id;
-    } else {
-        $server_name = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/paste.php?id=" . $paste_id;
-    }
 
     $c_sitemap =
         '	<url>
-		<loc>' . $server_name . '</loc>
+		<loc>' . urlForPaste($paste) . '</loc>
 		<priority>' . $priority . '</priority>
 		<changefreq>' . $changefreq . '</changefreq>
 		<lastmod>' . $c_date . '</lastmod>

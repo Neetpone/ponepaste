@@ -222,8 +222,6 @@ require_once('common.php');
 </div>
 <!-- End content -->
 
-<script type="text/javascript" src="js/jquery.min.js"></script>
-<script type="text/javascript" language="javascript" src="js/jquery.dataTables.js"></script>
 <script type="text/javascript" language="javascript" class="init">
     $(document).ready(function () {
         $('#pastesTable').dataTable({
@@ -233,6 +231,5 @@ require_once('common.php');
         });
     });
 </script>
-<script type="text/javascript" src="js/bootstrap.min.js"></script>
 </body>
 </html>

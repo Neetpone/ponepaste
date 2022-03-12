@@ -14,7 +14,7 @@ class User extends Model {
     }
 
     public function favourites() {
-        return $this->belongsToMany(Paste::class, 'user_favourites');
+        return $this->belongsToMany(Paste::class, 'user_favourites')->withPivot('f_time');
     }
 
     public function pastes() {

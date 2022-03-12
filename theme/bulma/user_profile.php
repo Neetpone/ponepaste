@@ -1,46 +1,3 @@
-<script>
-    $(document).ready(function () {
-        $("#archive").dataTable({
-            rowReorder: {selector: 'td:nth-child(2)'},
-            responsive: true,
-            pageLength: 50,
-            order: [[ 1, "desc" ]],
-            autoWidth: false,
-            initComplete: function () {
-                var search = new URLSearchParams(window.location.search);
-                var query = search.get('q');
-                if (query) {
-                    $("#archive_filter input")
-                        .val(query)
-                        .trigger("input");
-                }
-            }
-        })
-    });
-</script>
-<?php if ($current_user) { ?>
-    <script>
-    $(document).ready(function () {
-        $("#favs").dataTable({
-        rowReorder: { selector: 'td:nth-child(2)'},
-        responsive: true,
-            order: [[ 2, "desc" ]],
-            pageLength: 50,
-            autoWidth: false,
-            initComplete: function () {
-                var search = new URLSearchParams(window.location.search);
-                var query = search.get('q');
-                if (query) {
-                    $("#archive_filter input")
-                        .val(query)
-                        .trigger("input");
-                }
-            }
-        })
-    });
-    </script>
-<?php } ?>
-
 <?php
     $public_paste_badges = [
         50 => '[ProbablyAutistic] Have more than Fifty pastes',
@@ -87,11 +44,11 @@
                     <h2 class="title is-5">Badges</h2>
                     <?php
                     if (strtotime($profile_join_date) <= 1604188800) {
-                        echo '<img src = "/img/badges/adopter.png" title="[EarlyAdopter] Joined during the first wave " style="margin:5px">';
+                        echo '<img src="/img/badges/adopter.png" title="[EarlyAdopter] Joined during the first wave " style="margin:5px">';
                     } elseif (strtotime($profile_join_date) <= 1608422400) {
-                        echo '<img src = "/img/badges/pioneer.png" title="[EarlyPioneer] Joined during the Second wave " style="margin:5px">';
+                        echo '<img src="/img/badges/pioneer.png" title="[EarlyPioneer] Joined during the Second wave " style="margin:5px">';
                     } elseif (strtotime($profile_join_date) <= 1609459200) {
-                        echo '<img src = "/img/badges/strag.png" title="[EarlyStraggeler] Joined after the Second wave " style="margin:5px">';
+                        echo '<img src="/img/badges/strag.png" title="[EarlyStraggeler] Joined after the Second wave " style="margin:5px">';
                     }
                     if (!str_contains($profile_badge, '0')) {
                         echo $profile_badge;
@@ -143,15 +100,15 @@
                     <table id="archive" class="table is-fullwidth is-hoverable">
                         <thead>
                         <tr>
-                            <td class="td-right">Title</td>
-                            <td class="td-center">Paste Time</td>
+                            <th class="td-right">Title</th>
+                            <th class="td-center">Paste Time</th>
                             <?php if ($is_current_user) {
-                                echo "<td class='td-center'>Visibility</td>";
+                                echo "<th class='td-center'>Visibility</th>";
                             } ?>
-                            <td class="td-center">Views</td>
-                            <td class="td-center">Tags</td>
+                            <th class="td-center">Views</th>
+                            <th class="td-center">Tags</th>
                             <?php if ($is_current_user) {
-                                echo "<td class='td-center'>Delete</td>";
+                                echo "<th class='td-center'>Delete</th>";
                             } ?>
                         </tr>
                         </thead>
@@ -165,9 +122,13 @@
                                     1 => 'Unlisted',
                                     2 => 'Private'
                                 };
+                                $pasteJson = array_merge(
+                                    $paste->only('id', 'title', 'tags', 'views', 'created_at'),
+                                    ['visibility' => $p_visible]
+                                );
                             ?>
                             <?php if ($is_current_user || $row['visible'] == Paste::VISIBILITY_PUBLIC): ?>
-                                <tr>
+                                <tr data-paste-info="<?= pp_html_escape(json_encode($pasteJson)); ?>">
                                     <td><a href="<?= urlForPaste($paste) ?>" title="<?= $escaped_title ?>"><?= $escaped_title ?></a></td>
                                     <td data-sort="<?= $p_date->format('U') ?>" class="td-center"><?= $p_date->format('d F Y') ?></td>
                                     <td class="td-center"><?= $p_visible; ?></td>
@@ -180,29 +141,30 @@
                         </tbody>
                         <tfoot>
                         <tr>
-                            <td class="td-center">Title</td>
-                            <td class="td-center">Paste Time</td>
+                            <th class="td-center">Title</th>
+                            <th class="td-center">Paste Time</th>
                             <?php if ($is_current_user) {
                                 echo "<td class='td-center'>Visibility</td>";
                             } ?>
-                            <td class="td-center">Views</td>
-                            <td class="td-center">Tags</td>
+                            <th class="td-center">Views</th>
+                            <th class="td-center">Tags</th>
                             <?php if ($is_current_user) {
                                 echo "<td class='td-center'>Delete</td>";
                             } ?>
                         </tr>
                         </tfoot>
                     </table>
+                    <div class="paginator"></div>
                 </div>
                 <?php if ($is_current_user) { ?>
                 <div class="tab-content" id="second-tab">
                     <table id="favs" class="table is-fullwidth is-hoverable">
                         <thead>
                         <tr>
-                            <td class="td-right">Title</td>
-                            <td class="td-center">Date Favourited</td>
-                            <td class="td-center">Status</td>
-                            <td class="td-center">Tags</td>
+                            <th class="td-right">Title</th>
+                            <th class="td-center">Date Favourited</th>
+                            <th class="td-center">Status</th>
+                            <th class="td-center">Tags</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -212,11 +174,15 @@
                             $f_date = new DateTime($paste->pivot->f_time);
                             $update_date = new DateTime($paste->updated_at);
                             $delta = $update_date->diff(new DateTime(), true);
+                            $pasteJson = array_merge(
+                                $paste->only('id', 'title', 'tags', 'views', 'created_at'),
+                                ['recently_updated' => ($delta->days <= 2), 'favourited_at' => $f_date->format('d F Y')]
+                            );
                             ?>
                             <?php if ($is_current_user || $row['visible'] == Paste::VISIBILITY_PUBLIC): ?>
-                                <tr>
+                                <tr data-paste-info="<?= pp_html_escape(json_encode($pasteJson)); ?>">
                                     <td><a href="<?= urlForPaste($paste) ?>" title="<?= $escaped_title ?>"><?= $escaped_title ?></a></td>
-                                    <td data-sort="<?= $p_date->format('U') ?>" class="td-center"><?= $p_date->format('d F Y') ?></td>
+                                    <td data-sort="<?= $p_date->format('U') ?>" class="td-center"><?= $f_date->format('d F Y') ?></td>
                                     <td class="td-center">
                                         <?php if ($delta->days <= 2): ?>
                                             <i class='far fa-check-square fa-lg' aria-hidden='true'></i>
@@ -239,6 +205,7 @@
                         </tfoot>
                         <?php } ?>
                     </table>
+                    <div class="paginator"></div>
                 </div>
             </div>
         </div>

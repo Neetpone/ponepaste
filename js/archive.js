@@ -1,5 +1,5 @@
 import { escape, whenReady } from './dom';
-import { DataTable } from './data_tables';
+import { DataTable, dumbFilterCallback } from './data_tables';
 import { globalSetup } from './main';
 
 whenReady(() => {
@@ -39,20 +39,7 @@ whenReady(() => {
                         <td>${tags}</td>
                     </tr>`;
         },
-        filterCallback: (datum, query) => {
-            if (datum.title.indexOf(query) !== -1) {
-                return true;
-            }
-
-            /* this is inefficient */
-            for (const tag of datum.tags) {
-                if (tag.name.toLowerCase() === query.toLowerCase()) {
-                    return true;
-                }
-            }
-
-            return false;
-        },
+        filterCallback: dumbFilterCallback,
         preFilter: myParam
     });
     table.attach();

@@ -3,7 +3,7 @@
 use Illuminate\Database\Eloquent\Builder;
 
 class NonRetardedSSP {
-    public static function run(DatabaseHandle $conn, array $request, Builder $builder) {
+    public static function run(array $request, Builder $builder) {
         /* Some of these parameters might not be passed; zero is an OK default */
         $draw = (int) @$request['draw'];
         $start = (int) @$request['start'];

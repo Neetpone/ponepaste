@@ -7,6 +7,24 @@
         pointer-events: none;
         color: gray;
     }
+
+    .paginator__sort > th {
+        cursor: pointer;
+    }
+
+    .paginator__sort--down, .paginator__sort--up {
+        background-color: lightblue;
+    }
+
+    .paginator__sort--down:after {
+        padding-left: 0.25rem;
+        content: '▼';
+    }
+
+    .paginator__sort--up:after {
+        padding-left: 0.25rem;
+        content: '▲';
+    }
 </style>
 
 <main class="bd-main">
@@ -31,10 +49,10 @@
                 </div>
                 <table id="archive" class="table is-fullwidth is-hoverable">
                     <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Tags</th>
+                    <tr class="paginator__sort">
+                        <th data-sort-field="title">Title</th>
+                        <th data-sort-field="author">Author</th>
+                        <th data-sort-field="tags">Tags</th>
                     </tr>
                     </thead>
                     <tbody>

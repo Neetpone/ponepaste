@@ -139,7 +139,5 @@ $admin_logs = AdminLog::with('user')
 </div>
 <!-- End content -->
 
-<script type="text/javascript" src="js/jquery.min.js"></script>
-<script type="text/javascript" src="js/bootstrap.min.js"></script>
 </body>
 </html>

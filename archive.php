@@ -10,7 +10,7 @@ $date = date('jS F Y');
 // Temp count for untagged pastes
 $total_untagged = Paste::doesntHave('tags')->count();
 
-updatePageViews($conn);
+updatePageViews();
 
 // Theme
 $page_template = 'archive';

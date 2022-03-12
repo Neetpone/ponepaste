@@ -35,7 +35,7 @@ function verifyCaptcha() : string|bool {
 function calculatePasteExpiry(string $expiry) {
     // used to use mktime
     if ($expiry === 'self') {
-        return 'SELF'; // What does this do?
+        return 'SELF';
     }
 
     $valid_expiries = ['10M', '1H', '1D', '1W', '2W', '1M'];
@@ -62,11 +62,8 @@ function validatePasteFields() : string|null {
 }
 
 // Sitemap
-$site_sitemap_rows = $conn->query('SELECT * FROM sitemap_options LIMIT 1');
-if ($row = $site_sitemap_rows->fetch()) {
-    $priority = $row['priority'];
-    $changefreq = $row['changefreq'];
-}
+$priority = 0.9;
+$changefreq = 'weekly';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     if ($captcha_config['enabled']) {
@@ -74,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     }
 }
 
-updatePageViews($conn);
+updatePageViews();
 
 // POST Handler
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -164,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $paste_id = $new_paste->id;
 
         if ($p_visible == '0') {
-            addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite);
+            addToSitemap($paste, $priority, $changefreq);
         }
     }
 

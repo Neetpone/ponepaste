@@ -14,7 +14,10 @@ if (empty($_GET['user'])) {
 
 $profile_username = trim($_GET['user']);
 
-$profile_info = User::with('favourites')->where('username', $profile_username)->select('id', 'date', 'badge')->first();
+$profile_info = User::with('favourites')
+    ->where('username', $profile_username)
+    ->select('id', 'date', 'badge')
+    ->first();
 
 if (!$profile_info) {
     // Invalid username
@@ -50,7 +53,7 @@ $profile_pastes = $profile_info->pastes;
 $profile_favs = $profile_info->favourites;
 $is_current_user = ($current_user !== null) && ($profile_info->id == $current_user->id);
 
-updatePageViews($conn);
+updatePageViews();
 
 if (isset($_GET['del'])) {
     if ($current_user !== null) { // Prevent unauthorized deletes
@@ -70,4 +73,5 @@ if (isset($_GET['del'])) {
 
 // Theme
 $page_template = 'user_profile';
+array_push($script_bundles, 'user_profile');
 require_once('theme/' . $default_theme . '/common.php');

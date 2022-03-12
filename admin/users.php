@@ -184,8 +184,6 @@ require_once(__DIR__ . '/common.php');
 </div>
 <!-- End content -->
 
-<script type="text/javascript" src="js/jquery.min.js"></script>
-<script type="text/javascript" language="javascript" src="js/jquery.dataTables.js"></script>
 <script type="text/javascript" language="javascript" class="init">
     $(document).ready(function () {
         $('#usersTable').dataTable({

@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-updatePageViews($conn);
+updatePageViews();
 
 $total_user_pastes = Paste::where('user_id', $current_user->id)->count();
 

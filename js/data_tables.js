@@ -21,6 +21,10 @@ class SimplePaginator {
         const lastPage = Math.floor(totalRecords / perPage); // ish?
         const numPagesToShow = 2;
 
+        if (lastPage === firstPage) {
+            return;
+        }
+
         /* First and last page the main paginator will show */
         const firstPageShow = (currentPage - firstPage) < numPagesToShow ? firstPage : ((currentPage - numPagesToShow < 0) ? currentPage : currentPage - numPagesToShow);
         const lastPageShow = (firstPageShow + numPagesToShow) > lastPage ? lastPage : (firstPageShow + numPagesToShow + numPagesToShow);
@@ -86,6 +90,9 @@ class DataTable {
         this.paginator = new SimplePaginator(this.container.querySelector('.paginator'));
 
         this.filterCallback = options.filterCallback;
+        this.sortField = null;
+        this.sortDir = true;
+        this.reverseRowCallback = options.reverseRowCallback;
     }
 
     attach() {
@@ -102,17 +109,44 @@ class DataTable {
             }
         }
 
+        const header = this.element.querySelector('tr.paginator__sort');
+
+        if (header) {
+            header.addEventListener('click', evt => {
+                const target = evt.target;
+
+                if (!target.dataset.sortField) {
+                    return;
+                }
+
+                if (this.sortField) {
+                    const elem = this.element.querySelector(`th[data-sort-field=${this.sortField}]`)
+                    elem.classList.remove('paginator__sort--down');
+                    elem.classList.remove('paginator__sort--up');
+                }
+
+                this._updateSort(target.dataset.sortField, !this.sortDir);
+
+                target.classList.add(this.sortDir ? 'paginator__sort--up' : 'paginator__sort--down');
+            });
+        }
+
         this.paginator.attach(this._updatePage.bind(this));
         this._loadEntries();
     }
 
     /* Load the requested data from the server, and when done, update the DOM. */
     _loadEntries() {
-        new Promise(this.ajaxCallback)
-            .then(data => {
-                this.unfilteredData = data.data;
-                this._updateFilter(this.options.preFilter);
-            });
+        if (this.ajaxCallback) {
+            new Promise(this.ajaxCallback)
+                .then(data => {
+                    this.unfilteredData = data.data;
+                    this._updateFilter(this.options.preFilter);
+                });
+        } else if (this.reverseRowCallback) {
+            this.unfilteredData = Array.prototype.map.call(this.element.querySelectorAll('tr'), this.reverseRowCallback).filter(row => row);
+            this._updateFilter(this.options.preFilter);
+        }
     }
 
     /* Update the DOM to reflect the current state of the data we have loaded */
@@ -162,8 +196,43 @@ class DataTable {
     }
 
     _updateSort(field, direction) {
+        this.sortField = field;
+        this.sortDir = direction;
 
+        let newEntries = [...this.data].sort((a, b) => {
+            let sorter = 0;
+
+            if (a[field] > b[field]) {
+                sorter = 1;
+            } else if (a[field] < b[field]) {
+                sorter = -1;
+            }
+
+            if (!direction) {
+                sorter = -sorter;
+            }
+
+            return sorter;
+        });
+
+        this._updatePage(0);
+        this._updateEntries(newEntries);
     }
 }
 
-export { DataTable };
+const dumbFilterCallback = (datum, query) => {
+    if (datum.title.indexOf(query) !== -1) {
+        return true;
+    }
+
+    /* this is inefficient */
+    for (const tag of datum.tags) {
+        if (tag.name.toLowerCase() === query.toLowerCase()) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+export { DataTable, dumbFilterCallback };

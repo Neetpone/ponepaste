@@ -47,6 +47,9 @@ function urlForMember(User $user) : string {
     return '/user.php?name=' . urlencode($user->username);
 }
 
+/**
+ * @throws Exception if the names and values aren't the same length
+ */
 function optionsForSelect(array $displays, array $values, string $currentSelection = null) : string {
     $size = count($displays);
 
@@ -69,6 +72,9 @@ function optionsForSelect(array $displays, array $values, string $currentSelecti
     return $html;
 }
 
+/**
+ * @throws Exception if the flash level is invalid
+ */
 function flash(string $level, string $message) {
     if (!isset($_SESSION['flashes'])) {
         $_SESSION['flashes'] = [
@@ -121,7 +127,7 @@ function pp_html_escape(string $unescaped) : string {
 }
 
 /* I think there is one row for each day, and in that row, tpage = non-unique, tvisit = unique page views for that day */
-function updatePageViews(DatabaseHandle $conn) : void {
+function updatePageViews() : void {
     global $redis;
 
     $ip = $_SERVER['REMOTE_ADDR'];
@@ -130,8 +136,6 @@ function updatePageViews(DatabaseHandle $conn) : void {
     $last_page_view = PageView::orderBy('id', 'desc')->limit(1)->first();
 
     if ($last_page_view && $last_page_view->date == $date) {
-        $last_tpage = intval($last_page_view->tpage) + 1;
-
         if (!$redis->sIsMember('page_view_ips', $ip)) {
             $last_page_view->tvisit++;
             $redis->sAdd('page_view_ips', $ip);
@@ -153,7 +157,6 @@ function updatePageViews(DatabaseHandle $conn) : void {
 session_start();
 
 /* Set up the database and Eloquent ORM */
-$conn = new DatabaseHandle("mysql:host=$db_host;dbname=$db_schema;charset=utf8mb4", $db_user, $db_pass);
 $capsule = new Capsule();
 
 $capsule->addConnection([
@@ -167,6 +170,12 @@ $capsule->addConnection([
 ]);
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
+
+// Check if IP is banned
+$ip = $_SERVER['REMOTE_ADDR'];
+if (IPBan::where('ip', $ip)->first()) {
+    die('You have been banned.');
+}
 
 /* Set up Redis */
 $redis = new Redis();
@@ -200,11 +209,7 @@ if ($site_permissions) {
 $captcha_config = $site_info['captcha'];
 $captcha_enabled = (bool) $captcha_config['enabled'];
 
-// Check if IP is banned
-$ip = $_SERVER['REMOTE_ADDR'];
-if (IPBan::where('ip', $ip)->first()) {
-    die('You have been banned.');
-}
+
 
 $total_pastes = Paste::count();
 $total_page_views = PageView::select('tpage')->orderBy('id', 'desc')->first()->tpage;

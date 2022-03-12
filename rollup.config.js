@@ -23,5 +23,6 @@ const output = (name) => {
 
 export default [
     output('generic'),
-    output('archive')
+    output('archive'),
+    output('user_profile')
 ];

@@ -39,7 +39,7 @@ function getUserRecommended(User $user) {
 
 $paste_id = intval(trim($_REQUEST['id']));
 
-updatePageViews($conn);
+updatePageViews();
 
 // This is used in the theme files.
 $totalpastes = Paste::count();
