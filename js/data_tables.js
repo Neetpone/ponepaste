@@ -92,7 +92,6 @@ class DataTable {
         this.filterCallback = options.filterCallback;
         this.sortField = null;
         this.sortDir = true;
-        this.reverseRowCallback = options.reverseRowCallback;
     }
 
     attach() {
@@ -107,6 +106,15 @@ class DataTable {
             if (this.options.preFilter) {
                 this.filterField.value = this.options.preFilter;
             }
+        }
+
+        this.perPageField = this.container.querySelector('select[name=per_page]');
+
+        if (this.perPageField) {
+            this.perPageField.addEventListener('change', evt => {
+               this.perPage = Number(evt.target.value);
+               this._updatePage(0);
+            });
         }
 
         const header = this.element.querySelector('tr.paginator__sort');
@@ -137,16 +145,11 @@ class DataTable {
 
     /* Load the requested data from the server, and when done, update the DOM. */
     _loadEntries() {
-        if (this.ajaxCallback) {
-            new Promise(this.ajaxCallback)
-                .then(data => {
-                    this.unfilteredData = data.data;
-                    this._updateFilter(this.options.preFilter);
-                });
-        } else if (this.reverseRowCallback) {
-            this.unfilteredData = Array.prototype.map.call(this.element.querySelectorAll('tr'), this.reverseRowCallback).filter(row => row);
-            this._updateFilter(this.options.preFilter);
-        }
+        new Promise(this.ajaxCallback)
+            .then(data => {
+                this.unfilteredData = data.data;
+                this._updateFilter(this.options.preFilter);
+            });
     }
 
     /* Update the DOM to reflect the current state of the data we have loaded */

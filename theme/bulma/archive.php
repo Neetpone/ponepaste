@@ -46,6 +46,14 @@
                     <label><i class="fa fa-search"></i>
                         <input class="search" type="search" name="search" placeholder="Filter..."/>
                     </label>
+                    Show&nbsp;
+                    <select name="per_page">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    &nbsp;per page
                 </div>
                 <table id="archive" class="table is-fullwidth is-hoverable">
                     <thead>

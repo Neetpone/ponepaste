@@ -15,8 +15,13 @@ whenReady(() => {
 
     const urlParams = new URLSearchParams(window.location.search);
     const myParam = urlParams.get('q');
-    const table = new DataTable(document.getElementById('archive'), {
-        reverseRowCallback: parsePasteInfo,
+    const myPastesElem = document.getElementById('archive');
+    const table = new DataTable(myPastesElem, {
+        ajaxCallback: (resolve) => {
+            resolve({
+                data: Array.prototype.map.call(myPastesElem.querySelectorAll('tbody > tr'), parsePasteInfo)
+            });
+        },
         rowCallback: (rowData) => {
             const tags = rowData.tags.map((tagData) => {
                 let tagColorClass;
@@ -48,8 +53,18 @@ whenReady(() => {
     });
     table.attach();
 
-    const faveTable = new DataTable(document.getElementById('favs'), {
-        reverseRowCallback: parsePasteInfo,
+    const myFavesElem = document.getElementById('favs');
+
+    if (!myFavesElem) {
+        return;
+    }
+
+    const faveTable = new DataTable(myFavesElem, {
+        ajaxCallback: (resolve) => {
+            resolve({
+                data: Array.prototype.map.call(myFavesElem.querySelectorAll('tbody > tr'), parsePasteInfo)
+            });
+        },
         rowCallback: (rowData) => {
             const tags = rowData.tags.map((tagData) => {
                 let tagColorClass;
@@ -80,8 +95,7 @@ whenReady(() => {
                         <td>${tags}</td>
                     </tr>`;
         },
-        filterCallback: dumbFilterCallback,
-        preFilter: myParam
+        filterCallback: dumbFilterCallback
     });
     faveTable.attach();
 });
