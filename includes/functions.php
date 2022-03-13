@@ -1,14 +1,6 @@
 <?php
 use Illuminate\Database\Eloquent\Collection;
 
-function getreports($conn, $count = 10) {
-    $query = $conn->prepare('SELECT * FROM user_reports LIMIT ?');
-    $query->execute([$count]);
-
-    return $query->fetchAll();
-}
-
-
 function tagsToHtml(array | Collection $tags) : string {
     $output = "";
     foreach ($tags as $tagObj) {

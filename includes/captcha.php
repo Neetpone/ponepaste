@@ -5,8 +5,8 @@ use JetBrains\PhpStorm\ArrayShape;
 #[ArrayShape(['code' => "mixed|string", 'image_src' => "string"])]
 function captcha($color, $mode, $mul, $allowed) : array {
 
-    $bg_path = '/assets/img/captcha/';
-    $font_path = '/assets/font/';
+    $bg_path = __DIR__ . '/../assets/img/captcha/';
+    $font_path = __DIR__ . '/../assets/fonts/';
 
     if ($mul == "on") {
         $captcha_config = array(
@@ -128,7 +128,7 @@ if (isset($_GET['_CAPTCHA'])) {
 
     session_start();
 
-    $captcha_config = unserialize($_SESSION['_CAPTCHA']['config']);
+    $captcha_config = unserialize(@$_SESSION['_CAPTCHA']['config']);
     if (!$captcha_config)
         exit();
 
