@@ -89,7 +89,7 @@ function captcha($color, $mode, $mul, $allowed) : array {
     }
 
     // Generate HTML for image src
-    $image_src = substr(__FILE__, strlen(realpath($_SERVER['DOCUMENT_ROOT']))) . '?_CAPTCHA&amp;t=' . urlencode(microtime());
+    $image_src = substr(__FILE__, strlen(realpath($_SERVER['DOCUMENT_ROOT']))) . '?_CAPTCHA&_R=' . urlencode(rand());
     $image_src = '/' . ltrim(preg_replace('/\\\\/', '/', $image_src), '/');
 
     $_SESSION['_CAPTCHA']['config'] = serialize($captcha_config);
@@ -125,7 +125,6 @@ if (!function_exists('hex2rgb')) {
 
 // Draw the image
 if (isset($_GET['_CAPTCHA'])) {
-
     session_start();
 
     $captcha_config = unserialize(@$_SESSION['_CAPTCHA']['config']);
@@ -178,5 +177,4 @@ if (isset($_GET['_CAPTCHA'])) {
     // Output image
     header("Content-type: image/png");
     imagepng($captcha);
-
 }

@@ -4,7 +4,9 @@
         <div class="bd-duo">
             <div class="bd-lead">
                 <h1 class="title is-5">Total Pastes: <?= $total_user_pastes ?></h1>
-                <h1 class="subtitle is-6"><?php echo '<a href="user.php?user=' . urlencode($current_user->username) . '" target="_self">My Pastes</a>'; ?></h1>
+                <h1 class="subtitle is-6">
+                    <a href="<?= urlForMember($current_user); ?>" target="_self">My Pastes</a>
+                </h1>
                 <?php
                 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     if (isset($success)) {
@@ -20,14 +22,14 @@
                 ?>
                 <hr>
                 <h1 class="title is-5">My Profile</h1>
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+                <form action="<?= $_SERVER['PHP_SELF']; ?>" method="post">
                     <div class="columns">
                         <div class="column">
                             <div class="field">
                                 <label class="label">Generate New Recovery Key</label>
                                 <div class="control has-icons-left has-icons-right">
                                     <input disabled="" type="text" class="input" name="username"
-                                           style="cursor:not-allowed;" placeholder="New gen generated here">
+                                           style="cursor:not-allowed;" placeholder="New key generated here">
                                     <span class="icon is-small is-left">
 										<i class="fas fa-user"></i>
 									</span>
@@ -43,9 +45,9 @@
                             <div class="field">
                                 <label class="label" for="username">Username</label>
                                 <div class="control has-icons-left has-icons-right">
-                                    <input disabled="" type="text" class="input" name="username" id="username"
+                                    <input disabled="disabled" type="text" class="input" name="username" id="username"
                                            style="cursor:not-allowed;"
-                                           placeholder="<?php echo pp_html_escape($current_user->username); ?>">
+                                           placeholder="<?= pp_html_escape($current_user->username); ?>">
                                     <span class="icon is-small is-left">
 										<i class="fas fa-user"></i>
 									</span>
@@ -84,6 +86,9 @@
                                 </div>
                             </div>
                             <div class="field">
+                                <?php if (isset($csrf_token)): ?>
+                                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
+                                <?php endif; ?>
                                 <button type="submit" name="submit" class="button is-info">Submit</button>
                             </div>
                         </div>

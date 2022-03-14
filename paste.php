@@ -2,7 +2,6 @@
 define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/functions.php');
-require_once('includes/passwords.php');
 
 use Highlight\Highlighter;
 use PonePaste\Models\Paste;
@@ -55,6 +54,13 @@ if (!$paste) {
     goto Not_Valid_Paste;
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verifyCsrfToken()) {
+        $notfound = 'Invalid CSRF token (do you have cookies enabled?)';
+        goto Not_Valid_Paste;
+    }
+}
+
 $paste_owner_id = $paste->user->id;
 $paste_title = $paste->title;
 $paste_code = $paste->code;
@@ -72,7 +78,6 @@ $fav_count = $paste->favouriters()->count();
     'tags' => getPasteTags($conn, $paste_id)
 ];*/
 
-//$p_member = $row['member'];
 $p_content = $paste->content;
 $p_visible = $paste->visible;
 $p_expiry = $paste->expiry;
@@ -80,12 +85,24 @@ $p_password = $paste->password;
 $p_encrypt = (bool) $paste->encrypt;
 $paste_is_favourited = $current_user !== null && $current_user->favourites->where('paste_id', $paste->id)->count() === 1;
 
-
 $is_private = $p_visible === '2';
 
 if ($is_private && (!$current_user || $current_user->id !== $paste_owner_id)) {
     $notfound = 'This is a private paste. If you created this paste, please log in to view it.';
     goto Not_Valid_Paste;
+}
+
+/* Paste deletion */
+if (isset($_POST['delete'])) {
+    if (!$current_user || ($current_user->id !== $paste_owner_id)) {
+        $notfound = 'You cannot delete someone else\'s paste!';
+        goto Not_Valid_Paste;
+    }
+
+    $paste->delete();
+    flashSuccess('Paste deleted.');
+    header('Location: ' . urlForMember($current_user));
+    die();
 }
 
 /* Verify paste password */
@@ -191,7 +208,7 @@ if ($paste_code === "pastedown") {
 
 // Embed view after highlighting is applied so that $p_code is syntax highlighted as it should be.
 if (isset($_GET['embed'])) {
-    embedView($paste_id, $paste_title, $p_content, $paste_code, $title, $baseurl, $lang);
+    embedView($paste_id, $paste_title, $p_content, $title);
     exit();
 }
 
@@ -230,5 +247,7 @@ if ($is_private || $notfound || !$password_valid) {
     // Display errors
     $page_template = 'errors';
 }
+
+$csrf_token = setupCsrfToken();
 require_once('theme/' . $default_theme . '/common.php');
 

@@ -1,4 +1,6 @@
 <?php
+    use PonePaste\Models\Paste;
+
     $public_paste_badges = [
         50 => '[ProbablyAutistic] Have more than Fifty pastes',
         25 => '[Writefag] Have Twenty Five or more pastes',
@@ -127,14 +129,22 @@
                                     ['visibility' => $p_visible]
                                 );
                             ?>
-                            <?php if ($is_current_user || $row['visible'] == Paste::VISIBILITY_PUBLIC): ?>
+                            <?php if ($is_current_user || $paste->visible == Paste::VISIBILITY_PUBLIC): ?>
                                 <tr data-paste-info="<?= pp_html_escape(json_encode($pasteJson)); ?>">
                                     <td><a href="<?= urlForPaste($paste) ?>" title="<?= $escaped_title ?>"><?= $escaped_title ?></a></td>
                                     <td data-sort="<?= $p_date->format('U') ?>" class="td-center"><?= $p_date->format('d F Y') ?></td>
                                     <td class="td-center"><?= $p_visible; ?></td>
                                     <td class="td-center"><?= $paste->views ?></td>
                                     <td class="td-left"><?= tagsToHtmlUser($paste->tags, $profile_username); ?></td>
-                                    <!-- Delete button here? -->
+                                    <?php if ($is_current_user): ?>
+                                        <td class="td-center">
+                                            <form action="<?= urlForPaste($paste) ?>" method="POST">
+                                                <input type="hidden" name="delete" value="delete" />
+                                                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
+                                                <input type="submit" value="Delete" />
+                                            </form>
+                                        </td>
+                                    <?php endif; ?>
                                 </tr>
                             <?php endif; ?>
                         <?php endforeach; ?>

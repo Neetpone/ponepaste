@@ -224,6 +224,10 @@ class DataTable {
 }
 
 const dumbFilterCallback = (datum, query) => {
+    if (!query) {
+        return true;
+    }
+
     if (datum.title.indexOf(query) !== -1) {
         return true;
     }

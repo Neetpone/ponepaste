@@ -7,6 +7,7 @@ use PonePaste\Models\UserSession;
 
 class SessionHelper {
     public const REMEMBER_TOKEN_COOKIE = '_ponepaste_token';
+    public const CSRF_TOKEN_KEY = 'csrf_token';
 
     public static function currentUser() {
         $session_user = SessionHelper::currentUserFromPhpSession();
@@ -59,7 +60,6 @@ class SessionHelper {
         if (empty($_SESSION['user_id'])) {
             return null;
         }
-
 
         return User::find(intval($_SESSION['user_id']));
     }

@@ -75,6 +75,11 @@ updatePageViews();
 
 // POST Handler
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verifyCsrfToken()) {
+        $error = 'Incorrect CSRF token (do you have cookies enabled?)';
+        goto OutPut;
+    }
+
     $error = validatePasteFields();
 
     if ($error !== null) {
@@ -172,6 +177,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+
 OutPut:
+$csrf_token = setupCsrfToken();
 $page_template = 'main';
 require_once('theme/' . $default_theme . '/common.php');

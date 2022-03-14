@@ -33,8 +33,6 @@ class Paste extends Model {
             $this->tags()->attach($tag);
         }
 
-        // FIXME: We need to get rid of tagsys.
-        $this->tagsys = implode(',', $tags);
         $this->save();
     }
 

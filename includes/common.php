@@ -5,6 +5,7 @@ if (!defined('IN_PONEPASTE')) {
 require_once(__DIR__ . '/../vendor/autoload.php');
 require_once(__DIR__ . '/config.php');
 require_once(__DIR__ . '/functions.php');
+require_once(__DIR__ . '/passwords.php');
 require_once(__DIR__ . '/DatabaseHandle.class.php');
 
 use Illuminate\Database\Capsule\Manager as Capsule;
@@ -154,6 +155,33 @@ function updatePageViews() : void {
     }
 }
 
+function setupCsrfToken() : string {
+    if (isset($_SESSION[SessionHelper::CSRF_TOKEN_KEY])) {
+        return $_SESSION[SessionHelper::CSRF_TOKEN_KEY];
+    }
+
+    $token = pp_random_token();
+    $_SESSION[SessionHelper::CSRF_TOKEN_KEY] = $token;
+
+    return $token;
+}
+
+function verifyCsrfToken($token = null) : bool {
+    if ($token === null) {
+        $token = $_POST[SessionHelper::CSRF_TOKEN_KEY];
+    }
+
+    if (empty($token) || empty($_SESSION[SessionHelper::CSRF_TOKEN_KEY])) {
+        return false;
+    }
+
+    $success = hash_equals($_SESSION[SessionHelper::CSRF_TOKEN_KEY], $token);
+
+    unset($_SESSION[SessionHelper::CSRF_TOKEN_KEY]);
+
+    return $success;
+}
+
 session_start();
 
 /* Set up the database and Eloquent ORM */
@@ -214,6 +242,8 @@ $total_page_views = PageView::select('tpage')->orderBy('id', 'desc')->first()->t
 $total_unique_views = PageView::select('tvisit')->orderBy('id', 'desc')->first()->tvisit;
 
 $current_user = SessionHelper::currentUser();
+
+//SessionHelper::setupCsrfToken();
 
 $script_bundles = [];
 

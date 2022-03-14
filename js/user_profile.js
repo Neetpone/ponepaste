@@ -2,6 +2,16 @@ import { escape, whenReady } from './dom';
 import { DataTable, dumbFilterCallback } from './data_tables';
 import { globalSetup } from './main';
 
+const getUserInfo = () => {
+    const elem = document.getElementById('js-data-holder');
+
+    if (!elem) {
+        return { userId: null, csrfToken: null };
+    }
+
+    return { userId: elem.dataset.userId, csrfToken: elem.dataset.csrfToken };
+};
+
 const parsePasteInfo = (elem) => {
     if (!elem.dataset.pasteInfo) {
         return null;
@@ -40,12 +50,23 @@ whenReady(() => {
                         </a>`;
             }).join('');
 
+            const userData = getUserInfo();
+
+            const deleteElem = true ? `<td>
+                                         <form action="/${rowData.id}" method="POST">
+                                            <input type="hidden" name="delete" value="delete" />
+                                            <input type="hidden" name="csrf_token" value="${userData.csrfToken}" />
+                                            <input type="submit" value="Delete" />
+                                         </form>
+                                       </td>` : '';
+
             return `<tr>
                         <td><a href="/${rowData.id}">${escape(rowData.title)}</a></td>
                         <td>${rowData.created_at}</td>
                         <td>${rowData.visibility}</td>
                         <td>${rowData.views || 0}</td>
                         <td>${tags}</td>
+                        ${deleteElem}
                     </tr>`;
         },
         filterCallback: dumbFilterCallback,

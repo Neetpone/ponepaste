@@ -28,6 +28,7 @@ if (!$profile_info) {
 $p_title = $profile_username . "'s Public Pastes";
 
 // FIXME: This should be incoming faves
+//$total_pfav = Paste::where('user_id', $profile_info->id)->sum('faves');
 $total_pfav = $profile_info->favourites->count();
 $total_yfav = $profile_info->favourites->count();
 
@@ -55,23 +56,7 @@ $is_current_user = ($current_user !== null) && ($profile_info->id == $current_us
 
 updatePageViews();
 
-if (isset($_GET['del'])) {
-    if ($current_user !== null) { // Prevent unauthorized deletes
-        $paste_id = intval(trim($_GET['id']));
-        $paste = Paste::find($paste_id);
-
-        if (!$paste || $paste->user_id !== $current_user->id) {
-            $error = 'That paste does not exist, or you are not the owner of it.';
-        } else {
-            $paste->delete();
-            $success = 'Paste deleted successfully.';
-        }
-    } else {
-        $error = 'You must be logged in to do that.';
-    }
-}
-
-// Theme
+$csrf_token = setupCsrfToken();
 $page_template = 'user_profile';
 array_push($script_bundles, 'user_profile');
 require_once('theme/' . $default_theme . '/common.php');

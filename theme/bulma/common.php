@@ -125,6 +125,10 @@ $flashes = getFlashes();
     </div>
 </nav>
 
+<?php if ($current_user): ?>
+    <div class="hidden" id="js-data-holder" data-user-id="<?= $current_user->id ?>" data-csrf-token="<?= $csrf_token ?>"></div>
+<?php endif; ?>
+
 <div id="#signin" class="modal modal-fx-fadeInScale">
     <div class="modal-background"></div>
     <div class="modal-content modal-card is-tiny">

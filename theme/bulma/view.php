@@ -64,7 +64,8 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
 
                         <div class="message-body">
                             <div class="columns">
-                                <div class="column">
+                                <p>Reporting is currently non-functional. Please email admin ( a t ) ponepaste (.) org if this is a serious violation.</p>
+                                <!--<div class="column">
                                     <p>Please select how this paste violates a rule:</p>
                                 </div>
                                 <div class="column">
@@ -78,10 +79,10 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                 <option value="2">Paste has personal information (Dox)</option>
                                             </select>
                                         </div>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
-                        <div class="column">
+                        <!--<div class="column">
                             <input type="hidden" name="reppasteid" value="<?php echo($paste_id); ?>">
                             <div>
                                 <div style="text-align: center;">
@@ -92,7 +93,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 </div>
                             </div>
                         </div>
-                        </form>
+                        </form>-->
                     </article>
 
                     <div class="columns is-multiline">
@@ -128,6 +129,9 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 <div class="panel-tools">
                                     <?php if ($current_user !== null): ?>
                                         <form action="" method="POST" class="form--inline">
+                                            <?php if (isset($csrf_token)): ?>
+                                                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
+                                            <?php endif; ?>
                                             <input type="hidden" name="fave" value="1" />
                                             <button type="submit" class="icon tool-icon button--no-style"><i class="fas fa-star fa-lg <?= $paste_is_favourited ? '' : 'has-text-grey' ?>" title="Favourite"></i></button>
                                         </form>
@@ -349,26 +353,17 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             <div class="level-left">
                                 <!-- Encrypted -->
                                 <div class="b-checkbox is-info is-inline">
-                                    <?php
-                                    $encrypted_checked = "";
-                                    if ($_POST) {
-                                        // We came here from an error, carry the checkbox setting forward
-                                        if (isset($_POST['encrypted'])) {
-                                            $encrypted_checked = "checked";
-                                        }
-                                    } else {
-                                        // Fresh paste. Default to encrypted on
-                                        $encrypted_checked = "checked";
-                                    }
-                                    ?>
                                     <input class="is-checkradio is-info" id="encrypt" name="encrypted"
-                                           type="checkbox" <?php echo $encrypted_checked; ?>>
+                                           type="checkbox" disabled="disabled" checked="checked" />
                                     <label for="encrypt">
-                                        Encrypt on Server
+                                        Encrypt on server (always enabled)
                                     </label>
                                     <?php
-                                    if ($current_user->id == $paste['user_id']) {
+                                    if ($current_user->id === $paste['user_id']) {
                                         ?>
+                                        <?php if (isset($csrf_token)): ?>
+                                            <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
+                                        <?php endif; ?>
                                         <input class="button is-info" type="submit" name="edit" id="edit"
                                                value="Edit"/>
                                         <?php

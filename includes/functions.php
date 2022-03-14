@@ -55,13 +55,6 @@ function tagsToHtmlUser(string | array | Collection $tags, $profile_username) : 
     return $output;
 }
 
-function getevent($conn, $event_name, $count) {
-    $query = $conn->prepare("SELECT id, visible, title, date, now_time, views, member FROM pastes WHERE visible='1' AND tagsys LIKE '%?%' 
- ORDER BY RAND () LIMIT 0, ?");
-    $query->execute([$event_name, $count]);
-    return $query->fetchAll();
-}
-
 function linkify($value, $protocols = array('http', 'mail'), array $attributes = array()) {
     // Link attributes
     $attr = '';
@@ -150,7 +143,7 @@ function truncate(string $input, int $maxWords, int $maxChars) : string {
     return $result . ($input == $result ? '' : '[...]');
 }
 
-function embedView($paste_id, $p_title, $content, $p_code, $title, $baseurl, $lang) {
+function embedView($paste_id, $p_title, $content, $title) {
     $stats = false;
     if ($content) {
         // Build the output

@@ -7,13 +7,16 @@ use PonePaste\Models\Page;
 
 updatePageViews();
 
+$page_title = 'Page not found';
+
 if (isset($_GET['page'])) {
     $page = Page::select('page_title', 'page_content', 'last_date')
         ->where('page_name', $_GET['page'])
         ->first();
-    $page_title = $page->page_title;
-} else {
-    $page_title = 'Page not found';
+
+    if (isset($page)) {
+        $page_title = $page->page_title;
+    }
 }
 
 $page_template = 'pages';

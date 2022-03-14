@@ -6,7 +6,6 @@ require_once('includes/passwords.php');
 
 use PonePaste\Models\Paste;
 
-// Check if already logged in
 if ($current_user === null) {
     header("Location: ./login.php");
     die();
@@ -19,7 +18,9 @@ $user_ip = $current_user->ip;
 $user_password = $current_user->password;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['cpassword'])) {
+    if (!verifyCsrfToken()) {
+        $error = 'Invalid CSRF token (do you have cookies enabled?)';
+    } else if (isset($_POST['cpassword'])) {
         $user_new_full = trim(htmlspecialchars($_POST['full']));
         $user_old_pass = $_POST['old_password'];
         if (pp_password_verify($user_old_pass, $user_password)) {
@@ -40,8 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 updatePageViews();
 
 $total_user_pastes = Paste::where('user_id', $current_user->id)->count();
+$csrf_token = setupCsrfToken();
 
-// Theme
 $page_template = 'profile';
 $page_title = 'My Profile';
 require_once('theme/' . $default_theme . '/common.php');
