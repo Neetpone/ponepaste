@@ -3,6 +3,7 @@ define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/functions.php');
 
+use Illuminate\Support\Facades\DB;
 use PonePaste\Models\User;
 use PonePaste\Models\Paste;
 
@@ -27,9 +28,16 @@ if (!$profile_info) {
 
 $p_title = $profile_username . "'s Public Pastes";
 
-// FIXME: This should be incoming faves
-//$total_pfav = Paste::where('user_id', $profile_info->id)->sum('faves');
-$total_pfav = $profile_info->favourites->count();
+// There has to be a way to do the sum in SQL rather than PHP, but I can't figure out ho to do it in Eloquent.
+$total_pfav = array_sum(
+    array_column(
+        Paste::select('id')
+            ->where('user_id', $profile_info->id)
+            ->withCount('favouriters')
+            ->get()->toArray(),
+        'favouriters_count'
+    )
+);
 $total_yfav = $profile_info->favourites->count();
 
 // Badges
