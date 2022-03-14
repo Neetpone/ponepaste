@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '3c0fc75d296bbf2703fa00ff1a7ece4cc9c2164e',
+        'reference' => '6f1363aafe558eeabeb9ac6985892803b5bd14f7',
         'name' => 'aftercase/ponepaste',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '3c0fc75d296bbf2703fa00ff1a7ece4cc9c2164e',
+            'reference' => '6f1363aafe558eeabeb9ac6985892803b5bd14f7',
             'dev_requirement' => false,
         ),
         'doctrine/inflector' => array(
@@ -140,12 +140,12 @@
             'dev_requirement' => false,
         ),
         'scrivo/highlight.php' => array(
-            'pretty_version' => 'v9.18.1.7',
-            'version' => '9.18.1.7',
+            'pretty_version' => 'v9.18.1.9',
+            'version' => '9.18.1.9',
             'type' => 'library',
             'install_path' => __DIR__ . '/../scrivo/highlight.php',
             'aliases' => array(),
-            'reference' => '05996fcc61e97978d76ca7d1ac14b65e7cd26f91',
+            'reference' => 'd45585504777e6194a91dffc7270ca39833787f8',
             'dev_requirement' => false,
         ),
         'symfony/console' => array(
