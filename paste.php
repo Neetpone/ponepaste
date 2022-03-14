@@ -83,7 +83,7 @@ $p_visible = $paste->visible;
 $p_expiry = $paste->expiry;
 $p_password = $paste->password;
 $p_encrypt = (bool) $paste->encrypt;
-$paste_is_favourited = $current_user !== null && $current_user->favourites->where('paste_id', $paste->id)->count() === 1;
+$paste_is_favourited = $current_user !== null && $current_user->favourites->where('id', $paste->id)->count() === 1;
 
 $is_private = $p_visible === '2';
 
@@ -140,10 +140,12 @@ if (!empty($p_expiry) && $p_expiry !== 'SELF') {
 /* handle favouriting */
 if (isset($_POST['fave'])) {
     if ($paste_is_favourited) {
-        $current_user->favourites()->detach($paste->id);
+        $current_user->favourites()->detach($paste);
     } else {
-        $current_user->favourites()->attach($paste->id);
+        $current_user->favourites()->attach($paste);
     }
+
+    $paste_is_favourited = !$paste_is_favourited;
 }
 
 if ($p_encrypt == 1) {
