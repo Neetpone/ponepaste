@@ -1,5 +1,6 @@
 import { escape, whenReady } from './dom';
 import { DataTable, dumbFilterCallback } from './data_tables';
+import { tagsToHtml } from "./utils";
 import { globalSetup } from './main';
 
 whenReady(() => {
@@ -16,27 +17,10 @@ whenReady(() => {
                 .then(resolve);
         },
         rowCallback: (rowData) => {
-            const tags = rowData.tags.map((tagData) => {
-                let tagColorClass;
-                if (tagData.name.indexOf('nsfw') !== -1) {
-                    tagColorClass = 'is-danger';
-                } else if (tagData.name.indexOf('safe') !== -1) {
-                    tagColorClass = 'is-success';
-                } else if (tagData.name.indexOf('/') !== -1) {
-                    tagColorClass = 'is-primary';
-                } else {
-                    tagColorClass = 'is-info';
-                }
-
-                return `<a href="/archive?q=${tagData.slug}">
-                            <span class="tag ${tagColorClass}">${escape(tagData.name)}</span>
-                        </a>`;
-            }).join('');
-
             return `<tr>
                         <td><a href="/${rowData.id}">${escape(rowData.title)}</a></td>
                         <td><a href="/user/${escape(rowData.author)}">${escape(rowData.author)}</a></td>
-                        <td>${tags}</td>
+                        <td>${tagsToHtml(rowData.tags)}</td>
                     </tr>`;
         },
         filterCallback: dumbFilterCallback,

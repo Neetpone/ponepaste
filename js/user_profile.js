@@ -1,5 +1,6 @@
 import { escape, whenReady } from './dom';
 import { DataTable, dumbFilterCallback } from './data_tables';
+import { tagsToHtml } from "./utils";
 import { globalSetup } from './main';
 
 const getUserInfo = () => {
@@ -33,39 +34,23 @@ whenReady(() => {
             });
         },
         rowCallback: (rowData) => {
-            const tags = rowData.tags.map((tagData) => {
-                let tagColorClass;
-                if (tagData.name.indexOf('nsfw') !== -1) {
-                    tagColorClass = 'is-danger';
-                } else if (tagData.name.indexOf('safe') !== -1) {
-                    tagColorClass = 'is-success';
-                } else if (tagData.name.indexOf('/') !== -1) {
-                    tagColorClass = 'is-primary';
-                } else {
-                    tagColorClass = 'is-info';
-                }
-
-                return `<a href="/archive?q=${tagData.slug}">
-                            <span class="tag ${tagColorClass}">${escape(tagData.name)}</span>
-                        </a>`;
-            }).join('');
-
             const userData = getUserInfo();
 
-            const deleteElem = true ? `<td>
+            const deleteElem = true ? `<td class="td-center">
                                          <form action="/${rowData.id}" method="POST">
                                             <input type="hidden" name="delete" value="delete" />
                                             <input type="hidden" name="csrf_token" value="${userData.csrfToken}" />
                                             <input type="submit" value="Delete" />
                                          </form>
                                        </td>` : '';
+            const pasteCreatedAt = new Date(rowData.created_at).toLocaleString();
 
             return `<tr>
                         <td><a href="/${rowData.id}">${escape(rowData.title)}</a></td>
-                        <td>${rowData.created_at}</td>
-                        <td>${rowData.visibility}</td>
-                        <td>${rowData.views || 0}</td>
-                        <td>${tags}</td>
+                        <td class="td-center">${pasteCreatedAt}</td>
+                        <td class="td-center">${rowData.visibility}</td>
+                        <td class="td-center">${rowData.views || 0}</td>
+                        <td>${tagsToHtml(rowData.tags)}</td>
                         ${deleteElem}
                     </tr>`;
         },
@@ -87,33 +72,17 @@ whenReady(() => {
             });
         },
         rowCallback: (rowData) => {
-            const tags = rowData.tags.map((tagData) => {
-                let tagColorClass;
-                if (tagData.name.indexOf('nsfw') !== -1) {
-                    tagColorClass = 'is-danger';
-                } else if (tagData.name.indexOf('safe') !== -1) {
-                    tagColorClass = 'is-success';
-                } else if (tagData.name.indexOf('/') !== -1) {
-                    tagColorClass = 'is-primary';
-                } else {
-                    tagColorClass = 'is-info';
-                }
-
-                return `<a href="/archive?q=${tagData.slug}">
-                            <span class="tag ${tagColorClass}">${escape(tagData.name)}</span>
-                        </a>`;
-            }).join('');
-
             const recentUpdate = rowData.recently_updated ?
                 `<i class='far fa-check-square fa-lg' aria-hidden='true'></i>` :
                 `<i class='far fa-minus-square fa-lg' aria-hidden='true'></i>`;
+            const pasteFavedAt = new Date(rowData.favourited_at).toLocaleString();
 
             //                         <td><a href="/user/${escape(rowData.author)}">${escape(rowData.author)}</a></td>
             return `<tr>
                         <td><a href="/${rowData.id}">${escape(rowData.title)}</a></td>
-                        <td>${rowData.favourited_at}</td>
-                        <td>${recentUpdate}</td>
-                        <td>${tags}</td>
+                        <td class="td-center">${pasteFavedAt}</td>
+                        <td class="td-center">${recentUpdate}</td>
+                        <td>${tagsToHtml(rowData.tags)}</td>
                     </tr>`;
         },
         filterCallback: dumbFilterCallback
