@@ -147,8 +147,9 @@ if (isset($_GET['_CAPTCHA'])) {
     $font = $captcha_config['fonts'][rand(0, count($captcha_config['fonts']) - 1)];
 
     // Verify font file exists
-    if (!file_exists($font))
-        throw new Exception('Font file not found: ' . $font);
+    if (!file_exists($font)) {
+        die('Font file not found.');
+    }
 
     // Set the font size
     $font_size = rand($captcha_config['min_font_size'], $captcha_config['max_font_size']);

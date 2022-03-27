@@ -28,15 +28,15 @@ function replaceSelection(e, t) {
         var n = e.selectionStart;
         var r = e.selectionEnd;
         e.value = e.value.substring(0, n) + t + e.value.substring(r);
-        if (n != r) {
+        if (n !== r) {
             setSelectionRange(e, n, n + t.length);
         } else {
             setSelectionRange(e, n + t.length, n + t.length);
         }
     } else if (document.selection) {
         var i = document.selection.createRange();
-        if (i.parentElement() == e) {
-            var s = i.text == "";
+        if (i.parentElement() === e) {
+            var s = i.text === "";
             i.text = t;
             if (!s) {
                 i.moveStart("character", -t.length);
@@ -47,13 +47,14 @@ function replaceSelection(e, t) {
 }
 
 function catchTab(e, t) {
+    let c;
     if (navigator.userAgent.match("Gecko")) {
         c = t.which;
     } else {
         c = t.keyCode;
     }
-    if (c == 9) {
-        var n = e.scrollTop;
+    if (c === 9) {
+        const n = e.scrollTop;
         replaceSelection(e, String.fromCharCode(9));
         stopEvent(t);
         e.scrollTop = n;
@@ -77,8 +78,7 @@ var js = {
             return this.getLines(e).length;
         },
         getLines: function (e) {
-            var t = e.split("\n");
-            return t;
+            return e.split("\n");
         },
     },
     textElement: {
@@ -97,7 +97,7 @@ var js = {
                 }
                 t.start = i;
                 t.end = i + n.text.replace(/\r/g, "").length;
-            } else if (e.selectionStart || e.selectionStart == 0) {
+            } else if (e.selectionStart || e.selectionStart === 0) {
                 t.start = e.selectionStart;
                 t.end = e.selectionEnd;
             }
@@ -118,32 +118,32 @@ var js = {
 };
 
 function highlight(e) {
-    var t = js.textElement.caretPosition(e);
+    const t = js.textElement.caretPosition(e);
     if (!t.start && !t.end) return;
-    var n = js.text.getLines(js.textElement.value(e));
-    var r = 0,
+    const n = js.text.getLines(js.textElement.value(e));
+    let r = 0,
         i = 0;
-    var s = "";
-    var o = false;
-    var u = 0;
-    for (var a in n) {
+    let s = "";
+    let o = false;
+    let u = 0;
+    for (const a in n) {
         i = r + n[a].length;
         if (t.start >= r && t.start <= i) o = true;
         if (o) {
-            var f = n[a].substr(0, 11) == "!highlight!";
+            const f = n[a].substr(0, 11) === "!highlight!";
             if (!u) {
                 if (f) u = 1;
                 else u = 2;
             }
-            if (u == 1 && f) n[a] = n[a].substr(11, n[a].length - 11);
-            else if (u == 2 && !f) s += "!highlight!";
+            if (u === 1 && f) n[a] = n[a].substr(11, n[a].length - 11);
+            else if (u === 2 && !f) s += "!highlight!";
         }
         s = s + n[a] + "\n";
         if (t.end >= r && t.end <= i) o = false;
         r = i + 1;
     }
     e.value = s.substring(0, s.length - 1);
-    var l = t.start + (u == 1 ? -11 : 11);
+    const l = t.start + (u === 1 ? -11 : 11);
     js.textElement.setCaretPosition(e, {
         start: l,
         end: l,
@@ -152,7 +152,7 @@ function highlight(e) {
 
 function togglev() {
     if (
-        document.getElementsByTagName("ol")[0].style.listStyle.substr(0, 4) ==
+        document.getElementsByTagName("ol")[0].style.listStyle.substr(0, 4) ===
         "none"
     ) {
         document.getElementsByTagName("ol")[0].style.listStyle = "decimal";

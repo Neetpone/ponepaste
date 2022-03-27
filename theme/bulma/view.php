@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="theme/bulma/css/bulma-tagsinput.min.css"/>
 <script>
     function openreport() {
-        var x = document.getElementById("panel");
+        const x = document.getElementById("panel");
         if (x.style.display === "none") {
             x.style.display = "block";
         } else {
@@ -10,7 +10,7 @@
     }
 
     function closereport() {
-        var x = document.getElementById("panel");
+        const x = document.getElementById("panel");
         if (x.style.display === "none") {
             x.style.display = "block";
         } else {

@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Database\Eloquent\Collection;
+use PonePaste\Models\Paste;
 
 function tagsToHtml(array | Collection $tags) : string {
     $output = "";
@@ -215,7 +216,7 @@ function embedView($paste_id, $p_title, $content, $title) {
     return $stats;
 }
 
-function addToSitemap(\PonePaste\Models\Paste $paste, $priority, $changefreq) {
+function addToSitemap(Paste $paste, $priority, $changefreq) {
     $c_date = date('Y-m-d');
     $site_data = file_get_contents("sitemap.xml");
     $site_data = str_replace("</urlset>", "", $site_data);

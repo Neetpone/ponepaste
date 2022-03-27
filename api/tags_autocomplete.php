@@ -23,6 +23,6 @@ $results = Tag::select('name')
                 ->fetchAll()
                 ->toArray();
 
-array_push($tags, ['name' => $tag_name]);
+$tags[] = ['name' => $tag_name];
 
 echo json_encode($tags);

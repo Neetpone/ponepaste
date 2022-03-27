@@ -88,7 +88,7 @@ function flash(string $level, string $message) {
         throw new Exception('Invalid flash level ' . $level);
     }
 
-    array_push($_SESSION['flashes'][$level], $message);
+    $_SESSION['flashes'][$level][] = $message;
 }
 
 

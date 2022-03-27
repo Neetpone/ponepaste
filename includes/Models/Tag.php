@@ -47,7 +47,7 @@ class Tag extends Model {
             $cleanName = Tag::cleanTagName($tagName);
 
             if (!empty($cleanName)) {
-                array_push($cleanTags, $cleanName);
+                $cleanTags[] = $cleanName;
             }
         }
 
