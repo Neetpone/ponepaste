@@ -269,7 +269,7 @@
                                         <div class="columns">
                                             <div class="column">
                                                 <input type="text" class="input" name="pass" id="pass"
-                                                       placeholder="Password"
+                                                       placeholder="Password" autocomplete="off"
                                                        value="<?php echo (isset($_POST['pass'])) ? pp_html_escape($_POST['pass']) : ''; ?>"/>
                                             </div>
                                         </div>
