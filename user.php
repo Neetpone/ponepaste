@@ -65,6 +65,7 @@ $is_current_user = ($current_user !== null) && ($profile_info->id == $current_us
 updatePageViews();
 
 $csrf_token = setupCsrfToken();
+$page_title = 'Profile of ' . $profile_username;
 $page_template = 'user_profile';
 array_push($script_bundles, 'user_profile');
 require_once('theme/' . $default_theme . '/common.php');

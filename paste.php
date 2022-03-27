@@ -239,6 +239,7 @@ if (!isRequesterLikelyBot() && @$_SESSION['not_unique'] !== $paste_id) {
     $paste->save();
 }
 
+$page_title = $paste->title;
 $page_template = 'view';
 $recommended_pastes = getUserRecommended($paste->user);
 
