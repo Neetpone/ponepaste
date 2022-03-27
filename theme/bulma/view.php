@@ -99,18 +99,25 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                     <div class="columns is-multiline">
                         <div class="column is-4">
                             <span class="tag is-normal"><i class="fa fa-code fa-lg"
-                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?php echo strtoupper($paste['code']); ?></span>
+                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?php echo strtoupper(pp_html_escape($paste['code'])); ?></span>
                             <span class="tag is-normal"><i class="fa fa-eye fa-lg"
                                                            aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $paste['views']; ?></span>
                             <span class="tag is-normal"><i class="fa fa-star fa-lg"
                                                            aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $fav_count; ?></span>
                             <br>
-                            <span class="tag is-normal"><i class="fa fa-file-word fa-lg" aria-hidden="true"></i>&nbsp;&nbsp; <?php $wordcount = str_word_count($op_content);
-                                echo $wordcount ?></span>
-                            <span class="tag is-normal"><i class="fa fa-hdd fa-lg"
-                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?php $pastesize = strlen($op_content);
-                                echo formatBytes($pastesize) ?></span>
-                            <span class="tag is-normal"><i class="fa fa-list-ol fa-lg" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo substr_count($op_content, "\n") + 1; ?></span>
+                            <span class="tag is-normal">
+                                <i class="fa fa-file-word fa-lg" aria-hidden="true"></i>
+                                &nbsp;&nbsp;
+                                <?= str_word_count($op_content); ?>
+                            </span>
+                            <span class="tag is-normal">
+                                <i class="fa fa-hdd fa-lg" aria-hidden="true"></i>
+                                <?= formatBytes(strlen($op_content)) ?>
+                            </span>
+                            <span class="tag is-normal">
+                                <i class="fa fa-list-ol fa-lg" aria-hidden="true"></i>&nbsp;&nbsp;
+                                <?php echo substr_count($op_content, "\n") + 1; ?>
+                            </span>
                         </div>
                         <div class="column is-4 has-text-centered">
                             <h1 class="title is-6" style="margin-bottom:0;"><?= $paste['title'] ?></h1>
@@ -240,19 +247,14 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     <div class="select">
                                         <div class="select">
                                             <select data-live-search="true" name="format">
-                                                <?php // Show popular GeSHi formats
-                                                foreach (PP_HIGHLIGHT_FORMATS as $code => $name) {
-                                                    $sel = ($paste['code'] == $code) ? 'selected="selected"' : ' ';
-                                                    echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
-                                                }
-                                                ?>
+                                                <?= optionsForSelect(array_values(PP_HIGHLIGHT_FORMATS), array_keys(PP_HIGHLIGHT_FORMATS), $paste->code); ?>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="level-item is-pulled-left mx-1">
                                     <input class="button is-info" type="hidden" name="paste_id"
-                                           value="<?php echo $paste_id; ?>"/>
+                                           value="<?= $paste->id; ?>"/>
                                 </div>
                                 <div class="level-item is-pulled-left mx-1">
                                     <a class="button"
@@ -264,8 +266,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                         <!-- Text area -->
                         <textarea style="line-height: 1.2;" class="textarea mx-1" rows="13" id="code"
                                   name="paste_data" onkeyup="countChars(this);"
-                                  onkeydown="return catchTab(this,event)"
-                                  placeholder="helloworld"><?php echo htmlentities($op_content, ENT_QUOTES, 'UTF-8'); ?></textarea>
+                                  onkeydown="return catchTab(this,event)"><?= pp_html_escape($op_content); ?></textarea>
                         <p id="charNum"><b>File Size: </b><span style="color: green;">1000/1000Kb</span></p>
                         <br>
 
@@ -317,19 +318,16 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                             <!-- Visibility -->
                                             <div class="select">
                                                 <select name="visibility">
-                                                    <option value="0" <?php echo ($p_visible == "0") ? 'selected="selected"' : ''; ?>>
-                                                        Public
-                                                    </option>
-                                                    <option value="1" <?php echo ($p_visible == "1") ? 'selected="selected"' : ''; ?>>
-                                                        Unlisted
-                                                    </option>
-                                                    <?php if ($current_user) { ?>
-                                                        <option value="2" <?php echo ($p_visible == "2") ? 'selected="selected"' : ''; ?>>
-                                                            Private
-                                                        </option>
-                                                    <?php } else { ?>
-                                                        <option disabled>Private</option>
-                                                    <?php } ?>
+                                                    <?php
+                                                        $visibility_names = ['Public', 'Unlisted'];
+                                                        $visibility_codes = ['0', '1'];
+                                                        if ($current_user) {
+                                                            $visibility_names[] = 'Private';
+                                                            $visibility_codes[] = '2';
+                                                        }
+
+                                                        echo optionsForSelect($visibility_names, $visibility_codes, $p_visible);
+                                                    ?>
                                                 </select>
                                             </div>
                                         </div>

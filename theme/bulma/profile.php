@@ -10,11 +10,11 @@
                 <?php
                 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     if (isset($success)) {
-                        echo ' <div class="notification is-success"><i class="fa fa-exclamation-circle" aria-hidden=" true"></i> 
+                        echo ' <div class="notification is-success"><i class="fa fa-exclamation-circle" aria-hidden=" rue"></i> 
 					' . $success . '
 					</div>';
                     } elseif (isset($error)) {
-                        echo ' <div class="notification is-danger"><i class="fa fa-exclamation-circle" aria-hidden=" true"></i> 
+                        echo ' <div class="notification is-danger"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> 
 					' . $error . '
 					</div>';
                     }

@@ -3,25 +3,24 @@
     <div class="bd-main-container container">
         <div class="bd-duo">
             <div class="bd-lead">
-                <?php
-                // Logged in
-                if (isset($success)) {
-                    echo '<div class="notification is-success"><i class="fa fa-exclamation-circle"></i> ' . $success . '</div>';
-                    if (isset($new_password)) {
-                        echo '<p>Your new password is as follows:</p>';
-                        echo "<code>${new_password}</code><br>";
-                    }
+                <?php if (isset($success)): ?>
+                    <div class="notification is-success"><i class="fa fa-exclamation-circle" aria-hidden="true"></i><?= pp_html_escape($success); ?></div>
+                    <?php if (isset($new_password)): ?>
+                        <p>Your new password is as follows:</p>
+                        <code><?= pp_html_escape($new_password); ?></code>
+                        <br>
+                    <?php endif; ?>
 
-                    if (isset($recovery_code)) {
-                        echo '<br><span class="tag is-danger is-medium">IMPORTANT!</span>';
-                        echo '<p><b>If you wish to recover your account later, you will need the following code. Store it in a safe place!</b></p>';
-                        echo "<code id='recovery'>${recovery_code}</code>";
-                        echo '<p>If you do not save this code and you forget your password, there is no way to get your account back!</p>';
-                    }
-                } // Errors
-                elseif (isset($error)) {
-                    echo '<div class="notification is-info"><i class="fa fa-exclamation-circle" aria-hidden=" true"></i> ' . $error . '</p></div>';
-                }
+                    <?php if (isset($recovery_code)): ?>
+                        <br><span class="tag is-danger is-medium">IMPORTANT!</span>
+                        <p><b>If you wish to recover your account later, you will need the following code. Store it in a safe place!</b></p>
+                        <code id="recovery"><?= pp_html_escape($recovery_code); ?></code>
+                        <p>If you do not save this code, and you forget your password, there is no way to get your account back!</p>
+                    <?php endif; ?>
+                <?php elseif (isset($error)): ?>
+                    <div class="notification is-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i><?= pp_html_escape($error); ?></p></div>
+                <?php endif; ?>
+                <?php
                 // Login page
                 if (isset($_GET['login'])) {
                     ?>

@@ -60,9 +60,9 @@
                     outputBadges($paste_view_badges, $profile_total_paste_views, 'total_views');
 
                     if (($profile_total_unlisted >= 5) && ($profile_total_unlisted <= 9)) {
-                        echo '<img src = "/img/badges/pastehidden.png" title="[ShadowWriter] Have more than Five unlisted pastes" style="margin:5px">';
+                        echo '<img src="/img/badges/pastehidden.png" title="[ShadowWriter] Have more than Five unlisted pastes" style="margin:5px">';
                     } elseif ($profile_total_unlisted >= 10) {
-                        echo '<img src = "/img/badges/pastehidden.png" title="[Ghostwriter]  Have more than Ten unlisted pastes" style="margin:5px">';
+                        echo '<img src="/img/badges/pastehidden.png" title="[Ghostwriter]  Have more than Ten unlisted pastes" style="margin:5px">';
                     }
 
                     ?>
