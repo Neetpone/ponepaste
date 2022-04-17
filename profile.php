@@ -1,5 +1,4 @@
 <?php
-define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/functions.php');
 require_once('includes/passwords.php');
@@ -21,7 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!verifyCsrfToken()) {
         $error = 'Invalid CSRF token (do you have cookies enabled?)';
     } else if (isset($_POST['cpassword'])) {
-        $user_new_full = trim(htmlspecialchars($_POST['full']));
         $user_old_pass = $_POST['old_password'];
         if (pp_password_verify($user_old_pass, $user_password)) {
             $user_new_cpass = pp_password_hash($_POST['password']);

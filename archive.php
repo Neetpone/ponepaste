@@ -1,5 +1,4 @@
 <?php
-define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 
 use PonePaste\Models\Paste;

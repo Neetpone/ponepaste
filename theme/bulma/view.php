@@ -357,7 +357,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                         Encrypt on server (always enabled)
                                     </label>
                                     <?php
-                                    if ($current_user->id === $paste['user_id']) {
+                                    if (can('edit', $paste)) {
                                         ?>
                                         <?php if (isset($csrf_token)): ?>
                                             <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />

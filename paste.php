@@ -1,5 +1,4 @@
 <?php
-define('IN_PONEPASTE', 1);
 require_once('includes/common.php');
 require_once('includes/functions.php');
 
@@ -44,21 +43,27 @@ updatePageViews();
 $totalpastes = Paste::count();
 
 $paste = Paste::find($paste_id);
-
-$notfound = null;
 $is_private = false;
+$error = null;
 
 if (!$paste) {
     header('HTTP/1.1 404 Not Found');
-    $notfound = 'Not found';
+    $error = 'Not found';
     goto Not_Valid_Paste;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verifyCsrfToken()) {
-        $notfound = 'Invalid CSRF token (do you have cookies enabled?)';
+        $error = 'Invalid CSRF token (do you have cookies enabled?)';
         goto Not_Valid_Paste;
     }
+}
+
+/* $password_ok_pastes is an array of IDs of pastes for which a correct password has already been entered this session. */
+if (isset($_SESSION['password_ok'])) {
+    $password_ok_pastes = json_decode($_SESSION['password_ok']);
+} else {
+    $password_ok_pastes = [];
 }
 
 $paste_owner_id = $paste->user->id;
@@ -66,17 +71,6 @@ $paste_title = $paste->title;
 $paste_code = $paste->code;
 $using_highlighter = $paste_code !== 'pastedown';
 $fav_count = $paste->favouriters()->count();
-
-
-/*$paste = [
-    'title' => $paste_title,
-    'created_at' => $paste->created_at->format('jS F Y h:i:s A'),
-    'updated_at' => $paste->created_at->format('jS F Y h:i:s A'),
-    'user_id' => $paste_owner_id,
-    'views' => $row['views'],
-    'code' => $paste_code,
-    'tags' => getPasteTags($conn, $paste_id)
-];*/
 
 $p_content = $paste->content;
 $p_visible = $paste->visible;
@@ -87,15 +81,15 @@ $paste_is_favourited = $current_user !== null && $current_user->favourites->wher
 
 $is_private = $p_visible === '2';
 
-if ($is_private && (!$current_user || $current_user->id !== $paste_owner_id)) {
-    $notfound = 'This is a private paste. If you created this paste, please log in to view it.';
+if (!can('view', $paste)) {
+    $error = 'This is a private paste. If you created this paste, please log in to view it.';
     goto Not_Valid_Paste;
 }
 
 /* Paste deletion */
 if (isset($_POST['delete'])) {
-    if (!$current_user || ($current_user->id !== $paste_owner_id)) {
-        $notfound = 'You cannot delete someone else\'s paste!';
+    if (!can('delete', $paste)) {
+        $error = 'You cannot delete someone else\'s paste!';
         goto Not_Valid_Paste;
     }
 
@@ -108,37 +102,43 @@ if (isset($_POST['delete'])) {
 /* Verify paste password */
 $password_required = $p_password !== null && $p_password !== 'NONE';
 $password_valid = true;
-$password_candidate = '';
 
-if ($password_required) {
-    if (!empty($_POST['mypass'])) {
-        $password_candidate = $_POST['mypass'];
-    } elseif (!empty($_GET['password'])) {
-        $password_candidate = @base64_decode($_GET['password']);
-    }
-
-    if (empty($password_candidate)) {
+if ($password_required && !in_array($paste->id, $password_ok_pastes)) {
+    if (empty($_POST['mypass'])) {
         $password_valid = false;
         $error = 'This paste is password protected.';
         goto Not_Valid_Paste;
-    } elseif (!pp_password_verify($password_candidate, $p_password)) {
+    } elseif (!pp_password_verify($_POST['mypass'], $p_password)) {
         $password_valid = false;
         $error = 'The provided password is incorrect.';
         goto Not_Valid_Paste;
     }
+
+    $password_ok_pastes[] = $paste->id;
+    $_SESSION['password_ok'] = json_encode($password_ok_pastes);
+}
+
+if (PP_MOD_REWRITE) {
+    $p_download = "download/$paste_id";
+    $p_raw = "raw/$paste_id";
+    $p_embed = "embed/$paste_id";
+} else {
+    $p_download = "paste.php?download&id=$paste_id";
+    $p_raw = "paste.php?raw&id=$paste_id";
+    $p_embed = "paste.php?embed&id=$paste_id";
 }
 
 if (!empty($p_expiry) && $p_expiry !== 'SELF') {
     $input_time = $p_expiry;
     $current_time = mktime(date("H"), date("i"), date("s"), date("n"), date("j"), date("Y"));
     if ($input_time < $current_time) {
-        $notfound = 'This paste has expired.';
+        $error = 'This paste has expired.';
         goto Not_Valid_Paste;
     }
 }
 
 /* handle favouriting */
-if (isset($_POST['fave'])) {
+if (isset($_POST['fave']) && $current_user) {
     if ($paste_is_favourited) {
         $current_user->favourites()->detach($paste);
     } else {
@@ -168,23 +168,12 @@ if (isset($_GET['raw'])) {
     exit();
 }
 
-// Deletion
-if (isset($_POST['delete'])) {
-    if (!$current_user || ($paste_owner_id !== $current_user->id)) {
-        flashError('You must be logged in and own this paste to delete it.');
-    } else {
-        $paste->delete();
-        flashSuccess('Paste deleted.');
-        header('Location: ' . urlForMember($current_user->username));
-        die();
-    }
-}
-
 // Preprocess
-$highlight = array();
+$highlight = [];
 $prefix_size = strlen('!highlight!');
 $lines = explode("\n", $p_content);
 $p_content = "";
+
 foreach ($lines as $idx => $line) {
     if (substr($line, 0, $prefix_size) == '!highlight!') {
         $highlight[] = $idx + 1;
@@ -197,6 +186,7 @@ $p_content = rtrim($p_content);
 
 // Apply syntax highlight
 $p_content = htmlspecialchars_decode($p_content);
+
 if ($paste_code === "pastedown") {
     $parsedown = new Parsedown();
     $parsedown->setSafeMode(true);
@@ -214,24 +204,6 @@ if (isset($_GET['embed'])) {
     exit();
 }
 
-if ($password_required && $password_valid) {
-    /* base64 here means that the password is exposed in the URL, technically - how to handle this better? */
-    $p_download = "paste.php?download&id=$paste_id&password=" . base64_encode($password_candidate);
-    $p_raw = "paste.php?raw&id=$paste_id&password=" . base64_encode($password_candidate);
-    $p_embed = "paste.php?embed&id=$paste_id&password=" . base64_encode($password_candidate);
-} else {
-    // Set download URL
-    if (PP_MOD_REWRITE) {
-        $p_download = "download/$paste_id";
-        $p_raw = "raw/$paste_id";
-        $p_embed = "embed/$paste_id";
-    } else {
-        $p_download = "paste.php?download&id=$paste_id";
-        $p_raw = "paste.php?raw&id=$paste_id";
-        $p_embed = "paste.php?embed&id=$paste_id";
-    }
-}
-
 // View counter
 if (!isRequesterLikelyBot() && @$_SESSION['not_unique'] !== $paste_id) {
     $_SESSION['not_unique'] = $paste_id;
@@ -243,14 +215,13 @@ $page_title = $paste->title;
 $page_template = 'view';
 $recommended_pastes = getUserRecommended($paste->user);
 
+/* We arrive at this GOTO from various errors */
 Not_Valid_Paste:
 
-if ($is_private || $notfound || !$password_valid) {
-    // FIXME
-    // Display errors
+if ($error) {
+    $page_title = 'Error';
     $page_template = 'errors';
 }
 
 $csrf_token = setupCsrfToken();
 require_once('theme/' . $default_theme . '/common.php');
-

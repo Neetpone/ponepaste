@@ -6,7 +6,6 @@ require_once(__DIR__ . '/../vendor/autoload.php');
 require_once(__DIR__ . '/config.php');
 require_once(__DIR__ . '/functions.php');
 require_once(__DIR__ . '/passwords.php');
-require_once(__DIR__ . '/DatabaseHandle.class.php');
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use PonePaste\Helpers\SessionHelper;
@@ -14,6 +13,7 @@ use PonePaste\Models\IPBan;
 use PonePaste\Models\PageView;
 use PonePaste\Models\Paste;
 use PonePaste\Models\User;
+use PonePaste\Helpers\AbilityHelper;
 
 /* View functions */
 function javascriptIncludeTag(string $name) : string {
@@ -242,6 +242,13 @@ $total_page_views = PageView::select('tpage')->orderBy('id', 'desc')->first()->t
 $total_unique_views = PageView::select('tvisit')->orderBy('id', 'desc')->first()->tvisit;
 
 $current_user = SessionHelper::currentUser();
+$current_ability = new AbilityHelper($current_user);
+
+function can(string $action, mixed $subject) : bool {
+    global $current_ability;
+
+    return $current_ability->can($action, $subject);
+}
 
 //SessionHelper::setupCsrfToken();
 
