@@ -41,7 +41,7 @@
         width: 100%;
         height: 100vh;
         z-index: 99999999;
-        background-image: url('/img/loader<?= random_int(1, 3) ?>.gif'); /* your icon gif file path */
+        background-image: url('/assets/img/loader/<?= random_int(1, 3) ?>.gif');
         background-repeat: no-repeat;
         background-color: #FFF;
         background-position: center;
