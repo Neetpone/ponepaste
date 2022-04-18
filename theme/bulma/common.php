@@ -103,7 +103,7 @@ $flashes = getFlashes();
                                     </span>
                                     <span>Archive</span>
                                 </a>
-                                <a class="button navbar-item mx-2" href="<?= urlForPage('discover') ?>r">
+                                <a class="button navbar-item mx-2" href="<?= urlForPage('discover') ?>">
                                     <span class="icon has-text-info">
                                         <i class="fa fa-compass" aria-hidden="true"></i>
                                     </span>
