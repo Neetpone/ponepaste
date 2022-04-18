@@ -10,6 +10,10 @@ class UserSession extends Model {
         'expire_at' => 'datetime'
     ];
 
+    protected $fillable = [
+        'user_id', 'token', 'expire_at'
+    ];
+
     public function user() {
         return $this->belongsTo(User::class);
     }
