@@ -24,7 +24,7 @@
                 // Login page
                 if (isset($_GET['login'])) {
                     ?>
-                    <form action="../login.php?login" method="post">
+                    <form action="/login" method="post">
                         <div class="columns">
                             <div class="column">
                                 <h1 class="title is-4">Login</h1>
@@ -69,7 +69,7 @@
                     <?php // Registration page
                 } elseif (isset($_GET['registeraccount'])) {
                     ?>
-                    <form action="../login.php?registeraccount" method="post">
+                    <form action="/register" method="post">
                         <div class="columns">
                             <div class="column">
                                 <h1 class="title is-4">Register</h1>
@@ -126,7 +126,7 @@
                     <?php // Forgot password
                 } elseif (isset($_GET['forgotpassw'])) {
                     ?>
-                    <form action="../login.php?forgotpassw" method="post">
+                    <form action="/forgot" method="post">
                         <div class="columns">
                             <div class="column">
                                 <h1 class="title is-4">Forgot Password</h1>

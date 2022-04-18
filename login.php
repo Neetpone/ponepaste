@@ -7,11 +7,6 @@ use PonePaste\Helpers\SessionHelper;
 use PonePaste\Models\User;
 use PonePaste\Models\UserSession;
 
-// Current Date & User IP
-$date = date('jS F Y');
-$ip = $_SERVER['REMOTE_ADDR'];
-
-
 // Check if already logged in
 if ($current_user !== null) {
     header("Location: ./");

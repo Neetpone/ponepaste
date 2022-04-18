@@ -7,7 +7,7 @@
                     <p class="help is-danger subtitle is-6"><?= pp_html_escape($error) ?></p>
                     <?php if ($password_required): ?>
                         <h1 class="title is-5">This paste is password-protected.</h1>
-                        <form action="" method="post">
+                        <form method="post">
                             <div class="field has-addons">
                                 <div class="control">
                                     <input type="hidden" name="id" value="<?= $paste_id; ?>"/>

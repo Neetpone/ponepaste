@@ -22,7 +22,7 @@
                 ?>
                 <hr>
                 <h1 class="title is-5">My Profile</h1>
-                <form action="<?= $_SERVER['PHP_SELF']; ?>" method="post">
+                <form method="post">
                     <div class="columns">
                         <div class="column">
                             <div class="field">

@@ -131,7 +131,7 @@
                 <h1 class="subtitle is-4">
                     New Paste
                 </h1>
-                <form name="mainForm" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
+                <form method="POST">
                     <nav class="level">
                         <div class="level-left">
                             <!-- Title -->

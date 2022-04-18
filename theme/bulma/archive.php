@@ -25,6 +25,29 @@
         padding-left: 0.25rem;
         content: '▲';
     }
+
+    .hidden {
+        display: none;
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    table.hidden + .loading_container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 99999999;
+        background-image: url('/img/loader<?= random_int(1, 3) ?>.gif'); /* your icon gif file path */
+        background-repeat: no-repeat;
+        background-color: #FFF;
+        background-position: center;
+    }
+
+
 </style>
 
 <main class="bd-main">
@@ -55,7 +78,7 @@
                     </select>
                     &nbsp;per page
                 </div>
-                <table id="archive" class="table is-fullwidth is-hoverable">
+                <table id="archive" class="table is-fullwidth is-hoverable hidden">
                     <thead>
                     <tr class="paginator__sort">
                         <th data-sort-field="title">Title</th>
@@ -64,7 +87,6 @@
                     </tr>
                     </thead>
                     <tbody>
-<!--                        <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>-->
                     <!-- Filled by DataTables -->
                     </tbody>
                     <tfoot>
@@ -75,6 +97,8 @@
                     </tr>
                     </tfoot>
                 </table>
+                <div class="loading_container">
+                </div>
 
                 <div class="paginator"></div>
             </div>

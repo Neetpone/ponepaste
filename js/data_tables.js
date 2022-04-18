@@ -147,6 +147,7 @@ class DataTable {
     _loadEntries() {
         new Promise(this.ajaxCallback)
             .then(data => {
+                this.element.classList.remove('hidden');
                 this.unfilteredData = data.data;
                 this._updateFilter(this.options.preFilter);
             });

@@ -242,20 +242,20 @@ $total_page_views = PageView::select('tpage')->orderBy('id', 'desc')->first()->t
 $total_unique_views = PageView::select('tvisit')->orderBy('id', 'desc')->first()->tvisit;
 
 $current_user = SessionHelper::currentUser();
-$current_ability = new AbilityHelper($current_user);
 
 function can(string $action, mixed $subject) : bool {
-    global $current_ability;
+    global $current_user;
+    static $current_ability = null;
+
+    if ($current_ability === null) {
+        $current_ability = new AbilityHelper($current_user);
+    }
 
     return $current_ability->can($action, $subject);
 }
-
-//SessionHelper::setupCsrfToken();
 
 $script_bundles = [];
 
 /* Security headers */
 header('X-Frame-Options: SAMEORIGIN');
 header('X-Content-Type-Options: nosniff');
-
-//ob_start();

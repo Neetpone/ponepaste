@@ -145,7 +145,7 @@ $flashes = getFlashes();
         </header>
         <div id="logid" class="content-tab">
             <section class="modal-card-body">
-                <form method="POST" action="../login.php">
+                <form method="POST" action="/login">
                     <div class="field">
                         <label class="label">Username</label>
                         <div class="control has-icons-left has-icons-right">
@@ -181,7 +181,7 @@ $flashes = getFlashes();
         </div>
         <div id="regid" class="content-tab" style="display:none">
             <section class="modal-card-body">
-                <form method="POST" action="../login.php?register">
+                <form method="POST" action="/register">
                     <div class="field">
                         <label class="label">Username</label>
                         <div class="control has-icons-left has-icons-right">

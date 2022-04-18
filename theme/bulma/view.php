@@ -135,7 +135,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             <div class="">
                                 <div class="panel-tools">
                                     <?php if ($current_user !== null): ?>
-                                        <form action="" method="POST" class="form--inline">
+                                        <form method="POST" class="form--inline">
                                             <?php if (isset($csrf_token)): ?>
                                                 <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
                                             <?php endif; ?>
@@ -228,7 +228,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                     <!-- Paste Panel -->
                     <hr>
                     <h1 class="title is-6 mx-1">Edit Paste</h1>
-                    <form class="form-horizontal" name="mainForm" action="index.php" method="POST">
+                    <form class="form-horizontal" action="/" method="POST">
                         <nav class="level">
                             <div class="level-left">
                                 <!-- Title -->
