@@ -140,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
 
             $paste->replaceTags(Tag::parseTagInput($tag_input));
+            $redis->del('ajax_pastes'); /* Expire from Redis so the edited paste shows up */
         } else {
             $error = 'You must be logged in to do that.';
         }
@@ -167,6 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($p_visible == '0') {
             addToSitemap($paste, $priority, $changefreq);
         }
+        $redis->del('ajax_pastes'); /* Expire from Redis so the new paste shows up */
     }
 
     // Redirect to paste on successful entry, or on successful edit redirect back to edited paste

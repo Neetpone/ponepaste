@@ -4,6 +4,12 @@ require_once('../includes/common.php');
 
 use PonePaste\Models\Paste;
 
+if (empty($_GET['q']) && $redis->exists('ajax_pastes')) {
+    header('Content-Type: application/json; charset=UTF-8');
+    echo $redis->get('ajax_pastes');
+    die;
+}
+
 $pastes = Paste::with([
     'user' => function($query) {
         $query->select('users.id', 'username');
@@ -24,7 +30,7 @@ $pastes = $pastes->get();
 
 header('Content-Type: application/json; charset=UTF-8');
 
-echo json_encode(['data' => $pastes->map(function($paste) {
+$pastes_json = json_encode(['data' => $pastes->map(function($paste) {
     return [
         'id' => $paste->id,
         'title' => $paste->title,
@@ -34,3 +40,7 @@ echo json_encode(['data' => $pastes->map(function($paste) {
         })
     ];
 })]);
+
+$redis->setEx('ajax_pastes', 3600, $pastes_json);
+
+echo $pastes_json;

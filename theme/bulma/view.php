@@ -341,7 +341,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 <div class="columns">
                                     <div class="column">
                                         <input type="text" class="input" name="pass" id="pass" value=""
-                                               placeholder="Password" autocomplete="off" />
+                                               placeholder="Password" autocomplete="new-password" />
                                     </div>
                                 </div>
                             </div>
