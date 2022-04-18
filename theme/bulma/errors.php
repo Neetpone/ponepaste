@@ -5,7 +5,7 @@
             <div class="bd-lead">
                 <?php if (isset($error)): ?>
                     <p class="help is-danger subtitle is-6"><?= pp_html_escape($error) ?></p>
-                    <?php if ($password_required): ?>
+                    <?php if (isset($password_required) && $password_required): ?>
                         <h1 class="title is-5">This paste is password-protected.</h1>
                         <form method="post">
                             <div class="field has-addons">
