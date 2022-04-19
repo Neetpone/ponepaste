@@ -205,6 +205,10 @@ button.button--no-style {
     background-color: #ddd;
 }
 
+.paginator__button:disabled {
+    cursor: not-allowed;
+}
+
 .table_filterer {
     color: #fff;
     background: #3298dc;

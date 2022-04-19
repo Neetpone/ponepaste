@@ -26,8 +26,8 @@ class SimplePaginator {
         }
 
         /* First and last page the main paginator will show */
-        const firstPageShow = (currentPage - firstPage) < numPagesToShow ? firstPage : ((currentPage - numPagesToShow < 0) ? currentPage : currentPage - numPagesToShow);
-        const lastPageShow = (firstPageShow + numPagesToShow) > lastPage ? lastPage : (firstPageShow + numPagesToShow + numPagesToShow);
+        const firstPageShow = (currentPage - numPagesToShow) < firstPage ? firstPage : (currentPage - numPagesToShow);
+        const lastPageShow = (currentPage + numPagesToShow) > lastPage ? lastPage : (currentPage + numPagesToShow);
 
         /* Whether to show the first and last pages in existence at the ends of the paginator */
         const showFirstPage = (Math.abs(firstPage - currentPage)) > (numPagesToShow);
@@ -38,13 +38,13 @@ class SimplePaginator {
 
         /* Previous button */
         this.element.appendChild(makeEl(
-            `<a class="paginator__button previous ${prevButtonDisabled}" data-page="${currentPage - 1}">Previous</a>`
+            `<button class="paginator__button previous" ${prevButtonDisabled} data-page="${currentPage - 1}">Previous</button>`
         ));
 
         /* First page button */
         if (showFirstPage) {
             this.element.appendChild(makeEl(
-                `<a class="paginator__button" data-page="${firstPage}">${firstPage}</a>`
+                `<button class="paginator__button" data-page="${firstPage}">${firstPage}</button>`
             ));
             this.element.appendChild(makeEl(`<span class="ellipsis">…</span>`));
         }
@@ -53,7 +53,7 @@ class SimplePaginator {
         for (let i = firstPageShow; i <= lastPageShow; i++) {
             const selected = (i === currentPage ? 'paginator__button--selected' : '');
             this.element.appendChild(makeEl(
-                `<a class="paginator__button ${selected}" data-page="${i}">${i}</a>`
+                `<button class="paginator__button ${selected}" data-page="${i}">${i}</button>`
             ));
         }
 
@@ -61,14 +61,14 @@ class SimplePaginator {
         if (showLastPage) {
             this.element.appendChild(makeEl(`<span class="ellipsis">…</span>`));
             this.element.appendChild(makeEl(
-                `<a class="paginator__button" data-page="${lastPage}">${lastPage}</a>`
+                `<button class="paginator__button" data-page="${lastPage}">${lastPage}</button>`
             ));
         }
 
         const nextButtonDisabled = currentPage === lastPage ? 'disabled' : ''
         /* Next button */
         this.element.appendChild(makeEl(
-            `<a class="paginator__button next ${nextButtonDisabled}" data-page="${currentPage + 1}">Next</a>`
+            `<button class="paginator__button next" ${nextButtonDisabled} data-page="${currentPage + 1}">Next</button>`
         ));
     }
 }
