@@ -39,28 +39,32 @@ class Paste extends Model {
     public static function getRecent(int $count = 10) : Collection {
         return Paste::with('user')
             ->orderBy('created_at', 'DESC')
-            ->where('visible', 0)
+            ->where('visible', self::VISIBILITY_PUBLIC)
+            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
             ->limit($count)->get();
     }
 
     public static function getRecentlyUpdated(int $count = 10) : Collection {
         return Paste::with('user')
             ->orderBy('updated_at', 'DESC')
-            ->where('visible', 0)
+            ->where('visible', self::VISIBILITY_PUBLIC)
+            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
             ->limit($count)->get();
     }
 
     public static function getMostViewed(int $count = 10) : Collection {
         return Paste::with('user')
             ->orderBy('views')
-            ->where('visible', 0)
+            ->where('visible', self::VISIBILITY_PUBLIC)
+            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
             ->limit($count)->get();
     }
 
     public static function getMonthPopular(int $count = 10) : Collection {
         return Paste::with('user')
             ->whereRaw('MONTH(created_at) = MONTH(NOW())')
-            ->where('visible', 0)
+            ->where('visible', self::VISIBILITY_PUBLIC)
+            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
             ->orderBy('views')
             ->limit($count)->get();
     }
@@ -68,7 +72,8 @@ class Paste extends Model {
     public static function getRandom(int $count = 10) : Collection {
         return Paste::with('user')
             ->orderByRaw('RAND()')
-            ->where('visible', 0)
+            ->where('visible', self::VISIBILITY_PUBLIC)
+            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
             ->limit($count)->get();
     }
 }

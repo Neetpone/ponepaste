@@ -17,7 +17,9 @@ $pastes = Paste::with([
     'tags' => function($query) {
         $query->select('tags.id', 'name', 'slug');
     }
-])->select(['id', 'user_id', 'title']);
+])->select(['id', 'user_id', 'title', 'expiry'])
+    ->where('visible', Paste::VISIBILITY_PUBLIC)
+    ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
 
 if (!empty($_GET['q']) && is_string($_GET['q'])) {
     $tags = explode(',', $_GET['q']);
@@ -35,6 +37,7 @@ $pastes_json = json_encode(['data' => $pastes->map(function($paste) {
         'id' => $paste->id,
         'title' => $paste->title,
         'author' => $paste->user->username,
+        'author_id' => $paste->user->id,
         'tags' => $paste->tags->map(function($tag) {
             return ['slug' => $tag->slug, 'name' => $tag->name];
         })

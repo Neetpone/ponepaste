@@ -2,10 +2,10 @@
     use PonePaste\Models\Paste;
 
     $public_paste_badges = [
-        50 => '[ProbablyAutistic] Have more than Fifty pastes',
-        25 => '[Writefag] Have Twenty Five or more pastes',
-        5  => '[NewWritefag] Have Five or more pastes',
-        0  => '[NewFriend] Have less than Five pastes',
+        50 => '[ProbablyAutistic] Have more than fifty pastes',
+        25 => '[Writefag] Have twenty-five or more pastes',
+        5  => '[NewWritefag] Have five or more pastes',
+        0  => '[NewFriend] Have less than five pastes',
     ];
 
     $unlisted_paste_badges = [
@@ -15,9 +15,9 @@
 
     $paste_view_badges = [
         50000 => '[HorseAyylmao] Have more than 50,000 total views',
-        10000 => '[HorseIlluminatii] Have more than 10,000 total views',
+        10000 => '[HorseIlluminati] Have more than 10,000 total views',
         5000  => '[HorseMaster] Have more than 5000 total views',
-        3000  => '[Horseidol] Have more than 3000 total views',
+        3000  => '[HorseIdol] Have more than 3000 total views',
         2000  => '[HorseFamous] Have more than 2000 total views',
         1000  => '[HorseWriter] Have more than 1000 total views'
     ];
@@ -45,13 +45,16 @@
                 <div class="box">
                     <h2 class="title is-5">Badges</h2>
                     <?php
-                    if (strtotime($profile_join_date) <= 1604188800) {
-                        echo '<img src="/img/badges/adopter.png" title="[EarlyAdopter] Joined during the first wave " style="margin:5px">';
-                    } elseif (strtotime($profile_join_date) <= 1608422400) {
-                        echo '<img src="/img/badges/pioneer.png" title="[EarlyPioneer] Joined during the Second wave " style="margin:5px">';
-                    } elseif (strtotime($profile_join_date) <= 1609459200) {
-                        echo '<img src="/img/badges/strag.png" title="[EarlyStraggeler] Joined after the Second wave " style="margin:5px">';
+                    if (!empty($profile_join_date)) {
+                        if (strtotime($profile_join_date) <= 1604188800) {
+                            echo '<img src="/img/badges/adopter.png" title="[EarlyAdopter] Joined during the first wave " style="margin:5px">';
+                        } elseif (strtotime($profile_join_date) <= 1608422400) {
+                            echo '<img src="/img/badges/pioneer.png" title="[EarlyPioneer] Joined during the second wave " style="margin:5px">';
+                        } elseif (strtotime($profile_join_date) <= 1609459200) {
+                            echo '<img src="/img/badges/strag.png" title="[EarlyStraggler] Joined after the second wave " style="margin:5px">';
+                        }
                     }
+
                     if (!str_contains($profile_badge, '0')) {
                         echo $profile_badge;
                     }
@@ -60,9 +63,9 @@
                     outputBadges($paste_view_badges, $profile_total_paste_views, 'total_views');
 
                     if (($profile_total_unlisted >= 5) && ($profile_total_unlisted <= 9)) {
-                        echo '<img src="/img/badges/pastehidden.png" title="[ShadowWriter] Have more than Five unlisted pastes" style="margin:5px">';
+                        echo '<img src="/img/badges/pastehidden.png" title="[ShadowWriter] Have more than five unlisted pastes" style="margin:5px">';
                     } elseif ($profile_total_unlisted >= 10) {
-                        echo '<img src="/img/badges/pastehidden.png" title="[Ghostwriter]  Have more than Ten unlisted pastes" style="margin:5px">';
+                        echo '<img src="/img/badges/pastehidden.png" title="[Ghostwriter]  Have more than ten unlisted pastes" style="margin:5px">';
                     }
 
                     ?>
@@ -125,7 +128,7 @@
                                     2 => 'Private'
                                 };
                                 $pasteJson = array_merge(
-                                    $paste->only('id', 'title', 'tags', 'views', 'created_at'),
+                                    $paste->only('id', 'title', 'tags', 'views', 'created_at', 'user_id'),
                                     ['visibility' => $p_visible]
                                 );
                             ?>
@@ -138,7 +141,7 @@
                                     <td class="td-center"><?= $p_visible; ?></td>
                                     <td class="td-center"><?= $paste->views ?></td>
                                     <td class="td-left"><?= tagsToHtmlUser($paste->tags, $profile_username); ?></td>
-                                    <?php if ($is_current_user): ?>
+                                    <?php if (can('delete', $paste)): ?>
                                         <td class="td-center">
                                             <form action="<?= urlForPaste($paste) ?>" method="POST">
                                                 <input type="hidden" name="delete" value="delete" />

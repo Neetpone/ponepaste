@@ -35,8 +35,9 @@ whenReady(() => {
         },
         rowCallback: (rowData) => {
             const userData = getUserInfo();
+            const ownedByUser = (parseInt(rowData.user_id) === parseInt(userData.userId));
 
-            const deleteElem = true ? `<td class="td-center">
+            const deleteElem = ownedByUser ? `<td class="td-center">
                                          <form action="/${rowData.id}" method="POST">
                                             <input type="hidden" name="delete" value="delete" />
                                             <input type="hidden" name="csrf_token" value="${userData.csrfToken}" />
@@ -44,11 +45,12 @@ whenReady(() => {
                                          </form>
                                        </td>` : '';
             const pasteCreatedAt = new Date(rowData.created_at).toLocaleString();
+            const pasteVisibility = ownedByUser ? `<td class="td-center">${rowData.visibility}</td>` : '';
 
             return `<tr>
                         <td><a href="/${rowData.id}">${escape(rowData.title)}</a></td>
                         <td class="td-center">${pasteCreatedAt}</td>
-                        <td class="td-center">${rowData.visibility}</td>
+                        ${pasteVisibility}
                         <td class="td-center">${rowData.views || 0}</td>
                         <td>${tagsToHtml(rowData.tags)}</td>
                         ${deleteElem}

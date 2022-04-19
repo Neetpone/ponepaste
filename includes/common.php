@@ -80,7 +80,8 @@ function flash(string $level, string $message) {
     if (!isset($_SESSION['flashes'])) {
         $_SESSION['flashes'] = [
             'success' => [],
-            'warning' => []
+            'warning' => [],
+            'error' => []
         ];
     }
 
@@ -96,13 +97,17 @@ function flashError(string $message) {
     flash('error', $message);
 }
 
+function flashWarning(string $message) {
+    flash('warning', $message);
+}
+
 function flashSuccess(string $message) {
     flash('success', $message);
 }
 
 function getFlashes() {
     if (!isset($_SESSION['flashes'])) {
-        return ['success' => [], 'error' => []];
+        return ['success' => [], 'warning' => [], 'error' => []];
     }
 
     $flashes = $_SESSION['flashes'];

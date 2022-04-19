@@ -14,11 +14,13 @@ class User extends Model {
     }
 
     public function favourites() {
-        return $this->belongsToMany(Paste::class, 'user_favourites')->withPivot('f_time');
+        return $this->belongsToMany(Paste::class, 'user_favourites')->withPivot('f_time')
+            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
     }
 
     public function pastes() {
-        return $this->hasMany(Paste::class);
+        return $this->hasMany(Paste::class)
+            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
     }
 }
 

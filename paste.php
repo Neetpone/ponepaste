@@ -20,7 +20,7 @@ function rawView($content, $p_code) {
 }
 
 function getUserRecommended(User $user) {
-    return Paste::where('visible', '0')
+    return Paste::where('visible', Paste::VISIBILITY_PUBLIC)
                 ->where('user_id', $user->id)
                 ->orderBy('id')->limit(5)
                 ->get();
@@ -42,7 +42,7 @@ updatePageViews();
 // This is used in the theme files.
 $totalpastes = Paste::count();
 
-$paste = Paste::find($paste_id);
+$paste = Paste::with('user')->find($paste_id);
 $is_private = false;
 $error = null;
 
@@ -74,7 +74,6 @@ $fav_count = $paste->favouriters()->count();
 
 $p_content = $paste->content;
 $p_visible = $paste->visible;
-$p_expiry = $paste->expiry;
 $p_password = $paste->password;
 $p_encrypt = (bool) $paste->encrypt;
 $paste_is_favourited = $current_user !== null && $current_user->favourites->where('id', $paste->id)->count() === 1;
@@ -128,10 +127,13 @@ if (PP_MOD_REWRITE) {
     $p_embed = "paste.php?embed&id=$paste_id";
 }
 
-if (!empty($p_expiry) && $p_expiry !== 'SELF') {
-    $input_time = $p_expiry;
-    $current_time = mktime(date("H"), date("i"), date("s"), date("n"), date("j"), date("Y"));
-    if ($input_time < $current_time) {
+/* Expiry */
+if (!empty($paste->expiry)) {
+    if ($paste->expiry === 'SELF') {
+        $paste->delete();
+        flashWarning('This paste has self-destructed - if you close this window, you will no longer be able to view it!');
+    } else if (time() > (int) $paste->expiry) {
+        $paste->delete();
         $error = 'This paste has expired.';
         goto Not_Valid_Paste;
     }

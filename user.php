@@ -53,7 +53,9 @@ $profile_total_unlisted = $profile_info->pastes->where('visible', 1)->count();
 $profile_total_private = $profile_info->pastes->where('visible', 2)->count();
 
 
-$profile_total_paste_views = Paste::select('views')->where('user_id', $profile_info->id)->sum('views');
+$profile_total_paste_views = Paste::select('views')
+    ->where('user_id', $profile_info->id)
+    ->sum('views');
 
 $profile_join_date = $profile_info['date'];
 
