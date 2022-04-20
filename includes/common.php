@@ -117,6 +117,27 @@ function getFlashes() {
     return $flashes;
 }
 
+function outputFlashes($flashes) {
+    function __outputFlash($level, $flash) {
+        echo '<div class="notification is-' . $level . ' flash">
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>'
+            . pp_html_escape($flash) .
+            '</div>';
+    }
+
+    foreach ($flashes['success'] as $flash) {
+        __outputFlash('info', $flash);
+    }
+
+    foreach ($flashes['warning'] as $flash) {
+        __outputFlash('warning', $flash);
+    }
+
+    foreach ($flashes['error'] as $flash) {
+        __outputFlash('danger', $flash);
+    }
+}
+
 /* Database functions */
 function getSiteInfo() : array {
     return require(__DIR__ . '/../config/site.php');

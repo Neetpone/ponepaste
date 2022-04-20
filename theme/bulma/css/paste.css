@@ -229,3 +229,8 @@ button.button--no-style {
     margin-bottom: 1rem;
     color: black;
 }
+
+.flash i {
+    margin-right: 0.5rem;
+    font-size: 1.25rem;
+}

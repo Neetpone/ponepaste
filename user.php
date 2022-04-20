@@ -8,8 +8,8 @@ use PonePaste\Models\Paste;
 
 if (empty($_GET['user'])) {
     // No username provided
-    header("Location: ../error.php");
-    die();
+    flashError('User not found.');
+    goto Render;
 }
 
 $profile_username = trim($_GET['user']);
@@ -21,8 +21,8 @@ $profile_info = User::with('favourites')
 
 if (!$profile_info) {
     // Invalid username
-    header("Location: ../error.php");
-    die();
+    flashError('User not found.');
+    goto Render;
 }
 
 $p_title = $profile_username . "'s Public Pastes";
@@ -66,7 +66,16 @@ $is_current_user = ($current_user !== null) && ($profile_info->id == $current_us
 updatePageViews();
 
 $csrf_token = setupCsrfToken();
-$page_title = 'Profile of ' . $profile_username;
-$page_template = 'user_profile';
-$script_bundles[] = 'user_profile';
+
+Render:
+
+if (isset($profile_info)) {
+    $page_title = 'Profile of ' . $profile_username;
+    $page_template = 'user_profile';
+    $script_bundles[] = 'user_profile';
+} else {
+    $page_title = 'User not found';
+    $page_template = 'errors';
+}
+
 require_once('theme/' . $default_theme . '/common.php');

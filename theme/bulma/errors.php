@@ -20,7 +20,10 @@
                         </form>
                     <?php endif; ?>
                     <a href="/" class="btn btn-default">New Paste</a>
+                <?php elseif (isset($flashes)): ?>
+                    <?php outputFlashes($flashes) ?>
                 <?php endif; ?>
+                <a href="/" class="button">Go Home</a>
             </div>
         </div>
     </div>

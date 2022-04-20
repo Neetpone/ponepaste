@@ -71,15 +71,7 @@
                     ?>
                 </div>
 
-                <?php
-                foreach ($flashes['success'] as $success) {
-                    echo '<div class="notification is-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>' . pp_html_escape($success) . '</div>';
-                }
-
-                foreach ($flashes['error'] as $error) {
-                    echo '<div class="notification is-danger"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>' . pp_html_escape($error) . '</div>';
-                }
-                ?>
+                <?php outputFlashes($flashes) ?>
 
                 <?php if ($is_current_user): ?>
                     Some of your statistics:

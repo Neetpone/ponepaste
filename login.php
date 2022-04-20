@@ -105,7 +105,7 @@ if (isset($_POST['forgot'])) {
         $error = 'All fields must be filled out.';
     } elseif (strlen($username) > 25) {
         $error = 'Username too long.'; // "Username already taken.";
-    } elseif (preg_match('/[^A-Za-z0-9._\\-$]/', $username)) {
+    } elseif (!preg_match('/^[A-Za-z0-9._\\-]+$/', $username)) {
         $error = 'Username is invalid - please use A-Za-z0-9, periods, hyphens, and underscores only.';
     } else {
         if (User::where('username', $username)->first()) {
