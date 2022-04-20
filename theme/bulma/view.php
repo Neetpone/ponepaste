@@ -120,7 +120,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             </span>
                         </div>
                         <div class="column is-4 has-text-centered">
-                            <h1 class="title is-6" style="margin-bottom:0;"><?= $paste['title'] ?></h1>
+                            <h1 class="title is-6" style="margin-bottom:0;"><?= pp_html_escape($paste->title); ?></h1>
                             <small class="title is-6 has-text-weight-normal has-text-grey">
                                 By <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
                                 <br/>
