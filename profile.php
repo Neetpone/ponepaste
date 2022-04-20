@@ -19,9 +19,8 @@ $user_password = $current_user->password;
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!verifyCsrfToken()) {
         $error = 'Invalid CSRF token (do you have cookies enabled?)';
-    } else if (isset($_POST['cpassword'])) {
-        $user_old_pass = $_POST['old_password'];
-        if (pp_password_verify($user_old_pass, $user_password)) {
+    } else if (isset($_POST['cpassword']) && !empty($_POST['old_password']) && !empty($_POST['password'])) {
+        if (pp_password_verify($_POST['old_password'], $user_password)) {
             $user_new_cpass = pp_password_hash($_POST['password']);
 
             $current_user->password = $user_new_cpass;
