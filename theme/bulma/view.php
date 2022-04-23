@@ -83,7 +83,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             </div>
                         </div>
                         <!--<div class="column">
-                            <input type="hidden" name="reppasteid" value="<?php echo($paste_id); ?>">
+                            <input type="hidden" name="reppasteid" value="<?php echo($paste->id); ?>">
                             <div>
                                 <div style="text-align: center;">
                                     <div id="reportbutton" class="column">
@@ -171,7 +171,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                } else {
                                                    echo 'paste.php?embed&id=';
                                                }
-                                               echo $paste_id . '"></script>'; ?>' readonly />
+                                               echo $paste->id . '"></script>'; ?>' readonly />
                                     </div>
                                 </div>
                             </div>
@@ -326,7 +326,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                             $visibility_codes[] = '2';
                                                         }
 
-                                                        echo optionsForSelect($visibility_names, $visibility_codes, $p_visible);
+                                                        echo optionsForSelect($visibility_names, $visibility_codes, $paste->visible);
                                                     ?>
                                                 </select>
                                             </div>

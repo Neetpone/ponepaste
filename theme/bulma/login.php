@@ -165,9 +165,9 @@
                     <div class="columns">
                         <div class="column">
                             <h1 class="title is-4">Where to?</h1>
-                            <a href="login.php?login">Login</a><br/>
-                            <a href="login.php?registeraccount">Register</a> <br/>
-                            <a href="login.php?forgotpassw">Forgot Password</a><br/>
+                            <a href="/login">Login</a><br/>
+                            <a href="/register">Register</a> <br/>
+                            <a href="/forgot">Forgot Password</a><br/>
                         </div>
                         <div class="column">
                         </div>

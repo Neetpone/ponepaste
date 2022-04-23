@@ -176,7 +176,7 @@ $flashes = getFlashes();
                 </form>
             </section>
             <footer class="modal-card-foot">
-                <a href="../login.php?forgotpassw">Forgot Password?</a>
+                <a href="/forgot">Forgot Password?</a>
             </footer>
         </div>
         <div id="regid" class="content-tab" style="display:none">

@@ -10,7 +10,7 @@
                         <form method="post">
                             <div class="field has-addons">
                                 <div class="control">
-                                    <input type="hidden" name="id" value="<?= $paste_id; ?>" />
+                                    <input type="hidden" name="id" value="<?= $paste->id; ?>" />
                                     <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
                                     <input type="password" class="input" name="mypass"
                                            placeholder="Password" />

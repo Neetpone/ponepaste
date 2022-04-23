@@ -81,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $error = validatePasteFields();
 
+
     if ($error !== null) {
         goto OutPut;
     }
@@ -89,6 +90,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($captchaResponse !== true) {
         $error = $captchaResponse;
+        goto OutPut;
+    }
+
+    $tags = Tag::parseTagInput($tag_input);
+
+    if (count($tags) < 1) {
+        $error = 'You must specify at least 1 tag.';
+        goto OutPut;
+    } elseif (count($tags) > 32) {
+        $error = 'You must specify at most 32 tags.';
         goto OutPut;
     }
 
@@ -126,20 +137,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Edit existing paste or create new?
     if ($editing) {
         $paste = Paste::find($_POST['paste_id']);
-        if ($current_user &&
-            $current_user->id === $paste->user_id) {
-            $paste_id = $paste->id;
+        if (can('edit', $paste)) {
             $paste->update([
-                    'title' => $paste_title,
-                    'content' => $paste_content,
-                    'visible' => $paste_visibility,
-                    'code' => $paste_code,
-                    'expiry' => $expires,
-                    'password' => $paste_password,
-                    'ip' => $ip
+                'title' => $paste_title,
+                'content' => $paste_content,
+                'visible' => $paste_visibility,
+                'code' => $paste_code,
+                'expiry' => $expires,
+                'password' => $paste_password,
+                'ip' => $ip
             ]);
 
-            $paste->replaceTags(Tag::parseTagInput($tag_input));
+            $paste->replaceTags($tags);
             $redis->del('ajax_pastes'); /* Expire from Redis so the edited paste shows up */
         } else {
             $error = 'You must be logged in to do that.';
@@ -161,13 +170,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $paste->user()->associate($paste_owner);
         $paste->save();
 
-        $paste->replaceTags(Tag::parseTagInput($tag_input));
+        $paste->replaceTags($tags);
 
-        $paste_id = $new_paste->id;
-
-        if ($p_visible == '0') {
+        if ($paste_visibility == Paste::VISIBILITY_PUBLIC) {
             addToSitemap($paste, $priority, $changefreq);
         }
+
         $redis->del('ajax_pastes'); /* Expire from Redis so the new paste shows up */
     }
 

@@ -104,7 +104,7 @@ if (isset($_POST['forgot'])) {
     if (empty($_POST['password']) || empty($_POST['username'])) {
         $error = 'All fields must be filled out.';
     } elseif (strlen($username) > 25) {
-        $error = 'Username too long.'; // "Username already taken.";
+        $error = 'Username too long.';
     } elseif (!preg_match('/^[A-Za-z0-9._\\-]+$/', $username)) {
         $error = 'Username is invalid - please use A-Za-z0-9, periods, hyphens, and underscores only.';
     } else {

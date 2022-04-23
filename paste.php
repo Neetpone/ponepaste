@@ -35,14 +35,12 @@ function getUserRecommended(User $user) {
     return $query->fetchAll();*/
 }
 
-$paste_id = intval(trim($_REQUEST['id']));
-
 updatePageViews();
 
 // This is used in the theme files.
 $totalpastes = Paste::count();
 
-$paste = Paste::with('user')->find($paste_id);
+$paste = Paste::with('user')->find((int) trim($_REQUEST['id']));
 $is_private = false;
 $error = null;
 
@@ -73,12 +71,10 @@ $using_highlighter = $paste_code !== 'pastedown';
 $fav_count = $paste->favouriters()->count();
 
 $p_content = $paste->content;
-$p_visible = $paste->visible;
 $p_password = $paste->password;
-$p_encrypt = (bool) $paste->encrypt;
 $paste_is_favourited = $current_user !== null && $current_user->favourites->where('id', $paste->id)->count() === 1;
 
-$is_private = $p_visible === '2';
+$is_private = $paste->visible === Paste::VISIBILITY_PRIVATE;
 
 if (!can('view', $paste)) {
     $error = 'This is a private paste. If you created this paste, please log in to view it.';
@@ -118,13 +114,13 @@ if ($password_required && !in_array($paste->id, $password_ok_pastes)) {
 }
 
 if (PP_MOD_REWRITE) {
-    $p_download = "download/$paste_id";
-    $p_raw = "raw/$paste_id";
-    $p_embed = "embed/$paste_id";
+    $p_download = "download/$paste->id";
+    $p_raw = "raw/$paste->id";
+    $p_embed = "embed/$paste->id";
 } else {
-    $p_download = "paste.php?download&id=$paste_id";
-    $p_raw = "paste.php?raw&id=$paste_id";
-    $p_embed = "paste.php?embed&id=$paste_id";
+    $p_download = "paste.php?download&id=$paste->id";
+    $p_raw = "paste.php?raw&id=$paste->id";
+    $p_embed = "paste.php?embed&id=$paste->id";
 }
 
 /* Expiry */
@@ -150,7 +146,7 @@ if (isset($_POST['fave']) && $current_user) {
     $paste_is_favourited = !$paste_is_favourited;
 }
 
-if ($p_encrypt == 1) {
+if ($paste->encrypt) {
     $p_content = openssl_decrypt($p_content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY);
 }
 
@@ -202,13 +198,13 @@ if ($paste_code === "pastedown") {
 
 // Embed view after highlighting is applied so that $p_code is syntax highlighted as it should be.
 if (isset($_GET['embed'])) {
-    embedView($paste_id, $paste_title, $p_content, $title);
+    embedView($paste->id, $paste->title, $p_content, $title);
     exit();
 }
 
 // View counter
-if (!isRequesterLikelyBot() && @$_SESSION['not_unique'] !== $paste_id) {
-    $_SESSION['not_unique'] = $paste_id;
+if (!isRequesterLikelyBot() && @$_SESSION['not_unique'] !== $paste->id) {
+    $_SESSION['not_unique'] = $paste->id;
     $paste->views += 1;
     $paste->save();
 }

@@ -12,6 +12,10 @@ class Paste extends Model {
     protected $table = 'pastes';
 
     protected $guarded = [];
+    protected $casts = [
+        'visible' => 'integer',
+        'encrypt' => 'boolean'
+    ];
 
     public function user() {
         return $this->belongsTo(User::class);

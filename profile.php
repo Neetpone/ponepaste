@@ -6,7 +6,7 @@ require_once('includes/passwords.php');
 use PonePaste\Models\Paste;
 
 if ($current_user === null) {
-    header("Location: ./login.php");
+    header("Location: /login");
     die();
 }
 
