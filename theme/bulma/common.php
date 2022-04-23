@@ -28,10 +28,10 @@ $flashes = getFlashes();
     </title>
     <meta name="description" content="<?= pp_html_escape($global_site_info['description']) ?>"/>
     <meta name="keywords" content="<?= pp_html_escape($global_site_info['keywords']) ?>"/>
-    <link rel="shortcut icon" href="//<?= $baseurl ?>/theme/bulma/img/favicon.ico">
-    <link href="//<?= $baseurl ?>/theme/bulma/css/paste.css" rel="stylesheet"/>
-    <link href="//<?= $baseurl ?>/theme/bulma/css/table-responsive.css" rel="stylesheet"/>
-    <link href="//<?= $baseurl ?>/theme/bulma/css/table-row-orders.css" rel="stylesheet"/>
+    <link rel="shortcut icon" href="/theme/bulma/img/favicon.ico">
+    <link href="/theme/bulma/css/paste.css" rel="stylesheet"/>
+    <link href="/theme/bulma/css/table-responsive.css" rel="stylesheet"/>
+    <link href="/theme/bulma/css/table-row-orders.css" rel="stylesheet"/>
 </head>
 
 <body>
@@ -39,7 +39,7 @@ $flashes = getFlashes();
     <div class="container">
         <div class="navbar-brand">
             <a style="font-size: 24px;"
-               href="<?= paste_protocol() . pp_html_escape($baseurl) ?>"
+               href="/"
                class="navbar-item mx-1"><?= pp_html_escape($site_name); ?></a>
             <div class="theme-switch-wrapper">
                 <label class="theme-switch" for="checkbox">
@@ -222,8 +222,8 @@ $flashes = getFlashes();
                     <input class="button is-link is-fullwidth my-4" type="submit" name="signup" />
                     <div class="field">
                         <p style="float:left;">By signing up you agree to our <a href="page/privacy">Privacy policy </a>
-                            and <a href="page/rules">Site rules</a>. This site may contain material not sutible for
-                            under 18's</p>
+                            and <a href="page/rules">Site rules</a>. This site may contain material not suitable for
+                            those aged under 18.</p>
                     </div>
                 </form>
             </section>
@@ -289,7 +289,7 @@ $flashes = getFlashes();
     </div>
 </footer>
 
-<script src="//<?= $baseurl ?>/theme/bulma/js/paste.js"></script>
+<script src="/theme/bulma/js/paste.js"></script>
 <?php if (empty($script_bundles)): ?>
     <?= javascriptIncludeTag('generic') ?>
 <?php else: ?>

@@ -148,15 +148,15 @@
                         </tbody>
                         <tfoot>
                         <tr>
-                            <th class="td-center">Title</th>
+                            <th class="td-right">Title</th>
                             <th class="td-center">Paste Time</th>
                             <?php if ($is_current_user) {
-                                echo "<td class='td-center'>Visibility</td>";
+                                echo "<th class='td-center'>Visibility</th>";
                             } ?>
                             <th class="td-center">Views</th>
                             <th class="td-center">Tags</th>
                             <?php if ($is_current_user) {
-                                echo "<td class='td-center'>Delete</td>";
+                                echo "<th class='td-center'>Delete</th>";
                             } ?>
                         </tr>
                         </tfoot>
@@ -204,10 +204,10 @@
                         </tbody>
                         <tfoot>
                         <tr>
-                            <td class="td-right">Title</td>
-                            <td class="td-center">Date Favourited</td>
-                            <td class="td-center">Status</td>
-                            <td class="td-center">Tags</td>
+                            <th class="td-right">Title</th>
+                            <th class="td-center">Date Favourited</th>
+                            <th class="td-center">Status</th>
+                            <th class="td-center">Tags</th>
                         </tr>
                         </tfoot>
                         <?php } ?>

@@ -120,7 +120,7 @@
                         <div class="field">
                             <p style="float:left;">By signing up you agree to our <a href="page/privacy">Privacy
                                     policy </a> and <a href="page/rules">Site rules</a>. This site may contain material
-                                not sutible for under 18's</p>
+                                not suitable for those aged under 18.</p>
                         </div>
                     </form>
                     <?php // Forgot password

@@ -152,10 +152,10 @@ function embedView($paste_id, $p_title, $content, $title) {
     $stats = false;
     if ($content) {
         // Build the output
-        $output = "<div class='paste_embed_conntainer'>";
+        $output = "<div class='paste_embed_container'>";
         $output .= "<style>"; // Add our own styles
         $output .= "
-            .paste_embed_conntainer {
+            .paste_embed_container {
                 font-size: 12px;
                 color: #333;
                 text-align: left;
@@ -164,13 +164,13 @@ function embedView($paste_id, $p_title, $content, $title) {
                 background-color: #f7f7f7;
                 border-radius: 3px;
             }
-            .paste_embed_conntainer a {
+            .paste_embed_container a {
                 font-weight: bold;
                 color: #666;
                 text-decoration: none;
                 border: 0;
             }
-            .paste_embed_conntainer ol {
+            .paste_embed_container ol {
                 color: white;
                 background-color: #f7f7f7;
                 border-right: 1px solid #ccc;
