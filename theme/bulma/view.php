@@ -127,7 +127,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 Created: <?= $paste['created_at'] ?>
                                 <br/>
                                 <?php if ($paste['updated_at'] != $paste['created_at']): ?>
-                                    <?= $paste['updated_at'] ?>
+                                    Updated: <?= $paste['updated_at'] ?>
                                 <?php endif; ?>
                             </small>
                         </div>

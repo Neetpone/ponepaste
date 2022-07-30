@@ -81,7 +81,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $error = validatePasteFields();
 
-
     if ($error !== null) {
         goto OutPut;
     }
@@ -93,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         goto OutPut;
     }
 
-    $tags = Tag::parseTagInput($tag_input);
+    $tags = Tag::parseTagInput($_POST['tag_input']);
 
     if (count($tags) < 1) {
         $error = 'You must specify at least 1 tag.';
@@ -145,6 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'code' => $paste_code,
                 'expiry' => $expires,
                 'password' => $paste_password,
+                'updated_at' => date_create(),
                 'ip' => $ip
             ]);
 

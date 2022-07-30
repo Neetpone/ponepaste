@@ -16,6 +16,7 @@ class Paste extends Model {
         'visible' => 'integer',
         'encrypt' => 'boolean'
     ];
+    public $timestamps = false;
 
     public function user() {
         return $this->belongsTo(User::class);

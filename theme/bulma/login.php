@@ -67,7 +67,7 @@
                         </div>
                     </form>
                     <?php // Registration page
-                } elseif (isset($_GET['registeraccount'])) {
+                } elseif (isset($_GET['register'])) {
                     ?>
                     <form action="/register" method="post">
                         <div class="columns">
