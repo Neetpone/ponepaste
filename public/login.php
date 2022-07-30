@@ -1,7 +1,7 @@
 <?php
-require_once('includes/common.php');
-require_once('includes/functions.php');
-require_once('includes/passwords.php');
+/** @noinspection PhpDefineCanBeReplacedWithConstInspection */
+define('IN_PONEPASTE', 1);
+require_once(__DIR__ . '/../includes/common.php');
 
 use PonePaste\Helpers\SessionHelper;
 use PonePaste\Models\User;
@@ -130,6 +130,5 @@ if (isset($_POST['forgot'])) {
 // Theme
 $page_template = 'login';
 $page_title = 'Login / Register';
-require_once('theme/' . $default_theme . '/common.php');
-
+require_once(__DIR__ . '/../theme/' . $default_theme . '/common.php');
 

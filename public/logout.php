@@ -1,6 +1,7 @@
 <?php
-require_once('includes/common.php');
-require_once('includes/functions.php');
+/** @noinspection PhpDefineCanBeReplacedWithConstInspection */
+define('IN_PONEPASTE', 1);
+require_once(__DIR__ . '/../includes/common.php');
 
 use PonePaste\Helpers\SessionHelper;
 
@@ -15,5 +16,6 @@ SessionHelper::destroySession();
 /* Destroy PHP session */
 unset($_SESSION['user_id']);
 session_destroy();
+flashSuccess('You have been logged out.');
 
 header('Location: ' . $_SERVER['HTTP_REFERER']);

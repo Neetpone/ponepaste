@@ -1,6 +1,7 @@
 <?php
-require_once('includes/common.php');
-require_once('includes/functions.php');
+/** @noinspection PhpDefineCanBeReplacedWithConstInspection */
+define('IN_PONEPASTE', 1);
+require_once(__DIR__ . '/../includes/common.php');
 
 use Illuminate\Support\Facades\DB;
 use PonePaste\Models\User;
@@ -78,4 +79,4 @@ if (isset($profile_info)) {
     $page_template = 'errors';
 }
 
-require_once('theme/' . $default_theme . '/common.php');
+require_once(__DIR__ . '/../theme/' . $default_theme . '/common.php');

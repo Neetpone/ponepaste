@@ -1,7 +1,7 @@
 <?php
-require_once('includes/common.php');
-require_once('includes/functions.php');
-require_once('includes/passwords.php');
+/** @noinspection PhpDefineCanBeReplacedWithConstInspection */
+define('IN_PONEPASTE', 1);
+require_once(__DIR__ . '/../includes/common.php');
 
 use PonePaste\Models\Paste;
 
@@ -42,5 +42,5 @@ $csrf_token = setupCsrfToken();
 
 $page_template = 'profile';
 $page_title = 'My Profile';
-require_once('theme/' . $default_theme . '/common.php');
+require_once(__DIR__ . '/../theme/' . $default_theme . '/common.php');
 

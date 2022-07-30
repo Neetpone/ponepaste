@@ -8,11 +8,11 @@ const output = (name) => {
         input: `js/${name}.js`,
         output: [
             {
-                file: `assets/bundle/${name}.js`,
+                file: `public/assets/bundle/${name}.js`,
                 format: 'esm'
             },
             {
-                file: `assets/bundle/${name}.min.js`,
+                file: `public/assets/bundle/${name}.min.js`,
                 format: 'esm',
                 plugins: [getBabelOutputPlugin({ presets: ['@babel/preset-env'] }), terser()],
                 sourcemap: true

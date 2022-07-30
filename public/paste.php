@@ -1,6 +1,7 @@
 <?php
-require_once('includes/common.php');
-require_once('includes/functions.php');
+/** @noinspection PhpDefineCanBeReplacedWithConstInspection */
+define('IN_PONEPASTE', 1);
+require_once(__DIR__ . '/../includes/common.php');
 
 use Highlight\Highlighter;
 use PonePaste\Models\Paste;
@@ -222,4 +223,4 @@ if ($error) {
 }
 
 $csrf_token = setupCsrfToken();
-require_once('theme/' . $default_theme . '/common.php');
+require_once(__DIR__ . '/../theme/' . $default_theme . '/common.php');

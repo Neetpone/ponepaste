@@ -1,6 +1,7 @@
 <?php
-require_once('includes/common.php');
-require_once('includes/functions.php');
+/** @noinspection PhpDefineCanBeReplacedWithConstInspection */
+define('IN_PONEPASTE', 1);
+require_once(__DIR__ . '/../includes/common.php');
 
 use PonePaste\Models\Page;
 
@@ -19,5 +20,5 @@ if (isset($_GET['page'])) {
 }
 
 $page_template = 'pages';
-require_once('theme/' . $default_theme . '/common.php');
+require_once(__DIR__ . '/../theme/' . $default_theme . '/common.php');
 
