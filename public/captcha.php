@@ -4,10 +4,7 @@ define('IN_PONEPASTE', 1);
 require_once(__DIR__ . '/../includes/common.php');
 require_once(__DIR__ . '/../includes/captcha.php');
 
-$captcha_config = unserialize(@$_SESSION['_CAPTCHA']['config']);
-if (!$captcha_config) {
-    exit();
-}
+$captcha_config = captcha($captcha_config['colour'], $captcha_config['multiple'], $captcha_config['allowed']);
 
 // Pick random background, get info, and start captcha
 $background = $captcha_config['backgrounds'][rand(0, count($captcha_config['backgrounds']) - 1)];
@@ -34,13 +31,13 @@ $font_size = rand($captcha_config['min_font_size'], $captcha_config['max_font_si
 $text_box_size = imagettfbbox($font_size, $angle, $font, $captcha_config['code']);
 
 // Determine text position
-$box_width = abs($text_box_size[6] - $text_box_size[2]);
-$box_height = abs($text_box_size[5] - $text_box_size[1]);
+$box_width = (int) abs($text_box_size[6] - $text_box_size[2]);
+$box_height = (int) abs($text_box_size[5] - $text_box_size[1]);
 $text_pos_x_min = 0;
-$text_pos_x_max = ($bg_width) - ($box_width);
+$text_pos_x_max = (int) ($bg_width - $box_width);
 $text_pos_x = rand($text_pos_x_min, $text_pos_x_max);
 $text_pos_y_min = $box_height;
-$text_pos_y_max = ($bg_height) - ($box_height / 2);
+$text_pos_y_max = (int) ($bg_height - ($box_height / 2));
 $text_pos_y = rand($text_pos_y_min, $text_pos_y_max);
 
 // Draw shadow

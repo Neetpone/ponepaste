@@ -67,7 +67,6 @@ $changefreq = 'weekly';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     if ($captcha_config['enabled']) {
-        $_SESSION['captcha'] = captcha($captcha_config['colour'], $captcha_config['mode'], $captcha_config['multiple'], $captcha_config['allowed']);
     }
 }
 
