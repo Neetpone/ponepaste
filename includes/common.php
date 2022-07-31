@@ -285,3 +285,4 @@ $script_bundles = [];
 /* Security headers */
 header('X-Frame-Options: SAMEORIGIN');
 header('X-Content-Type-Options: nosniff');
+header("Content-Security-Policy: default-src 'self' data: 'unsafe-inline'");

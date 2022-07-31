@@ -191,8 +191,8 @@ if ($paste_code === "pastedown") {
     $parsedown->setSafeMode(true);
     $p_content = $parsedown->text($p_content);
 } else {
-    Highlighter::registerLanguage('green', 'config/green.lang.json');
-    $hl = new Highlighter();
+    Highlighter::registerLanguage('green', __DIR__ . '/../config/green.lang.json');
+    $hl = new Highlighter(false);
     $highlighted = $hl->highlight($paste_code == 'text' ? 'plaintext' : $paste_code, $p_content)->value;
     $lines = HighlightUtilities\splitCodeIntoArray($highlighted);
 }
