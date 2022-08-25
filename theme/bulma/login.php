@@ -161,20 +161,19 @@
                             </div>
                         </div>
                     </form>
-                <?php } else { ?>
-                    <div class="columns">
-                        <div class="column">
-                            <h1 class="title is-4">Where to?</h1>
-                            <a href="/login">Login</a><br/>
-                            <a href="/register">Register</a> <br/>
-                            <a href="/forgot">Forgot Password</a><br/>
-                        </div>
-                        <div class="column">
-                        </div>
-                        <div class="column">
-                        </div>
-                    </div>
                 <?php } ?>
+                <div class="columns">
+                    <div class="column">
+                        <h1 class="title is-4">Where to?</h1>
+                        <a href="/login">Login</a><br/>
+                        <a href="/register">Register</a> <br/>
+                        <a href="/forgot">Forgot Password</a><br/>
+                    </div>
+                    <div class="column">
+                    </div>
+                    <div class="column">
+                    </div>
+                </div>
             </div>
         </div>
     </div>

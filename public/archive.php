@@ -5,6 +5,43 @@ require_once(__DIR__ . '/../includes/common.php');
 
 use PonePaste\Models\Paste;
 
+$per_page = 20;
+$current_page = 0;
+$filter_value = '';
+
+if (!empty($_GET['page'])) {
+    $current_page = max(0, intval($_GET['page']));
+}
+
+if (!empty($_GET['per_page'])) {
+    $per_page = max(1, min(100, intval($_GET['per_page'])));
+}
+
+if (!empty($_GET['q'])) {
+    $filter_value = $_GET['q'];
+}
+
+$pastes = Paste::with([
+    'user' => function($q) {
+        $q->select('users.id', 'username');
+    },
+    'tags' => function($q) {
+        $q->select('tags.id', 'name', 'slug');
+    }])
+    ->select('id', 'user_id', 'title', 'created_at')
+               ->where('visible', Paste::VISIBILITY_PUBLIC)
+               ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
+
+
+if (!empty($filter_value)) {
+    $pastes = $pastes->where('title', 'LIKE', '%' . escapeLikeQuery($filter_value) . '%');
+}
+
+$total_results = $pastes->count();
+
+$pastes = $pastes->limit($per_page)->offset($per_page * $current_page);
+
+$pastes = $pastes->get();
 
 // Temp count for untagged pastes
 $total_untagged = Paste::doesntHave('tags')->count();

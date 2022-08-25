@@ -144,6 +144,8 @@ const setupSignupModal = () => {
     const signupButton = $('[data-target~="#signin"],[data-target~="#signup"]');
 
     if (signupButton) {
+        signupButton.href = 'javascript:void(0)';
+
         signupButton.addEventListener('click', () => {
             $('.modal').classList.add('is-active');
         });
@@ -216,6 +218,23 @@ const globalSetup = () => {
         preloader.remove();
         main.id = '';
     }
+
+    const captchaContainer = $('.captcha_container');
+
+    if (captchaContainer) {
+        const refreshElement = captchaContainer.querySelector('a');
+        const imageElement = captchaContainer.querySelector('img');
+
+        if (refreshElement && imageElement) {
+            refreshElement.addEventListener('click', () => {
+                imageElement.src = imageElement.src.split('?')[0] + '?rand=' + Math.random();
+            });
+        }
+    }
+
+    Array.prototype.forEach.call($('.js-hidden'), (elem) => {
+        toggleEl(elem);
+    });
 };
 
 whenReady(globalSetup);

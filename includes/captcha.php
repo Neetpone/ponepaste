@@ -67,10 +67,7 @@ function captcha($color, $mul, $allowed) : array {
     }
 
     $captcha_config['code'] = '';
-    $length = rand($captcha_config['min_length'], $captcha_config['max_length']);
-    while (strlen($captcha_config['code']) < $length) {
-        $captcha_config['code'] .= substr($captcha_config['characters'], rand() % (strlen($captcha_config['characters'])), 1);
-    }
+
 
     return $captcha_config;
 }
@@ -96,4 +93,33 @@ if (!function_exists('hex2rgb')) {
 
         return null;
     }
+}
+
+function setupCaptcha() : string {
+    global $captcha_config;
+    global $redis;
+
+    $code = '';
+    for ($i = 0; $i < 5; $i++) {
+        $code .= substr($captcha_config['allowed'], rand() % (strlen($captcha_config['allowed'])), 1);
+    }
+
+    $token = pp_random_password();
+
+    $redis->setex('captcha/' . md5($token), 600, $code);
+
+    return $token;
+}
+
+function checkCaptcha(string $token, string $answer) : bool {
+    global $redis;
+
+    $redis_answer = $redis->get('captcha/' . $token);
+    if (!$redis_answer) {
+        return false;
+    }
+
+    $redis->del('captcha/' . $token);
+
+    return $redis_answer === $answer;
 }

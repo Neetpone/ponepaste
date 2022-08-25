@@ -14,9 +14,8 @@ function verifyCaptcha() : string|bool {
     global $current_user;
 
     if ($captcha_config['enabled'] && !$current_user) {
-        $scode = strtolower(trim($_POST['scode']));
-        $cap_code = strtolower($_SESSION['captcha']['code']);
-        if ($cap_code !== $scode) {
+        if (empty($_POST['captcha_answer']) ||
+            !checkCaptcha($_POST['captcha_token'], strtolower(trim($_POST['captcha_answer'])))) {
             return 'Wrong CAPTCHA.';
         }
     }

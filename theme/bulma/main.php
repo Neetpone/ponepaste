@@ -295,12 +295,15 @@
                                 <!-- CAPTCHA -->
                                 <?php if ($captcha_config['enabled'] && $current_user === null): ?>
                                     <div class="is-one-quarter">
-                                        <div class="notification">
-                                            <span class="tags are-large"><img src="<?= $_SESSION['captcha']['image_src'] ?>" alt="CAPTCHA" class="imagever" /></span>
-                                            <input type="text" class="input" name="scode" value=""
-                                                   placeholder="Enter the CAPTCHA" />
-                                            <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press
-                                                "Enter"</p>
+                                        <div class="captcha_container">
+                                            <img src="/captcha?t=<?= setupCaptcha() ?>" alt="CAPTCHA Image" />
+                                            <span id="captcha_refresh" style="height: 100%;">
+                                                <a href="javascript:void(0)">
+                                                    <i class="fa fa-refresh" style="height: 100%;"></i>
+                                                </a>
+                                            </span>
+                                            <input type="text" class="input" name="scode" placeholder="Enter the CAPTCHA" />
+                                            <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press "Enter"</p>
                                         </div>
                                     </div>
                                 <?php endif; ?>

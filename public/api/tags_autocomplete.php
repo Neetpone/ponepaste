@@ -4,11 +4,6 @@ require_once(__DIR__ . '/../includes/common.php');
 
 use PonePaste\Models\Tag;
 
-/* get rid of unintended wildcards in a parameter to LIKE queries; not a security issue, just unexpected behaviour. */
-function escapeLikeQuery(string $query) : string {
-    return str_replace(['\\', '_', '%'], ['\\\\', '\\_', '\\%'], $query);
-}
-
 header('Content-Type: application/json');
 
 if (empty($_GET['tag'])) {
@@ -23,6 +18,8 @@ $results = Tag::select('name')
                 ->fetchAll()
                 ->toArray();
 
+/* we want to ensure the tag name that the user input is always returned,
+ * even if that tag doesn't actually exist yet. */
 $tags[] = ['name' => $tag_name];
 
 echo json_encode($tags);

@@ -237,3 +237,64 @@ function addToSitemap(Paste $paste, $priority, $changefreq) {
 function paste_protocol() : string {
     return !empty($_SERVER['HTTPS']) ? 'https://' : 'http://';
 }
+
+/* get rid of unintended wildcards in a parameter to LIKE queries; not a security issue, just unexpected behaviour. */
+function escapeLikeQuery(string $query) : string {
+    return str_replace(['\\', '_', '%'], ['\\\\', '\\_', '\\%'], $query);
+}
+
+function paginate(int $current_page, int $per_page, int $total_records) : string {
+    $first_page = 0;
+    $last_page = floor($total_records / $per_page);
+    $window = 2;
+
+    if ($first_page == $last_page) {
+        // Do something?
+    }
+
+    $_page_button = function(int $page, string $text, bool $disabled = false) use ($current_page) : string {
+        /* We need to update the 'page' parameter in the request URI, or add it if it doesn't exist. */
+        $request_uri = parse_url($_SERVER['REQUEST_URI']);
+        parse_str((string) @$request_uri['query'], $parsed_query);
+        $parsed_query['page'] = (string) $page;
+        $page_uri = ((string) @$request_uri['path']) . '?' . http_build_query($parsed_query);
+
+        $selected_class = $current_page == $page ? ' paginator__button--selected' : '';
+
+        $disabled_text = $disabled ? ' aria-disabled="true"' : '';
+        return sprintf("<a type=\"button\" class=\"paginator__button$selected_class\" href=\"%s\"%s>%s</a>", $page_uri, $disabled_text, $text);
+    };
+
+    $html = '';
+
+    /* First and last page the main paginator will show */
+    $first_page_show = max(($current_page - $window), $first_page);
+    $last_page_show = min(($current_page + $window), $last_page);
+
+    /* Whether to show the first and last pages in existence at the ends of the paginator */
+    $show_first_page = (abs($first_page - $current_page)) > ($window);
+    $show_last_page = (abs($last_page - $current_page)) > ($window);
+
+    $prev_button_disabled = $current_page == $first_page ? 'disabled' : '';
+    $next_button_disabled = $current_page == $last_page ? 'disabled' : '';
+
+    $html .= $_page_button($current_page - 1, 'Previous', $prev_button_disabled);
+
+    if ($show_first_page) {
+        $html .= $_page_button($first_page, $first_page);
+        $html .= '<span class="ellipsis">…</span>';
+    }
+
+    for ($i = $first_page_show; $i <= $last_page_show; $i++) {
+        $html .= $_page_button($i, $i);
+    }
+
+    if ($show_last_page) {
+        $html .= '<span class="ellipsis">…</span>';
+        $html .= $_page_button($last_page, $last_page);
+    }
+
+    $html .= $_page_button($current_page + 1, 'Next', $next_button_disabled);
+
+    return $html;
+}
