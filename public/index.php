@@ -10,12 +10,12 @@ use PonePaste\Models\User;
 
 
 function verifyCaptcha() : string|bool {
-    global $captcha_config;
+    global $captcha_enabled;
     global $current_user;
 
-    if ($captcha_config['enabled'] && !$current_user) {
+    if ($captcha_enabled && !$current_user) {
         if (empty($_POST['captcha_answer']) ||
-            !checkCaptcha($_POST['captcha_token'], strtolower(trim($_POST['captcha_answer'])))) {
+            !checkCaptcha($_POST['captcha_token'], trim($_POST['captcha_answer']))) {
             return 'Wrong CAPTCHA.';
         }
     }
@@ -63,11 +63,6 @@ function validatePasteFields() : string|null {
 // Sitemap
 $priority = 0.9;
 $changefreq = 'weekly';
-
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    if ($captcha_config['enabled']) {
-    }
-}
 
 updatePageViews();
 

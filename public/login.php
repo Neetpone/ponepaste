@@ -62,7 +62,6 @@ if (isset($_POST['forgot'])) {
             }
 
             if ($user->banned) {
-                // User is banned
                 $error = 'You are banned.';
             } else {
                 // Login successful
@@ -101,34 +100,35 @@ if (isset($_POST['forgot'])) {
     $username = trim($_POST['username']);
     $password = pp_password_hash($_POST['password']);
 
-    if (empty($_POST['password']) || empty($_POST['username'])) {
+    if ($captcha_config['enabled'] && !checkCaptcha($_POST['captcha_token'], trim($_POST['captcha_answer']))) {
+        $error = 'Incorrect CAPTCHA.';
+    } elseif (empty($_POST['password']) || empty($_POST['username'])) {
         $error = 'All fields must be filled out.';
     } elseif (strlen($username) > 25) {
         $error = 'Username too long.';
     } elseif (!preg_match('/^[A-Za-z0-9._\\-]+$/', $username)) {
         $error = 'Username is invalid - please use A-Za-z0-9, periods, hyphens, and underscores only.';
+    } elseif (User::where('username', $username)->first()) {
+        $error = 'That username has already been taken.';
     } else {
-        if (User::where('username', $username)->first()) {
-            $error = 'That username has already been taken.';
-        } else {
-            /* this is displayed to the user in the template, hence the variable rather than inlining */
-            $recovery_code = pp_random_token();
+        /* this is displayed to the user in the template, hence the variable rather than inlining */
+        $recovery_code = pp_random_token();
 
-            $user = new User([
-                'username' => $username,
-                'password' => $password,
-                'recovery_code_hash' => pp_password_hash($recovery_code),
-                'date' => $date,
-                'ip' => $ip
-            ]);
-            $user->save();
+        $user = new User([
+            'username' => $username,
+            'password' => $password,
+            'recovery_code_hash' => pp_password_hash($recovery_code),
+            'date' => $date,
+            'ip' => $ip
+        ]);
+        $user->save();
 
-            $success = 'Your account was successfully registered.';
-        }
+        $success = 'Your account was successfully registered.';
     }
 }
-// Theme
+
 $page_template = 'login';
 $page_title = 'Login / Register';
+
 require_once(__DIR__ . '/../theme/' . $default_theme . '/common.php');
 

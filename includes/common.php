@@ -260,8 +260,7 @@ if ($site_permissions) {
 }
 
 // CAPTCHA configuration
-$captcha_config = $site_info['captcha'];
-$captcha_enabled = (bool) $captcha_config['enabled'];
+$captcha_enabled = (bool) $site_info['captcha']['enabled'];
 
 $total_pastes = Paste::count();
 $total_page_views = PageView::select('tpage')->orderBy('id', 'desc')->first()->tpage;

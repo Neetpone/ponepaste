@@ -5,13 +5,12 @@ require_once(__DIR__ . '/../includes/common.php');
 
 use PonePaste\Models\Paste;
 
-$popular_pastes = Paste::getMostViewed();//->map('transformPasteRow');
-$monthly_popular_pastes = Paste::getMonthPopular();//->map('transformPasteRow');
-$recent_pastes = Paste::getRecent();//->map('transformPasteRow');
-$updated_pastes = Paste::getRecentlyUpdated();//->map('transformPasteRow');
-$random_pastes = Paste::getRandom();//->map('transformPasteRow');
+$popular_pastes = Paste::getMostViewed();
+$monthly_popular_pastes = Paste::getMonthPopular();
+$recent_pastes = Paste::getRecent();
+$updated_pastes = Paste::getRecentlyUpdated();
+$random_pastes = Paste::getRandom();
 
-// Theme
 $page_template = 'discover';
 $page_title = 'Discover';
 

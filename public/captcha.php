@@ -5,17 +5,41 @@ require_once(__DIR__ . '/../includes/common.php');
 require_once(__DIR__ . '/../includes/captcha.php');
 
 if (empty($_GET['t'])) {
-    die('No token provided.');
+    die('Invalid token provided.');
 }
 
 $captcha_token = 'captcha/' . md5($_GET['t']);
 $captcha_code = $redis->get($captcha_token);
 
 if (!$captcha_code) {
-    die('No token provided.');
+    die('Invalid token provided.');
 }
 
-$captcha_config = captcha($captcha_config['colour'], $captcha_config['multiple'], $captcha_config['allowed']);
+$bg_path = __DIR__ . '/assets/img/captcha/';
+$font_path = __DIR__ . '/assets/fonts/';
+
+$captcha_config = [
+    'min_length' => 5,
+    'max_length' => 5,
+    'backgrounds' => [
+        $bg_path . 'text3.png',
+        $bg_path . 'text2.png',
+        $bg_path . 'text1.png'
+    ],
+    'fonts' => [
+        $font_path . 'LMS Pretty Pony.ttf',
+        $font_path . 'PonyvilleMedium0.4.ttf'
+    ],
+    'min_font_size' => 28,
+    'max_font_size' => 28,
+    'color' => ['r' => 0, 'g' => 0, 'b' => 0],
+    'angle_min' => 0,
+    'angle_max' => 10,
+    'shadow' => true,
+    'shadow_color' => ['r' => 0xFF, 'g' => 0xFF, 'b' => 0xFF],
+    'shadow_offset_x' => -1,
+    'shadow_offset_y' => 1
+];
 
 // Pick random background, get info, and start captcha
 $background = $captcha_config['backgrounds'][rand(0, count($captcha_config['backgrounds']) - 1)];
@@ -23,7 +47,7 @@ list($bg_width, $bg_height, $bg_type, $bg_attr) = getimagesize($background);
 
 $captcha = imagecreatefrompng($background);
 
-$color = hex2rgb($captcha_config['color']);
+$color = $captcha_config['color'];
 $color = imagecolorallocate($captcha, $color['r'], $color['g'], $color['b']);
 
 // Determine text angle
@@ -50,13 +74,6 @@ $text_pos_x = rand($text_pos_x_min, $text_pos_x_max);
 $text_pos_y_min = $box_height;
 $text_pos_y_max = (int) ($bg_height - ($box_height / 2));
 $text_pos_y = rand($text_pos_y_min, $text_pos_y_max);
-
-// Draw shadow
-if ($captcha_config['shadow']) {
-    $shadow_color = hex2rgb($captcha_config['shadow_color']);
-    $shadow_color = imagecolorallocate($captcha, $shadow_color['r'], $shadow_color['g'], $shadow_color['b']);
-    imagettftext($captcha, $font_size, $angle, $text_pos_x + $captcha_config['shadow_offset_x'], $text_pos_y + $captcha_config['shadow_offset_y'], $shadow_color, $font, $captcha_code);
-}
 
 // Draw text
 imagettftext($captcha, $font_size, $angle, $text_pos_x, $text_pos_y, $color, $font, $captcha_code);

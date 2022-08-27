@@ -293,7 +293,7 @@
                             </div>
                             <div class="column is-4">
                                 <!-- CAPTCHA -->
-                                <?php if ($captcha_config['enabled'] && $current_user === null): ?>
+                                <?php if ($captcha_enabled && $current_user === null): ?>
                                     <div class="is-one-quarter">
                                         <div class="captcha_container">
                                             <img src="/captcha?t=<?= setupCaptcha() ?>" alt="CAPTCHA Image" />
