@@ -2,6 +2,7 @@
 /** @noinspection PhpDefineCanBeReplacedWithConstInspection */
 define('IN_PONEPASTE', 1);
 require_once(__DIR__ . '/../includes/common.php');
+require_once(__DIR__ . '/../includes/captcha.php');
 
 use PonePaste\Helpers\SessionHelper;
 use PonePaste\Models\User;
@@ -100,7 +101,7 @@ if (isset($_POST['forgot'])) {
     $username = trim($_POST['username']);
     $password = pp_password_hash($_POST['password']);
 
-    if ($captcha_config['enabled'] && !checkCaptcha($_POST['captcha_token'], trim($_POST['captcha_answer']))) {
+    if ($captcha_enabled && !checkCaptcha($_POST['captcha_token'], trim($_POST['captcha_answer']))) {
         $error = 'Incorrect CAPTCHA.';
     } elseif (empty($_POST['password']) || empty($_POST['username'])) {
         $error = 'All fields must be filled out.';
@@ -118,7 +119,6 @@ if (isset($_POST['forgot'])) {
             'username' => $username,
             'password' => $password,
             'recovery_code_hash' => pp_password_hash($recovery_code),
-            'date' => $date,
             'ip' => $ip
         ]);
         $user->save();

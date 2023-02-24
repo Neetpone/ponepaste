@@ -208,14 +208,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                 <?php if ($totalpastes !== 0 && ($current_user === null || $current_user->id !== $paste_owner_id)) { ?>
                     <hr>
                     <label class="label">More from this Author </label>
-                    <?php
-                    foreach ($recommended_pastes as $paste) {
-                        $title = Trim($row['title']);
-                        $titlehov = ($row['title']);
-                        $long_title = pp_html_escape($row['title']);
-                        $title = pp_html_escape(truncate($row['title'], 24, 60));
-                        ?>
-
+                    <?php foreach ($recommended_pastes as $paste) { ?>
                         <p class="no-margin">
                         <header class="bd-category-header my-1">
                             <a href="<?= urlForPaste($paste) ?>" title="<?= pp_html_escape($paste->title) ?>">
@@ -397,12 +390,14 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
         var grace2kb = graceRemain / 1000;
         var graceDisplay = roundToTwo(grace2kb);
 
+        var element = document.getElementById('charNum');
+
         if (graceRemain < 0) {
-            document.getElementById("charNum").innerHTML = '<b>File Size: </b><span style="color: red;">File Size limit reached</span>';
-        } else if ((charRemain < 0)) {
-            document.getElementById("charNum").innerHTML = '<b>File Size: </b><span style="color: orange;">' + graceDisplay + '/24Kb Grace Limit</span>';
+            element.innerHTML = '<b>File Size: </b><span style="color: red;">File Size limit reached</span>';
+        } else if (charRemain < 0) {
+            element.innerHTML = '<b>File Size: </b><span style="color: orange;">' + graceDisplay + '/24Kb Grace Limit</span>';
         } else {
-            document.getElementById("charNum").innerHTML = '<b>File Size: </b><span style="color: green;">' + charDisplay + '/1000Kb</span>';
+            element.innerHTML = '<b>File Size: </b><span style="color: green;">' + charDisplay + '/1000Kb</span>';
         }
     }
 </script>

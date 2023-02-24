@@ -296,13 +296,14 @@
                                 <?php if ($captcha_enabled && $current_user === null): ?>
                                     <div class="is-one-quarter">
                                         <div class="captcha_container">
-                                            <img src="/captcha?t=<?= setupCaptcha() ?>" alt="CAPTCHA Image" />
+                                            <img src="/captcha?t=<?= $captcha_token = setupCaptcha() ?>" alt="CAPTCHA Image" />
                                             <span id="captcha_refresh" style="height: 100%;">
                                                 <a href="javascript:void(0)">
                                                     <i class="fa fa-refresh" style="height: 100%;"></i>
                                                 </a>
                                             </span>
-                                            <input type="text" class="input" name="scode" placeholder="Enter the CAPTCHA" />
+                                            <input type="hidden" name="captcha_token" value="<?= $captcha_token ?>" />
+                                            <input type="text" class="input" name="captcha_answer" placeholder="Enter the CAPTCHA" />
                                             <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press "Enter"</p>
                                         </div>
                                     </div>

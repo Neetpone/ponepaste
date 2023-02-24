@@ -1,5 +1,5 @@
 <?php
-function setupCaptcha() : string {
+function setupCaptcha($token = null) : string {
     global $redis;
     $allowed = "ABCDEFGHIJKLMNOPQRSTUVYXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -8,7 +8,9 @@ function setupCaptcha() : string {
         $code .= substr($allowed, rand() % (strlen($allowed)), 1);
     }
 
-    $token = pp_random_password();
+    if ($token === null) {
+        $token = pp_random_password();
+    }
 
     $redis->setex('captcha/' . md5($token), 600, $code);
 

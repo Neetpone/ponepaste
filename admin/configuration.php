@@ -7,7 +7,7 @@ require_once('common.php');
 
 const CONFIG_FILE_PATH = '../config/site.php';
 
-function updateConfiguration(string $path, array $new_config) {
+function updateConfiguration(string $path, array $new_config) : void {
     $fp = fopen($path, 'w');
 
     $new_config_text = var_export($new_config, true);

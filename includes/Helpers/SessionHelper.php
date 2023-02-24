@@ -25,7 +25,7 @@ class SessionHelper {
         return null;
     }
 
-    public static function destroySession() {
+    public static function destroySession() : void {
         $token = $_COOKIE[SessionHelper::REMEMBER_TOKEN_COOKIE];
 
         UserSession::where('token', $token)->delete();

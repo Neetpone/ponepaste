@@ -11,7 +11,7 @@ function isRequesterLikelyBot() : bool {
     return str_contains(strtolower($_SERVER['HTTP_USER_AGENT']), 'bot');
 }
 
-function rawView($content, $p_code) {
+function rawView($content, $p_code) : void {
     if ($p_code) {
         header('Content-Type: text/plain');
         echo $content;
@@ -192,6 +192,7 @@ if ($paste_code === "pastedown") {
     $p_content = $parsedown->text($p_content);
 } else {
     Highlighter::registerLanguage('green', __DIR__ . '/../config/green.lang.json');
+    Highlighter::registerLanguage('plaintext', __DIR__ . '/../vendor/scrivo/highlight.php/Highlight/languages/plaintext.json');
     $hl = new Highlighter(false);
     $highlighted = $hl->highlight($paste_code == 'text' ? 'plaintext' : $paste_code, $p_content)->value;
     $lines = HighlightUtilities\splitCodeIntoArray($highlighted);

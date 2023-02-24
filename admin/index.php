@@ -5,7 +5,7 @@ require_once(__DIR__ . '/../includes/common.php');
 use PonePaste\Models\User;
 use PonePaste\Models\AdminLog;
 
-function updateAdminHistory(User $admin, int $action) {
+function updateAdminHistory(User $admin, int $action) : void {
     $log = new AdminLog([
         'user_id' => $admin->id,
         'action' => $action,

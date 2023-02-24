@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 class User extends Model {
     protected $table = 'users';
     protected $fillable = [
-        'username', 'password', 'recovery_code_hash', 'date'
+        'username', 'password', 'recovery_code_hash'
     ];
 
     public function session() {
@@ -21,6 +21,10 @@ class User extends Model {
     public function pastes() {
         return $this->hasMany(Paste::class)
             ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
+    }
+
+    public function badges() {
+        return $this->hasMany(Badge::class);
     }
 }
 

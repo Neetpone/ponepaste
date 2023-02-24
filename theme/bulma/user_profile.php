@@ -22,12 +22,10 @@
         1000  => '[HorseWriter] Have more than 1000 total views'
     ];
 
-
-
-    function outputBadges(array $badgeCandidates, int $actualValue, string $imagePrefix) {
+    function outputBadges(array $badgeCandidates, int $actualValue, string $imagePrefix) : void {
         foreach ($badgeCandidates as $threshold => $badgeTitle) {
             if ($actualValue >= $threshold) {
-                echo "<img src=\"/img/badges/${imagePrefix}_${threshold}.png\" title='$badgeTitle' alt='$badgeTitle' style='margin: 5px;' />";
+                echo "<img src=\"/img/badges/{$imagePrefix}_{$threshold}.png\" title='$badgeTitle' alt='$badgeTitle' style='margin: 5px;' />";
                 break;
             }
         }

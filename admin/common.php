@@ -8,7 +8,7 @@ require_once('../includes/common.php');
 use PonePaste\Models\AdminLog;
 use PonePaste\Models\User;
 
-function updateAdminHistory(User $admin, int $action) {
+function updateAdminHistory(User $admin, int $action) : void {
     $log = new AdminLog([
         'user_id' => $admin->id,
         'action' => $action,

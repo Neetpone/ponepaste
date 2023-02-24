@@ -80,6 +80,7 @@ const globalSetup = () => {
         main.id = '';
     }
 
+    // CAPTCHA refresh
     const captchaContainer = $('.captcha_container');
 
     if (captchaContainer) {
@@ -88,14 +89,27 @@ const globalSetup = () => {
 
         if (refreshElement && imageElement) {
             refreshElement.addEventListener('click', () => {
-                imageElement.src = imageElement.src.split('?')[0] + '?rand=' + Math.random();
+                let src = imageElement.src;
+
+                if (src.indexOf('&refresh') !== -1) {
+                    // yeah, it's kinda cancerous. fuck off.
+                    src = src.split('&rand=')[0];
+                } else {
+                    src += '&refresh';
+                }
+
+                imageElement.src = src + '&rand=' + Math.random();
             });
         }
     }
 
-    Array.prototype.forEach.call($('.js-hidden'), (elem) => {
-        toggleEl(elem);
-    });
+    const hiddenElements = $$('.js-hidden');
+
+    if (hiddenElements) {
+        Array.prototype.forEach.call(hiddenElements, (elem) => {
+            toggleEl(elem);
+        });
+    }
 }
 
 export { globalSetup };

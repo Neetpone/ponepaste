@@ -56,7 +56,7 @@ function tagsToHtmlUser(string | array | Collection $tags, $profile_username) : 
     return $output;
 }
 
-function linkify($value, $protocols = array('http', 'mail'), array $attributes = array()) {
+function linkify($value, $protocols = array('http', 'mail'), array $attributes = array()) : array|string|null {
     // Link attributes
     $attr = '';
     foreach ($attributes as $key => $val) {
@@ -90,7 +90,7 @@ function linkify($value, $protocols = array('http', 'mail'), array $attributes =
     }, $value);
 }
 
-function formatBytes($size, $precision = 2) {
+function formatBytes($size, $precision = 2) : string {
     $base = log($size, 1024);
     $suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
 
@@ -118,7 +118,7 @@ function friendlyDateDifference(DateTime $lesser, DateTime $greater) : string {
     foreach ($parts as $part => $value) {
         if ($value !== 0) {
             $pluralizer = ($value === 1 ? '' : 's');
-            $friendly .= "${value} ${part}${pluralizer} ";
+            $friendly .= "{$value} {$part}{$pluralizer} ";
         }
     }
 
@@ -148,7 +148,7 @@ function truncate(string $input, int $maxWords, int $maxChars) : string {
     return $result . ($input == $result ? '' : '[...]');
 }
 
-function embedView($paste_id, $p_title, $content, $title) {
+function embedView($paste_id, $p_title, $content, $title) : bool {
     $stats = false;
     if ($content) {
         // Build the output
@@ -216,7 +216,7 @@ function embedView($paste_id, $p_title, $content, $title) {
     return $stats;
 }
 
-function addToSitemap(Paste $paste, $priority, $changefreq) {
+function addToSitemap(Paste $paste, $priority, $changefreq) : void {
     $c_date = date('Y-m-d');
     $site_data = file_get_contents("sitemap.xml");
     $site_data = str_replace("</urlset>", "", $site_data);

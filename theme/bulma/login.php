@@ -100,11 +100,17 @@
                                 </div>
                                 <div class="field">
                                     <div class="notification">
-                                        <span class="tags are-large"><img src="<?= $_SESSION['captcha']['image_src'] ?>" alt="CAPTCHA" class="imagever" /></span>
-                                        <input type="text" class="input" name="scode" value=""
-                                               placeholder="Enter the CAPTCHA">
-                                        <p class="is-size-6	has-text-grey-light has-text-left mt-2">and
-                                            press"Enter"</p>
+                                        <div class="captcha_container">
+                                            <img src="/captcha?t=<?= $captcha_token = setupCaptcha() ?>" alt="CAPTCHA Image" />
+                                            <span id="captcha_refresh" style="height: 100%;">
+                                                <a href="javascript:void(0)">
+                                                    <i class="fa fa-refresh" style="height: 100%;"></i>
+                                                </a>
+                                            </span>
+                                            <input type="hidden" name="captcha_token" value="<?= $captcha_token ?>" />
+                                            <input type="text" class="input" name="captcha_answer" placeholder="Enter the CAPTCHA" />
+                                            <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press "Enter"</p>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="field">

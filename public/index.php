@@ -31,7 +31,7 @@ function verifyCaptcha() : string|bool {
  *                       Anything unhandled means to expire never.
  * @return string|null Expiry time, or NULL if expires never.
  */
-function calculatePasteExpiry(string $expiry) {
+function calculatePasteExpiry(string $expiry) : ?string {
     // used to use mktime
     if ($expiry === 'self') {
         return 'SELF';

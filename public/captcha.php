@@ -8,6 +8,10 @@ if (empty($_GET['t'])) {
     die('Invalid token provided.');
 }
 
+if (isset($_GET['refresh'])) {
+    setupCaptcha();
+}
+
 $captcha_token = 'captcha/' . md5($_GET['t']);
 $captcha_code = $redis->get($captcha_token);
 

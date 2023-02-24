@@ -6,6 +6,7 @@ require_once(__DIR__ . '/../vendor/autoload.php');
 require_once(__DIR__ . '/config.php');
 require_once(__DIR__ . '/functions.php');
 require_once(__DIR__ . '/passwords.php');
+require_once(__DIR__ . '/captcha.php');
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use PonePaste\Helpers\SessionHelper;
@@ -18,10 +19,10 @@ use PonePaste\Helpers\AbilityHelper;
 /* View functions */
 function javascriptIncludeTag(string $name) : string {
     if (PP_DEBUG) {
-        return "<script src=\"/assets/bundle/${name}.js\"></script>";
+        return "<script src=\"/assets/bundle/{$name}.js\"></script>";
     }
 
-    return "<script src=\"/assets/bundle/${name}.min.js\"></script>";
+    return "<script src=\"/assets/bundle/{$name}.min.js\"></script>";
 }
 
 function urlForPage($page = '') : string {
@@ -76,7 +77,7 @@ function optionsForSelect(array $displays, array $values, string $currentSelecti
 /**
  * @throws Exception if the flash level is invalid
  */
-function flash(string $level, string $message) {
+function flash(string $level, string $message) : void {
     if (!isset($_SESSION['flashes'])) {
         $_SESSION['flashes'] = [
             'success' => [],
@@ -93,15 +94,15 @@ function flash(string $level, string $message) {
 }
 
 
-function flashError(string $message) {
+function flashError(string $message) : void {
     flash('error', $message);
 }
 
-function flashWarning(string $message) {
+function flashWarning(string $message) : void {
     flash('warning', $message);
 }
 
-function flashSuccess(string $message) {
+function flashSuccess(string $message) : void {
     flash('success', $message);
 }
 
@@ -117,8 +118,8 @@ function getFlashes() {
     return $flashes;
 }
 
-function outputFlashes($flashes) {
-    function __outputFlash($level, $flash) {
+function outputFlashes($flashes) : void {
+    function __outputFlash($level, $flash) : void {
         echo '<div class="notification is-' . $level . ' flash">
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i>'
             . pp_html_escape($flash) .
