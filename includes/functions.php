@@ -149,6 +149,8 @@ function truncate(string $input, int $maxWords, int $maxChars) : string {
 }
 
 function embedView($paste_id, $p_title, $content, $title) : bool {
+    global $baseurl;
+
     $stats = false;
     if ($content) {
         // Build the output
@@ -200,7 +202,7 @@ function embedView($paste_id, $p_title, $content, $title) : bool {
         $output .= "</style>";
         $output .= $content; // Paste content
         $output .= "<div class='paste_embed_footer'>";
-        $output .= "<a href='https://ponepaste.org/$paste_id'>$p_title</a> Hosted by <a href='https://ponepaste.org'>$title</a> | <a href='https://ponepaste.org/raw/$paste_id'>view raw</a>";
+        $output .= "<a href='{$baseurl}/{$paste_id}'>$p_title</a> Hosted by <a href='{$baseurl}'>$title</a> | <a href='{$baseurl}/raw/$paste_id'>view raw</a>";
         $output .= "</div>";
         $output .= "</div>";
 

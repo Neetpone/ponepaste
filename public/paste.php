@@ -125,7 +125,7 @@ if (PP_MOD_REWRITE) {
 }
 
 /* Expiry */
-if (!empty($paste->expiry)) {
+if (!empty($paste->expiry) && $paste->expiry !== 'NULL') {
     if ($paste->expiry === 'SELF') {
         $paste->delete();
         flashWarning('This paste has self-destructed - if you close this window, you will no longer be able to view it!');
@@ -186,7 +186,7 @@ $p_content = rtrim($p_content);
 // Apply syntax highlight
 $p_content = htmlspecialchars_decode($p_content);
 
-if ($paste_code === "pastedown") {
+if ($paste_code === "pastedown" || $paste_code === 'pastedown_old') {
     $parsedown = new Parsedown();
     $parsedown->setSafeMode(true);
     $p_content = $parsedown->text($p_content);

@@ -184,6 +184,7 @@
                                 <div class="column">
                                     <div class="field">
                                         <label class="label" for="field_tags">Tags</label>
+                                        <small>Type a comma to separate each tag.</small>
                                         <div class="control">
                                             <input name="tag_input" class="input js-tag-input" id="field_tags"
                                                    value="<?= (isset($_POST['tag_input'])) ? pp_html_escape($_POST['tag_input']) : ''; ?>" />
