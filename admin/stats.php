@@ -96,10 +96,6 @@ if ($last_ip == $ip) {
 
         <!-- Start Statistics -->
         <?php
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Post Handler
-        }
-
         $query = "SELECT * FROM page_view";
         $result = mysqli_query($con, $query);
 

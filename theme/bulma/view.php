@@ -269,6 +269,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     <label class="label">Tags</label>
                                     <div class="control">
                                         <label class="label" for="field_tags">Tags</label>
+                                        <small>Type a comma to separate each tag.</small>
                                         <div class="control">
                                             <input name="tag_input" class="input js-tag-input" id="field_tags"
                                                    value="<?= pp_html_escape($paste->tags->map(function($t) { return $t->name; })->join(',')) ?>" />

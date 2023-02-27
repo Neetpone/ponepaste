@@ -289,14 +289,14 @@ const dumbFilterCallback = (datum, query) => {
 };
 
 const tagsToHtml = (tags) => {
-
     return tags.map(tagData => {
         let tagColorClass;
-        if (tagData.name.indexOf('nsfw') !== -1) {
+        const tagLower = tagData.name.toLowerCase();
+        if (tagLower === 'nsfw' || tagLower === 'explicit') {
             tagColorClass = 'is-danger';
-        } else if (tagData.name.indexOf('safe') !== -1) {
+        } else if (tagLower === 'safe') {
             tagColorClass = 'is-success';
-        } else if (tagData.name.indexOf('/') !== -1) {
+        } else if (tagLower.charAt(0) === '/' && tagLower.charAt(tagLower.length - 1) === '/') {
             tagColorClass = 'is-primary';
         } else {
             tagColorClass = 'is-info';
@@ -314,7 +314,7 @@ class TagsInput {
         this.tags = [];
         this.options = options;
 
-        this.maxTags = options.maxTags || 10;
+        this.maxTags = options.maxTags || 32;
         this.inputNode = null;
         this.containerNode = null;
     }
@@ -323,7 +323,7 @@ class TagsInput {
         this.element.style.display = 'none';
 
         this.containerNode = makeEl('<div class="tags-input"></div>');
-        this.inputNode = makeEl('<input class="input" type="text" placeholder="10 tags maximum" value="" />');
+        this.inputNode = makeEl('<input class="input" type="text" placeholder="32 tags maximum" value="" />');
         this.containerNode.appendChild(this.inputNode);
 
         this.element.parentNode.insertBefore(this.containerNode, this.element.nextSibling);

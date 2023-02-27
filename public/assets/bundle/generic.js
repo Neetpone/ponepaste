@@ -45,7 +45,7 @@ class TagsInput {
         this.tags = [];
         this.options = options;
 
-        this.maxTags = options.maxTags || 10;
+        this.maxTags = options.maxTags || 32;
         this.inputNode = null;
         this.containerNode = null;
     }
@@ -54,7 +54,7 @@ class TagsInput {
         this.element.style.display = 'none';
 
         this.containerNode = makeEl('<div class="tags-input"></div>');
-        this.inputNode = makeEl('<input class="input" type="text" placeholder="10 tags maximum" value="" />');
+        this.inputNode = makeEl('<input class="input" type="text" placeholder="32 tags maximum" value="" />');
         this.containerNode.appendChild(this.inputNode);
 
         this.element.parentNode.insertBefore(this.containerNode, this.element.nextSibling);

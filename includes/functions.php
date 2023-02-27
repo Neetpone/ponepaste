@@ -6,13 +6,14 @@ function tagsToHtml(array | Collection $tags) : string {
     $output = "";
     foreach ($tags as $tagObj) {
         $tag = $tagObj->name;
-        if (stripos($tag, 'nsfw') !== false) {
+        $tag_lower = strtolower($tag);
+        if ($tag_lower === 'nsfw' || $tag_lower === 'explicit') {
             $tag = strtoupper($tag);
             $tagcolor = "tag is-danger";
-        } elseif (stripos($tag, 'SAFE') !== false) {
+        } elseif ($tag_lower === 'safe') {
             $tag = strtoupper($tag);
             $tagcolor = "tag is-success";
-        } elseif (str_contains($tag, '/')) {
+        } elseif ($tag[0] === '/' && $tag[-1] === '/') {
             $tagcolor = "tag is-primary";
         } else {
             $tagcolor = "tag is-info";
@@ -40,13 +41,14 @@ function tagsToHtmlUser(string | array | Collection $tags, $profile_username) : 
     }
 
     foreach ($tagsSplit as $tag) {
-        if (stripos($tag, 'nsfw') !== false) {
+        $tag_lower = strtolower($tag);
+        if ($tag_lower === 'nsfw' || $tag_lower === 'explicit') {
             $tag = strtoupper($tag);
             $tagcolor = "tag is-danger";
-        } elseif (stripos($tag, 'SAFE') !== false) {
+        } elseif ($tag_lower === 'safe') {
             $tag = strtoupper($tag);
             $tagcolor = "tag is-success";
-        } elseif (str_contains($tag, '/')) {
+        } elseif ($tag[0] === '/' && $tag[-1] === '/') {
             $tagcolor = "tag is-primary";
         } else {
             $tagcolor = "tag is-info";

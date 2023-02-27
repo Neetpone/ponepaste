@@ -1,5 +1,6 @@
 // noinspection JSUnusedGlobalSymbols,JSCheckFunctionSignatures
 
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 import {getBabelOutputPlugin} from '@rollup/plugin-babel';
 import {terser} from 'rollup-plugin-terser';
 
@@ -17,7 +18,8 @@ const output = (name) => {
                 plugins: [getBabelOutputPlugin({ presets: ['@babel/preset-env'] }), terser()],
                 sourcemap: true
             }
-        ]
+        ],
+        plugins: [nodeResolve()]
     }
 };
 
