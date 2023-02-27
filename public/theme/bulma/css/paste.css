@@ -256,3 +256,8 @@ button.button--no-style {
 .captcha_container i {
     color: black;
 }
+
+code {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
