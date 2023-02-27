@@ -38,7 +38,7 @@
         <div class="bd-duo">
             <div class="bd-lead">
                 <h1 class="title is-5"><?= pp_html_escape($profile_username) ?>'s Pastes</h1>
-                <h1 class="subtitle is-6">joined: <?= $profile_join_date; ?></h1>
+                <h1 class="subtitle is-6">joined: <?= $profile_join_date ?></h1>
                 <!-- Badges system -->
                 <div class="box">
                     <h2 class="title is-5">Badges</h2>

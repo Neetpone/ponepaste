@@ -17,7 +17,7 @@ $profile_username = trim($_GET['user']);
 
 $profile_info = User::with('favourites')
     ->where('username', $profile_username)
-    ->select('id', 'date', 'badge')
+    ->select('id', 'created_at', 'badge')
     ->first();
 
 if (!$profile_info) {
@@ -58,7 +58,7 @@ $profile_total_paste_views = Paste::select('views')
     ->where('user_id', $profile_info->id)
     ->sum('views');
 
-$profile_join_date = $profile_info['date'];
+$profile_join_date = $profile_info->created_at;
 
 $profile_pastes = $profile_info->pastes;
 $profile_favs = $profile_info->favourites;
