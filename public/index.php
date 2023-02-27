@@ -96,6 +96,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         goto OutPut;
     }
 
+    foreach ($tags as $tag) {
+        if (strlen($tag) > 255) {
+            $error = 'A single tag cannot be longer than 255 characters.';
+            goto OutPut;
+        }
+    }
+
     $editing = isset($_POST['edit']);
 
     $paste_title = trim($_POST['title']);

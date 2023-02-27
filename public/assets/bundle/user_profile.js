@@ -398,6 +398,8 @@ class TagsInput {
             this.updateHiddenInputValue();
 
             evt.preventDefault();
+        } else if (evt.key !== 'Backspace' && tagValue.length > 255) { // This could be improved to check if it would actually result in a new char being typed...
+            evt.preventDefault();
         }
     }
 
