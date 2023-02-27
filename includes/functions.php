@@ -8,17 +8,15 @@ function tagsToHtml(array | Collection $tags) : string {
         $tag = $tagObj->name;
         $tag_lower = strtolower($tag);
         if ($tag_lower === 'nsfw' || $tag_lower === 'explicit') {
-            $tag = strtoupper($tag);
             $tagcolor = "tag is-danger";
         } elseif ($tag_lower === 'safe') {
-            $tag = strtoupper($tag);
             $tagcolor = "tag is-success";
         } elseif ($tag[0] === '/' && $tag[-1] === '/') {
             $tagcolor = "tag is-primary";
         } else {
             $tagcolor = "tag is-info";
         }
-        $output .= '<a href="/archive?q=' . urlencode($tag) . '"><span class="' . $tagcolor . '">' . pp_html_escape(ucfirst($tag)) . '</span></a>';
+        $output .= '<a href="/archive?q=' . urlencode($tag) . '"><span class="' . $tagcolor . '">' . pp_html_escape($tag) . '</span></a>';
     }
     return $output;
 }
@@ -43,17 +41,15 @@ function tagsToHtmlUser(string | array | Collection $tags, $profile_username) : 
     foreach ($tagsSplit as $tag) {
         $tag_lower = strtolower($tag);
         if ($tag_lower === 'nsfw' || $tag_lower === 'explicit') {
-            $tag = strtoupper($tag);
             $tagcolor = "tag is-danger";
         } elseif ($tag_lower === 'safe') {
-            $tag = strtoupper($tag);
             $tagcolor = "tag is-success";
         } elseif ($tag[0] === '/' && $tag[-1] === '/') {
             $tagcolor = "tag is-primary";
         } else {
             $tagcolor = "tag is-info";
         }
-        $output .= '<a href="/user.php?user=' . $profile_username . '&q=' . urlencode($tag) . '"><span class="' . $tagcolor . '">' . pp_html_escape(ucfirst($tag)) . '</span></a>';
+        $output .= '<a href="/user.php?user=' . $profile_username . '&q=' . urlencode($tag) . '"><span class="' . $tagcolor . '">' . pp_html_escape($tag) . '</span></a>';
     }
     return $output;
 }
