@@ -298,3 +298,15 @@ function paginate(int $current_page, int $per_page, int $total_records) : string
 
     return $html;
 }
+
+function pp_filename_escape(string $filename, string $extension) : string {
+    /* Remove NTFS invalid characters */
+    $filename = preg_replace('#[<>:"/|?*]#', '-', $filename);
+
+    /* Windows MAX_PATH limit */
+    if (strlen($filename . $extension) > 255) {
+        $filename = substr($filename, 0, 255 - strlen($extension));
+    }
+
+    return $filename . $extension;
+}

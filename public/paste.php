@@ -155,8 +155,9 @@ $op_content = trim(htmlspecialchars_decode($p_content));
 
 // Download the paste
 if (isset($_GET['download'])) {
+    $filename = pp_filename_escape($paste->title . '_' . $paste->user->username, '.txt');
     header('Content-Type: text/plain');
-    header('Content-Disposition: attachment; filename="' . $paste->id . '_' . pp_html_escape($paste->title) . '_' . pp_html_escape($paste->user->username) . '.txt"');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
     echo $op_content;
     exit();
 }
