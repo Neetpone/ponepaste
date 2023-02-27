@@ -205,7 +205,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                     <?php endif; ?>
                 </div>
                 <!-- Guests -->
-                <?php if ($totalpastes !== 0 && ($current_user === null || $current_user->id !== $paste_owner_id)) { ?>
+                <?php if ($totalpastes !== 0 && !can('edit', $paste)) { ?>
                     <hr>
                     <label class="label">More from this Author </label>
                     <?php foreach ($recommended_pastes as $paste) { ?>
@@ -217,7 +217,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             <p class="subtitle is-7">by <i><?= pp_html_escape($paste->user->username) ?></i></p>
                         </header>
                     <?php } ?>
-                <?php } else { ?>
+                <?php } else if (can('edit', $paste)) { ?>
                     <!-- Paste Panel -->
                     <hr>
                     <h1 class="title is-6 mx-1">Edit Paste</h1>
@@ -253,6 +253,13 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     <a class="button"
                                        onclick="highlight(document.getElementById('code')); return false;"><i
                                                 class="fa fa-indent"></i>&nbsp;Highlight</a>
+                                </div>
+                                <div class="level-item">
+                                    <?php if (isset($csrf_token)): ?>
+                                        <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
+                                    <?php endif; ?>
+                                    <input class="button is-info" type="submit" name="edit" id="edit"
+                                           value="Save Changes" />
                                 </div>
                             </div>
                         </nav>
@@ -341,28 +348,17 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             </div>
                         </nav>
                         <br>
-                        <nav>
-                            <div class="level-left">
-                                <!-- Encrypted -->
-                                <div class="b-checkbox is-info is-inline">
-                                    <input class="is-checkradio is-info" id="encrypt" name="encrypted"
-                                           type="checkbox" disabled="disabled" checked="checked" />
-                                    <label for="encrypt">
-                                        Encrypt on server (always enabled)
-                                    </label>
-                                    <?php
-                                    if (can('edit', $paste)) {
-                                        ?>
-                                        <?php if (isset($csrf_token)): ?>
-                                            <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
-                                        <?php endif; ?>
-                                        <input class="button is-info" type="submit" name="edit" id="edit"
-                                               value="Edit"/>
-                                        <?php
-                                    } ?>
-                                </div>
-                                <br/>
-                        </nav>
+                        <div class="level-left">
+                            <!-- Encrypted -->
+                            <div class="b-checkbox is-info is-inline">
+                                <input class="is-checkradio is-info" id="encrypt" name="encrypted"
+                                       type="checkbox" disabled="disabled" checked="checked" />
+                                <label for="encrypt">
+                                    Encrypt on server (always enabled)
+                                </label>
+
+                            </div>
+                        </div>
                     </form>
                 <?php } ?>
 
