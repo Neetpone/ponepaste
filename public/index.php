@@ -45,7 +45,7 @@ function calculatePasteExpiry(string $expiry) : ?string {
 }
 
 function validatePasteFields() : string|null {
-    if (empty($_POST["paste_data"]) || trim($_POST['paste_data'] === '')) { /* Empty paste input */
+    if (empty($_POST["paste_data"]) || trim($_POST['paste_data']) === '') { /* Empty paste input */
         return 'You cannot post an empty paste.';
     } elseif (!isset($_POST['title'])) { /* No paste title POSTed */
         return 'All fields must be filled out.';
