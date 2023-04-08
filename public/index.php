@@ -27,9 +27,9 @@ function verifyCaptcha() : string|bool {
  * Calculate the expiry of a paste based on user input.
  *
  * @param string $expiry Expiry time.
- *                       SELF means to expire upon one view. +10M, +1H, +1D, +1W, +2W, +1M all do the obvious.
+ *                       SELF means to expire upon one view. +0Y0M0DT0H10M, +1H, +1D, +1W, +2W, +1M all do the obvious.
  *                       Anything unhandled means to expire never.
- * @return string|null Expiry time, or NULL if expires never.
+ * @return string|null 'SELF', Expiry time as Unix timestamp, or NULL if expires never.
  */
 function calculatePasteExpiry(string $expiry) : ?string {
     // used to use mktime
@@ -37,7 +37,7 @@ function calculatePasteExpiry(string $expiry) : ?string {
         return 'SELF';
     }
 
-    $valid_expiries = ['10M', '1H', '1D', '1W', '2W', '1M'];
+    $valid_expiries = ['0Y0M0DT0H10M', '1H', '1D', '1W', '2W', '1M'];
 
     return in_array($expiry, $valid_expiries)
         ? (new DateTime())->add(new DateInterval("P{$expiry}"))->format('U')

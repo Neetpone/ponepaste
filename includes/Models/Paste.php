@@ -1,6 +1,7 @@
 <?php
 namespace PonePaste\Models;
 
+use DateTime;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,6 +40,23 @@ class Paste extends Model {
         }
 
         $this->save();
+    }
+
+    public function expiryDisplay() {
+        $expiry = $this->expiry;
+        if (!$expiry) {
+            return 'Never';
+        }
+        if ($expiry == 'SELF') {
+            return '<b>View Once</b>';
+        }
+        $dateTime = new DateTime();
+        $dateTime->setTimestamp($expiry);
+        $ret = $dateTime->format('Y-m-d H:i:s');
+        if ($dateTime->diff(new DateTime())->days < 1) {
+            $ret = "<b>$ret</b>";
+        }
+        return $ret;
     }
 
     public static function getRecent(int $count = 10) : Collection {
