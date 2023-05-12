@@ -3,7 +3,7 @@ if (!defined('IN_PONEPASTE')) {
     die('This file may not be accessed directly.');
 }
 
-require_once('../includes/common.php');
+require_once('../../includes/common.php');
 
 use PonePaste\Models\AdminLog;
 use PonePaste\Models\User;

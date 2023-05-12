@@ -311,13 +311,6 @@ if ($last_ip == $ip) {
 
     <!-- Start Footer -->
     <div class="row footer">
-        <div class="col-md-6 text-left">
-            <a href="https://github.com/jordansamuel/PASTE" target="_blank">Updates</a> &mdash; <a
-                    href="https://github.com/jordansamuel/PASTE/issues" target="_blank">Bugs</a>
-        </div>
-        <div class="col-md-6 text-right">
-            Powered by <a href="https://phpaste.sourceforge.io" target="_blank">Paste</a>
-        </div>
     </div>
     <!-- End Footer -->
 </div>

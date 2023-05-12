@@ -3,7 +3,7 @@
         'name' => 'aftercase/ponepaste',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '7be5984b3eea1200a34b91ba7330a415e3a61ff5',
+        'reference' => '9bd921ee714769fcddbcbbd0d7c49a64336794f9',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'aftercase/ponepaste' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '7be5984b3eea1200a34b91ba7330a415e3a61ff5',
+            'reference' => '9bd921ee714769fcddbcbbd0d7c49a64336794f9',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

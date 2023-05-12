@@ -1,59 +1,6 @@
 <?php
-session_start();
-
-if (!isset($_SESSION['login'])) {
-    header("Location: .");
-    exit();
-}
-
-if (isset($_GET['logout'])) {
-    if (isset($_SESSION['login']))
-        unset($_SESSION['login']);
-
-    session_destroy();
-    header("Location: .");
-    exit();
-}
-
-$date = date('jS F Y');
-$ip = $_SERVER['REMOTE_ADDR'];
-require_once('../includes/config.php');
-$con = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
-
-if (mysqli_connect_errno()) {
-    $sql_error = mysqli_connect_error();
-    die("Unable connect to database");
-}
-
-$query = "SELECT @last_id := MAX(id) FROM admin_history";
-
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $last_id = $row['@last_id := MAX(id)'];
-}
-
-$query = "SELECT * FROM admin_history WHERE id=" . Trim($last_id);
-$result = mysqli_query($con, $query);
-
-while ($row = mysqli_fetch_array($result)) {
-    $last_date = $row['last_date'];
-    $last_ip = $row['ip'];
-}
-
-if ($last_ip == $ip) {
-    if ($last_date == $date) {
-
-    } else {
-        $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
-        mysqli_query($con, $query);
-    }
-} else {
-    $query = "INSERT INTO admin_history (last_date,ip) VALUES ('$date','$ip')";
-    mysqli_query($con, $query);
-}
-
-
+define('IN_PONEPASTE', 1);
+require_once('common.php');
 ?>
 
 <!DOCTYPE html>
@@ -98,22 +45,6 @@ if ($last_ip == $ip) {
         <!-- End Menu -->
 
         <?php
-        if (isset($_GET['remove'])) {
-            $delid = htmlentities(Trim($_GET['remove']));
-            $query = "DELETE FROM user_reports WHERE id=$delid";
-            $result = mysqli_query($con, $query);
-            if (mysqli_errno($con)) {
-                $msg = '<div class="paste-alert alert6" style="text-align: center;">
-				 ' . mysqli_error($con) . '
-				 </div>';
-            } else {
-                $msg = '<div class="paste-alert alert3" style="text-align: center;">
-					 Report Removed
-					 </div>';
-            }
-
-        }
-
         if (isset($_GET['delete'])) {
             $delid = htmlentities(Trim($_GET['delete']));
             $query = "DELETE FROM pastes WHERE id=$delid";
@@ -124,7 +55,7 @@ if ($last_ip == $ip) {
 				 </div>';
             } else {
                 $msg = '<div class="paste-alert alert3" style="text-align: center;">
-					 Report Removed
+					 Paste deleted
 					 </div>';
             }
 
@@ -255,9 +186,9 @@ if ($last_ip == $ip) {
                                 <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>User Reported</th>
-                                    <th>Paste ID</th>
-                                    <th>Reason</th>
+                                    <th>Username</th>
+                                    <th>IP</th>
+                                    <th>Visibility</th>
                                     <th>More Details</th>
                                     <th>View Paste</th>
                                     <th>Delete</th>
@@ -278,28 +209,11 @@ if ($last_ip == $ip) {
 
     <!-- Start Footer -->
     <div class="row footer">
-        <div class="col-md-6 text-left">
-            <a href="https://github.com/jordansamuel/PASTE" target="_blank">Updates</a> &mdash; <a
-                    href="https://github.com/jordansamuel/PASTE/issues" target="_blank">Bugs</a>
-        </div>
-        <div class="col-md-6 text-right">
-            Powered by <a href="https://phpaste.sourceforge.io" target="_blank">Paste</a>
-        </div>
     </div>
     <!-- End Footer -->
 
 </div>
 <!-- End content -->
 
-<script type="text/javascript" language="javascript" class="init">
-    $(document).ready(function () {
-        $('#pastesTable').dataTable({
-            "processing": true,
-            "serverSide": true,
-            "ajax": "ajax_reports.php"
-        });
-    });
-</script>
-<script type="text/javascript" src="js/bootstrap.min.js"></script>
 </body>
 </html>

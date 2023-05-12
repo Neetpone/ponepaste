@@ -14,7 +14,6 @@
   "license": "MIT",
   "dependencies": {
     "@rollup/plugin-commonjs": "^24.0.1",
-    "@rollup/plugin-node-resolve": "^15.0.1",
-    "zxcvbn": "^4.4.2"
+    "@rollup/plugin-node-resolve": "^15.0.1"
   }
 }

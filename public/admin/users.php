@@ -1,6 +1,16 @@
 <?php
+
+use PonePaste\Models\User;
+
 define('IN_PONEPASTE', 1);
 require_once(__DIR__ . '/common.php');
+
+
+list($per_page, $current_page) = pp_setup_pagination();
+
+$total_users = User::count();
+$all_users = User::limit($per_page)->offset($current_page * $per_page)->get();
+
 ?>
 
 <!DOCTYPE html>
@@ -41,54 +51,6 @@ require_once(__DIR__ . '/common.php');
     <!-- START CONTAINER -->
     <div class="container-widget">
         <?php include 'menu.php'; ?>
-        <!-- End Menu -->
-
-        <?php
-        if (isset($_GET['delete'])) {
-            $user_id = htmlentities(Trim($_GET['delete']));
-            $query = "DELETE FROM users WHERE id=$user_id";
-            $result = mysqli_query($con, $query);
-            if (mysqli_errno($con)) {
-                $msg = '<div class="paste-alert alert6" style="text-align: center;">
-				 ' . mysqli_error($con) . '
-				 </div>';
-            } else {
-                $msg = '<div class="paste-alert alert3" style="text-align: center;">
-					 User deleted
-					 </div>';
-            }
-        }
-
-        if (isset($_GET['ban'])) {
-            $ban_id = htmlentities(Trim($_GET['ban']));
-            $query = "UPDATE users SET verified='2' WHERE id='$ban_id'";
-            $result = mysqli_query($con, $query);
-            if (mysqli_errno($con)) {
-                $msg = '<div class="paste-alert alert6" style="text-align: center;">
-				 ' . mysqli_error($con) . '
-				 </div>';
-            } else {
-                $msg = '<div class="paste-alert alert3" style="text-align: center;">
-					 User banned
-					 </div>';
-            }
-        }
-
-        if (isset($_GET['unban'])) {
-            $ban_id = htmlentities(Trim($_GET['unban']));
-            $query = "UPDATE users SET verified='1' WHERE id='$ban_id'";
-            $result = mysqli_query($con, $query);
-            if (mysqli_errno($con)) {
-                $msg = '<div class="paste-alert alert6" style="text-align: center;">
-				 ' . mysqli_error($con) . '
-				 </div>';
-            } else {
-                $msg = '<div class="paste-alert alert3" style="text-align: center;">
-					 User unbanned
-					 </div>';
-            }
-        }
-        ?>
 
         <!-- Start Users -->
         <div class="row">
@@ -149,7 +111,6 @@ require_once(__DIR__ . '/common.php');
                                    id="usersTable">
                                 <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th>Username</th>
                                     <th>Date Registered</th>
                                     <th>Ban User</th>
@@ -158,9 +119,17 @@ require_once(__DIR__ . '/common.php');
                                 </tr>
                                 </thead>
                                 <tbody>
-
+                                    <?php foreach ($all_users as $user): ?>
+                                        <tr>
+                                            <td>
+                                                <a href="<?= urlForMember($user); ?>"><?= pp_html_escape($user->username); ?></a>
+                                            </td>
+                                            <td><?= pp_html_escape($user->created_at); ?> </td>
+                                        </tr>
+                                    <?php endforeach; ?>
                                 </tbody>
                             </table>
+                            <?= paginate($current_page, $per_page, $total_users); ?>
                         </div>
                     <?php } ?>
                 </div>
@@ -172,28 +141,10 @@ require_once(__DIR__ . '/common.php');
 
     <!-- Start Footer -->
     <div class="row footer">
-        <div class="col-md-6 text-left">
-            <a href="https://github.com/jordansamuel/PASTE" target="_blank">Updates</a> &mdash; <a
-                    href="https://github.com/jordansamuel/PASTE/issues" target="_blank">Bugs</a>
-        </div>
-        <div class="col-md-6 text-right">
-            Powered by <a href="https://phpaste.sourceforge.io" target="_blank">Paste</a>
-        </div>
     </div>
     <!-- End Footer -->
 </div>
 <!-- End content -->
 
-<script type="text/javascript" language="javascript" class="init">
-    $(document).ready(function () {
-        $('#usersTable').dataTable({
-            "processing": true,
-            "serverSide": true,
-            "ajax": "ajax_users.php",
-            "order": [[0, "desc"]]
-        });
-    });
-</script>
-<script type="text/javascript" src="js/bootstrap.min.js"></script>
 </body>
 </html>

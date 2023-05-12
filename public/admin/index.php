@@ -1,6 +1,6 @@
 <?php
 define('IN_PONEPASTE', 1);
-require_once(__DIR__ . '/../includes/common.php');
+require_once(__DIR__ . '/../../includes/common.php');
 
 use PonePaste\Models\User;
 use PonePaste\Models\AdminLog;
@@ -21,7 +21,7 @@ if ($current_user === null || !$current_user->admin) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (password_verify($_POST['password'], $current_user->admin_password_hash)) {
+    if (pp_password_verify($_POST['password'], $current_user->admin_password_hash)) {
         updateAdminHistory($current_user, AdminLog::ACTION_LOGIN);
         $_SESSION['admin_login'] = true;
         header("Location: dashboard.php");

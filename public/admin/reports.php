@@ -1,6 +1,24 @@
 <?php
-define('IN_PONEPASTE', 1);
-require_once('common.php');
+session_start();
+
+if (!isset($_SESSION['login'])) {
+    header("Location: .");
+    exit();
+}
+
+if (isset($_GET['logout'])) {
+    if (isset($_SESSION['login']))
+        unset($_SESSION['login']);
+
+    session_destroy();
+    header("Location: .");
+    exit();
+}
+
+$date = date('jS F Y');
+$ip = $_SERVER['REMOTE_ADDR'];
+require_once('../includes/config.php');
+
 ?>
 
 <!DOCTYPE html>
@@ -45,6 +63,22 @@ require_once('common.php');
         <!-- End Menu -->
 
         <?php
+        if (isset($_GET['remove'])) {
+            $delid = htmlentities(Trim($_GET['remove']));
+            $query = "DELETE FROM user_reports WHERE id=$delid";
+            $result = mysqli_query($con, $query);
+            if (mysqli_errno($con)) {
+                $msg = '<div class="paste-alert alert6" style="text-align: center;">
+				 ' . mysqli_error($con) . '
+				 </div>';
+            } else {
+                $msg = '<div class="paste-alert alert3" style="text-align: center;">
+					 Report Removed
+					 </div>';
+            }
+
+        }
+
         if (isset($_GET['delete'])) {
             $delid = htmlentities(Trim($_GET['delete']));
             $query = "DELETE FROM pastes WHERE id=$delid";
@@ -55,7 +89,7 @@ require_once('common.php');
 				 </div>';
             } else {
                 $msg = '<div class="paste-alert alert3" style="text-align: center;">
-					 Paste deleted
+					 Report Removed
 					 </div>';
             }
 
@@ -186,9 +220,9 @@ require_once('common.php');
                                 <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Username</th>
-                                    <th>IP</th>
-                                    <th>Visibility</th>
+                                    <th>User Reported</th>
+                                    <th>Paste ID</th>
+                                    <th>Reason</th>
                                     <th>More Details</th>
                                     <th>View Paste</th>
                                     <th>Delete</th>
@@ -227,9 +261,10 @@ require_once('common.php');
         $('#pastesTable').dataTable({
             "processing": true,
             "serverSide": true,
-            "ajax": "ajax_pastes.php"
+            "ajax": "ajax_reports.php"
         });
     });
 </script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
 </body>
 </html>

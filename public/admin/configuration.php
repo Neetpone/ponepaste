@@ -5,7 +5,7 @@ use PonePaste\Models\AdminLog;
 define('IN_PONEPASTE', 1);
 require_once('common.php');
 
-const CONFIG_FILE_PATH = '../config/site.php';
+const CONFIG_FILE_PATH = '../../config/site.php';
 
 function updateConfiguration(string $path, array $new_config) : void {
     $fp = fopen($path, 'w');
@@ -366,32 +366,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- Start Footer -->
     <div class="row footer">
-        <div class="col-md-6 text-left">
-            <a href="https://github.com/jordansamuel/PASTE" target="_blank">Updates</a> &mdash; <a
-                    href="https://github.com/jordansamuel/PASTE/issues" target="_blank">Bugs</a>
-        </div>
-        <div class="col-md-6 text-right">
-            Powered by <a href="https://phpaste.sourceforge.io" target="_blank">Paste</a>
-        </div>
     </div>
     <!-- End Footer -->
 </div>
 <!-- End content -->
-<script>
-    function show() {
-        document.getElementById('smtp_pass').setAttribute('type', 'text');
-    }
-
-    function hide() {
-        document.getElementById('smtp_pass').setAttribute('type', 'password');
-    }
-
-    if (document.getElementById('smtppasstoggle').hasAttribute('checked')) {
-        show();
-    } else {
-        hide();
-    }
-</script>
 
 </body>
 </html>

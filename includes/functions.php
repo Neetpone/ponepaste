@@ -310,3 +310,22 @@ function pp_filename_escape(string $filename, string $extension) : string {
 
     return $filename . $extension;
 }
+
+function pp_setup_pagination() : array {
+    $per_page = 20;
+    $current_page = 0;
+
+    if (!empty($_GET['page'])) {
+        $current_page = max(0, intval($_GET['page']));
+    }
+
+    if (!empty($_GET['per_page'])) {
+        $per_page = max(1, min(100, intval($_GET['per_page'])));
+    }
+
+    return [$per_page, $current_page];
+}
+
+function pp_output_paginator(int $per_page, int $current_page) : void {
+
+}
