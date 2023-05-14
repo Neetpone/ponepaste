@@ -114,7 +114,7 @@ if (isset($_POST['hide'])) {
 
     $paste->is_hidden = $is_hidden;
     $paste->save();
-    flashSuccess('Paste hidden.');
+    flashSuccess('Paste ' . ($is_hidden ? 'hidden' : 'unhidden') . '.');
     header('Location: /');
     die();
 }
