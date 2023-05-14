@@ -6,6 +6,7 @@ require_once(__DIR__ . '/../includes/common.php');
 use Highlight\Highlighter;
 use PonePaste\Models\Paste;
 use PonePaste\Models\User;
+use PonePaste\Pastedown;
 
 function isRequesterLikelyBot() : bool {
     return str_contains(strtolower($_SERVER['HTTP_USER_AGENT']), 'bot');
@@ -212,7 +213,7 @@ $p_content = rtrim($p_content);
 $p_content = htmlspecialchars_decode($p_content);
 
 if ($paste_code === "pastedown" || $paste_code === 'pastedown_old') {
-    $parsedown = new Parsedown();
+    $parsedown = new Pastedown();
     $parsedown->setSafeMode(true);
     $p_content = $parsedown->text($p_content);
 } else {

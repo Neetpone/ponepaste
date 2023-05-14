@@ -261,3 +261,16 @@ code {
     overflow-wrap: anywhere;
     white-space: pre-wrap;
 }
+
+.content .greentext {
+    color: #789922;
+    content: ">";
+}
+
+.content .redtext {
+    color: #d12222;
+}
+
+.content .purpletext {
+    color: #9f14ae;
+}

@@ -48,13 +48,17 @@ class Paste extends Model {
 
     public function expiryDisplay() {
         $expiry = $this->expiry;
-        if (!$expiry) {
+        if (!$expiry || $expiry === 'NULL') { // TODO: Investigate why this is a string
             return 'Never';
         }
+
         if ($expiry == 'SELF') {
             return '<b>View Once</b>';
         }
-        $dateTime = new DateTime();
+
+        var_dump($expiry);
+
+        $dateTime = new DateTime($expiry);
         $dateTime->setTimestamp($expiry);
         $ret = $dateTime->format('Y-m-d H:i:s');
         if ($dateTime->diff(new DateTime())->days < 1) {
