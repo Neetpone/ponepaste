@@ -104,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $editing = isset($_POST['edit']);
+    $deleting = isset($_POST['delete']);
 
     $paste_title = trim($_POST['title']);
 

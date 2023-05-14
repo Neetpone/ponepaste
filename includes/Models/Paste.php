@@ -31,6 +31,10 @@ class Paste extends Model {
         return $this->belongsToMany(User::class, 'user_favourites');
     }
 
+    public function reports() {
+        return $this->hasMany(Report::class);
+    }
+
     public function replaceTags(array $tags) {
         $this->tags()->detach();
 
@@ -63,6 +67,7 @@ class Paste extends Model {
         return Paste::with('user')
             ->orderBy('created_at', 'DESC')
             ->where('visible', self::VISIBILITY_PUBLIC)
+            ->where('is_hidden', false)
             ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
             ->limit($count)->get();
     }
@@ -71,6 +76,7 @@ class Paste extends Model {
         return Paste::with('user')
             ->orderBy('updated_at', 'DESC')
             ->where('visible', self::VISIBILITY_PUBLIC)
+            ->where('is_hidden', false)
             ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
             ->limit($count)->get();
     }
@@ -79,6 +85,7 @@ class Paste extends Model {
         return Paste::with('user')
             ->orderBy('views')
             ->where('visible', self::VISIBILITY_PUBLIC)
+            ->where('is_hidden', false)
             ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
             ->limit($count)->get();
     }
@@ -87,6 +94,7 @@ class Paste extends Model {
         return Paste::with('user')
             ->whereRaw('MONTH(created_at) = MONTH(NOW())')
             ->where('visible', self::VISIBILITY_PUBLIC)
+            ->where('is_hidden', false)
             ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
             ->orderBy('views')
             ->limit($count)->get();
@@ -94,9 +102,10 @@ class Paste extends Model {
 
     public static function getRandom(int $count = 10) : Collection {
         return Paste::with('user')
-            ->orderByRaw('RAND()')
             ->where('visible', self::VISIBILITY_PUBLIC)
+            ->where('is_hidden', false)
             ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
+            ->orderByRaw('RAND()')
             ->limit($count)->get();
     }
 }

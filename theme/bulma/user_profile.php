@@ -176,8 +176,8 @@
                         <?php foreach ($profile_favs as $paste): ?>
                             <?php
                             $escaped_title = pp_html_escape(truncate($paste->title, 20, 50));
-                            $f_date = new DateTime($paste->pivot->f_time);
-                            $update_date = new DateTime($paste->updated_at);
+                            $f_date = new DateTime($paste->pivot->created_at);
+                            $update_date = $paste->updated_at !== null ? new DateTime($paste->updated_at) : $f_date;
                             $delta = $update_date->diff(new DateTime(), true);
                             $pasteJson = array_merge(
                                 $paste->only('id', 'title', 'tags', 'views', 'created_at'),

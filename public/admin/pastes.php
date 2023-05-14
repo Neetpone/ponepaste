@@ -1,6 +1,17 @@
 <?php
 define('IN_PONEPASTE', 1);
-require_once('common.php');
+require_once(__DIR__ . '/common.php');
+
+use PonePaste\Models\Paste;
+
+list($per_page, $current_page) = pp_setup_pagination();
+
+$total_pastes = Paste::count();
+$pastes = Paste::with('user')
+    ->orderBy('id', 'desc')
+    ->limit($per_page)
+    ->offset($current_page * $per_page)
+    ->get();
 ?>
 
 <!DOCTYPE html>
@@ -26,7 +37,7 @@ require_once('common.php');
     <ul class="top-right">
         <li class="dropdown link">
             <a href="#" data-toggle="dropdown" class="dropdown-toggle profilebox"><b>Admin</b><span
-                        class="caret"></span></a>
+                    class="caret"></span></a>
             <ul class="dropdown-menu dropdown-menu-list dropdown-menu-right">
                 <li><a href="admin.php">Settings</a></li>
                 <li><a href="?logout">Logout</a></li>
@@ -66,154 +77,57 @@ require_once('common.php');
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-widget">
-                    <?php
-                    if (isset($_GET['details'])) {
-                        $detail_id = htmlentities(Trim($_GET['details']));
-                        $query = "SELECT * FROM pastes WHERE id='$detail_id'";
-                        $result = mysqli_query($con, $query);
-                        while ($row = mysqli_fetch_array($result)) {
-                            $p_title = $row['title'];
-                            $p_content = $row['content'];
-                            $p_visible = $row['visible'];
-                            $p_code = $row['code'];
-                            $p_expiry = $row['expiry'];
-                            $p_password = $row['password'];
-                            $p_member = $row['member'];
-                            $p_date = $row['date'];
-                            $p_encrypt = $row['encrypt'];
-                            $p_views = $row['views'];
-                            $p_ip = $row['ip'];
-                        }
-                        if ($p_encrypt == "" || $p_encrypt == null || $p_encrypt == '0') {
-                            $encrypt = "Not Encrypted";
-                        } else {
-                            $encrypt = "Encrypted";
-                        }
-                        if ($p_expiry == "NULL") {
-                            $expiry = "Never";
-                        } else {
-                            $input_time = $p_expiry;
-                            $current_time = mktime(date("H"), date("i"), date("s"), date("n"), date("j"), date("Y"));
-                            if ($input_time < $current_time) {
-                                $expiry = "Paste is expired";
-                            } else {
-                                $expiry = "Paste is not expired";
-                            }
-                        }
-
-                        if ($p_password == 'NONE') {
-                            $pass = "Not protected";
-                        } else {
-                            $pass = "Password protected paste";
-                        }
-                        if ($p_visible == '0') {
-                            $visible = "Public";
-                        } elseif ($p_visible == '1') {
-                            $visible = "Unlisted";
-                        } elseif ($p_visible == '2') {
-                            $visible = "Private";
-                        } else {
-                            $visible = "Something went wrong";
-                        }
-
-                        ?>
+                    <div class="panel-body">
                         <div class="panel-title">
-                            Details of Paste ID <?php echo $detail_id; ?>
+                            Manage Pastes
                         </div>
 
-                        <div class="panel-body table-responsive">
-                            <table class="table display dataTable">
-                                <tbody>
-                                <tr>
-                                    <td> Username</td>
-                                    <td> <?php echo $p_member; ?> </td>
-                                </tr>
+                        <?php if (isset($msg)) echo $msg; ?>
 
-                                <tr>
-                                    <td> Paste Title</td>
-                                    <td> <?php echo $p_title; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> Visibility</td>
-                                    <td> <?php echo $visible; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> Password</td>
-                                    <td> <?php echo $pass; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> Views</td>
-                                    <td> <?php echo $p_views; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> IP</td>
-                                    <td> <?php echo $p_ip; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> Syntax Highlighting</td>
-                                    <td> <?php echo $p_code; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> Expiration</td>
-                                    <td> <?php echo $expiry; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> Encrypted Paste</td>
-                                    <td> <?php echo $encrypt; ?></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                    <?php } else { ?>
-
-                        <div class="panel-body">
-                            <div class="panel-title">
-                                Manage Pastes
-                            </div>
-
-                            <?php if (isset($msg)) echo $msg; ?>
-
-                            <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered"
-                                   id="pastesTable">
-                                <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Username</th>
-                                    <th>IP</th>
-                                    <th>Visibility</th>
-                                    <th>More Details</th>
-                                    <th>View Paste</th>
-                                    <th>Delete</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
-                        </div>
-                    <?php } ?>
+                        <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered"
+                               id="pastesTable">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Username</th>
+                                <th>IP</th>
+                                <th>Visibility</th>
+                                <th>Delete</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($pastes as $paste): ?>
+                                    <tr>
+                                        <td>
+                                            <a href="<?= urlForPaste($paste) ?>">
+                                                <?= pp_html_escape($paste->id); ?>
+                                            </a>
+                                        </td>
+                                        <td><?= pp_html_escape($paste->title); ?></td>
+                                        <td><?= pp_html_escape($paste->user->username); ?></td>
+                                        <td><?= pp_html_escape($paste->ip); ?></td>
+                                        <td><?= pp_html_escape($paste->visible); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+                <?= paginate($current_page, $per_page, $total_pastes); ?>
+
             </div>
+            <!-- End Admin Settings -->
         </div>
-        <!-- End Admin Settings -->
-    </div>
-    <!-- END CONTAINER -->
+        <!-- END CONTAINER -->
 
-    <!-- Start Footer -->
-    <div class="row footer">
-    </div>
-    <!-- End Footer -->
+        <!-- Start Footer -->
+        <div class="row footer">
+        </div>
+        <!-- End Footer -->
 
-</div>
-<!-- End content -->
+    </div>
+    <!-- End content -->
 
 </body>
 </html>

@@ -1,24 +1,23 @@
 <?php
-session_start();
+define('IN_PONEPASTE', 1);
+require_once(__DIR__ . '/common.php');
 
-if (!isset($_SESSION['login'])) {
-    header("Location: .");
-    exit();
+use PonePaste\Models\Report;
+
+if (isset($_POST['close_report']) && isset($_POST['report_id'])) {
+    $report = Report::find((int) $_POST['report_id']);
+    if ($report) {
+        $report->open = false;
+        $report->save();
+    }
+
+    flashSuccess('Report has been closed.');
 }
 
-if (isset($_GET['logout'])) {
-    if (isset($_SESSION['login']))
-        unset($_SESSION['login']);
-
-    session_destroy();
-    header("Location: .");
-    exit();
-}
-
-$date = date('jS F Y');
-$ip = $_SERVER['REMOTE_ADDR'];
-require_once('../includes/config.php');
-
+$reports_count = Report::count();
+$reports = Report::with('paste', 'user')
+    ->orderBy('id', 'desc')
+    ->get();
 ?>
 
 <!DOCTYPE html>
@@ -44,7 +43,7 @@ require_once('../includes/config.php');
     <ul class="top-right">
         <li class="dropdown link">
             <a href="#" data-toggle="dropdown" class="dropdown-toggle profilebox"><b>Admin</b><span
-                        class="caret"></span></a>
+                    class="caret"></span></a>
             <ul class="dropdown-menu dropdown-menu-list dropdown-menu-right">
                 <li><a href="admin.php">Settings</a></li>
                 <li><a href="?logout">Logout</a></li>
@@ -62,178 +61,61 @@ require_once('../includes/config.php');
         <?php include 'menu.php'; ?>
         <!-- End Menu -->
 
-        <?php
-        if (isset($_GET['remove'])) {
-            $delid = htmlentities(Trim($_GET['remove']));
-            $query = "DELETE FROM user_reports WHERE id=$delid";
-            $result = mysqli_query($con, $query);
-            if (mysqli_errno($con)) {
-                $msg = '<div class="paste-alert alert6" style="text-align: center;">
-				 ' . mysqli_error($con) . '
-				 </div>';
-            } else {
-                $msg = '<div class="paste-alert alert3" style="text-align: center;">
-					 Report Removed
-					 </div>';
-            }
-
-        }
-
-        if (isset($_GET['delete'])) {
-            $delid = htmlentities(Trim($_GET['delete']));
-            $query = "DELETE FROM pastes WHERE id=$delid";
-            $result = mysqli_query($con, $query);
-            if (mysqli_errno($con)) {
-                $msg = '<div class="paste-alert alert6" style="text-align: center;">
-				 ' . mysqli_error($con) . '
-				 </div>';
-            } else {
-                $msg = '<div class="paste-alert alert3" style="text-align: center;">
-					 Report Removed
-					 </div>';
-            }
-
-        }
-        ?>
-
         <!-- Start Pastes -->
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-widget">
-                    <?php
-                    if (isset($_GET['details'])) {
-                        $detail_id = htmlentities(Trim($_GET['details']));
-                        $query = "SELECT * FROM pastes WHERE id='$detail_id'";
-                        $result = mysqli_query($con, $query);
-                        while ($row = mysqli_fetch_array($result)) {
-                            $p_title = $row['title'];
-                            $p_content = $row['content'];
-                            $p_visible = $row['visible'];
-                            $p_code = $row['code'];
-                            $p_expiry = $row['expiry'];
-                            $p_password = $row['password'];
-                            $p_member = $row['member'];
-                            $p_date = $row['date'];
-                            $p_encrypt = $row['encrypt'];
-                            $p_views = $row['views'];
-                            $p_ip = $row['ip'];
-                        }
-                        if ($p_encrypt == "" || $p_encrypt == null || $p_encrypt == '0') {
-                            $encrypt = "Not Encrypted";
-                        } else {
-                            $encrypt = "Encrypted";
-                        }
-                        if ($p_expiry == "NULL") {
-                            $expiry = "Never";
-                        } else {
-                            $input_time = $p_expiry;
-                            $current_time = mktime(date("H"), date("i"), date("s"), date("n"), date("j"), date("Y"));
-                            if ($input_time < $current_time) {
-                                $expiry = "Paste is expired";
-                            } else {
-                                $expiry = "Paste is not expired";
-                            }
-                        }
-
-                        if ($p_password == 'NONE') {
-                            $pass = "Not protected";
-                        } else {
-                            $pass = "Password protected paste";
-                        }
-                        if ($p_visible == '0') {
-                            $visible = "Public";
-                        } elseif ($p_visible == '1') {
-                            $visible = "Unlisted";
-                        } elseif ($p_visible == '2') {
-                            $visible = "Private";
-                        } else {
-                            $visible = "Something went wrong";
-                        }
-
-                        ?>
+                    <div class="panel-body">
+                        <?php outputFlashes($flashes); ?>
                         <div class="panel-title">
-                            Details of Paste ID <?php echo $detail_id; ?>
+                            Reports
                         </div>
 
-                        <div class="panel-body table-responsive">
-                            <table class="table display dataTable">
-                                <tbody>
-                                <tr>
-                                    <td> Username</td>
-                                    <td> <?php echo $p_member; ?> </td>
+                        <?php if (isset($msg)) echo $msg; ?>
+
+                        <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered"
+                               id="pastesTable">
+                            <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Paste</th>
+                                <th>User</th>
+                                <th>Report Reason</th>
+                                <th>Close Report</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($reports as $report): ?>
+                                <tr class="<?= $report->open ? 'success' : 'danger' ?>">
+                                    <td><?= pp_html_escape($report->created_at); ?></td>
+                                    <td>
+                                        <a href="<?= urlForPaste($report->paste); ?>">
+                                            <?= pp_html_escape($report->paste->title); ?>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="<?= urlForMember($report->user); ?>">
+                                            <?= pp_html_escape($report->user->username); ?>
+                                        </a>
+                                    </td>
+                                    <td><?= pp_html_escape($report->reason); ?></td>
+                                    <td>
+                                        <?php if ($report->open): ?>
+                                            <form method="post">
+                                                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?> "/>
+                                                <input type="hidden" name="report_id" value="<?= $report->id ?> "/>
+                                                <input type="submit" name="close_report" value="Close"
+                                                       class="btn btn-danger"/>
+                                            </form>
+                                        <?php else: ?>
+                                            Already Closed
+                                        <?php endif; ?>
+                                    </td>
                                 </tr>
-
-                                <tr>
-                                    <td> Paste Title</td>
-                                    <td> <?php echo $p_title; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> Visibility</td>
-                                    <td> <?php echo $visible; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> Password</td>
-                                    <td> <?php echo $pass; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> Views</td>
-                                    <td> <?php echo $p_views; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> IP</td>
-                                    <td> <?php echo $p_ip; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> Syntax Highlighting</td>
-                                    <td> <?php echo $p_code; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> Expiration</td>
-                                    <td> <?php echo $expiry; ?> </td>
-                                </tr>
-
-                                <tr>
-                                    <td> Encrypted Paste</td>
-                                    <td> <?php echo $encrypt; ?></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                    <?php } else { ?>
-
-                        <div class="panel-body">
-                            <div class="panel-title">
-                                Manage Pastes
-                            </div>
-
-                            <?php if (isset($msg)) echo $msg; ?>
-
-                            <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered"
-                                   id="pastesTable">
-                                <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>User Reported</th>
-                                    <th>Paste ID</th>
-                                    <th>Reason</th>
-                                    <th>More Details</th>
-                                    <th>View Paste</th>
-                                    <th>Delete</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
-                        </div>
-                    <?php } ?>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -243,28 +125,10 @@ require_once('../includes/config.php');
 
     <!-- Start Footer -->
     <div class="row footer">
-        <div class="col-md-6 text-left">
-            <a href="https://github.com/jordansamuel/PASTE" target="_blank">Updates</a> &mdash; <a
-                    href="https://github.com/jordansamuel/PASTE/issues" target="_blank">Bugs</a>
-        </div>
-        <div class="col-md-6 text-right">
-            Powered by <a href="https://phpaste.sourceforge.io" target="_blank">Paste</a>
-        </div>
     </div>
     <!-- End Footer -->
 
 </div>
 <!-- End content -->
-
-<script type="text/javascript" language="javascript" class="init">
-    $(document).ready(function () {
-        $('#pastesTable').dataTable({
-            "processing": true,
-            "serverSide": true,
-            "ajax": "ajax_reports.php"
-        });
-    });
-</script>
-<script type="text/javascript" src="js/bootstrap.min.js"></script>
 </body>
 </html>

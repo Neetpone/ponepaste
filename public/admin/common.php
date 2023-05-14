@@ -37,3 +37,4 @@ if (isset($_GET['logout'])) {
     exit();
 }
 
+$flashes = getFlashes();

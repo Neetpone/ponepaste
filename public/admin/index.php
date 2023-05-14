@@ -20,6 +20,11 @@ if ($current_user === null || !$current_user->admin) {
     die();
 }
 
+if (isset($_SESSION['admin_login']) && $_SESSION['admin_login']) {
+    header('Location: dashboard.php');
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (pp_password_verify($_POST['password'], $current_user->admin_password_hash)) {
         updateAdminHistory($current_user, AdminLog::ACTION_LOGIN);
@@ -34,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>

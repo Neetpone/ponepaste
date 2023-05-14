@@ -78,12 +78,17 @@ $paste_is_favourited = $current_user !== null && $current_user->favourites->wher
 $is_private = $paste->visible === Paste::VISIBILITY_PRIVATE;
 
 if (!can('view', $paste)) {
-    $error = 'This is a private paste. If you created this paste, please log in to view it.';
+    if ($paste->is_hidden) {
+        $error = 'This paste has been removed by the moderation team.';
+    } else {
+        $error = 'This is a private paste. If you created this paste, please log in to view it.';
+    }
+
     goto Not_Valid_Paste;
 }
 
 /* Paste deletion */
-if (isset($_POST['delete'])) {
+if (false && isset($_POST['delete'])) {
     if (!can('delete', $paste)) {
         $error = 'You cannot delete someone else\'s paste!';
         goto Not_Valid_Paste;
@@ -92,6 +97,25 @@ if (isset($_POST['delete'])) {
     $paste->delete();
     flashSuccess('Paste deleted.');
     header('Location: ' . urlForMember($current_user));
+    die();
+}
+
+if (isset($_POST['hide'])) {
+    if (!can('hide', $paste)) {
+        $error = 'You do not have permission to hide this paste.';
+        goto Not_Valid_Paste;
+    }
+
+    $is_hidden = !$paste->is_hidden;
+
+    if ($is_hidden) {
+        $paste->reports()->update(['open' => false]);
+    }
+
+    $paste->is_hidden = $is_hidden;
+    $paste->save();
+    flashSuccess('Paste hidden.');
+    header('Location: /');
     die();
 }
 

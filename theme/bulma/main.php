@@ -124,10 +124,11 @@
                 <?php if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     if (isset($error)) { ?>
                         <!-- Error Panel -->
-                        <i class="fa fa-exclamation-circle" aria-hidden=" true"></i> <?php echo $error; ?>
+                        <i class="fa fa-exclamation-circle" aria-hidden="true"></i> <?php echo $error; ?>
                     <?php }
                 }
                 ?>
+                <?php outputFlashes($flashes); ?>
                 <h1 class="subtitle is-4">
                     New Paste
                 </h1>

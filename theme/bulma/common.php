@@ -1,11 +1,12 @@
 <?php
 /* prevent inclusion of arbitrary files */
+
+use PonePaste\Models\Report;
+
 $template_candidates = scandir(__DIR__);
 if (!in_array($page_template . '.php', $template_candidates)) {
     die('Failed to find template');
 }
-
-$start = microtime(true);
 
 $flashes = getFlashes();
 ?>
@@ -80,6 +81,15 @@ $flashes = getFlashes();
                                 </span>
                                 <span>Events</span>
                             </a>
+                            <?php if ($current_user !== null && $current_user->admin): ?>
+                                <?php $has_reports = Report::where(['open' => true])->count() > 0; ?>
+                                <a class="button navbar-item mx-2" href="/admin" <?= $has_reports ? 'style="color: red;"' : '' ?>>
+                                    <span class="icon has-text-info">
+                                        <i class="fa <?= $has_reports ? 'fa-exclamation' : 'fa-toolbox' ?>" aria-hidden="true" <?= $has_reports ? 'style="color: red;"' : '' ?>></i>
+                                    </span>
+                                    <span>Admin</span>
+                                </a>
+                            <?php endif; ?>
                         <?php endif; /* !$site_is_private */ ?>
 
                         <div class="navbar-item has-dropdown is-hoverable">

@@ -41,6 +41,14 @@ function urlForPaste(Paste $paste) : string {
     return "/paste.php?id={$paste->id}";
 }
 
+function urlForReport(Paste $paste) : string {
+    if (PP_MOD_REWRITE) {
+        return "/{$paste->id}/report";
+    }
+
+    return "/report.php?id={$paste->id}";
+}
+
 function urlForMember(User $user) : string {
     if (PP_MOD_REWRITE) {
         return '/user/' . urlencode($user->username);
@@ -268,6 +276,7 @@ $total_page_views = PageView::select('tpage')->orderBy('id', 'desc')->first()->t
 $total_unique_views = PageView::select('tvisit')->orderBy('id', 'desc')->first()->tvisit;
 
 $current_user = SessionHelper::currentUser();
+$start = microtime(true);
 
 function can(string $action, mixed $subject) : bool {
     global $current_user;

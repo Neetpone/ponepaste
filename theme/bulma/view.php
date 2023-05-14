@@ -56,54 +56,15 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
         <div class="bd-duo">
             <div class="bd-lead">
                 <div class="content panel">
-                    <article class="message is-danger" id="panel" style="display: none;">
-                        <div class="message-header" style="margin-bottom: 0;">
-                            <p style="margin-bottom: 1px;">Report Paste</p>
-                            <button class="delete" onclick="closereport()" aria-label="delete"></button>
-                        </div>
-
-                        <div class="message-body">
-                            <div class="columns">
-                                <p>Reporting is currently non-functional. Please email admin ( a t ) ponepaste (.) org if this is a serious violation.</p>
-                                <!--<div class="column">
-                                    <p>Please select how this paste violates a rule:</p>
-                                </div>
-                                <div class="column">
-                                    <form class="form-horizontal" id="reportpaste" name="preport" action="report.php"
-                                          method="POST">
-                                        <div class="select">
-                                            <select name="reasonrep">
-                                                <option>Select dropdown</option>
-                                                <option value="0">Not /mlp/ Related</option>
-                                                <option value="1">Links to Illegal Content</option>
-                                                <option value="2">Paste has personal information (Dox)</option>
-                                            </select>
-                                        </div>
-                                </div>-->
-                            </div>
-                        </div>
-                        <!--<div class="column">
-                            <input type="hidden" name="reppasteid" value="<?php echo($paste->id); ?>">
-                            <div>
-                                <div style="text-align: center;">
-                                    <div id="reportbutton" class="column">
-                                        <input class="button is-danger is-fullwidth" type="submit" name="reportpaste"
-                                               id="report" value="Report Paste"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        </form>-->
-                    </article>
-
+                    <?php outputFlashes($flashes) ?>
                     <div class="columns is-multiline">
                         <div class="column is-4">
                             <span class="tag is-normal"><i class="fa fa-code fa-lg"
-                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?php echo strtoupper(pp_html_escape($paste['code'])); ?></span>
+                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?= strtoupper(pp_html_escape($paste['code'])); ?></span>
                             <span class="tag is-normal"><i class="fa fa-eye fa-lg"
-                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $paste['views']; ?></span>
+                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?= pp_html_escape($paste['views']); ?></span>
                             <span class="tag is-normal"><i class="fa fa-star fa-lg"
-                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $fav_count; ?></span>
+                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?= pp_html_escape($fav_count); ?></span>
                             <br>
                             <span class="tag is-normal">
                                 <i class="fa fa-file-word fa-lg" aria-hidden="true"></i>
@@ -116,7 +77,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             </span>
                             <span class="tag is-normal">
                                 <i class="fa fa-list-ol fa-lg" aria-hidden="true"></i>&nbsp;&nbsp;
-                                <?php echo substr_count($op_content, "\n") + 1; ?>
+                                <?= substr_count($op_content, "\n") + 1; ?>
                             </span>
                         </div>
                         <div class="column is-4 has-text-centered">
@@ -144,7 +105,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                             <button type="submit" class="icon tool-icon button--no-style"><i class="fas fa-star fa-lg <?= $paste_is_favourited ? '' : 'has-text-grey' ?>" title="Favourite"></i></button>
                                         </form>
                                     <?php endif; ?>
-                                    <a class="icon tool-icon flip" onclick="openreport()"><i
+                                    <a class="icon tool-icon flip" href="<?= urlForReport($paste); ?>"><i
                                                 class="far fa-flag fa-lg has-text-grey" title="Report Paste"></i></a>
                                     <?php if ($paste['code'] != "pastedown") { ?>
                                         <a class="icon tool-icon" href="javascript:togglev();"><i
@@ -205,6 +166,20 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             <div id="paste" style="line-height: 18px;"><?= $p_content  ?></div>
                     <?php endif; ?>
                 </div>
+                <?php if (can('hide', $paste)): ?>
+                <div class="mod-tools">
+                    <p>Moderation Tools</p>
+                    <form method="post">
+                        <?php if (isset($csrf_token)): ?>
+                            <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
+                        <?php endif; ?>
+                        <div class="field">
+                            <input class="button is-small <?= $paste->is_hidden ? 'is-success' : 'is-danger' ?>" type="submit" name="hide" id="hide"
+                                   value="<?= $paste->is_hidden ? 'Unhide' : 'Hide' ?> Paste" />
+                        </div>
+                    </form>
+                </div>
+                <?php endif; ?>
                 <!-- Guests -->
                 <?php if ($totalpastes !== 0 && !can('edit', $paste)) { ?>
                     <hr>
@@ -255,7 +230,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                        onclick="highlight(document.getElementById('code')); return false;"><i
                                                 class="fa fa-indent"></i>&nbsp;Highlight</a>
                                 </div>
-                                <div class="level-item">
+                                <div class="level-item mx-1">
                                     <?php if (isset($csrf_token)): ?>
                                         <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
                                     <?php endif; ?>

@@ -8267,7 +8267,7 @@ a.has-text-link-dark:hover {
     background-color: #2160c4 !important;
 }
 .has-text-info {
-    color: #3298dc !important;
+    color: #3298dc;
 }
 a.has-text-info:focus,
 a.has-text-info:hover {

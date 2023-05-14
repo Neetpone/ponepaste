@@ -1,36 +1,25 @@
+<?php
+    $menu_options = [
+        ['name' => 'Dashboard', 'icon' => 'fa-home', 'path' => '/admin/dashboard.php'],
+        ['name' => 'Configuration', 'icon' => 'fa-cogs', 'path' => '/admin/configuration.php'],
+        ['name' => 'Admin Password', 'icon' => 'fa-user', 'path' => '/admin/admin.php'],
+        ['name' => 'Reports', 'icon' => 'fa-flag', 'path' => '/admin/reports.php'],
+        ['name' => 'Pastes', 'icon' => 'fa-clipboard', 'path' => '/admin/pastes.php'],
+        ['name' => 'Users', 'icon' => 'fa-users', 'path' => '/admin/users.php']
+    ];
+    $current_path = $_SERVER['PHP_SELF'];
+?>
 <div class="row">
     <div class="col-md-12">
         <ul class="panel quick-menu clearfix">
-            <li class="col-xs-3 col-sm-2 col-md-1 menu-active">
-                <a href="dashboard.php"><i class="fa fa-home"></i>Dashboard</a>
-            </li>
-            <li class="col-xs-3 col-sm-2 col-md-1">
-                <a href="configuration.php"><i class="fa fa-cogs"></i>Configuration</a>
-            </li>
-            <li class="col-xs-3 col-sm-2 col-md-1">
-                <a href="admin.php"><i class="fa fa-user"></i>Admin Account</a>
-            </li>
-            <li class="col-xs-3 col-sm-2 col-md-1">
-                <a href="reports.php"><i class="fa fa-flag"></i>Reports</a>
-            </li>
-            <li class="col-xs-3 col-sm-2 col-md-1">
-                <a href="pastes.php"><i class="fa fa-clipboard"></i>Pastes</a>
-            </li>
-            <li class="col-xs-3 col-sm-2 col-md-1">
-                <a href="users.php"><i class="fa fa-users"></i>Users</a>
-            </li>
-            <li class="col-xs-3 col-sm-2 col-md-1">
-                <a href="ipbans.php"><i class="fa fa-ban"></i>IP Bans</a>
-            </li>
-            <li class="col-xs-3 col-sm-2 col-md-1">
-                <a href="stats.php"><i class="fa fa-line-chart"></i>Statistics</a>
-            </li>
-            <li class="col-xs-3 col-sm-2 col-md-1">
-                <a href="sitemap.php"><i class="fa fa-map-signs"></i>Sitemap</a>
-            </li>
-            <li class="col-xs-3 col-sm-2 col-md-1">
-                <a href="tasks.php"><i class="fa fa-tasks"></i>Tasks</a>
-            </li>
+            <?php foreach ($menu_options as $option): ?>
+                <li class="col-xs-3 col-sm-2 col-md-1 <?= ($option['path'] === $current_path) ? 'menu-active' : '' ?>">
+                    <a href="<?= $option['path']; ?>">
+                        <i class="fa <?= $option['icon']; ?>"></i>
+                        <?= $option['name']; ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
         </ul>
     </div>
 </div>
