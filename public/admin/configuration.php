@@ -1,9 +1,12 @@
 <?php
 
 use PonePaste\Models\AdminLog;
+use PonePaste\Models\User;
 
 define('IN_PONEPASTE', 1);
 require_once('common.php');
+
+checkAdminAccess(User::ROLE_ADMIN);
 
 const CONFIG_FILE_PATH = '../../config/site.php';
 
@@ -33,11 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $new_site_info = [
             'title' => trim($data['title']),
             'description' => trim($data['description']),
-            'baseurl' => trim($data['baseurl']),
             'keywords' => trim($data['keywords']),
             'site_name' => trim($data['site_name']),
-            'email' => trim($data['email']),
-            'additional_scripts' => trim($data['additional_scripts'])
+            'email' => trim($data['email'])
         ];
 
         $current_config['site_info'] = $new_site_info;
@@ -168,22 +169,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label" for="site_info_baseurl">Domain
-                                                name</label>
-                                            <div class="col-sm-1" style="padding:5px;">
-												<span class="badge">
-                                                    <?= !empty($_SERVER['HTTPS']) ? 'https://' : 'http://' ?>;
-												</span>
-                                            </div>
-                                            <div class="col-sm-5">
-                                                <input type="text" class="form-control" name="site_info[baseurl]"
-                                                       id="site_info_baseurl"
-                                                       placeholder="eg: ponepaste.org (no trailing slash)"
-                                                       value="<?= pp_html_escape($current_site_info['baseurl']); ?>">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
                                             <label class="col-sm-2 control-label form-label"
                                                    for="site_info_description">Site Description</label>
                                             <div class="col-sm-10">
@@ -211,18 +196,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <input type="text" class="form-control" name="site_info[email]"
                                                        placeholder="Email" id="site_info_email"
                                                        value="<?= pp_html_escape($current_site_info['email']); ?>">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label form-label"
-                                                   for="site_info_additional_scripts">Additional Site
-                                                Scripts</label>
-                                            <div class="col-sm-10">
-                                                <textarea class="form-control" id="additional_scripts"
-                                                          id="site_info_additional_scripts"
-                                                          name="site_info[additional_scripts]"
-                                                          rows="8"><?= pp_html_escape($current_site_info['title']); ?></textarea>
                                             </div>
                                         </div>
 

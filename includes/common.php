@@ -249,10 +249,8 @@ $site_info = getSiteInfo();
 $global_site_info = $site_info['site_info'];
 $row = $site_info['site_info'];
 $title = trim($row['title']);
-$baseurl = paste_protocol() . rtrim(trim($row['baseurl']), '/');
 $site_name = trim($row['site_name']);
 $email = trim($row['email']);
-$additional_scripts = trim($row['additional_scripts']);
 
 // Setup theme
 $default_theme = 'bulma';

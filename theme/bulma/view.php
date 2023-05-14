@@ -127,7 +127,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                                              title="Full Screen"></i></a>
                                     <div class="panel-embed my-5 is-hidden">
                                         <input type="text" class="input has-background-white-ter has-text-grey"
-                                               value='<?php echo '<script src="' . $protocol . $baseurl;
+                                               value='<?php echo '<script src="' . pp_site_url() . '/';
                                                if (PP_MOD_REWRITE) {
                                                    echo 'embed/';
                                                } else {

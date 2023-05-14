@@ -2,6 +2,7 @@
 /* prevent inclusion of arbitrary files */
 
 use PonePaste\Models\Report;
+use PonePaste\Models\User;
 
 $template_candidates = scandir(__DIR__);
 if (!in_array($page_template . '.php', $template_candidates)) {
@@ -81,7 +82,7 @@ $flashes = getFlashes();
                                 </span>
                                 <span>Events</span>
                             </a>
-                            <?php if ($current_user !== null && $current_user->admin): ?>
+                            <?php if ($current_user !== null && $current_user->role >= User::ROLE_MODERATOR): ?>
                                 <?php $has_reports = Report::where(['open' => true])->count() > 0; ?>
                                 <a class="button navbar-item mx-2" href="/admin" <?= $has_reports ? 'style="color: red;"' : '' ?>>
                                     <span class="icon has-text-info">

@@ -4,122 +4,6 @@
     <div class="bd-main-container container">
         <div class="bd-duo">
             <div class="bd-lead">
-                <!-- Guests -->
-                <?php if ($site_disable_guests) { // Site permissions
-                    ?>
-                    <section class="hero is-medium">
-                        <div class="">
-                            <article class="message is-info">
-                                <div class="message-header">
-                                    <p>Site News:</p>
-                                </div>
-                                <div class="message-body">
-                                    <div class="content is-normal">
-                                        <ul>
-                                            <li>Ponepaste has now a favorite system. You can now favorite pastes and
-                                                bookmark them on your user page under "Favorites"</li>
-                                            <li>Report function and UI has been overhauled.</li>
-                                            <li>The archive page has now been updated, tags are now clickable for a
-                                                faster search.</li>
-                                            <li>Tags UI has been overhauled. Tags containing "SAFE" and "NSFW" will
-                                                appear green and red.</li>
-                                            <li>When Creating paste the tag input box has been updated with a new visual
-                                                style.</li>
-                                            <li>Tags are now being canonized, if you see your tags change, it's just the
-                                                admin working in the background</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </article>
-                            <div class="container">
-                                <div class="columns is-multiline is-mobile">
-                                    <div class="column">
-                                        <div class="panel-body">
-                                            <div class="list-widget pagination-content">
-                                                <?php
-                                                $res = getRandomPastes($conn, 10);
-                                                foreach ($res
-
-                                                as $index => $row) {
-                                                $title = Trim($row['title']);
-                                                $titlehov = ($row['title']);
-                                                $p_member = Trim($row['member']);
-                                                $p_id = Trim($row['id']);
-                                                $p_date = Trim($row['date']);
-                                                $p_time = Trim($row['now_time']);
-                                                $nowtime = time();
-                                                $oldtime = $p_time;
-                                                $title = truncate($title, 24, 60);
-                                                ?>
-
-                                                <p class="no-margin">
-                                                    <?php
-                                                    if (PP_MOD_REWRITE) {
-                                                        echo '<header class="bd-category-header my-1">
-									<a data-tooltip="' . $titlehov . '" href="' . $p_id . '" title="' . $title . '">' . $title . ' </a>
-									<a class="icon is-pulled-right has-tooltip-arrow has-tooltip-left-mobile has-tooltip-bottom-desktop has-tooltip-left-until-widescreen" data-tooltip="' . $p_time . '">
-										<i class="far fa-clock has-text-grey" aria-hidden="true"></i>
-									</a>
-									<p class="subtitle is-7">' . 'by ' . '
-										<i><a href="https://Ponepaste.org/user/' . $p_member . '">' . $p_member . '</a></i>
-									</p>' .
-                                                            '</header>';
-                                                    } else {
-                                                        echo '<a href="' . $p_id . '" title="' . $titlehov . '">' . ucfirst($title) . '</a>';
-                                                    }
-                                                    }
-                                                    ?>
-
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="column">
-                                        <div class="panel-body">
-                                            <div class="list-widget pagination-content">
-                                                <?php
-                                                $res = getRandomPastes($conn, 10);
-                                                foreach ($res
-
-                                                as $index => $row) {
-                                                $title = Trim($row['title']);
-                                                $titlehov = ($row['title']);
-                                                $p_member = Trim($row['member']);
-                                                $p_id = Trim($row['id']);
-                                                $p_date = Trim($row['date']);
-                                                $p_time = Trim($row['now_time']);
-                                                $nowtime = time();
-                                                $oldtime = $p_time;
-
-                                                $title = truncate($title, 24, 60);
-                                                ?>
-
-                                                <p class="no-margin">
-                                                    <?php
-                                                    if (PP_MOD_REWRITE) {
-                                                        echo '<header class="bd-category-header my-1">
-									<a data-tooltip="' . $titlehov . '" href="' . $p_id . '" title="' . $title . '">' . $title . ' </a>
-									<a class="icon is-pulled-right has-tooltip-arrow has-tooltip-left-mobile has-tooltip-bottom-desktop has-tooltip-left-until-widescreen" data-tooltip="' . $p_time . '">
-										<i class="far fa-clock has-text-grey" aria-hidden="true"></i>
-									</a>
-									<p class="subtitle is-7">' . 'by ' . '
-										<i><a href="https://Ponepaste.org/user/' . $p_member . '">' . $p_member . '</a></i>
-									</p>' .
-                                                            '</header>';
-                                                    } else {
-                                                        echo '<a href="' . $p_id . '" title="' . $titlehov . '">' . ucfirst($title) . '</a>';
-                                                    }
-                                                    }
-                                                    ?>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                <?php } else { ?>
                 <!-- Paste Panel -->
                 <?php if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     if (isset($error)) { ?>
@@ -138,12 +22,11 @@
                             <!-- Title -->
                             <div class="level-item is-pulled-left" style="margin-right: 5px;">
                                 <p class="control has-icons-left">
-                                    <input type="text" class="input" name="title" onchange="getFileName()"
-                                           placeholder="Title"
+                                    <input type="text" class="input" name="title" placeholder="Title"
                                            value="<?php echo (isset($_POST['title'])) ? pp_html_escape($_POST['title']) : ''; ?>">
                                     <span class="icon is-small is-left">
-											<i class="fa fa-font"></i>
-										</span>
+                                        <i class="fa fa-font"></i>
+                                    </span>
                                 </p>
                             </div>
                             <!-- Format -->
@@ -165,7 +48,7 @@
                             </div>
                             <div class="level-item is-pulled-left mx-1">
                                 <a class="button" onclick="highlight(document.getElementById('code')); return false;"><i
-                                            class="fas fa-indent"></i>&nbsp;Highlight</a>
+                                        class="fas fa-indent"></i>&nbsp;Highlight</a>
                             </div>
                             <div class="level-item is-pulled-left mx-1">
                                 <input class="button is-info" type="submit" name="submit" id="submit" value="Paste"/>
@@ -218,11 +101,11 @@
                                                         ?>
                                                         <select name="paste_expire_date">
 
-                                                        <?= optionsForSelect(
-                                                                    ['Never', 'View Once', '10 minutes',   '1 hour', '1 day', '1 week', '2 weeks', '1 month'],
-                                                                    ['N',     'self',      '0Y0M0DT0H10M', '1H',     '1D',    '1W',     '2W',      '1M'],
-                                                                    $post_expire
-                                                        ); ?>
+                                                            <?= optionsForSelect(
+                                                                ['Never', 'View Once', '10 minutes',   '1 hour', '1 day', '1 week', '2 weeks', '1 month'],
+                                                                ['N',     'self',      '0Y0M0DT0H10M', '1H',     '1D',    '1W',     '2W',      '1M'],
+                                                                $post_expire
+                                                            ); ?>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -319,7 +202,6 @@
                 </form>
             </div>
         </div>
-        <?php } ?>
     </div>
 </main>
 

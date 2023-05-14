@@ -5,14 +5,13 @@ use PonePaste\Models\User;
 define('IN_PONEPASTE', 1);
 require_once(__DIR__ . '/common.php');
 
+checkAdminAccess(User::ROLE_ADMIN);
 
 list($per_page, $current_page) = pp_setup_pagination();
 
 $total_users = User::count();
 $all_users = User::limit($per_page)->offset($current_page * $per_page)->get();
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +23,6 @@ $all_users = User::limit($per_page)->offset($current_page * $per_page)->get();
     <link href="css/datatables.min.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-
 <div id="top" class="clearfix">
     <!-- Start App Logo -->
     <div class="applogo">

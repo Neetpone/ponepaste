@@ -18,7 +18,7 @@ function updateAdminHistory(User $admin, int $action) : void {
     $log->save();
 }
 
-if ($current_user === null || !$current_user->admin) {
+if ($current_user === null || $current_user->role < User::ROLE_MODERATOR) {
     header('Location: ..');
     die();
 }
@@ -35,6 +35,16 @@ if (isset($_GET['logout'])) {
     session_destroy();
     header("Location: .");
     exit();
+}
+
+function checkAdminAccess(int $role) {
+    global $current_user;
+
+    if ($current_user === null || $current_user->role < $role) {
+        flashError('You do not have access to this page.');
+        header('Location: /admin/');
+        die();
+    }
 }
 
 $flashes = getFlashes();

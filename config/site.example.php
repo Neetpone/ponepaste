@@ -5,11 +5,9 @@ return array (
   array (
     'title' => 'PonePaste',
     'description' => 'PonePaste can store green',
-    'baseurl' => 'ponepaste.local/',
     'keywords' => '',
     'site_name' => 'PonePaste',
-    'email' => '',
-    'additional_scripts' => '',
+    'email' => ''
   ),
   'interface' => 
   array (

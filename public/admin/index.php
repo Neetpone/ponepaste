@@ -15,7 +15,7 @@ function updateAdminHistory(User $admin, int $action) : void {
     $log->save();
 }
 
-if ($current_user === null || !$current_user->admin) {
+if ($current_user === null || $current_user->role < User::ROLE_MODERATOR) {
     header('Location: ..');
     die();
 }

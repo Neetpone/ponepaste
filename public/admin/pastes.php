@@ -3,6 +3,9 @@ define('IN_PONEPASTE', 1);
 require_once(__DIR__ . '/common.php');
 
 use PonePaste\Models\Paste;
+use PonePaste\Models\User;
+
+checkAdminAccess(User::ROLE_ADMIN);
 
 list($per_page, $current_page) = pp_setup_pagination();
 

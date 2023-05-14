@@ -147,7 +147,7 @@ function truncate(string $input, int $maxWords, int $maxChars) : string {
 }
 
 function embedView($paste_id, $p_title, $content, $title) : bool {
-    global $baseurl;
+    $baseurl = pp_site_url();
 
     $stats = false;
     if ($content) {
@@ -236,6 +236,10 @@ function addToSitemap(Paste $paste, $priority, $changefreq) : void {
 
 function paste_protocol() : string {
     return !empty($_SERVER['HTTPS']) ? 'https://' : 'http://';
+}
+
+function pp_site_url() : string {
+    return paste_protocol() . $_SERVER['HTTP_HOST'];
 }
 
 /* get rid of unintended wildcards in a parameter to LIKE queries; not a security issue, just unexpected behaviour. */
