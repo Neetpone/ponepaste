@@ -10,7 +10,6 @@ class Pastedown extends ParsedownExtra {
         $this->BlockTypes['@'] = ['Purpletext'];
     }
 
-
     protected function blockGreentext($Line)
     {
         if (preg_match('/^>[ ]?(.*)/', $Line['text'], $matches))

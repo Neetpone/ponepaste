@@ -115,6 +115,7 @@ if (isset($_POST['hide'])) {
 
     $paste->is_hidden = $is_hidden;
     $paste->save();
+    $redis->del('ajax_pastes'); /* Expire from Redis so it doesn't show up anymore */
     flashSuccess('Paste ' . ($is_hidden ? 'hidden' : 'unhidden') . '.');
     header('Location: /');
     die();

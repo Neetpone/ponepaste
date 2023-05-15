@@ -20,6 +20,7 @@ $pastes = Paste::with([
     }
 ])->select(['id', 'user_id', 'title', 'expiry'])
     ->where('visible', Paste::VISIBILITY_PUBLIC)
+    ->where('hidden', false)
     ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
 
 if (!empty($_GET['q']) && is_string($_GET['q'])) {
