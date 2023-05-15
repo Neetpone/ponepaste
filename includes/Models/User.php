@@ -9,7 +9,7 @@ class User extends Model {
 
     protected $table = 'users';
     protected $fillable = [
-        'username', 'password', 'recovery_code_hash'
+        'username', 'password', 'recovery_code_hash', 'ip'
     ];
 
     public function session() {

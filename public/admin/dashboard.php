@@ -1,6 +1,6 @@
 <?php
 define('IN_PONEPASTE', 1);
-require_once(__DIR__  . '/common.php');
+require_once(__DIR__ . '/common.php');
 
 use PonePaste\Models\AdminLog;
 use PonePaste\Models\User;
@@ -11,8 +11,8 @@ $today_users_count = 0;
 $today_pastes_count = 0;
 
 $last_page_view = PageView::select('tpage', 'tvisit')
-                          ->orderBy('id', 'desc')
-                          ->first();
+    ->orderBy('id', 'desc')
+    ->first();
 $today_page = $last_page_view->tpage;
 $today_visit = $last_page_view->tvisit;
 
@@ -24,7 +24,6 @@ $today_users_count = User::where(['created_at' => 'TODAY()'])->count();
 
 /* Number of pastes today */
 $today_pastes_count = Paste::where(['created_at' => 'TODAY()'])->count();
-
 
 foreach (PageView::orderBy('id', 'desc')->take(7)->get() as $row) {
     $sdate = $row['date'];
@@ -44,13 +43,24 @@ foreach (PageView::orderBy('id', 'desc')->take(7)->get() as $row) {
     $tvisit[] = $row['tvisit'];
 }
 
-$admin_histories = AdminLog::with('user')->orderBy('id', 'desc')->take(10)->get();
+$admin_histories = AdminLog::with('user')
+    ->orderBy('id', 'desc')
+    ->take(10)
+    ->get();
+
+$most_recent_users = User::select('id', 'username', 'created_at', 'ip')
+    ->orderBy('id', 'desc')
+    ->limit(7)
+    ->get();
 
 function getRecentadmin($count = 5) {
     return Paste::with('user')
-                ->orderBy('id')
-                ->limit($count)->get();
+        ->orderBy('id', 'desc')
+        ->limit($count)->get();
 }
+
+$is_admin = $current_user->role >= User::ROLE_ADMIN;
+
 ?>
 
 <!DOCTYPE html>
@@ -75,7 +85,7 @@ function getRecentadmin($count = 5) {
     <ul class="top-right">
         <li class="dropdown link">
             <a href="#" data-toggle="dropdown" class="dropdown-toggle profilebox"><b>Admin</b><span
-                        class="caret"></span></a>
+                    class="caret"></span></a>
             <ul class="dropdown-menu dropdown-menu-list dropdown-menu-right">
                 <li><a href="admin.php">Settings</a></li>
                 <li><a href="?logout">Logout</a></li>
@@ -136,8 +146,8 @@ function getRecentadmin($count = 5) {
                             <thead>
                             <tr>
                                 <td>Username</td>
-                                <td>Date</td>
-                                <td>IP</td>
+                                <td>Title</td>
+                                <td>Created At</td>
                                 <td>Views</td>
                             </tr>
                             </thead>
@@ -148,16 +158,18 @@ function getRecentadmin($count = 5) {
                                 $p_date = new DateTime($paste['created_at']);
                                 $p_date_formatted = $p_date->format('jS F Y h:i:s A');
                                 $title = truncate($title, 5, 30);
-                                echo "
-										  <tr>
-											<td>$paste->id</td>
-											<td>" . pp_html_escape($paste->user->username) . "</td>
-											<td>$p_date_formatted</td>
-											<td><span class='label label-default'>$paste->ip</span></td>
-											<td>$paste->views</td>
-										  </tr> ";
-                            }
-                            ?>
+                                ?>
+                                <tr>
+                                    <td><?= pp_html_escape($paste->user->username); ?></td>
+                                    <td>
+                                        <a href="<?= urlForPaste($paste); ?>">
+                                            <?= pp_html_escape($paste->title); ?>
+                                        </a>
+                                    </td>
+                                    <td><?= pp_html_escape($p_date_formatted); ?></td>
+                                    <td><?= pp_html_escape($paste->views); ?></td>
+                                </tr>
+                            <?php } ?>
                             </tbody>
                         </table>
 
@@ -178,27 +190,23 @@ function getRecentadmin($count = 5) {
                         <table class="table table-hover">
                             <thead>
                             <tr>
-                                <td>ID</td>
                                 <td>Username</td>
                                 <td>Date</td>
                                 <td>IP</td>
                             </tr>
                             </thead>
                             <tbody>
-                            <?php
-                            $most_recent_users = User::select('id', 'username', 'date', 'ip')->orderBy('id', 'desc')->limit(7);
-
-                            foreach ($most_recent_users as $user) {
-                                echo "
-										  <tr>
-											<td>$user->id</td>
-											<td>" . pp_html_escape($user->username) . "</td>
-											<td>$user->date</td>
-											<td><span class='label label-default'>$user->ip</span></td>
-										  </tr> ";
-                            }
-
-                            ?>
+                            <?php foreach ($most_recent_users as $user): ?>
+                                <tr>
+                                    <td>
+                                        <a href="<?= urlForMember($user); ?>">
+                                            <?= pp_html_escape($user->username); ?>
+                                        </a>
+                                    </td>
+                                    <td><?= pp_html_escape($user->created_at ?? 'Unknown'); ?></td>
+                                    <td><?= $is_admin ? pp_html_escape($user->ip ?? 'Unknown') : '[masked]' ?></td>
+                                </tr>
+                            <?php endforeach; ?>
                             </tbody>
                         </table>
 
@@ -232,7 +240,7 @@ function getRecentadmin($count = 5) {
                                     <td><?= pp_html_escape($entry->user->username); ?></td>
                                     <td><?= pp_html_escape($entry->time); ?></td>
                                     <td><?= pp_html_escape(AdminLog::ACTION_NAMES[$entry->action]); ?></td>
-                                    <td><?= pp_html_escape($entry->ip); ?></td>
+                                    <td><?= $is_admin ? pp_html_escape($entry->ip) : '[masked]' ?></td>
                                 </tr>
                             <?php endforeach; ?>
                             </tbody>
