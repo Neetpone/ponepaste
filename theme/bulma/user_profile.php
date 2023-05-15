@@ -37,8 +37,23 @@
     <div class="bd-main-container container">
         <div class="bd-duo">
             <div class="bd-lead">
-                <h1 class="title is-5"><?= pp_html_escape($profile_username) ?>'s Pastes</h1>
-                <h1 class="subtitle is-6">joined: <?= $profile_join_date ?></h1>
+                <div class="flex flex--space-between">
+                    <div>
+                        <h1 class="title is-5"><?= pp_html_escape($profile_username) ?>'s Pastes</h1>
+                        <h1 class="subtitle is-6">Joined: <?= $profile_join_date ?></h1>
+                    </div>
+
+                    <?php if ($can_administrate): ?>
+                        <div>
+                            <p>Admin Actions:</p>
+                            <form method="post">
+                                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+                                <button class="button is-small is-success" type="submit" name="reset_password">Reset Password</button>
+                            </form>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
                 <!-- Badges system -->
                 <div class="box">
                     <h2 class="title is-5">Badges</h2>

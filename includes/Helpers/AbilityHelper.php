@@ -53,6 +53,10 @@ class AbilityHelper {
                 return $user !== null
                     && $user->id === $subject->id; // Users can edit their own profiles
             },
+            'administrate' => function(User | null $user, User $subject) {
+                return $user !== null
+                    && $user->role >= User::ROLE_ADMIN; // Admins can edit all users
+            }
         ];
     }
 }
