@@ -222,7 +222,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     </div>
                                 </div>
                                 <div class="level-item is-pulled-left mx-1">
-                                    <input class="button is-info" type="hidden" name="paste_id"
+                                    <input type="hidden" name="paste_id"
                                            value="<?= $paste->id; ?>"/>
                                 </div>
                                 <div class="level-item is-pulled-left mx-1">
@@ -234,7 +234,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     <?php if (isset($csrf_token)): ?>
                                         <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
                                     <?php endif; ?>
-                                    <input class="button is-info" type="submit" name="edit" id="edit"
+                                    <input class="button is-info" type="edit" name="edit" id="edit"
                                            value="Save Changes" />
                                 </div>
                             </div>
