@@ -234,7 +234,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     <?php if (isset($csrf_token)): ?>
                                         <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
                                     <?php endif; ?>
-                                    <input class="button is-info" type="edit" name="edit" id="edit"
+                                    <input class="button is-info" type="submit" name="edit" id="edit"
                                            value="Save Changes" />
                                 </div>
                             </div>
