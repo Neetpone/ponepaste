@@ -229,13 +229,19 @@ const dumbFilterCallback = (datum, query) => {
         return true;
     }
 
-    if (datum.title.indexOf(query) !== -1) {
+    const queryLower = query.toLowerCase();
+
+    if (queryLower === 'untagged' && datum.tags.length === 0) {
+        return true;
+    }
+
+    if (datum.title.toLowerCase().indexOf(queryLower) !== -1) {
         return true;
     }
 
     /* this is inefficient */
     for (const tag of datum.tags) {
-        if (tag.name.toLowerCase() === query.toLowerCase()) {
+        if (tag.name.toLowerCase().indexOf(queryLower) !== -1) {
             return true;
         }
     }
