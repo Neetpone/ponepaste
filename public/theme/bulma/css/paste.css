@@ -262,16 +262,15 @@ code {
     white-space: pre-wrap;
 }
 
-.content .greentext {
+.greentext {
     color: #789922;
-    content: ">";
 }
 
-.content .redtext {
+.redtext {
     color: #d12222;
 }
 
-.content .purpletext {
+.purpletext {
     color: #9f14ae;
 }
 

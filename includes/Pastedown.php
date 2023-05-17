@@ -6,7 +6,7 @@ use ParsedownExtra;
 class Pastedown extends ParsedownExtra {
     public function __construct() {
         $this->BlockTypes['>'] = ['Greentext'];
-        $this->BlockTypes['<'] []= ['Redtext'];
+        array_unshift($this->BlockTypes['<'], 'Redtext');
         $this->BlockTypes['@'] = ['Purpletext'];
     }
 
