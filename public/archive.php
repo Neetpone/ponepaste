@@ -35,10 +35,14 @@ $pastes = Paste::with([
 
 
 if (!empty($filter_value)) {
-    $pastes = $pastes->where('title', 'LIKE', '%' . escapeLikeQuery($filter_value) . '%')
-        ->orWhereHas('tags', function($q) use ($filter_value) {
-            $q->where('name', 'LIKE', '%' . escapeLikeQuery($filter_value) . '%');
-    });
+    if ($filter_value === 'untagged') {
+        $pastes = $pastes->doesntHave('tags');
+    } else {
+        $pastes = $pastes->where('title', 'LIKE', '%' . escapeLikeQuery($filter_value) . '%')
+            ->orWhereHas('tags', function($q) use ($filter_value) {
+                $q->where('name', 'LIKE', '%' . escapeLikeQuery($filter_value) . '%');
+            });
+    }
 }
 
 $total_results = $pastes->count();
