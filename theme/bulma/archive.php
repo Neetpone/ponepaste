@@ -67,7 +67,7 @@
                 <h1 class="title is-4">Pastes Archive</h1>
                 <form class="table_filterer" method="GET">
                     <label><i class="fa fa-search"></i>
-                        <input class="search" type="search" name="q" placeholder="Filter..." value="<?= $filter_value; ?>" />
+                        <input class="search" type="search" name="q" placeholder="Filter..." value="<?= pp_html_escape($filter_value); ?>" />
                     </label>
                     <label>
                         Show&nbsp;

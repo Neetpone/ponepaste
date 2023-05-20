@@ -74,11 +74,20 @@ $profile_total_paste_views = Paste::select('views')
     ->where('user_id', $profile_info->id)
     ->sum('views');
 
-$profile_join_date = $profile_info->created_at;
+$profile_join_date = $profile_info->created_at->format('Y-m-d');
 
-$profile_pastes = $profile_info->pastes;
 $profile_favs = $profile_info->favourites;
 $is_current_user = ($current_user !== null) && ($profile_info->id == $current_user->id);
+
+// Pastes filtering
+$filter_value = '';
+list($per_page, $current_page) = pp_setup_pagination();
+
+$total_results = $profile_info->pastes->count();
+$profile_pastes = $profile_info->pastes()
+    ->limit($per_page)
+    ->offset($per_page * $current_page)
+    ->get();
 
 updatePageViews();
 

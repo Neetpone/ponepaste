@@ -43,8 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         goto done;
     }
 
-    // TODO: Check if the paste has already been reported.
-
     if (empty($_POST['reason'])) {
         $error = 'You must provide a report reason.';
         goto done;

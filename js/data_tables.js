@@ -239,6 +239,10 @@ const dumbFilterCallback = (datum, query) => {
         return true;
     }
 
+    if (datum.author.toLowerCase().indexOf(queryLower) !== -1) {
+        return true;
+    }
+
     /* this is inefficient */
     for (const tag of datum.tags) {
         if (tag.name.toLowerCase().indexOf(queryLower) !== -1) {

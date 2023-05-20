@@ -107,15 +107,31 @@
                     </div>
                 <?php endif;?>
                 <div class="tab-content" id="first-tab">
-                    <table id="archive" class="table is-fullwidth is-hoverable">
+                    <form class="table_filterer" method="GET">
+                        <label><i class="fa fa-search"></i>
+                            <input class="search" type="search" name="q" placeholder="Filter..." value="<?= pp_html_escape($filter_value); ?>" />
+                        </label>
+                        <label>
+                            Show&nbsp;
+                            <select name="per_page">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            &nbsp;per page
+                        </label>
+                        <button type="submit" class="button js-hidden">Search</button>
+                    </form>
+                    <table id="archive" class="table is-fullwidth is-hoverable" data-user-id="<?= pp_html_escape($profile_info->id); ?>">
                         <thead>
-                        <tr>
-                            <th class="td-right">Title</th>
-                            <th class="td-center">Paste Time</th>
+                        <tr class="paginator__sort">
+                            <th data-sort-field="title" class="td-right">Title</th>
+                            <th data-sort-field="created_at" class="td-center">Paste Time</th>
                             <?php if ($is_current_user) {
                                 echo "<th class='td-center'>Visibility</th>";
                             } ?>
-                            <th class="td-center">Views</th>
+                            <th data-sort-field="views" class="td-center">Views</th>
                             <th class="td-center">Tags</th>
                             <?php if ($is_current_user) {
                                 echo "<th class='td-center'>Delete</th>";
@@ -174,7 +190,9 @@
                         </tr>
                         </tfoot>
                     </table>
-                    <div class="paginator"></div>
+                    <div class="paginator">
+                        <?= paginate($current_page, $per_page, $total_results) ?>
+                    </div>
                 </div>
                 <?php if ($is_current_user) { ?>
                 <div class="tab-content" id="second-tab">

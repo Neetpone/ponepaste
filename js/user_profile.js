@@ -27,13 +27,16 @@ whenReady(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const myParam = urlParams.get('q');
     const myPastesElem = document.getElementById('archive');
+    const apiUrl = '/api/user_pastes.php?user_id=' + myPastesElem.dataset.userId;
+    console.log('myPastesElem', myPastesElem);
     const table = new DataTable(myPastesElem, {
         ajaxCallback: (resolve) => {
-            resolve({
-                data: Array.prototype.map.call(myPastesElem.querySelectorAll('tbody > tr'), parsePasteInfo)
-            });
+            fetch(apiUrl)
+                .then(r => r.json())
+                .then(resolve);
         },
         rowCallback: (rowData) => {
+            console.log('rowData', rowData);
             const userData = getUserInfo();
             const ownedByUser = (parseInt(rowData.user_id) === parseInt(userData.userId));
 
@@ -69,6 +72,7 @@ whenReady(() => {
 
     const faveTable = new DataTable(myFavesElem, {
         ajaxCallback: (resolve) => {
+            console.log('invoker invoked');
             resolve({
                 data: Array.prototype.map.call(myFavesElem.querySelectorAll('tbody > tr'), parsePasteInfo)
             });
