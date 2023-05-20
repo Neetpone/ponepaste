@@ -31,6 +31,10 @@
         }
     }
 
+    $tab = 'pastes';
+    if ($is_current_user && isset($_GET['tab']) && $_GET['tab'] === 'favourites') {
+        $tab = 'favourites';
+    }
 ?>
 <main class="bd-main">
     <div class="bd-side-background"></div>
@@ -101,12 +105,12 @@
                     <br />
                     <div class="tabs">
                         <ul class="tabs-menu">
-                            <li class="is-active" data-target="first-tab"><a>My Pastes</a></li>
-                            <li data-target="second-tab"><a>Favorites</a></li>
+                            <li class="<?= $tab === 'pastes' ? 'is-active' : '' ?>" data-target="first-tab"><a href="?tab=pastes">My Pastes</a></li>
+                            <li class="<?= $tab === 'favourites' ? 'is-active' : '' ?>" data-target="second-tab"><a href="?tab=favourites">Favorites</a></li>
                         </ul>
                     </div>
                 <?php endif;?>
-                <div class="tab-content" id="first-tab">
+                <div class="tab-content<?= $tab === 'favourites' ? ' is-hidden' : '' ?>" id="first-tab">
                     <form class="table_filterer" method="GET">
                         <label><i class="fa fa-search"></i>
                             <input class="search" type="search" name="q" placeholder="Filter..." value="<?= pp_html_escape($filter_value); ?>" />
@@ -128,12 +132,12 @@
                         <tr class="paginator__sort">
                             <th data-sort-field="title" class="td-right">Title</th>
                             <th data-sort-field="created_at" class="td-center">Paste Time</th>
-                            <?php if ($is_current_user) {
+                            <?php if ($is_current_user || $can_administrate) {
                                 echo "<th class='td-center'>Visibility</th>";
                             } ?>
                             <th data-sort-field="views" class="td-center">Views</th>
                             <th class="td-center">Tags</th>
-                            <?php if ($is_current_user) {
+                            <?php if ($is_current_user || $can_administrate) {
                                 echo "<th class='td-center'>Delete</th>";
                             } ?>
                         </tr>
@@ -195,8 +199,8 @@
                     </div>
                 </div>
                 <?php if ($is_current_user) { ?>
-                <div class="tab-content" id="second-tab">
-                    <table id="favs" class="table is-fullwidth is-hoverable">
+                <div class="tab-content<?= $tab === 'pastes' ? ' is-hidden' : '' ?>" id="second-tab">
+                    <table id="favs" class="table is-fullwidth is-hoverable<?= $current_page === 'favourites' ? 'is-active' : '' ?>">
                         <thead>
                         <tr>
                             <th class="td-right">Title</th>
@@ -254,6 +258,7 @@
         init() {
             document.querySelectorAll('.tabs-menu').forEach(tabMenu => {
                 Array.from(tabMenu.children).forEach((child, ind) => {
+                    child.querySelector('a').href = 'javascript:void(0);';
                     child.addEventListener('click', () => {
                         tabSystem.toggle(child.dataset.target);
                     });
@@ -265,7 +270,11 @@
         },
         toggle(targetId) {
             document.querySelectorAll('.tab-content').forEach(contentElement => {
-                contentElement.style.display = contentElement.id === targetId ? 'block' : 'none';
+                if (contentElement.id === targetId) {
+                    contentElement.classList.remove('is-hidden');
+                } else {
+                    contentElement.classList.add('is-hidden');
+                }
                 document.querySelector(`[data-target="${contentElement.id}"]`).classList[contentElement.id === targetId ? 'add' : 'remove']('is-active');
             })
         },

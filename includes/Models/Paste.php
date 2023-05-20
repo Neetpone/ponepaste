@@ -35,7 +35,7 @@ class Paste extends Model {
         return $this->hasMany(Report::class);
     }
 
-    public function replaceTags(array $tags) {
+    public function replaceTags(array $tags) : void {
         $this->tags()->detach();
 
         foreach ($tags as $tagName) {

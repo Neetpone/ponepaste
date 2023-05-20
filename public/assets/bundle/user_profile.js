@@ -567,8 +567,8 @@ whenReady(() => {
         rowCallback: (rowData) => {
             console.log('rowData', rowData);
             const userData = getUserInfo();
-            const ownedByUser = (parseInt(rowData.user_id) === parseInt(userData.userId));
-
+            const ownedByUser = (parseInt(rowData.author_id) === parseInt(userData.userId));
+            console.log(ownedByUser);
             const deleteElem = ownedByUser ? `<td class="td-center">
                                          <form action="/${rowData.id}" method="POST">
                                             <input type="hidden" name="delete" value="delete" />
@@ -577,7 +577,7 @@ whenReady(() => {
                                          </form>
                                        </td>` : '';
             const pasteCreatedAt = new Date(rowData.created_at).toLocaleString();
-            const pasteVisibility = ownedByUser ? `<td class="td-center">${rowData.visibility}</td>` : '';
+            const pasteVisibility = ownedByUser ? `<td class="td-center">${['Public', 'Unlisted', 'Private'][rowData.visibility]}</td>` : '';
 
             return `<tr>
                         <td><a href="/${rowData.id}">${escape(rowData.title)}</a></td>
