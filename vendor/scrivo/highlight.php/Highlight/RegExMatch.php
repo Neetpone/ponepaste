@@ -48,6 +48,12 @@ class RegExMatch implements \ArrayAccess, \Countable, \IteratorAggregate
     /** @var string */
     public $input;
 
+    /** @var string */
+    public $type;
+
+    /** @var Mode|string */
+    public $rule;
+
     /**
      * @param array<int, string|null> $results
      */
@@ -59,6 +65,7 @@ class RegExMatch implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new \ArrayIterator($this->data);
@@ -67,6 +74,7 @@ class RegExMatch implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->data[$offset]);
@@ -75,6 +83,7 @@ class RegExMatch implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->data[$offset];
@@ -83,6 +92,7 @@ class RegExMatch implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         throw new \LogicException(__CLASS__ . ' instances are read-only.');
@@ -91,6 +101,7 @@ class RegExMatch implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         throw new \LogicException(__CLASS__ . ' instances are read-only.');
@@ -101,6 +112,7 @@ class RegExMatch implements \ArrayAccess, \Countable, \IteratorAggregate
      *
      * @return int
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->data);

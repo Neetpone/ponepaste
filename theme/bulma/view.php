@@ -1,43 +1,7 @@
 <link rel="stylesheet" href="theme/bulma/css/bulma-tagsinput.min.css"/>
-<script src="theme/bulma/js/bulma-tagsinput.min.js"></script>
 <script>
-function setupTagsInput() {
-        const tagsInput = document.getElementById('tags-with-source');
-
-        if (tagsInput) {
-            new BulmaTagsInput(tagsInput, {
-                allowDuplicates: false,
-                caseSensitive: false,
-                clearSelectionOnTyping: false,
-                closeDropdownOnItemSelect: true,
-                delimiter: ',',
-                freeInput: true,
-                highlightDuplicate: true,
-                highlightMatchesString: true,
-                itemText: 'name',
-                maxTags: 10,
-                maxChars: 40,
-                minChars: 1,
-                noResultsLabel: 'No results found',
-                placeholder: '10 Tags Maximum"',
-                removable: true,
-                searchMinChars: 1,
-                searchOn: 'text',
-                selectable: true,
-                tagClass: 'is-info',
-                trim: true,
-            });
-        }
-    }
-
-    if (document.readyState !== 'loading') {
-        setupTagsInput();
-    } else {
-        document.addEventListener('DOMContentLoaded', setupTagsInput);
-    }
-
     function openreport() {
-        var x = document.getElementById("panel");
+        const x = document.getElementById("panel");
         if (x.style.display === "none") {
             x.style.display = "block";
         } else {
@@ -46,7 +10,7 @@ function setupTagsInput() {
     }
 
     function closereport() {
-        var x = document.getElementById("panel");
+        const x = document.getElementById("panel");
         if (x.style.display === "none") {
             x.style.display = "block";
         } else {
@@ -54,21 +18,8 @@ function setupTagsInput() {
         }
     }
 </script>
-<script>
-    function preloaderFadeOutInit() {
-        $('.preloader').fadeOut('slow');
-        $('main').attr('id', '');
-    }
-
-    // Window load function
-    jQuery(window).on('load', function () {
-        (function ($) {
-            preloaderFadeOutInit();
-        })(jQuery);
-    });
-</script>
 <?php if ($using_highlighter): ?>
-    <link rel="stylesheet" href="/vendor/scrivo/highlight.php/styles/default.css" />
+    <link rel="stylesheet" href="/vendor/scrivo/highlight.php/styles/default.css"/>
 <?php endif; ?>
 <?php
 $protocol = paste_protocol();
@@ -98,93 +49,63 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
         overflow: hidden !important;
     }
 </style>
-<main class="bd-main" id="stop-scrolling">
-    <div class="preloader"></div>
+<main class="bd-main" id="dstop-scrolling">
+    <!-- <div class="preloader"></div> -->
     <div class="bd-side-background"></div>
     <div class="bd-main-container container">
         <div class="bd-duo">
             <div class="bd-lead">
                 <div class="content panel">
-                    <article class="message is-danger" id="panel" style="display: none;">
-                        <div class="message-header" style="margin-bottom: 0;">
-                            <p style="margin-bottom: 1px;">Report Paste</p>
-                            <button class="delete" onclick="closereport()" aria-label="delete"></button>
-                        </div>
-
-                        <div class="message-body">
-                            <div class="columns">
-                                <div class="column">
-                                    <p>Please select how this paste violates a rule:</p>
-                                </div>
-                                <div class="column">
-                                    <form class="form-horizontal" id="reportpaste" name="preport" action="report.php"
-                                          method="POST">
-                                        <div class="select">
-                                            <select name="reasonrep">
-                                                <option>Select dropdown</option>
-                                                <option value="0">Not /mlp/ Related</option>
-                                                <option value="1">Links to Illegal Content</option>
-                                                <option value="2">Paste has personal information (Dox)</option>
-                                            </select>
-                                        </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="column">
-                            <input type="hidden" name="reppasteid" value="<?php echo($paste_id); ?>">
-                            <div>
-                                <div style="text-align: center;">
-                                    <div id="reportbutton" class="column">
-                                        <input class="button is-danger is-fullwidth" type="submit" name="reportpaste"
-                                               id="report" value="Report Paste"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        </form>
-                    </article>
-
+                    <?php outputFlashes($flashes) ?>
                     <div class="columns is-multiline">
                         <div class="column is-4">
                             <span class="tag is-normal"><i class="fa fa-code fa-lg"
-                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?php echo strtoupper($paste['code']); ?></span>
+                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?= strtoupper(pp_html_escape($paste['code'])); ?></span>
                             <span class="tag is-normal"><i class="fa fa-eye fa-lg"
-                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $paste['views']; ?></span>
+                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?= pp_html_escape($paste['views']); ?></span>
                             <span class="tag is-normal"><i class="fa fa-star fa-lg"
-                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $fav_count; ?></span>
+                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?= pp_html_escape($fav_count); ?></span>
                             <br>
-                            <span class="tag is-normal"><i class="fa fa-file-word fa-lg" aria-hidden="true"></i>&nbsp;&nbsp; <?php $wordcount = str_word_count($op_content);
-                                echo $wordcount ?></span>
-                            <span class="tag is-normal"><i class="fa fa-hdd fa-lg"
-                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?php $pastesize = strlen($op_content);
-                                echo formatBytes($pastesize) ?></span>
-                            <span class="tag is-normal"><i class="fa fa-list-ol fa-lg" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo substr_count($op_content, "\n") + 1; ?></span>
+                            <span class="tag is-normal">
+                                <i class="fa fa-file-word fa-lg" aria-hidden="true"></i>
+                                &nbsp;&nbsp;
+                                <?= str_word_count($op_content); ?>
+                            </span>
+                            <span class="tag is-normal">
+                                <i class="fa fa-hdd fa-lg" aria-hidden="true"></i>
+                                <?= formatBytes(strlen($op_content)) ?>
+                            </span>
+                            <span class="tag is-normal">
+                                <i class="fa fa-list-ol fa-lg" aria-hidden="true"></i>&nbsp;&nbsp;
+                                <?= substr_count($op_content, "\n") + 1; ?>
+                            </span>
                         </div>
                         <div class="column is-4 has-text-centered">
-                            <h1 class="title is-6" style="margin-bottom:0;"><?= $paste['title'] ?></h1>
+                            <h1 class="title is-6" style="margin-bottom:0;"><?= pp_html_escape($paste->title); ?></h1>
                             <small class="title is-6 has-text-weight-normal has-text-grey">
-                                <?php if ($paste['member'] === null): ?>
-                                    Guest
-                                <?php else: ?>
-                                    By <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
-                                <?php endif; ?>
+                                By <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
                                 <br/>
                                 Created: <?= $paste['created_at'] ?>
                                 <br/>
                                 <?php if ($paste['updated_at'] != $paste['created_at']): ?>
-                                    <?= $paste['updated_at'] ?>
+                                    Updated: <?= $paste['updated_at'] ?>
                                 <?php endif; ?>
+                                Expiry: <?= $paste->expiryDisplay() ?>
                             </small>
                         </div>
                         <div class="column is-4 has-text-right">
                             <div class="">
                                 <div class="panel-tools">
-                                    <?php
-                                    if ($current_user !== null) {
-                                        echo checkFavorite($conn, $paste_id, $current_user->user_id);
-                                    }
-                                    ?>
-                                    <a class="icon tool-icon flip" onclick="openreport()"><i
+                                    <?php if ($current_user !== null): ?>
+                                        <form method="POST" class="form--inline">
+                                            <?php if (isset($csrf_token)): ?>
+                                                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
+                                            <?php endif; ?>
+                                            <input type="hidden" name="fave" value="1" />
+                                            <button type="submit" class="icon tool-icon button--no-style"><i class="fas fa-star fa-lg <?= $paste_is_favourited ? '' : 'has-text-grey' ?>" title="Favourite"></i></button>
+                                        </form>
+                                    <?php endif; ?>
+                                    <a class="icon tool-icon flip" href="<?= urlForReport($paste); ?>"><i
                                                 class="far fa-flag fa-lg has-text-grey" title="Report Paste"></i></a>
                                     <?php if ($paste['code'] != "pastedown") { ?>
                                         <a class="icon tool-icon" href="javascript:togglev();"><i
@@ -204,26 +125,23 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                 title="Embed This Paste"></i></a>
                                     <a class="icon tool-icon expand-tool"><i class="fas fa-expand-alt has-text-grey"
                                                                              title="Full Screen"></i></a>
-                                    <div class="panel-embed my-5" style="display:none;">
+                                    <div class="panel-embed my-5 is-hidden">
                                         <input type="text" class="input has-background-white-ter has-text-grey"
-                                               value='<?php echo '<script src="' . $protocol . $baseurl . '/';
+                                               value='<?php echo '<script src="' . pp_site_url() . '/';
                                                if (PP_MOD_REWRITE) {
                                                    echo 'embed/';
                                                } else {
                                                    echo 'paste.php?embed&id=';
                                                }
-                                               echo $paste_id . '"></script>'; ?>' readonly />
+                                               echo $paste->id . '"></script>'; ?>' readonly />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                     <!-- Tag display  -->
+                    <!-- Tag display  -->
                     <div class="columns is-desktop is-centered">
-                        <?php
-                        $tags = $paste['tags'];
-                        echo tagsToHtml($tags);
-                        ?>
+                        <?= tagsToHtml($paste->tags); ?>
                     </div>
                     <br>
                     <?php if (isset($error)): ?>
@@ -232,7 +150,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             <p><?= pp_html_escape($error) ?></p>
                         </div>
                     <?php elseif ($using_highlighter): ?>
-                        <div id="paste" style="line-height:18px !important;">
+                        <div id="paste" style="line-height: 18px;">
                             <div class="<?= pp_html_escape($paste['code']) ?>">
                                 <ol>
                                     <?php foreach ($lines as $num => $line):
@@ -245,60 +163,52 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             </div>
                         </div>
                     <?php else: ?>
-                            <div id="paste" style="line-height:18px !important;"><?= $p_content  ?></div>
+                            <div id="paste" style="line-height: 18px;"><?= $p_content  ?></div>
                     <?php endif; ?>
                 </div>
+                <?php if (can('hide', $paste)): ?>
+                <div class="mod-tools">
+                    <p>Moderation Tools</p>
+                    <form method="post">
+                        <?php if (isset($csrf_token)): ?>
+                            <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
+                        <?php endif; ?>
+                        <div class="field">
+                            <input class="button is-small <?= $paste->is_hidden ? 'is-success' : 'is-danger' ?>" type="submit" name="hide" id="hide"
+                                   value="<?= $paste->is_hidden ? 'Unhide' : 'Hide' ?> Paste" />
+                        </div>
+                    </form>
+                </div>
+                <?php endif; ?>
                 <!-- Guests -->
-                <?php if ($current_user === null || $current_user->user_id !== $paste['user_id']) { ?>
+                <?php if ($totalpastes !== 0 && !can('edit', $paste)) { ?>
                     <hr>
                     <label class="label">More from this Author </label>
-                    <?php
-                    $rec = getUserRecom($conn, $paste['user_id']);
-                    foreach ($rec as $index => $row) {
-                        $title = Trim($row['title']);
-                        $p_id = Trim($row['id']);
-                        $titlehov = ($row['title']);
-                        $long_title = pp_html_escape($row['title']);
-                        $title = pp_html_escape(truncate($row['title'], 24, 60));
-                        ?>
-
+                    <?php foreach ($recommended_pastes as $paste) { ?>
                         <p class="no-margin">
-                        <?php
-                        if (PP_MOD_REWRITE) {
-                            echo '<header class="bd-category-header my-1">
-									<a href="' . $p_id . '" title="' . $long_title . '">' . $title . ' </a>
-									<p class="subtitle is-7">' . 'by ' . '
-										<i>' . $row['member'] . '</i>' . '
-									</p>' .
-                                '</header>';
-                        } else {
-                            echo '<a href="' . $p_id . '" title="' . $titlehov . '">' . ucfirst($title) . '</a>';
-                        }
-                    }
-
-
-                    // Display a message if the pastebin is empty
-                    if ($totalpastes === 0) {
-                        echo $lang['emptypastebin'];
-                    } ?>
-                    </p>
-
-                <?php } else { ?>
+                        <header class="bd-category-header my-1">
+                            <a href="<?= urlForPaste($paste) ?>" title="<?= pp_html_escape($paste->title) ?>">
+                                <?= pp_html_escape(truncate($paste->title, 24, 60)) ?>
+                            </a>
+                            <p class="subtitle is-7">by <i><?= pp_html_escape($paste->user->username) ?></i></p>
+                        </header>
+                    <?php } ?>
+                <?php } else if (can('edit', $paste)) { ?>
                     <!-- Paste Panel -->
                     <hr>
-                    <h1 class="title is-6 mx-1"><?php echo $lang['modpaste']; ?></h1>
-                    <form class="form-horizontal" name="mainForm" action="index.php" method="POST">
+                    <h1 class="title is-6 mx-1">Edit Paste</h1>
+                    <form class="form-horizontal" action="/" method="POST">
                         <nav class="level">
                             <div class="level-left">
                                 <!-- Title -->
                                 <div class="level-item is-pulled-left mx-1">
                                     <p class="control has-icons-left">
                                         <input type="text" class="input" name="title"
-                                               placeholder="<?= $paste['title'] ?>"
-                                               value="<?= $paste['title'] ?>" />
+                                               placeholder="<?= pp_html_escape($paste['title']) ?>"
+                                               value="<?= pp_html_escape($paste['title']) ?>" />
                                         <span class="icon is-small is-left">
-															<i class="fa fa-font"></i>
-														</span>
+                                            <i class="fa fa-font"></i>
+                                        </span>
                                     </p>
                                 </div>
                                 <!-- Format -->
@@ -306,58 +216,47 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     <div class="select">
                                         <div class="select">
                                             <select data-live-search="true" name="format">
-                                                <?php // Show popular GeSHi formats
-                                                foreach ($geshiformats as $code => $name) {
-                                                    if (in_array($code, $popular_formats)) {
-                                                        $sel = ($paste['code'] == $code) ? 'selected="selected"' : ' ';
-                                                        echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
-                                                    }
-                                                }
-
-                                                // Show all GeSHi formats.
-                                                foreach ($geshiformats as $code => $name) {
-                                                    if (!in_array($code, $popular_formats)) {
-                                                        $sel = ($paste['code'] == $code) ? 'selected="selected"' : '';
-                                                        echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
-                                                    }
-                                                }
-                                                ?>
+                                                <?= optionsForSelect(array_values(PP_HIGHLIGHT_FORMATS), array_keys(PP_HIGHLIGHT_FORMATS), $paste->code); ?>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="level-item is-pulled-left mx-1">
-                                    <input class="button is-info" type="hidden" name="paste_id"
-                                           value="<?php echo $paste_id; ?>"/>
+                                    <input type="hidden" name="paste_id"
+                                           value="<?= $paste->id; ?>"/>
                                 </div>
                                 <div class="level-item is-pulled-left mx-1">
                                     <a class="button"
                                        onclick="highlight(document.getElementById('code')); return false;"><i
-                                                class="fa fa-indent"></i>&nbspHighlight</a>
+                                                class="fa fa-indent"></i>&nbsp;Highlight</a>
+                                </div>
+                                <div class="level-item mx-1">
+                                    <?php if (isset($csrf_token)): ?>
+                                        <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
+                                    <?php endif; ?>
+                                    <input class="button is-info" type="submit" name="edit" id="edit"
+                                           value="Save Changes" />
                                 </div>
                             </div>
                         </nav>
                         <!-- Text area -->
                         <textarea style="line-height: 1.2;" class="textarea mx-1" rows="13" id="code"
                                   name="paste_data" onkeyup="countChars(this);"
-                                  onkeydown="return catchTab(this,event)"
-                                  placeholder="helloworld"><?php echo htmlentities($op_content, ENT_QUOTES, 'UTF-8'); ?></textarea>
+                                  onkeydown="return catchTab(this,event)"><?= pp_html_escape($op_content); ?></textarea>
                         <p id="charNum"><b>File Size: </b><span style="color: green;">1000/1000Kb</span></p>
                         <br>
-
 
                         <div class="columns">
                             <div class="column">
                                 <div class="field">
-                                    <label class="label">Tags</label>
+                                    <label class="label" for="field_tags">Tags</label>
+                                    <small>Type a comma to separate each tag.</small>
+
                                     <div class="control">
-                                        <input id="tags-with-source" name="tag_input" class="input"
-                                               value="<?php
-                                               $inputtags = $paste['tags'];
-                                               foreach ($inputtags as $tag) {
-                                                   $tagsName = ucfirst(pp_html_escape($tag['name']));
-                                                   echo  ','.$tagsName.'';
-                                               }?>">
+                                        <div class="control">
+                                            <input name="tag_input" class="input js-tag-input" id="field_tags"
+                                                   value="<?= pp_html_escape($paste->tags->map(function($t) { return $t->name; })->join(',')) ?>" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -368,14 +267,14 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 <div class="level-item is-pulled-left mr-1">
                                     <div class="field">
                                         <div class="subtitle has-text-weight-semibold "
-                                             style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;"><?php echo $lang['expiration']; ?></div>
+                                             style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;">Expiry</div>
                                         <div class="control">
                                             <!-- Expiry -->
                                             <div class="select">
                                                 <select name="paste_expire_date">
                                                     <option value="N" selected="selected">Never</option>
                                                     <option value="self">View Once</option>
-                                                    <option value="10M">10 Minutes</option>
+                                                    <option value="0Y0M0DT0H10M">10 Minutes</option>
                                                     <option value="1H">1 Hour</option>
                                                     <option value="1D">1 Day</option>
                                                     <option value="1W">1 Week</option>
@@ -389,26 +288,23 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 <div class="level-item is-pulled-left mx-1">
                                     <div class="field">
                                         <div class="subtitle has-text-weight-semibold "
-                                             style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;"><?php echo $lang['visibility']; ?>
+                                             style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;">Visibility
                                             &nbsp;&nbsp;
                                         </div>
                                         <div class="control">
                                             <!-- Visibility -->
                                             <div class="select">
                                                 <select name="visibility">
-                                                    <option value="0" <?php echo ($p_visible == "0") ? 'selected="selected"' : ''; ?>>
-                                                        Public
-                                                    </option>
-                                                    <option value="1" <?php echo ($p_visible == "1") ? 'selected="selected"' : ''; ?>>
-                                                        Unlisted
-                                                    </option>
-                                                    <?php if ($current_user) { ?>
-                                                        <option value="2" <?php echo ($p_visible == "2") ? 'selected="selected"' : ''; ?>>
-                                                            Private
-                                                        </option>
-                                                    <?php } else { ?>
-                                                        <option disabled>Private</option>
-                                                    <?php } ?>
+                                                    <?php
+                                                        $visibility_names = ['Public', 'Unlisted'];
+                                                        $visibility_codes = ['0', '1'];
+                                                        if ($current_user) {
+                                                            $visibility_names[] = 'Private';
+                                                            $visibility_codes[] = '2';
+                                                        }
+
+                                                        echo optionsForSelect($visibility_names, $visibility_codes, $paste->visible);
+                                                    ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -422,48 +318,23 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 <div class="columns">
                                     <div class="column">
                                         <input type="text" class="input" name="pass" id="pass" value=""
-                                               placeholder="<?php echo $lang['pwopt']; ?>" />
+                                               placeholder="Password" autocomplete="new-password" />
                                     </div>
                                 </div>
                             </div>
                         </nav>
                         <br>
-                        <nav>
-                            <div class="level-left">
-                                <!-- Encrypted -->
-                                <div class="b-checkbox is-info is-inline">
-                                    <?php
-                                    $encrypted_checked = "";
-                                    if ($_POST) {
-                                        // We came here from an error, carry the checkbox setting forward
-                                        if (isset($_POST['encrypted'])) {
-                                            $encrypted_checked = "checked";
-                                        }
-                                    } else {
-                                        // Fresh paste. Default to encrypted on
-                                        $encrypted_checked = "checked";
-                                    }
-                                    ?>
-                                    <input class="is-checkradio is-info" id="encrypt" name="encrypted"
-                                           type="checkbox" <?php echo $encrypted_checked; ?>>
-                                    <label for="encrypt">
-                                        <?php echo $lang['encrypt']; ?>
-                                    </label>
-                                    <?php
-                                    if ($current_user->user_id == $paste['user_id']) {
-                                        ?>
-                                        <input class="button is-info" type="submit" name="edit" id="edit"
-                                               value="<?php echo $lang['editpaste']; ?>"/>
-                                        <?php
-                                    } ?>
-                                </div>
-                                <br/>
-                        </nav>
-                        <?php
-                        if (isset($site_ads)) {
-                            echo $site_ads['ads_2'];
-                        }
-                        ?>
+                        <div class="level-left">
+                            <!-- Encrypted -->
+                            <div class="b-checkbox is-info is-inline">
+                                <input class="is-checkradio is-info" id="encrypt" name="encrypted"
+                                       type="checkbox" disabled="disabled" checked="checked" />
+                                <label for="encrypt">
+                                    Encrypt on server (always enabled)
+                                </label>
+
+                            </div>
+                        </div>
                     </form>
                 <?php } ?>
 
@@ -492,49 +363,15 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
         var grace2kb = graceRemain / 1000;
         var graceDisplay = roundToTwo(grace2kb);
 
+        var element = document.getElementById('charNum');
+
         if (graceRemain < 0) {
-            document.getElementById("charNum").innerHTML = '<b>File Size: </b><span style="color: red;">File Size limit reached</span>';
-        } else if ((charRemain < 0)) {
-            document.getElementById("charNum").innerHTML = '<b>File Size: </b><span style="color: orange;">' + graceDisplay + '/24Kb Grace Limit</span>';
+            element.innerHTML = '<b>File Size: </b><span style="color: red;">File Size limit reached</span>';
+        } else if (charRemain < 0) {
+            element.innerHTML = '<b>File Size: </b><span style="color: orange;">' + graceDisplay + '/24Kb Grace Limit</span>';
         } else {
-            document.getElementById("charNum").innerHTML = '<b>File Size: </b><span style="color: green;">' + charDisplay + '/1000Kb</span>';
+            element.innerHTML = '<b>File Size: </b><span style="color: green;">' + charDisplay + '/1000Kb</span>';
         }
     }
 </script>
-<script>
-    $("#reportpaste").submit(function (e) {
-
-        e.preventDefault(); // avoid to execute the actual submit of the form.
-
-        var form = $(this);
-        var url = form.attr('action');
-
-        $.ajax({
-            type: "POST",
-            url: "report.php",
-            data: form.serialize(), // serializes the form's elements.
-            success: function (data) {
-                document.getElementById("reportbutton").innerHTML = '<input disabled class="button is-danger is-fullwidth"  type="submit" name="reportpaste" id="report" value="Reported" />';
-            }
-        });
-
-    });
-</script>
-<?php if ($current_user) { ?>
-    <script>
-        $(document).ready(function () {
-            $('#favorite').on('click', null, function () {
-                var _this = $(this);
-                var post_id = _this.data('fid');
-                $.ajax({
-                    type: 'POST',
-                    url: 'fav.php',
-                    dataType: 'json',
-                    data: 'fid=' + post_id,
-                });
-                location.reload(true)
-            });
-        });
-    </script>
-<?php } ?>
 

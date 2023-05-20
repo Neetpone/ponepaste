@@ -1,105 +1,94 @@
-<?php
-/*
- * Paste <https://github.com/jordansamuel/PASTE> - Bulma theme
- * Theme by wsehl <github.com/wsehl> (January, 2021)
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License in GPL.txt for more details.
- */
-?>
-
 <main class="bd-main">
     <div class="bd-side-background"></div>
     <div class="bd-main-container container">
         <div class="bd-duo">
             <div class="bd-lead">
-                <h1 class="title is-5"><?php echo $lang['totalpastes'] . ' ' . $total_user_pastes ?></h1>
-                <h1 class="subtitle is-6"><?php echo '<a href="user.php?user=' . urlencode($current_user->username) . '" target="_self">' . $lang['mypastes'] . '</a>'; ?></h1>
+                <h1 class="title is-5">Total Pastes: <?= $total_user_pastes ?></h1>
+                <h1 class="subtitle is-6">
+                    <a href="<?= urlForMember($current_user); ?>" target="_self">My Pastes</a>
+                </h1>
                 <?php
                 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     if (isset($success)) {
-                        echo ' <div class="notification is-success"><i class="fa fa-exclamation-circle" aria-hidden=" true"></i> 
+                        echo ' <div class="notification is-success"><i class="fa fa-exclamation-circle" aria-hidden=" rue"></i> 
 					' . $success . '
 					</div>';
                     } elseif (isset($error)) {
-                        echo ' <div class="notification is-danger"><i class="fa fa-exclamation-circle" aria-hidden=" true"></i> 
+                        echo ' <div class="notification is-danger"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> 
 					' . $error . '
 					</div>';
                     }
                 }
                 ?>
                 <hr>
-                <h1 class="title is-5"><?php echo $lang['myprofile']; ?></h1>
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+                <h1 class="title is-5">My Profile</h1>
+                <form method="post">
                     <div class="columns">
                         <div class="column">
                             <div class="field">
                                 <label class="label">Generate New Recovery Key</label>
                                 <div class="control has-icons-left has-icons-right">
                                     <input disabled="" type="text" class="input" name="username"
-                                           style="cursor:not-allowed;" placeholder="New gen generated here">
+                                           style="cursor:not-allowed;" placeholder="New key generated here">
                                     <span class="icon is-small is-left">
 										<i class="fas fa-user"></i>
 									</span>
                                 </div>
                             </div>
                             <div class="field">
-                                <button disabled type="submit" name="Gen_key" class="button is-info">Generate New Key</button>
+                                <button disabled type="submit" name="Gen_key" class="button is-info">Generate New Key
+                                </button>
                                 <br>
                                 <small>Coming soon</small>
                             </div>
                             <hr>
                             <div class="field">
-                                <label class="label">Username</label>
+                                <label class="label" for="username">Username</label>
                                 <div class="control has-icons-left has-icons-right">
-                                    <input disabled="" type="text" class="input" name="username"
+                                    <input disabled="disabled" type="text" class="input" name="username" id="username"
                                            style="cursor:not-allowed;"
-                                           placeholder="<?php echo pp_html_escape($current_user->username); ?>">
+                                           placeholder="<?= pp_html_escape($current_user->username); ?>">
                                     <span class="icon is-small is-left">
 										<i class="fas fa-user"></i>
 									</span>
                                 </div>
                             </div>
                             <hr>
-                            <h1 class="title is-5"><?php echo $lang['chgpwd']; ?></h1>
+                            <h1 class="title is-5">Change Password</h1>
                             <div class="field">
-                                <label class="label">Current Password</label>
+                                <label class="label" for="current_password">Current Password</label>
                                 <div class="control has-icons-left has-icons-right">
-                                    <input type="password" class="input" name="old_password"
-                                           placeholder="<?php echo $lang['curpwd']; ?>">
+                                    <input type="password" class="input" name="old_password" id="current_password"
+                                           placeholder="Current Password">
                                     <span class="icon is-small is-left">
 										<i class="fas fa-key"></i>
 									</span>
                                 </div>
                             </div>
                             <div class="field">
-                                <label class="label">New Password</label>
+                                <label class="label" for="new_password">New Password</label>
                                 <div class="control has-icons-left has-icons-right">
-                                    <input type="password" class="input" name="password"
-                                           placeholder="<?php echo $lang['newpwd']; ?>">
+                                    <input type="password" class="input" name="password" id="new_password"
+                                           placeholder="New Password">
                                     <span class="icon is-small is-left">
 										<i class="fas fa-key"></i>
 									</span>
                                 </div>
                             </div>
                             <div class="field">
-                                <label class="label">Confirm Password</label>
+                                <label class="label" for="password_confirmation">Confirm Password</label>
                                 <div class="control has-icons-left has-icons-right">
-                                    <input type="password" class="input" name="cpassword"
-                                           placeholder="<?php echo $lang['confpwd']; ?>">
+                                    <input type="password" class="input" name="cpassword" id="password_confirmation"
+                                           placeholder="Confirm Password" />
                                     <span class="icon is-small is-left">
 										<i class="fas fa-key"></i>
 									</span>
                                 </div>
                             </div>
                             <div class="field">
+                                <?php if (isset($csrf_token)): ?>
+                                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
+                                <?php endif; ?>
                                 <button type="submit" name="submit" class="button is-info">Submit</button>
                             </div>
                         </div>
@@ -108,7 +97,6 @@
                     </div>
                 </form>
             </div>
-            <?php require_once('theme/' . $default_theme . '/sidebar.php'); ?>
         </div>
     </div>
 </main>

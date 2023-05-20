@@ -1,47 +1,54 @@
-<?php
-/*
- * Paste <https://github.com/jordansamuel/PASTE> - Bulma theme
- * Theme by wsehl <github.com/wsehl> (January, 2021)
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License in GPL.txt for more details.
- */
-?>
-<script>
-    $(document).ready(function () {
-        $("#archive").dataTable({
-            rowReorder: {selector: 'td:nth-child(2)'},
-            responsive: true,
-            processing: true,
-            language: {
-                processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><br><span>Loading...</span> ',
-                infoFiltered:   "(filtered from _MAX_ total pastes)",
-                info:           "Showing _START_ to _END_ of _TOTAL_ pastes",
-                search:         '<i class="fa fa-search"></i>',
-                lengthMenu:     "Show _MENU_ Pastes",
-                zeroRecords:    '<i class="fa fa-times fa-3x"></i><br><span>No Results</span>',
-                },
-            autoWidth: false,
-            ajax: "../api/ajax_pastes.php",
-            initComplete: function () {
-                var search = new URLSearchParams(window.location.search);
-                var query = search.get('q');
-                if (query) {
-                    $("#archive_filter input")
-                        .val(query)
-                        .trigger("input");
-                }
-            }
-        })
-    });
-</script>
+<style>
+    .paginator > a {
+        margin: 0.25rem;
+    }
+
+    .paginator > a.disabled {
+        pointer-events: none;
+        color: gray;
+    }
+
+    .paginator__sort > th {
+        cursor: pointer;
+    }
+
+    .paginator__sort--down, .paginator__sort--up {
+        background-color: lightblue;
+    }
+
+    .paginator__sort--down:after {
+        padding-left: 0.25rem;
+        content: '▼';
+    }
+
+    .paginator__sort--up:after {
+        padding-left: 0.25rem;
+        content: '▲';
+    }
+
+    .hidden {
+        display: none;
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    table.hidden + .loading_container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 99999999;
+        background-image: url('/assets/img/loader/<?= random_int(1, 3) ?>.gif');
+        background-repeat: no-repeat;
+        background-color: #FFF;
+        background-position: center;
+    }
+
+
+</style>
 
 <main class="bd-main">
     <div class="preloader"></div>
@@ -51,44 +58,62 @@
             <div class="bd-lead">
                 <article class="message is-info">
                     <div class="message-body">
-                        There are <strong><?php echo $total_untagged ?></strong> pastes that still need to be tagged.
+                        There are <strong><?= $total_untagged ?></strong> pastes that still need to be tagged.
                     </div>
                 </article>
-                <?php if ($privatesite == "on") { // Site permissions
-                    ?>
-                    <h1 class="title is-5"><?php echo $lang['siteprivate']; ?></h1>
-                <?php } else { ?>
-                <h1 class="title is-4"><?php echo $lang['archives']; ?></h1>
+                <?php if ($site_is_private): ?>
+                    <h1 class="title is-5">This pastebin is private.</h1>
+                <?php else: ?>
+                <h1 class="title is-4">Pastes Archive</h1>
+                <form class="table_filterer" method="GET">
+                    <label><i class="fa fa-search"></i>
+                        <input class="search" type="search" name="q" placeholder="Filter..." value="<?= pp_html_escape($filter_value); ?>" />
+                    </label>
+                    <label>
+                        Show&nbsp;
+                        <select name="per_page">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        &nbsp;per page
+                    </label>
+                    <button type="submit" class="button js-hidden">Search</button>
+                </form>
                 <table id="archive" class="table is-fullwidth is-hoverable">
                     <thead>
-                    <tr>
-                        <th><?php echo $lang['pastetitle']; ?></th>
-                        <th><?php echo $lang['author']; ?></th>
-                        <th><?php echo $lang['tags']; ?></th>
+                    <tr class="paginator__sort">
+                        <th data-sort-field="title">Title</th>
+                        <th data-sort-field="author">Author</th>
+                        <th data-sort-field="tags">Tags</th>
                     </tr>
                     </thead>
+                    <tbody>
+                    <?php foreach ($pastes as $paste): ?>
+                        <tr>
+                            <td><?= pp_html_escape($paste->title) ?></td>
+                            <td><?= pp_html_escape($paste->user->username) ?></td>
+                            <td><?= tagsToHtml($paste->tags) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
                     <tfoot>
                     <tr>
-                        <th><?php echo $lang['pastetitle']; ?></th>
-                        <th><?php echo $lang['author']; ?></th>
-                        <th><?php echo $lang['tags']; ?></th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Tags</th>
                     </tr>
                     </tfoot>
-                    <tbody>
-                    </tbody>
                 </table>
+                <div class="loading_container is-hidden">
+                </div>
 
-                <?php
-                if (isset($site_ads)) {
-                    echo $site_ads['ads_2'];
-                }
-                ?>
+                <div class="paginator">
+                    <?= paginate($current_page, $per_page, $total_results) ?>
+                </div>
             </div>
-            <?php }
-            if ($privatesite != "on") {
-                require_once('theme/' . $default_theme . '/sidebar.php');
-            }
-            ?>
+            <?php endif; ?>
         </div>
     </div>
 </main>

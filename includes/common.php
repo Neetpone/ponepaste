@@ -5,45 +5,151 @@ if (!defined('IN_PONEPASTE')) {
 require_once(__DIR__ . '/../vendor/autoload.php');
 require_once(__DIR__ . '/config.php');
 require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/DatabaseHandle.class.php');
-require_once(__DIR__ . '/User.class.php');
+require_once(__DIR__ . '/passwords.php');
+require_once(__DIR__ . '/captcha.php');
+
+use Illuminate\Database\Capsule\Manager as Capsule;
+use PonePaste\Helpers\SessionHelper;
+use PonePaste\Models\IPBan;
+use PonePaste\Models\PageView;
+use PonePaste\Models\Paste;
+use PonePaste\Models\User;
+use PonePaste\Helpers\AbilityHelper;
 
 /* View functions */
-function urlForPaste($paste_id) : string {
-    if (PP_MOD_REWRITE) {
-        return "/${paste_id}";
+function javascriptIncludeTag(string $name) : string {
+    if (PP_DEBUG) {
+        return "<script src=\"/assets/bundle/{$name}.js\"></script>";
     }
 
-    return "/paste.php?id=${paste_id}";
+    return "<script src=\"/assets/bundle/{$name}.min.js\"></script>";
 }
 
-function urlForMember(string $member_name) : string {
-    if (PP_MOD_REWRITE) {
-        return '/user/' . urlencode($member_name);
+function urlForPage($page = '') : string {
+    if (!PP_MOD_REWRITE) {
+        $page .= '.php';
     }
 
-    return '/user.php?name=' . urlencode($member_name);
+    return (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/' . $page;
+}
+
+function urlForPaste(Paste $paste) : string {
+    if (PP_MOD_REWRITE) {
+        return "/{$paste->id}";
+    }
+
+    return "/paste.php?id={$paste->id}";
+}
+
+function urlForReport(Paste $paste) : string {
+    if (PP_MOD_REWRITE) {
+        return "/{$paste->id}/report";
+    }
+
+    return "/report.php?id={$paste->id}";
+}
+
+function urlForMember(User $user) : string {
+    if (PP_MOD_REWRITE) {
+        return '/user/' . urlencode($user->username);
+    }
+
+    return '/user.php?name=' . urlencode($user->username);
+}
+
+/**
+ * @throws Exception if the names and values aren't the same length
+ */
+function optionsForSelect(array $displays, array $values, string $currentSelection = null) : string {
+    $size = count($displays);
+
+    if (count($values) !== $size) {
+        throw new Exception('Option names and option values must be the same count');
+    }
+
+    $html = '';
+
+    for ($i = 0; $i < $size; $i++) {
+        $html .= '<option value="' . pp_html_escape($values[$i]) . '"';
+
+        if ($currentSelection === $values[$i]) {
+            $html .= ' selected="selected"';
+        }
+
+        $html .= '>' . pp_html_escape($displays[$i]) . '</option>';
+    }
+
+    return $html;
+}
+
+/**
+ * @throws Exception if the flash level is invalid
+ */
+function flash(string $level, string $message) : void {
+    if (!isset($_SESSION['flashes'])) {
+        $_SESSION['flashes'] = [
+            'success' => [],
+            'warning' => [],
+            'error' => []
+        ];
+    }
+
+    if (!array_key_exists($level, $_SESSION['flashes'])) {
+        throw new Exception('Invalid flash level ' . $level);
+    }
+
+    $_SESSION['flashes'][$level][] = $message;
+}
+
+
+function flashError(string $message) : void {
+    flash('error', $message);
+}
+
+function flashWarning(string $message) : void {
+    flash('warning', $message);
+}
+
+function flashSuccess(string $message) : void {
+    flash('success', $message);
+}
+
+function getFlashes() {
+    if (!isset($_SESSION['flashes'])) {
+        return ['success' => [], 'warning' => [], 'error' => []];
+    }
+
+    $flashes = $_SESSION['flashes'];
+
+    unset($_SESSION['flashes']);
+
+    return $flashes;
+}
+
+function outputFlashes($flashes) : void {
+    function __outputFlash($level, $flash) : void {
+        echo '<div class="notification is-' . $level . ' flash">
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>'
+            . pp_html_escape($flash) .
+            '</div>';
+    }
+
+    foreach ($flashes['success'] as $flash) {
+        __outputFlash('info', $flash);
+    }
+
+    foreach ($flashes['warning'] as $flash) {
+        __outputFlash('warning', $flash);
+    }
+
+    foreach ($flashes['error'] as $flash) {
+        __outputFlash('danger', $flash);
+    }
 }
 
 /* Database functions */
 function getSiteInfo() : array {
     return require(__DIR__ . '/../config/site.php');
-}
-
-function getSiteAds(DatabaseHandle $conn) : array|bool {
-    return $conn->query('SELECT text_ads, ads_1, ads_2 FROM ads LIMIT 1')->fetch();
-}
-
-function getSiteTotalPastes(DatabaseHandle $conn) : int {
-    return intval($conn->query('SELECT COUNT(*) FROM pastes')->fetch(PDO::FETCH_NUM)[0]);
-}
-
-function getSiteTotalviews(DatabaseHandle $conn) : int {
-    return intval($conn->query('SELECT tpage FROM page_view ORDER BY id DESC LIMIT 1')->fetch(PDO::FETCH_NUM)[0]);
-}
-
-function getSiteTotal_unique_views(DatabaseHandle $conn) : int {
-    return intval($conn->query('SELECT tvisit FROM page_view ORDER BY id DESC LIMIT 1')->fetch(PDO::FETCH_NUM)[0]);
 }
 
 /**
@@ -56,105 +162,134 @@ function pp_html_escape(string $unescaped) : string {
     return htmlspecialchars($unescaped, ENT_QUOTES, 'UTF-8', false);
 }
 
-function updatePageViews(DatabaseHandle $conn) : void {
+/* I think there is one row for each day, and in that row, tpage = non-unique, tvisit = unique page views for that day */
+function updatePageViews() : void {
+    global $redis;
+
     $ip = $_SERVER['REMOTE_ADDR'];
     $date = date('jS F Y');
-    $data_ip = file_get_contents('tmp/temp.tdata');
 
-    $last_page_view = $conn->query('SELECT * FROM page_view ORDER BY id DESC LIMIT 1')->fetch();
-    $last_date = $last_page_view['date'];
+    $last_page_view = PageView::orderBy('id', 'desc')->limit(1)->first();
 
-    if ($last_date == $date) {
-        $last_tpage = intval($last_page_view['tpage']) + 1;
-
-        if (str_contains($data_ip, $ip)) {
-            // IP already exists, Update view count
-            $statement = $conn->prepare("UPDATE page_view SET tpage = ? WHERE id = ?");
-            $statement->execute([$last_tpage, $last_page_view['id']]);
-        } else {
-            $last_tvisit = intval($last_page_view['tvisit']) + 1;
-
-            // Update both tpage and tvisit.
-            $statement = $conn->prepare("UPDATE page_view SET tpage = ?,tvisit = ? WHERE id = ?");
-            $statement->execute([$last_tpage, $last_tvisit, $last_page_view['id']]);
-            file_put_contents('tmp/temp.tdata', $data_ip . "\r\n" . $ip);
+    if ($last_page_view && $last_page_view->date == $date) {
+        if (!$redis->sIsMember('page_view_ips', $ip)) {
+            $last_page_view->tvisit++;
+            $redis->sAdd('page_view_ips', $ip);
         }
+
+        $last_page_view->tpage++;
+        $last_page_view->save();
     } else {
-        // Delete the file and clear data_ip
-        unlink("tmp/temp.tdata");
+        $redis->del('page_view_ips');
 
         // New date is created
-        $statement = $conn->prepare("INSERT INTO page_view (date, tpage, tvisit) VALUES (?, '1', '1')");
-        $statement->execute([$date]);
+        $new_page_view = new PageView(['date' => $date]);
+        $new_page_view->save();
 
-        // Update the IP
-        file_put_contents('tmp/temp.tdata', $ip);
+        $redis->sAdd('page_view_ips', $ip);
     }
+}
+
+function setupCsrfToken() : string {
+    if (isset($_SESSION[SessionHelper::CSRF_TOKEN_KEY])) {
+        return $_SESSION[SessionHelper::CSRF_TOKEN_KEY];
+    }
+
+    $token = pp_random_token();
+    $_SESSION[SessionHelper::CSRF_TOKEN_KEY] = $token;
+
+    return $token;
+}
+
+function verifyCsrfToken($token = null) : bool {
+    if ($token === null) {
+        $token = $_POST[SessionHelper::CSRF_TOKEN_KEY];
+    }
+
+    if (empty($token) || empty($_SESSION[SessionHelper::CSRF_TOKEN_KEY])) {
+        return false;
+    }
+
+    $success = hash_equals($_SESSION[SessionHelper::CSRF_TOKEN_KEY], $token);
+
+    unset($_SESSION[SessionHelper::CSRF_TOKEN_KEY]);
+
+    return $success;
 }
 
 session_start();
 
-$conn = new DatabaseHandle("mysql:host=$db_host;dbname=$db_schema;charset=utf8mb4", $db_user, $db_pass);
+/* Set up the database and Eloquent ORM */
+$capsule = new Capsule();
 
-// Setup site info
-$site_info = getSiteInfo();
-$row = $site_info['site_info'];
-$title = Trim($row['title']);
-$des = Trim($row['description']);
-$baseurl = Trim($row['baseurl']);
-$keyword = Trim($row['keywords']);
-$site_name = Trim($row['site_name']);
-$email = Trim($row['email']);
-$ga = Trim($row['google_analytics']);
-$additional_scripts = Trim($row['additional_scripts']);
-
-
-// Setup theme and language
-$lang_and_theme = $site_info['interface'];
-$default_lang = $lang_and_theme['language'];
-$default_theme = $lang_and_theme['theme'];
-
-// site permissions
-$site_permissions = $site_info['permissions'];
-
-if ($site_permissions) {
-    $siteprivate = $site_permissions['private'];
-    $disableguest = $site_permissions['disable_guest'];
-} else {
-    $siteprivate = 'off';
-    $disableguest = 'off';
-}
-
-$privatesite = $siteprivate;
-$noguests = $disableguest;
-
-// CAPTCHA configuration
-$captcha_config = $site_info['captcha'];
-$captcha_enabled = (bool)$captcha_config['enabled'];
-
-// Prevent a potential LFI (you never know :p)
-$lang_file = "${default_lang}.php";
-if (in_array($lang_file, scandir(__DIR__ . '/langs/'))) {
-    require_once(__DIR__ . "/langs/${lang_file}");
-}
+$capsule->addConnection([
+    'driver' => 'mysql',
+    'host' => $db_host,
+    'database' => $db_schema,
+    'username' => $db_user,
+    'password' => $db_pass ,
+    'charset' => 'utf8mb4',
+    'prefix' => ''
+]);
+$capsule->setAsGlobal();
+$capsule->bootEloquent();
 
 // Check if IP is banned
 $ip = $_SERVER['REMOTE_ADDR'];
-if ($conn->query('SELECT 1 FROM ban_user WHERE ip = ?', [$ip])->fetch()) {
-    die($lang['banned']); // "You have been banned from " . $site_name;
+if (IPBan::where('ip', $ip)->first()) {
+    die('You have been banned.');
 }
 
-$site_ads = getSiteAds($conn);
-$total_pastes = getSiteTotalPastes($conn);
-$total_page_views = getSiteTotalviews($conn);
-$total_unique_views = getSiteTotal_unique_views($conn);
+/* Set up Redis */
+$redis = new Redis();
+$redis->pconnect(PP_REDIS_HOST);
 
-$current_user = User::current($conn);
+// Setup site info
+$site_info = getSiteInfo();
+$global_site_info = $site_info['site_info'];
+$row = $site_info['site_info'];
+$title = trim($row['title']);
+$site_name = trim($row['site_name']);
+$email = trim($row['email']);
 
-if ($current_user) {
-    $noguests = "off";
+// Setup theme
+$default_theme = 'bulma';
+
+// Site permissions
+$site_permissions = $site_info['permissions'];
+
+$site_is_private = false;
+$site_disable_guests = false;
+
+if ($site_permissions) {
+    $site_is_private = (bool) $site_permissions['private'];
+    $site_disable_guests = (bool) $site_permissions['disable_guest'];
 }
+
+// CAPTCHA configuration
+$captcha_enabled = (bool) $site_info['captcha']['enabled'];
+
+$total_pastes = Paste::count();
+$total_page_views = PageView::select('tpage')->orderBy('id', 'desc')->first()->tpage;
+$total_unique_views = PageView::select('tvisit')->orderBy('id', 'desc')->first()->tvisit;
+
+$current_user = SessionHelper::currentUser();
+$start = microtime(true);
+
+function can(string $action, mixed $subject) : bool {
+    global $current_user;
+    static $current_ability = null;
+
+    if ($current_ability === null) {
+        $current_ability = new AbilityHelper($current_user);
+    }
+
+    return $current_ability->can($action, $subject);
+}
+
+$script_bundles = [];
 
 /* Security headers */
 header('X-Frame-Options: SAMEORIGIN');
 header('X-Content-Type-Options: nosniff');
+header("Content-Security-Policy: default-src 'self' data: 'unsafe-inline'");

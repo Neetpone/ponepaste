@@ -1,114 +1,60 @@
 <?php
-/*
- * Paste <https://github.com/jordansamuel/PASTE>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License in GPL.txt for more details.
- */
+use Illuminate\Database\Eloquent\Collection;
+use PonePaste\Models\Paste;
 
-function getPasteTags(DatabaseHandle $conn, int $paste_id) : array {
-    return $conn->query(
-        'SELECT name, slug FROM tags
-            INNER JOIN paste_taggings ON paste_taggings.tag_id = tags.id
-            WHERE paste_taggings.paste_id = ?',
-        [$paste_id])->fetchAll();
-}
-
-function getUserFavs(DatabaseHandle $conn, int $user_id) : array {
-    $query = $conn->prepare(
-        "SELECT pins.f_time, pastes.id, pins.paste_id, pastes.title, pastes.created_at, pastes.updated_at
-            FROM pins
-            INNER JOIN pastes ON pastes.id = pins.paste_id
-            WHERE pins.user_id = ?");
-    $query->execute([$user_id]);
-    return $query->fetchAll();
-}
-
-function checkFavorite(DatabaseHandle $conn, int $paste_id, int $user_id) : string {
-    $query = $conn->prepare("SELECT 1 FROM pins WHERE user_id = ? AND paste_id = ?");
-    $query->execute([$user_id, $paste_id]);
-
-    if ($query->fetch()) {
-        return "<a  href='#' id='favorite' class='icon tool-icon' data-fid='" . $paste_id . "'><i class='fas fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
-    } else {
-        return "<a  href='#' id='favorite' class='icon tool-icon' data-fid='" . $paste_id . "'><i class='far fa-star fa-lg has-text-grey' title='Favourite'></i></a>";
-    }
-}
-
-
-function getreports($conn, $count = 10) {
-    $query = $conn->prepare('SELECT * FROM user_reports LIMIT ?');
-    $query->execute([$count]);
-
-    return $query->fetchAll();
-}
-
-
-function tagsToHtml(string | array $tags) : string {
+function tagsToHtml(array | Collection $tags) : string {
     $output = "";
+    foreach ($tags as $tagObj) {
+        $tag = $tagObj->name;
+        $tag_lower = strtolower($tag);
+        if ($tag_lower === 'nsfw' || $tag_lower === 'explicit') {
+            $tagcolor = "tag is-danger";
+        } elseif ($tag_lower === 'safe') {
+            $tagcolor = "tag is-success";
+        } elseif ($tag[0] === '/' && $tag[-1] === '/') {
+            $tagcolor = "tag is-primary";
+        } else {
+            $tagcolor = "tag is-info";
+        }
+        $output .= '<a href="/archive?q=' . urlencode($tag) . '"><span class="' . $tagcolor . '">' . pp_html_escape($tag) . '</span></a>';
+    }
+    return $output;
+}
+
+function tagsToHtmlUser(string | array | Collection $tags, $profile_username) : string {
+    $output = "";
+
+    if (is_a($tags, Collection::class)) {
+        $tags = $tags->toArray();
+    }
+
     if (is_array($tags)) {
         $tagsSplit = array_map(function($tag) { return $tag['name']; }, $tags);
     } else {
         $tagsSplit = explode(",", $tags);
     }
 
+    if (count($tagsSplit) === 0) {
+        return '<span class="tag is-warning">No tags</span>';
+    }
+
     foreach ($tagsSplit as $tag) {
-        if (stripos($tag, 'nsfw') !== false) {
-            $tag = strtoupper($tag);
+        $tag_lower = strtolower($tag);
+        if ($tag_lower === 'nsfw' || $tag_lower === 'explicit') {
             $tagcolor = "tag is-danger";
-        } elseif (stripos($tag, 'SAFE') !== false) {
-            $tag = strtoupper($tag);
+        } elseif ($tag_lower === 'safe') {
             $tagcolor = "tag is-success";
-        } elseif (str_contains($tag, '/')) {
+        } elseif ($tag[0] === '/' && $tag[-1] === '/') {
             $tagcolor = "tag is-primary";
         } else {
             $tagcolor = "tag is-info";
         }
-        $output .= '<a href="/archive?q=' . urlencode($tag) . '"><span class="' . $tagcolor . '">' . pp_html_escape(ucfirst($tag)) . '</span></a>';
+        $output .= '<a href="/user.php?user=' . $profile_username . '&q=' . urlencode($tag) . '"><span class="' . $tagcolor . '">' . pp_html_escape($tag) . '</span></a>';
     }
     return $output;
 }
 
-function tagsToHtmlUser(string | array $tags, $profile_username) : string {
-    $output = "";
-    if (is_array($tags)) {
-        $tagsSplit = array_map(function($tag) { return $tag['name']; }, $tags);
-    } else {
-        $tagsSplit = explode(",", $tags);
-    }
-
-    foreach ($tagsSplit as $tag) {
-        if (stripos($tag, 'nsfw') !== false) {
-            $tag = strtoupper($tag);
-            $tagcolor = "tag is-danger";
-        } elseif (stripos($tag, 'SAFE') !== false) {
-            $tag = strtoupper($tag);
-            $tagcolor = "tag is-success";
-        } elseif (str_contains($tag, '/')) {
-            $tagcolor = "tag is-primary";
-        } else {
-            $tagcolor = "tag is-info";
-        }
-        $output .= '<a href="/user.php?user=' . $profile_username . '&q=' . urlencode($tag) . '"><span class="' . $tagcolor . '">' . pp_html_escape(ucfirst($tag)) . '</span></a>';
-    }
-    return $output;
-}
-
-function getevent($conn, $event_name, $count) {
-    $query = $conn->prepare("SELECT id, visible, title, date, now_time, views, member FROM pastes WHERE visible='1' AND tagsys LIKE '%?%' 
- ORDER BY RAND () LIMIT 0, ?");
-    $query->execute([$event_name, $count]);
-    return $query->fetchAll();
-}
-
-function linkify($value, $protocols = array('http', 'mail'), array $attributes = array()) {
+function linkify($value, $protocols = array('http', 'mail'), array $attributes = array()) : array|string|null {
     // Link attributes
     $attr = '';
     foreach ($attributes as $key => $val) {
@@ -123,7 +69,7 @@ function linkify($value, $protocols = array('http', 'mail'), array $attributes =
     }, $value);
 
     // Extract text links for each protocol
-    foreach ((array)$protocols as $protocol) {
+    foreach ((array) $protocols as $protocol) {
         $value = match ($protocol) {
             'http', 'https' => preg_replace_callback('~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) {
                 if ($match[1]) $protocol = $match[1];
@@ -142,50 +88,15 @@ function linkify($value, $protocols = array('http', 'mail'), array $attributes =
     }, $value);
 }
 
-function getUserRecom(DatabaseHandle $conn, int $user_id) : array {
-    $query = $conn->prepare(
-        "SELECT pastes.id AS id, users.username AS member, title, visible
-            FROM pastes
-            INNER JOIN users ON pastes.user_id = users.id
-            WHERE pastes.visible = '0' AND users.id = ?
-            ORDER BY id DESC
-            LIMIT 0, 5");
-    $query->execute([$user_id]);
-    return $query->fetchAll();
-}
-
-function formatBytes($size, $precision = 2) {
+function formatBytes($size, $precision = 2) : string {
     $base = log($size, 1024);
-    $suffixes = array('B', 'KB', 'MB', 'GB', 'TB');
+    $suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
+
+    if ($size === 0) {
+        return '0 B';
+    }
 
     return round(pow(1024, $base - floor($base)), $precision) . ' ' . $suffixes[floor($base)];
-}
-
-function getRecentadmin($conn, $count = 5) {
-    $query = $conn->prepare(
-        'SELECT pastes.id AS id, pastes.ip AS ip, title, created_at, views, users.username AS member
-            FROM pastes
-            INNER JOIN users ON users.id = pastes.user_id
-            ORDER BY id DESC LIMIT 0, ?');
-    $query->execute([$count]);
-
-    return $query->fetchAll();
-}
-
-function getUserPastes(DatabaseHandle $conn, int $user_id) : array {
-    return $conn->query(
-        "SELECT id, title, visible, code, created_at, views FROM pastes
-            WHERE user_id = ?
-            ORDER by pastes.id DESC", [$user_id])->fetchAll();
-}
-
-function getTotalPastes(DatabaseHandle $conn, int $user_id) : int {
-    $query = $conn->prepare("SELECT COUNT(*) AS total_pastes
-            FROM pastes INNER JOIN users ON users.id = pastes.user_id
-            WHERE users.id = ?");
-    $query->execute([$user_id]);
-
-    return intval($query->fetch(PDO::FETCH_NUM)[0]);
 }
 
 function friendlyDateDifference(DateTime $lesser, DateTime $greater) : string {
@@ -205,7 +116,7 @@ function friendlyDateDifference(DateTime $lesser, DateTime $greater) : string {
     foreach ($parts as $part => $value) {
         if ($value !== 0) {
             $pluralizer = ($value === 1 ? '' : 's');
-            $friendly .= "${value} ${part}${pluralizer} ";
+            $friendly .= "{$value} {$part}{$pluralizer} ";
         }
     }
 
@@ -235,35 +146,16 @@ function truncate(string $input, int $maxWords, int $maxChars) : string {
     return $result . ($input == $result ? '' : '[...]');
 }
 
-function doDownload($paste_id, $p_title, $p_member, $p_conntent, $p_code) {
-    $stats = false;
-    if ($p_code) {
-        // Figure out extensions.
-        $ext = match ($p_code) {
-            default => 'txt',
-        };
+function embedView($paste_id, $p_title, $content, $title) : bool {
+    $baseurl = pp_site_url();
 
-        // Download
-        $p_title = stripslashes($p_title);
-        header('content-type: text/plain');
-        header('content-Disposition: attachment; filename="' . $paste_id . '_' . $p_title . '_' . $p_member . '.' . $ext . '"');
-        echo $p_conntent;
-        $stats = true;
-    } else {
-        // 404
-        header('HTTP/1.1 404 Not Found');
-    }
-    return $stats;
-}
-
-function embedView($paste_id, $p_title, $p_conntent, $p_code, $title, $baseurl, $ges_style, $lang) {
     $stats = false;
-    if ($p_conntent) {
+    if ($content) {
         // Build the output
-        $output = "<div class='paste_embed_conntainer'>";
+        $output = "<div class='paste_embed_container'>";
         $output .= "<style>"; // Add our own styles
         $output .= "
-            .paste_embed_conntainer {
+            .paste_embed_container {
                 font-size: 12px;
                 color: #333;
                 text-align: left;
@@ -272,13 +164,13 @@ function embedView($paste_id, $p_title, $p_conntent, $p_code, $title, $baseurl, 
                 background-color: #f7f7f7;
                 border-radius: 3px;
             }
-            .paste_embed_conntainer a {
+            .paste_embed_container a {
                 font-weight: bold;
                 color: #666;
                 text-decoration: none;
                 border: 0;
             }
-            .paste_embed_conntainer ol {
+            .paste_embed_container ol {
                 color: white;
                 background-color: #f7f7f7;
                 border-right: 1px solid #ccc;
@@ -306,16 +198,15 @@ function embedView($paste_id, $p_title, $p_conntent, $p_code, $title, $baseurl, 
                 line-height:20px;
             }";
         $output .= "</style>";
-        $output .= "$ges_style"; // Dynamic GeSHI Style
-        $output .= $p_conntent; // Paste content
+        $output .= $content; // Paste content
         $output .= "<div class='paste_embed_footer'>";
-        $output .= "<a href='https://ponepaste.org/$paste_id'>$p_title</a> " . $lang['embed-hosted-by'] . " <a href='https://ponepaste.org'>$title</a> | <a href='https://ponepaste.org/raw/$paste_id'>" . strtolower($lang['view-raw']) . "</a>";
+        $output .= "<a href='{$baseurl}/{$paste_id}'>$p_title</a> Hosted by <a href='{$baseurl}'>$title</a> | <a href='{$baseurl}/raw/$paste_id'>view raw</a>";
         $output .= "</div>";
         $output .= "</div>";
 
         // Display embed conntent using json_encode since that escapes
         // characters well enough to satisfy javascript. http://stackoverflow.com/a/169035
-        header('conntent-type: text/javascript; charset=utf-8;');
+        header('Content-Type: text/javascript; charset=utf-8;');
         echo 'document.write(' . json_encode($output) . ')';
         $stats = true;
     } else {
@@ -325,22 +216,14 @@ function embedView($paste_id, $p_title, $p_conntent, $p_code, $title, $baseurl, 
     return $stats;
 }
 
-function addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite) {
+function addToSitemap(Paste $paste, $priority, $changefreq) : void {
     $c_date = date('Y-m-d');
     $site_data = file_get_contents("sitemap.xml");
     $site_data = str_replace("</urlset>", "", $site_data);
-    // which protocol are we on
-    $protocol = paste_protocol();
-
-    if (PP_MOD_REWRITE) {
-        $server_name = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/" . $paste_id;
-    } else {
-        $server_name = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/paste.php?id=" . $paste_id;
-    }
 
     $c_sitemap =
         '	<url>
-		<loc>' . $server_name . '</loc>
+		<loc>' . urlForPaste($paste) . '</loc>
 		<priority>' . $priority . '</priority>
 		<changefreq>' . $changefreq . '</changefreq>
 		<lastmod>' . $c_date . '</lastmod>
@@ -352,7 +235,101 @@ function addToSitemap($paste_id, $priority, $changefreq, $mod_rewrite) {
 }
 
 function paste_protocol() : string {
-    return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? 'https://' : 'http://';
+    return !empty($_SERVER['HTTPS']) ? 'https://' : 'http://';
 }
 
+function pp_site_url() : string {
+    return paste_protocol() . $_SERVER['HTTP_HOST'];
+}
 
+/* get rid of unintended wildcards in a parameter to LIKE queries; not a security issue, just unexpected behaviour. */
+function escapeLikeQuery(string $query) : string {
+    return str_replace(['\\', '_', '%'], ['\\\\', '\\_', '\\%'], $query);
+}
+
+function paginate(int $current_page, int $per_page, int $total_records) : string {
+    $first_page = 0;
+    $last_page = floor($total_records / $per_page);
+    $window = 2;
+
+    if ($first_page == $last_page) {
+        // Do something?
+    }
+
+    $_page_button = function(int $page, string $text, bool $disabled = false) use ($current_page) : string {
+        /* We need to update the 'page' parameter in the request URI, or add it if it doesn't exist. */
+        $request_uri = parse_url($_SERVER['REQUEST_URI']);
+        parse_str((string) @$request_uri['query'], $parsed_query);
+        $parsed_query['page'] = (string) $page;
+        $page_uri = ((string) @$request_uri['path']) . '?' . http_build_query($parsed_query);
+
+        $selected_class = $current_page == $page ? ' paginator__button--selected' : '';
+
+        $disabled_text = $disabled ? ' aria-disabled="true"' : '';
+        return sprintf("<a type=\"button\" class=\"paginator__button$selected_class\" href=\"%s\"%s>%s</a>", $page_uri, $disabled_text, $text);
+    };
+
+    $html = '';
+
+    /* First and last page the main paginator will show */
+    $first_page_show = max(($current_page - $window), $first_page);
+    $last_page_show = min(($current_page + $window), $last_page);
+
+    /* Whether to show the first and last pages in existence at the ends of the paginator */
+    $show_first_page = (abs($first_page - $current_page)) > ($window);
+    $show_last_page = (abs($last_page - $current_page)) > ($window);
+
+    $prev_button_disabled = $current_page == $first_page ? 'disabled' : '';
+    $next_button_disabled = $current_page == $last_page ? 'disabled' : '';
+
+    $html .= $_page_button($current_page - 1, 'Previous', $prev_button_disabled);
+
+    if ($show_first_page) {
+        $html .= $_page_button($first_page, $first_page);
+        $html .= '<span class="ellipsis">…</span>';
+    }
+
+    for ($i = $first_page_show; $i <= $last_page_show; $i++) {
+        $html .= $_page_button($i, $i);
+    }
+
+    if ($show_last_page) {
+        $html .= '<span class="ellipsis">…</span>';
+        $html .= $_page_button($last_page, $last_page);
+    }
+
+    $html .= $_page_button($current_page + 1, 'Next', $next_button_disabled);
+
+    return $html;
+}
+
+function pp_filename_escape(string $filename, string $extension) : string {
+    /* Remove NTFS invalid characters */
+    $filename = preg_replace('#[<>:"/|?*]#', '-', $filename);
+
+    /* Windows MAX_PATH limit */
+    if (strlen($filename . $extension) > 255) {
+        $filename = substr($filename, 0, 255 - strlen($extension));
+    }
+
+    return $filename . $extension;
+}
+
+function pp_setup_pagination() : array {
+    $per_page = 20;
+    $current_page = 0;
+
+    if (!empty($_GET['page'])) {
+        $current_page = max(0, intval($_GET['page']));
+    }
+
+    if (!empty($_GET['per_page'])) {
+        $per_page = max(1, min(100, intval($_GET['per_page'])));
+    }
+
+    return [$per_page, $current_page];
+}
+
+function pp_output_paginator(int $per_page, int $current_page) : void {
+
+}

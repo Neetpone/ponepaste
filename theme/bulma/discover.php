@@ -1,19 +1,3 @@
-<?php
-/*
- * Paste <https://github.com/jordansamuel/PASTE> - Clean theme
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License in GPL.txt for more details.
- */
-?>
-
 <main class="bd-main">
     <!-- START CONTAINER -->
     <div class="bd-side-background"></div>
@@ -37,7 +21,7 @@
                         <!-- Pop Pastes -->
                         <div class="tab-content" id="first-tab">
                             <div class="panel panel-default">
-                                <h1 class="title is-4"><?php echo $lang['popular']; ?></h1>
+                                <h1 class="title is-4">Popular Pastes</h1>
                                 <div class="columns is-multiline">
                                     <?php foreach ($popular_pastes as $paste): ?>
                                         <div class="column is-half">
@@ -46,11 +30,11 @@
                                                     <div class="media">
                                                         <div class="media-content" style="overflow: hidden">
                                                             <p class="title is-5">
-                                                                <a href="<?= urlForPaste($paste['id']) ?>"
-                                                                   title="<?= $paste['title'] ?>"> <?= $paste['title'] ?> </a>
+                                                                <a href="<?= urlForPaste($paste) ?>"
+                                                                   title="<?= pp_html_escape($paste->title) ?>"> <?= pp_html_escape($paste->title) ?> </a>
                                                             </p>
                                                             <p class="subtitle is-6">
-                                                                <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
+                                                                <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
                                                                 <br>
                                                                 <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
                                                             </p>
@@ -75,7 +59,7 @@
                         <!-- mPop Pastes -->
                         <div class="tab-content" id="second-tab">
                             <div class="panel panel-default">
-                                <h1 class="title is-4"><?php echo $lang['monthpopular']; ?></h1>
+                                <h1 class="title is-4">This month's popular pastes</h1>
                                 <div class="columns is-multiline">
                                     <?php foreach ($monthly_popular_pastes as $paste): ?>
                                         <div class="column is-half">
@@ -84,11 +68,11 @@
                                                     <div class="media">
                                                         <div class="media-content" style="overflow: hidden">
                                                             <p class="title is-5">
-                                                                <a href="<?= urlForPaste($paste['id']) ?>"
-                                                                   title="<?= $paste['title'] ?>"> <?= $paste['title'] ?> </a>
+                                                                <a href="<?= urlForPaste($paste) ?>"
+                                                                   title="<?= pp_html_escape($paste->title) ?>"> <?= pp_html_escape($paste->title) ?> </a>
                                                             </p>
                                                             <p class="subtitle is-6">
-                                                                <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
+                                                                <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
                                                                 <br>
                                                                 <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
                                                             </p>
@@ -114,7 +98,7 @@
                         <!-- New Pastes -->
                         <div class="tab-content" id="third-tab">
                             <div class="panel panel-default">
-                                <h1 class="title is-4"><?php echo $lang['recentpastes']; ?></h1>
+                                <h1 class="title is-4">New Pastes</h1>
                                 <div class="columns is-multiline">
                                     <?php foreach ($recent_pastes as $paste): ?>
                                         <div class="column is-half">
@@ -123,11 +107,11 @@
                                                     <div class="media">
                                                         <div class="media-content" style="overflow: hidden">
                                                             <p class="title is-5">
-                                                                <a href="<?= urlForPaste($paste['id']) ?>"
-                                                                   title="<?= $paste['title'] ?>"> <?= $paste['title'] ?> </a>
+                                                                <a href="<?= urlForPaste($paste) ?>"
+                                                                   title="<?= pp_html_escape($paste->title) ?>"> <?= pp_html_escape($paste->title) ?> </a>
                                                             </p>
                                                             <p class="subtitle is-6">
-                                                                <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
+                                                                <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
                                                                 <br>
                                                                 <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
                                                             </p>
@@ -153,7 +137,7 @@
                         <!-- Updated Pastes -->
                         <div class="tab-content" id="forth-tab">
                             <div class="panel panel-default">
-                                <h1 class="title is-4"><?php echo $lang['updatedgreen']; ?></h1>
+                                <h1 class="title is-4">Recently Updated Pastes</h1>
                                 <div class="columns is-multiline">
                                     <?php foreach ($updated_pastes as $paste): ?>
                                         <div class="column is-half">
@@ -162,11 +146,11 @@
                                                     <div class="media">
                                                         <div class="media-content" style="overflow: hidden">
                                                             <p class="title is-5">
-                                                                <a href="<?= urlForPaste($paste['id']) ?>"
-                                                                   title="<?= $paste['title'] ?>"> <?= $paste['title'] ?> </a>
+                                                                <a href="<?= urlForPaste($paste) ?>"
+                                                                   title="<?= pp_html_escape($paste->title) ?>"> <?= pp_html_escape($paste->title) ?> </a>
                                                             </p>
                                                             <p class="subtitle is-6">
-                                                                <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
+                                                                <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
                                                                 <br>
                                                                 <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_update_time'] ?></time>
                                                             </p>
@@ -192,7 +176,7 @@
                         <!-- Random Pastes -->
                         <div class="tab-content" id="fifth-tab">
                             <div class="panel panel-default">
-                                <h1 class="title is-4"><?php echo $lang['random']; ?></h1>
+                                <h1 class="title is-4">Random Pastes</h1>
                                 <div class="columns is-multiline">
                                     <?php foreach ($random_pastes as $paste): ?>
                                         <div class="column is-half">
@@ -201,11 +185,11 @@
                                                     <div class="media">
                                                         <div class="media-content" style="overflow: hidden">
                                                             <p class="title is-5">
-                                                                <a href="<?= urlForPaste($paste['id']) ?>"
-                                                                   title="<?= $paste['title'] ?>"> <?= $paste['title'] ?> </a>
+                                                                <a href="<?= urlForPaste($paste) ?>"
+                                                                   title="<?= pp_html_escape($paste->title) ?>"> <?= pp_html_escape($paste->title) ?> </a>
                                                             </p>
                                                             <p class="subtitle is-6">
-                                                                <a href="<?= urlForMember($paste['member']) ?>"><?= $paste['member'] ?></a>
+                                                                <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
                                                                 <br>
                                                                 <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
                                                             </p>
@@ -227,6 +211,7 @@
                                 </div>
                             </div>
                         </div>
+                    </section>
                 </div>
             </div>
         </div>
@@ -236,7 +221,7 @@
     const tabSystem = {
         init() {
             document.querySelectorAll('.tabs-menu').forEach(tabMenu => {
-                Array.from(tabMenu.children).forEach((child, ind) => {
+                Array.from(tabMenu.children).forEach(child => {
                     child.addEventListener('click', () => {
                         tabSystem.toggle(child.dataset.target);
                     });

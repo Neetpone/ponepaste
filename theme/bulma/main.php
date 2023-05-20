@@ -1,233 +1,46 @@
-<?php
-/*
- * Paste <https://github.com/jordansamuel/PASTE> - Bulma theme
- * Theme by wsehl <github.com/wsehl> (January, 2021)
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License in GPL.txt for more details.
- */
-
-?>
 <link rel="stylesheet" href="theme/bulma/css/bulma-tagsinput.min.css"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="theme/bulma/js/bulma-tagsinput.min.js"></script>
-<script>
-function setupTagsInput() {
-        const tagsInput = document.getElementById('tags-with-source');
-        new BulmaTagsInput(tagsInput, {
-                allowDuplicates: false,
-                caseSensitive: false,
-                clearSelectionOnTyping: false,
-                closeDropdownOnItemSelect: true,
-                delimiter: ',',
-                freeInput: true,
-                highlightDuplicate: true,
-                highlightMatchesString: true,
-                itemText: 'name',
-                maxTags: 10,
-                maxChars: 40,
-                minChars: 1,
-                noResultsLabel: 'No results found',
-                placeholder: '10 Tags Maximum"',
-                removable: true,
-                searchMinChars: 1,
-                searchOn: 'text',
-                selectable: true,
-                tagClass: 'is-info',
-                trim: true,
-        });
-    }
-
-    if (document.readyState !== 'loading') {
-        setupTagsInput();
-    } else {
-        document.addEventListener('DOMContentLoaded', setupTagsInput);
-    }
-</script>
 <main class="bd-main">
     <div class="bd-side-background"></div>
     <div class="bd-main-container container">
         <div class="bd-duo">
             <div class="bd-lead">
-                <!-- Guests -->
-                <?php if (isset($noguests) && $noguests == "on") { // Site permissions
-                    ?>
-                    <section class="hero is-medium">
-                        <div class="">
-                            <article class="message is-info">
-                                <div class="message-header">
-                                    <p>Site News:</p>
-                                </div>
-                                <div class="message-body">
-                                    <div class="content is-normal">
-                                        <ul>
-                                            <li>Ponepaste has now a favorite system. You can now favorite pastes and
-                                                bookmark them on your userpage under "Favorites"
-                                            </li>
-                                            <li>Report function and UI has been overhauled.</li>
-                                            <li>The archive page has now been updated, tags are now clickable for a
-                                                faster search.
-                                            </li>
-                                            <li>Tags UI has been overhauled. Tags containing "SAFE" and "NSFW" will
-                                                appear green and red.
-                                            </li>
-                                            <li>When Creating paste the tag input box has been updated with a new visual
-                                                style.
-                                            </li>
-                                            <li>Tags are now being canonized, if you see your tags change, it's just the
-                                                admin working in the background
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </article>
-                            <div class="container">
-                                <div class="columns is-multiline is-mobile">
-                                    <div class="column">
-                                        <div class="panel-body">
-                                            <div class="list-widget pagination-content">
-                                                <?php
-                                                $res = getRandomPastes($conn, 10);
-                                                foreach ($res
-
-                                                as $index => $row) {
-                                                $title = Trim($row['title']);
-                                                $titlehov = ($row['title']);
-                                                $p_member = Trim($row['member']);
-                                                $p_id = Trim($row['id']);
-                                                $p_date = Trim($row['date']);
-                                                $p_time = Trim($row['now_time']);
-                                                $nowtime = time();
-                                                $oldtime = $p_time;
-                                                $title = truncate($title, 24, 60);
-                                                ?>
-
-                                                <p class="no-margin">
-                                                    <?php
-                                                    if (PP_MOD_REWRITE) {
-                                                        echo '<header class="bd-category-header my-1">
-									<a data-tooltip="' . $titlehov . '" href="' . $p_id . '" title="' . $title . '">' . $title . ' </a>
-									<a class="icon is-pulled-right has-tooltip-arrow has-tooltip-left-mobile has-tooltip-bottom-desktop has-tooltip-left-until-widescreen" data-tooltip="' . $p_time . '">
-										<i class="far fa-clock has-text-grey" aria-hidden="true"></i>
-									</a>
-									<p class="subtitle is-7">' . 'by ' . '
-										<i><a href="https://Ponepaste.org/user/' . $p_member . '">' . $p_member . '</a></i>
-									</p>' .
-                                                            '</header>';
-                                                    } else {
-                                                        echo '<a href="' . $p_id . '" title="' . $titlehov . '">' . ucfirst($title) . '</a>';
-                                                    }
-                                                    }
-                                                    ?>
-
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="column">
-                                        <div class="panel-body">
-                                            <div class="list-widget pagination-content">
-                                                <?php
-                                                $res = getRandomPastes($conn, 10);
-                                                foreach ($res
-
-                                                as $index => $row) {
-                                                $title = Trim($row['title']);
-                                                $titlehov = ($row['title']);
-                                                $p_member = Trim($row['member']);
-                                                $p_id = Trim($row['id']);
-                                                $p_date = Trim($row['date']);
-                                                $p_time = Trim($row['now_time']);
-                                                $nowtime = time();
-                                                $oldtime = $p_time;
-
-                                                $title = truncate($title, 24, 60);
-                                                ?>
-
-                                                <p class="no-margin">
-                                                    <?php
-                                                    if (PP_MOD_REWRITE) {
-                                                        echo '<header class="bd-category-header my-1">
-									<a data-tooltip="' . $titlehov . '" href="' . $p_id . '" title="' . $title . '">' . $title . ' </a>
-									<a class="icon is-pulled-right has-tooltip-arrow has-tooltip-left-mobile has-tooltip-bottom-desktop has-tooltip-left-until-widescreen" data-tooltip="' . $p_time . '">
-										<i class="far fa-clock has-text-grey" aria-hidden="true"></i>
-									</a>
-									<p class="subtitle is-7">' . 'by ' . '
-										<i><a href="https://Ponepaste.org/user/' . $p_member . '">' . $p_member . '</a></i>
-									</p>' .
-                                                            '</header>';
-                                                    } else {
-                                                        echo '<a href="' . $p_id . '" title="' . $titlehov . '">' . ucfirst($title) . '</a>';
-                                                    }
-                                                    }
-                                                    ?>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                <?php } else { ?>
                 <!-- Paste Panel -->
                 <?php if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     if (isset($error)) { ?>
                         <!-- Error Panel -->
-                        <i class="fa fa-exclamation-circle" aria-hidden=" true"></i> <?php echo $error; ?>
+                        <i class="fa fa-exclamation-circle" aria-hidden="true"></i> <?php echo $error; ?>
                     <?php }
                 }
                 ?>
+                <?php outputFlashes($flashes); ?>
                 <h1 class="subtitle is-4">
-                    <?php echo $lang['newpaste']; ?>
+                    New Paste
                 </h1>
-                <form name="mainForm" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
+                <form method="POST">
                     <nav class="level">
                         <div class="level-left">
                             <!-- Title -->
                             <div class="level-item is-pulled-left" style="margin-right: 5px;">
                                 <p class="control has-icons-left">
-                                    <input type="text" class="input" name="title" onchange="getFileName()"
-                                           placeholder="<?php echo $lang['pastetitle']; ?>"
+                                    <input type="text" class="input" name="title" placeholder="Title"
                                            value="<?php echo (isset($_POST['title'])) ? pp_html_escape($_POST['title']) : ''; ?>">
                                     <span class="icon is-small is-left">
-											<i class="fa fa-font"></i>
-										</span>
+                                        <i class="fa fa-font"></i>
+                                    </span>
                                 </p>
                             </div>
                             <!-- Format -->
                             <div class="level-item is-pulled-left mx-1">
                                 <div class="select">
                                     <select data-live-search="true" name="format">
-                                        <?php // Show popular GeSHi formats
-                                        foreach ($geshiformats as $code => $name) {
-                                            if (in_array($code, $popular_formats)) {
-                                                if (isset($_POST['format'])) {
-                                                    $sel = ($_POST['format'] == $code) ? 'selected="selected"' : ''; // Pre-populate if we come here on an error
-                                                } else {
-                                                    $sel = ($code == "markdown") ? 'selected="selected"' : '';
-                                                }
-                                                echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
+                                        <?php
+                                        foreach (PP_HIGHLIGHT_FORMATS as $code => $name) {
+                                            if (isset($_POST['format'])) {
+                                                $sel = ($_POST['format'] == $code) ? 'selected="selected"' : ''; // Pre-populate if we come here on an error
+                                            } else {
+                                                $sel = ($code == "markdown") ? 'selected="selected"' : '';
                                             }
-                                        }
-                                        echo '<option value="text">__________________</option>';
-                                        // Show all GeSHi formats.
-                                        foreach ($geshiformats as $code => $name) {
-                                            if (!in_array($code, $popular_formats)) {
-                                                if (isset($_POST['format'])) {
-                                                    $sel = ($_POST['format'] == $code) ? 'selected="selected"' : ''; // Pre-populate if we come here on an error
-                                                } else {
-                                                    $sel = ($code == "text") ? 'selected="selected"' : '';
-                                                }
-                                                echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
-                                            }
+                                            echo '<option ' . $sel . ' value="' . $code . '">' . $name . '</option>';
                                         }
                                         ?>
                                     </select>
@@ -235,7 +48,7 @@ function setupTagsInput() {
                             </div>
                             <div class="level-item is-pulled-left mx-1">
                                 <a class="button" onclick="highlight(document.getElementById('code')); return false;"><i
-                                            class="fas fa-indent"></i>&nbspHighlight</a>
+                                        class="fas fa-indent"></i>&nbsp;Highlight</a>
                             </div>
                             <div class="level-item is-pulled-left mx-1">
                                 <input class="button is-info" type="submit" name="submit" id="submit" value="Paste"/>
@@ -254,10 +67,11 @@ function setupTagsInput() {
                             <div class="columns">
                                 <div class="column">
                                     <div class="field">
-                                        <label class="label">Tags</label>
+                                        <label class="label" for="field_tags">Tags</label>
+                                        <small>Type a comma to separate each tag.</small>
                                         <div class="control">
-                                            <input id="tags-with-source" name="tag_input" class="input"
-                                                   value="<?php echo (isset($_POST['tag_input'])) ? pp_html_escape($_POST['tag_input']) : ''; // Pre-populate if we come here on an error" ?>">
+                                            <input name="tag_input" class="input js-tag-input" id="field_tags"
+                                                   value="<?= (isset($_POST['tag_input'])) ? pp_html_escape($_POST['tag_input']) : ''; ?>" />
                                         </div>
                                     </div>
                                 </div>
@@ -267,7 +81,6 @@ function setupTagsInput() {
 
 
                     <div class='row is-full'>
-
                         <div class="columns">
                             <div class="column is-5">
                                 <nav class="level">
@@ -275,7 +88,7 @@ function setupTagsInput() {
                                         <div class="level-item is-pulled-left mr-1">
                                             <div class="field">
                                                 <div class="subtitle has-text-weight-semibold "
-                                                     style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;"><?php echo $lang['expiration']; ?></div>
+                                                     style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;">Expiry</div>
                                                 <div class="control">
                                                     <div class="select">
                                                         <?php
@@ -287,30 +100,12 @@ function setupTagsInput() {
                                                         }
                                                         ?>
                                                         <select name="paste_expire_date">
-                                                            <option value="N" <?php echo ($post_expire == "N") ? 'selected="selected"' : ''; ?>>
-                                                                Never
-                                                            </option>
-                                                            <option value="self" <?php echo ($post_expire == "self") ? 'selected="selected"' : ''; ?>>
-                                                                View Once
-                                                            </option>
-                                                            <option value="10M" <?php echo ($post_expire == "10M") ? 'selected="selected"' : ''; ?>>
-                                                                10 Minutes
-                                                            </option>
-                                                            <option value="1H" <?php echo ($post_expire == "1H") ? 'selected="selected"' : ''; ?>>
-                                                                1 Hour
-                                                            </option>
-                                                            <option value="1D" <?php echo ($post_expire == "1D") ? 'selected="selected"' : ''; ?>>
-                                                                1 Day
-                                                            </option>
-                                                            <option value="1W" <?php echo ($post_expire == "1W") ? 'selected="selected"' : ''; ?>>
-                                                                1 Week
-                                                            </option>
-                                                            <option value="2W" <?php echo ($post_expire == "2W") ? 'selected="selected"' : ''; ?>>
-                                                                2 Weeks
-                                                            </option>
-                                                            <option value="1M" <?php echo ($post_expire == "1M") ? 'selected="selected"' : ''; ?>>
-                                                                1 Month
-                                                            </option>
+
+                                                            <?= optionsForSelect(
+                                                                ['Never', 'View Once', '10 minutes',   '1 hour', '1 day', '1 week', '2 weeks', '1 month'],
+                                                                ['N',     'self',      '0Y0M0DT0H10M', '1H',     '1D',    '1W',     '2W',      '1M'],
+                                                                $post_expire
+                                                            ); ?>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -319,7 +114,7 @@ function setupTagsInput() {
                                         <div class="level-item is-pulled-left mx-1">
                                             <div class="field">
                                                 <div class="subtitle has-text-weight-semibold "
-                                                     style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;"><?php echo $lang['visibility']; ?>
+                                                     style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;">Visibility
                                                     &nbsp;&nbsp;
                                                 </div>
                                                 <div class="control">
@@ -359,8 +154,8 @@ function setupTagsInput() {
                                         <div class="columns">
                                             <div class="column">
                                                 <input type="text" class="input" name="pass" id="pass"
-                                                       placeholder="<?php echo $lang['pwopt']; ?>"
-                                                       value="<?php echo (isset($_POST['pass'])) ? pp_html_escape($_POST['pass']) : ''; ?>" />
+                                                       placeholder="Password" autocomplete="new-password"
+                                                       value="<?php echo (isset($_POST['pass'])) ? pp_html_escape($_POST['pass']) : ''; ?>"/>
                                             </div>
                                         </div>
                                     </div>
@@ -370,55 +165,43 @@ function setupTagsInput() {
                                     <div class="level-left">
                                         <!-- Encrypted -->
                                         <div class="field">
-                                            <?php
-                                            $encrypted_checked = "";
-                                            if ($_POST) {
-                                                // We came here from an error, carry the checkbox setting forward
-                                                if (isset($_POST['encrypted'])) {
-                                                    $encrypted_checked = "checked";
-                                                }
-                                            } else {
-                                                // Fresh paste. Default to encrypted on
-                                                $encrypted_checked = "checked";
-                                            }
-                                            ?>
                                             <input class="is-checkradio is-info has-background-color" id="encrypt"
-                                                   name="encrypted" type="checkbox" <?php echo $encrypted_checked; ?>>
+                                                   checked="checked" disabled="disabled" type="checkbox">
                                             <label for="encrypt">
-                                                <?php echo $lang['encrypt']; ?>
+                                                Encrypt on Server (always enabled)
                                             </label>
                                         </div>
                                     </div>
                                 </nav>
                             </div>
                             <div class="column is-3">
-                                <!-- $text_ads -->
-                                <?php
-                                // don't display ads for logged in users.
-                                if (!empty($site_ads) && $current_user === null) {
-                                    echo $site_ads['text_ads'];
-                                }
-                                ?>
                             </div>
                             <div class="column is-4">
                                 <!-- CAPTCHA -->
-                                <?php if ($captcha_config['enabled'] && $current_user === null): ?>
+                                <?php if ($captcha_enabled && $current_user === null): ?>
                                     <div class="is-one-quarter">
-                                        <div class="notification">
-                                            <span class="tags are-large"><?php echo '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA" class="imagever">'; ?></span>
-                                            <input type="text" class="input" name="scode" value=""
-                                                   placeholder="<?php echo $lang['entercode']; ?>">
-                                            <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press
-                                                "Enter"</p>
+                                        <div class="captcha_container">
+                                            <img src="/captcha?t=<?= $captcha_token = setupCaptcha() ?>" alt="CAPTCHA Image" />
+                                            <span id="captcha_refresh" style="height: 100%;">
+                                                <a href="javascript:void(0)">
+                                                    <i class="fa fa-refresh" style="height: 100%;"></i>
+                                                </a>
+                                            </span>
+                                            <input type="hidden" name="captcha_token" value="<?= $captcha_token ?>" />
+                                            <input type="text" class="input" name="captcha_answer" placeholder="Enter the CAPTCHA" />
+                                            <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press "Enter"</p>
                                         </div>
                                     </div>
                                 <?php endif; ?>
+                                <?php if (isset($csrf_token)): ?>
+                                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
+                                <?php endif; ?>
                             </div>
                         </div>
+                    </div>
                 </form>
             </div>
         </div>
-        <?php } ?>
     </div>
 </main>
 
@@ -428,22 +211,22 @@ function setupTagsInput() {
     }
 
     function countChars(obj) {
-// True limit
-        var maxLength = 1000000;
-        var strLength = obj.value.length;
-        var charRemain = (maxLength - strLength);
-        var char2kb = charRemain / 1000;
-        var charDisplay = roundToTwo(char2kb);
-// Grace limit    
-        var gracelimit = 11480;
-        var newstrLength = obj.value.length - 1000000;
-        var graceRemain = (gracelimit - newstrLength);
-        var grace2kb = graceRemain / 1000;
-        var graceDisplay = roundToTwo(grace2kb);
+        // True limit
+        const maxLength = 1000000;
+        const strLength = obj.value.length;
+        const charRemain = (maxLength - strLength);
+        const char2kb = charRemain / 1000;
+        const charDisplay = roundToTwo(char2kb);
+        // Grace limit
+        const gracelimit = 11480;
+        const newstrLength = obj.value.length - 1000000;
+        const graceRemain = (gracelimit - newstrLength);
+        const grace2kb = graceRemain / 1000;
+        const graceDisplay = roundToTwo(grace2kb);
 
         if (graceRemain < 0) {
             document.getElementById("charNum").innerHTML = '<b>File Size: </b><span style="color: red;">File Size limit reached</span>';
-        } else if ((charRemain < 0)) {
+        } else if (charRemain < 0) {
             document.getElementById("charNum").innerHTML = '<b>File Size: </b><span style="color: orange;">' + graceDisplay + '/24Kb Grace Limit</span>';
         } else {
             document.getElementById("charNum").innerHTML = '<b>File Size: </b><span style="color: green;">' + charDisplay + '/1000Kb</span>';
