@@ -104,12 +104,31 @@ class Paste extends Model {
             ->limit($count)->get();
     }
 
-    public static function getRandom(int $count = 10) : Collection {
-        return Paste::with('user')
-            ->where('visible', self::VISIBILITY_PUBLIC)
-            ->where('is_hidden', false)
-            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
-            ->orderByRaw('RAND()')
-            ->limit($count)->get();
+    public static function getRandom(int $count = 10) : array {
+        $total_pastes = Paste::count();
+        $pastes = [];
+
+        for ($i = 0; $i < $count; $i++) {
+            $pastes[] = self::getSingleRandom($total_pastes);
+        }
+
+        return $pastes;
+    }
+
+    private static function getSingleRandom(int $total) {
+        $paste = null;
+
+        do {
+            $paste_id = rand(1, $total);
+
+            $paste = Paste::with('user')
+                ->where('visible', self::VISIBILITY_PUBLIC)
+                ->where('is_hidden', false)
+                ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
+                ->where('id', $paste_id)
+                ->first();
+        } while (!$paste);
+
+        return $paste;
     }
 }
