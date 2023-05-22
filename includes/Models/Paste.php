@@ -4,6 +4,7 @@ namespace PonePaste\Models;
 use DateTime;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use PonePaste\Helpers\SearchHelper;
 
 class Paste extends Model {
     public const VISIBILITY_PUBLIC   = 0;
@@ -18,6 +19,20 @@ class Paste extends Model {
         'encrypt' => 'boolean'
     ];
     public $timestamps = false;
+
+//    public static function boot() {
+//        self::created(function(Paste $paste) {
+//            SearchHelper::instance()->indexPaste($paste);
+//        });
+//
+//        self::updated(function(Paste $paste) {
+//            SearchHelper::instance()->indexPaste($paste);
+//        });
+//
+//        self::deleted(function(Paste $paste) {
+//            SearchHelper::instance()->deletePaste($paste);
+//        });
+//    }
 
     public function user() {
         return $this->belongsTo(User::class);

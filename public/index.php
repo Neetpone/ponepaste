@@ -4,6 +4,7 @@ define('IN_PONEPASTE', 1);
 require_once(__DIR__ . '/../includes/common.php');
 require_once(__DIR__ . '/../includes/captcha.php');
 
+use PonePaste\Helpers\SearchHelper;
 use PonePaste\Models\Paste;
 use PonePaste\Models\Tag;
 use PonePaste\Models\User;
@@ -152,6 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $paste->replaceTags($tags);
             $redis->del('ajax_pastes'); /* Expire from Redis so the edited paste shows up */
+            SearchHelper::instance()->indexPaste($paste);
         } else {
             $error = 'You must be logged in to do that.';
         }
@@ -178,6 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             addToSitemap($paste, $priority, $changefreq);
         }
 
+        SearchHelper::instance()->indexPaste($paste);
         $redis->del('ajax_pastes'); /* Expire from Redis so the new paste shows up */
     }
 

@@ -22,6 +22,11 @@ const PP_MOD_REWRITE = true;
 const PP_REDIS_HOST = '127.0.0.1';
 const PP_REDIS_DB = 'ponepaste';
 
+/* ElasticSearch credentials */
+const PP_ELASTICSEARCH_URL = 'http://localhost:9200';
+const PP_ELASTICSEARCH_USER = 'elastic';
+const PP_ELASTICSEARCH_PASS = 'mypassword';
+
 $db_host = 'localhost';
 $db_schema = 'ponepaste';
 $db_user = 'ponepaste';
