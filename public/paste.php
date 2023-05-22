@@ -89,14 +89,15 @@ if (!can('view', $paste)) {
 }
 
 /* Paste deletion */
-if (false && isset($_POST['delete'])) {
+if (isset($_POST['delete'])) {
     if (!can('delete', $paste)) {
         $error = 'You cannot delete someone else\'s paste!';
         goto Not_Valid_Paste;
     }
-
-    $paste->delete();
-    flashSuccess('Paste deleted.');
+//
+//    $paste->delete();
+//    flashSuccess('Paste deleted.');
+    flashError('Paste deletion is currently disabled.');
     header('Location: ' . urlForMember($current_user));
     die();
 }

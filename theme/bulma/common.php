@@ -34,6 +34,19 @@ $flashes = getFlashes();
     <link href="/theme/bulma/css/paste.css" rel="stylesheet"/>
     <link href="/theme/bulma/css/table-responsive.css" rel="stylesheet"/>
     <link href="/theme/bulma/css/table-row-orders.css" rel="stylesheet"/>
+    <style>
+        footer h5 {
+            margin: 0;
+            padding: 0;
+        }
+
+        footer .column {
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+    </style>
 </head>
 
 <body>
@@ -258,8 +271,8 @@ $flashes = getFlashes();
                 <div class="columns is-mobile is-centered">
                     <h5 class="title is-5">Support PonePaste</h5>
                 </div>
-                <a href='https://liberapay.com/Ponepaste/donate' target='_blank'><img src='../img/lib.png' alt="LiberaPay logo" /></a>
-                <a href='https://ko-fi.com/V7V02K3I2' target='_blank'><img src='../img/kofi.png' alt="Ko-Fi logo" /></a>
+                <div><a href="https://ko-fi.com/floorbored">Ko-Fi</a></div>
+                <div>Ethereum: <code>0xcB737C41Ed63cF5f3Daf522c2Fbc2C6E293dB825</code></div>
             </div>
             <div class="column">
                 <hr>
@@ -278,7 +291,7 @@ $flashes = getFlashes();
                         <ul>
                             <li><a href="/page/tags" target="_blank">Tag Guide</a></li>
                             <li><a href="/page/transparency " target="_blank">Transparency</a></li>
-                            <li><a href="https://liberapay.com/Ponepaste" target="_blank">Donate </a></li>
+                            <li><a href="https://ko-fi.com/floorbored" target="_blank">Donate</a></li>
                         </ul>
                     </div>
                 </div>
