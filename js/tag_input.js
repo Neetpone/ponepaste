@@ -32,6 +32,15 @@ class TagsInput {
 
         /* Handle deletions by clicking the delete button */
         this.containerNode.addEventListener('click', this._handleContainerClick.bind(this));
+
+        /* Handle clicks outside the input node to add the past tag */
+        this.inputNode.addEventListener('focusout', (evt) => {
+            if (this.inputNode.value) {
+                this.addTag(this.inputNode.value);
+                this.inputNode.value = "";
+                this.updateHiddenInputValue();
+            }
+        });
     }
 
     detach() {
