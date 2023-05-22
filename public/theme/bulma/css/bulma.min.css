@@ -313,6 +313,24 @@ fieldset[disabled] .select select,
 fieldset[disabled] .textarea {
     cursor: not-allowed;
 } /*! minireset.css v0.0.6 | MIT License | github.com/jgthms/minireset.css */
+blockquote,
+body,
+dd,
+dl,
+dt,
+fieldset,
+figure,
+html,
+iframe,
+legend,
+li,
+ol,
+p,
+pre,
+textarea {
+    margin: 0;
+    padding: 0;
+}
 button,
 input,
 select,
