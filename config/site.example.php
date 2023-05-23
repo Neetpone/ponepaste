@@ -9,6 +9,7 @@ return array (
     'site_name' => 'PonePaste',
     'email' => ''
   ),
+  'allowed_image_hosts' => array(),
   'interface' => 
   array (
     'language' => 'en',
@@ -18,16 +19,6 @@ return array (
   array (
     'disable_guest' => false,
     'private' => false,
-  ),
-  'mail' => 
-  array (
-    'verification' => false,
-    'smtp_host' => '',
-    'smtp_port' => '',
-    'smtp_user' => '',
-    'socket' => '',
-    'auth' => '',
-    'protocol' => '',
   ),
   'captcha' => 
   array (
