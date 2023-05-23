@@ -7,6 +7,7 @@ use PonePaste\Models\Paste;
 $error = null;
 
 if ($current_user === null) {
+    flashError('To prevent abuse, you must be logged in in order to report a paste.');
     header("Location: /login");
     die();
 }

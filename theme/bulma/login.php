@@ -20,55 +20,8 @@
                 <?php elseif (isset($error)): ?>
                     <div class="notification is-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i><?= pp_html_escape($error); ?></p></div>
                 <?php endif; ?>
-                <?php
-                // Login page
-                if (isset($_GET['login'])) {
-                    ?>
-                    <form action="/login" method="post">
-                        <div class="columns">
-                            <div class="column">
-                                <h1 class="title is-4">Login</h1>
-                                <div class="field">
-                                    <label class="label">Username</label>
-                                    <div class="control has-icons-left has-icons-right">
-                                        <input type="text" class="input" name="username" placeholder="Username">
-                                        <span class="icon is-small is-left">
-											<i class="fas fa-user"></i>
-										</span>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label class="label">Password</label>
-                                    <div class="control has-icons-left has-icons-right">
-                                        <input type="password" class="input" name="password" placeholder="Password">
-                                        <span class="icon is-small is-left">
-											<i class="fas fa-key"></i>
-										</span>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <div class="b-checkbox is-info is-inline">
-                                        <input class="is-checkradio is-info" id="rememberme" name="remember_me"
-                                               type="checkbox" checked="">
-                                        <label for="rememberme">
-                                            Remember Me
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <input class="button is-info" type="submit" name="signin" value="Login" />
-                                </div>
-                                <hr>
-                            </div>
-                            <div class="column">
-                            </div>
-                            <div class="column">
-                            </div>
-                        </div>
-                    </form>
-                    <?php // Registration page
-                } elseif (isset($_GET['register'])) {
-                    ?>
+                <?php outputFlashes($flashes); ?>
+                <?php if (isset($_GET['register'])) { ?>
                     <form action="/register" method="post">
                         <div class="columns">
                             <div class="column">
@@ -129,9 +82,7 @@
                                 not suitable for those aged under 18.</p>
                         </div>
                     </form>
-                    <?php // Forgot password
-                } elseif (isset($_GET['forgotpassw'])) {
-                    ?>
+                    <?php } elseif (isset($_GET['forgotpassw'])) { ?>
                     <form action="/forgot" method="post">
                         <div class="columns">
                             <div class="column">
@@ -167,6 +118,49 @@
                             </div>
                         </div>
                     </form>
+                <?php } else { ?>
+                <form action="/login" method="post">
+                    <div class="columns">
+                        <div class="column">
+                            <h1 class="title is-4">Login</h1>
+                            <div class="field">
+                                <label class="label">Username</label>
+                                <div class="control has-icons-left has-icons-right">
+                                    <input type="text" class="input" name="username" placeholder="Username">
+                                    <span class="icon is-small is-left">
+											<i class="fas fa-user"></i>
+										</span>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label class="label">Password</label>
+                                <div class="control has-icons-left has-icons-right">
+                                    <input type="password" class="input" name="password" placeholder="Password">
+                                    <span class="icon is-small is-left">
+											<i class="fas fa-key"></i>
+										</span>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="b-checkbox is-info is-inline">
+                                    <input class="is-checkradio is-info" id="rememberme" name="remember_me"
+                                           type="checkbox" checked="">
+                                    <label for="rememberme">
+                                        Remember Me
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <input class="button is-info" type="submit" name="signin" value="Login" />
+                            </div>
+                            <hr>
+                        </div>
+                        <div class="column">
+                        </div>
+                        <div class="column">
+                        </div>
+                    </div>
+                </form>
                 <?php } ?>
                 <div class="columns">
                     <div class="column">
