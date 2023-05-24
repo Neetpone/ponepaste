@@ -105,7 +105,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body>
-
 <div id="top" class="clearfix">
     <!-- Start App Logo -->
     <div class="applogo">
@@ -156,17 +155,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                    id="site_info_name"
                                                    placeholder="The name of your site"
                                                    value="<?= pp_html_escape($current_site_info['site_name']); ?>">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label form-label" for="site_info_title">Site
-                                            Title</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="site_info[title]"
-                                                   id="site_info_title"
-                                                   placeholder="Site title tag"
-                                                   value="<?= pp_html_escape($current_site_info['title']); ?>">
                                         </div>
                                     </div>
 

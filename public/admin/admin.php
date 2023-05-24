@@ -85,9 +85,9 @@ $admin_logs = AdminLog::with('user')
                                               method="POST">
                                             <div class="form-area">
                                                 <div class="group">
+                                                    <label for="password">Change your personal admin password:</label>
                                                     <input type="password" id="password" name="password"
                                                            class="form-control" placeholder="Admin Password">
-                                                    <i class="fa fa-key"></i>
                                                 </div>
                                                 <button type="submit" class="btn btn-default btn-block">Save</button>
                                             </div>

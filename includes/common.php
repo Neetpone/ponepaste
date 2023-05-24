@@ -248,7 +248,6 @@ $redis->pconnect(PP_REDIS_HOST);
 $site_info = getSiteInfo();
 $global_site_info = $site_info['site_info'];
 $row = $site_info['site_info'];
-$title = trim($row['title']);
 $site_name = trim($row['site_name']);
 $email = trim($row['email']);
 

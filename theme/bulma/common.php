@@ -19,7 +19,7 @@ $flashes = getFlashes();
 
     <title>
         <?php
-        $title = $global_site_info['title'];
+        $title = $global_site_info['site_name'];
 
         if (isset($page_title)) {
             $title = $page_title . ' - ' . $title;

@@ -157,7 +157,7 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
                             foreach ($res as $paste) {
                                 $p_date = new DateTime($paste['created_at']);
                                 $p_date_formatted = $p_date->format('jS F Y h:i:s A');
-                                $title = truncate($title, 5, 30);
+                                $title = truncate($paste->title, 5, 30);
                                 ?>
                                 <tr>
                                     <td><?= pp_html_escape($paste->user->username); ?></td>
