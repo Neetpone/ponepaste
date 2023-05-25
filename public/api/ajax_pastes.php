@@ -18,7 +18,7 @@ $pastes = Paste::with([
     'tags' => function($query) {
         $query->select('tags.id', 'name', 'slug');
     }
-])->select(['id', 'user_id', 'title', 'expiry'])
+])->select(['id', 'user_id', 'title', 'expiry', 'created_at', 'updated_at'])
     ->where('visible', Paste::VISIBILITY_PUBLIC)
     ->where('hidden', false)
     ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
@@ -37,6 +37,8 @@ header('Content-Type: application/json; charset=UTF-8');
 $pastes_json = json_encode(['data' => $pastes->map(function($paste) {
     return [
         'id' => $paste->id,
+        'created_at' => $paste->created_at,
+        'updated_at' => $paste->updated_at ?? $paste->created_at,
         'title' => $paste->title,
         'author' => $paste->user->username,
         'author_id' => $paste->user->id,

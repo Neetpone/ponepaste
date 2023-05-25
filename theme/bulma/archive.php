@@ -86,6 +86,7 @@
                     <tr class="paginator__sort">
                         <th data-sort-field="title">Title</th>
                         <th data-sort-field="author">Author</th>
+                        <th data-sort-field="updated_at">Updated</th>
                         <th data-sort-field="tags">Tags</th>
                     </tr>
                     </thead>
@@ -94,6 +95,7 @@
                         <tr>
                             <td><?= pp_html_escape($paste->title) ?></td>
                             <td><?= pp_html_escape($paste->user->username) ?></td>
+                            <td><?= pp_html_escape($paste->updated_at ?? $paste->created_at) ?></td>
                             <td><?= tagsToHtml($paste->tags) ?></td>
                         </tr>
                     <?php endforeach; ?>
@@ -102,6 +104,7 @@
                     <tr>
                         <th>Title</th>
                         <th>Author</th>
+                        <th>Updated</th>
                         <th>Tags</th>
                     </tr>
                     </tfoot>

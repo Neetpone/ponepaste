@@ -20,6 +20,7 @@ whenReady(() => {
             return `<tr>
                         <td><a href="/${rowData.id}">${escape(rowData.title)}</a></td>
                         <td><a href="/user/${escape(rowData.author)}">${escape(rowData.author)}</a></td>
+                        <td>${escape(rowData.updated_at)}</td>
                         <td>${tagsToHtml(rowData.tags)}</td>
                     </tr>`;
         },

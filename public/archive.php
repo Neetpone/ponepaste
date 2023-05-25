@@ -28,7 +28,7 @@ $pastes = Paste::with([
     'tags' => function($q) {
         $q->select('tags.id', 'name', 'slug');
     }])
-    ->select('id', 'user_id', 'title', 'created_at')
+    ->select('id', 'user_id', 'title', 'created_at', 'updated_at')
     ->where('visible', Paste::VISIBILITY_PUBLIC)
     ->where('hidden', false)
     ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
