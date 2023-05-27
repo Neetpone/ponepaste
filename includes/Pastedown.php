@@ -16,7 +16,7 @@ class Pastedown extends ParsedownExtra {
         if (preg_match('/^>[ ]?(.*)/', $Line['text'], $matches))
         {
             $Block = array(
-                'markup' => "<span class=\"greentext\">" . pp_html_escape($matches[0]) . "</span>",
+                'markup' => "<div class=\"greentext\">" . pp_html_escape($matches[0]) . "</div>",
                 'extent' => strlen($matches[0])
             );
 
@@ -29,7 +29,7 @@ class Pastedown extends ParsedownExtra {
         if (preg_match('/^<[ ]?(.*)/', $Line['text'], $matches))
         {
             $Block = array(
-                'markup' => "<span class=\"redtext\">" . pp_html_escape($matches[0]) . "</span>",
+                'markup' => "<div class=\"redtext\">" . pp_html_escape($matches[0]) . "</div>",
                 'extent' => strlen($matches[0])
             );
 
@@ -42,7 +42,7 @@ class Pastedown extends ParsedownExtra {
         if (preg_match('/^@[ ]?(.*)/', $Line['text'], $matches))
         {
             $Block = array(
-                'markup' => "<span class=\"purpletext\">" . pp_html_escape($matches[0]) . "</span>",
+                'markup' => "<div class=\"purpletext\">" . pp_html_escape($matches[0]) . "</div>",
                 'extent' => strlen($matches[0])
             );
 
