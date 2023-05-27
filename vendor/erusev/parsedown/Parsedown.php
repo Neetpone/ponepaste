@@ -121,15 +121,14 @@ class Parsedown
         '8' => array('List'),
         '9' => array('List'),
         ':' => array('Table'),
-        '<' => array('Comment', 'Markup','Redtext'),
+        '<' => array('Comment', 'Markup'),
         '=' => array('SetextHeader'),
-        '>' => array('Greentext'),
+        '>' => array('Quote'),
         '[' => array('Reference'),
         '_' => array('Rule'),
         '`' => array('FencedCode'),
         '|' => array('Table'),
         '~' => array('FencedCode'),
-        '@' => array('Purpletext'),
     );
 
     # ~
@@ -653,13 +652,13 @@ class Parsedown
     #
     # Quote
 
-    protected function blockGreentext($Line)
+    protected function blockQuote($Line)
     {
         if (preg_match('/^>[ ]?(.*)/', $Line['text'], $matches))
         {
             $Block = array(
                 'element' => array(
-                    'name' => 'greentext',
+                    'name' => 'blockquote',
                     'handler' => 'lines',
                     'text' => (array) $matches[1],
                 ),
@@ -669,38 +668,29 @@ class Parsedown
         }
     }
 
-    protected function blockRedtext($Line)
+    protected function blockQuoteContinue($Line, array $Block)
     {
-        if (preg_match('/^<[ ]?(.*)/', $Line['text'], $matches))
+        if ($Line['text'][0] === '>' and preg_match('/^>[ ]?(.*)/', $Line['text'], $matches))
         {
-            $Block = array(
-                'element' => array(
-                    'name' => 'Redtext',
-                    'handler' => 'lines',
-                    'text' => (array) $matches[1],
-                ),
-            );
+            if (isset($Block['interrupted']))
+            {
+                $Block['element']['text'] []= '';
+
+                unset($Block['interrupted']);
+            }
+
+            $Block['element']['text'] []= $matches[1];
+
+            return $Block;
+        }
+
+        if ( ! isset($Block['interrupted']))
+        {
+            $Block['element']['text'] []= $Line['text'];
 
             return $Block;
         }
     }
-    
-    protected function blockPurpletext($Line)
-    {
-        if (preg_match('/^@[ ]?(.*)/', $Line['text'], $matches))
-        {
-            $Block = array(
-                'element' => array(
-                    'name' => 'purpletext',
-                    'handler' => 'lines',
-                    'text' => (array) $matches[1],
-                ),
-            );
-
-            return $Block;
-        }
-    }
-
 
     #
     # Rule

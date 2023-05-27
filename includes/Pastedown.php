@@ -5,62 +5,45 @@ use ParsedownExtra;
 
 class Pastedown extends ParsedownExtra {
     public function __construct() {
-        $this->BlockTypes['>'] = ['Greentext'];
+        unset($this->BlockTypes['>']);
+        $this->InlineTypes['>'] = ['Greentext'];
         array_unshift($this->BlockTypes['<'], 'Redtext');
-        $this->BlockTypes['@'] = ['Purpletext'];
+        $this->InlineTypes['@'] = ['Purpletext'];
     }
 
-    protected function blockGreentext($Line)
+    protected function inlineGreentext($Line)
     {
         if (preg_match('/^>[ ]?(.*)/', $Line['text'], $matches))
         {
             $Block = array(
-                'element' => array(
-                    'name' => 'span',
-                    'attributes' => [
-                        'class' => 'greentext'
-                    ],
-                    'handler' => 'line',
-                    'text' => $matches[0],
-                ),
+                'markup' => "<span class=\"greentext\">" . pp_html_escape($matches[0]) . "</span>",
+                'extent' => strlen($matches[0])
             );
 
             return $Block;
         }
     }
 
-    protected function blockRedtext($Line)
+    protected function inlineRedtext($Line)
     {
         if (preg_match('/^<[ ]?(.*)/', $Line['text'], $matches))
         {
             $Block = array(
-                'element' => array(
-                    'name' => 'span',
-                    'handler' => 'line',
-                    'attributes' => [
-                        'class' => 'redtext'
-                    ],
-                    'text' => $matches[0],
-                ),
+                'markup' => "<span class=\"redtext\">" . pp_html_escape($matches[0]) . "</span>",
+                'extent' => strlen($matches[0])
             );
 
             return $Block;
         }
     }
 
-    protected function blockPurpletext($Line)
+    protected function inlinePurpletext($Line)
     {
         if (preg_match('/^@[ ]?(.*)/', $Line['text'], $matches))
         {
             $Block = array(
-                'element' => array(
-                    'name' => 'span',
-                    'handler' => 'line',
-                    'attributes' => [
-                        'class' => 'purpletext'
-                    ],
-                    'text' => $matches[0],
-                ),
+                'markup' => "<span class=\"purpletext\">" . pp_html_escape($matches[0]) . "</span>",
+                'extent' => strlen($matches[0])
             );
 
             return $Block;

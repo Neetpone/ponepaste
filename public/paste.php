@@ -228,7 +228,7 @@ if ($paste_code === "pastedown" || $paste_code === 'pastedown_old') {
 
 // Embed view after highlighting is applied so that $p_code is syntax highlighted as it should be.
 if (isset($_GET['embed'])) {
-    embedView($paste->id, $paste->title, $p_content, $title);
+    embedView($paste->id, $paste->title, $p_content, $site_name);
     exit();
 }
 
