@@ -7,7 +7,7 @@ class Pastedown extends ParsedownExtra {
     public function __construct() {
         unset($this->BlockTypes['>']);
         $this->InlineTypes['>'] = ['Greentext'];
-        array_unshift($this->BlockTypes['<'], 'Redtext');
+        array_unshift($this->InlineTypes['<'], 'Redtext');
         $this->InlineTypes['@'] = ['Purpletext'];
     }
 
