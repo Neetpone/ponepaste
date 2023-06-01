@@ -85,10 +85,11 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             <small class="title is-6 has-text-weight-normal has-text-grey">
                                 By <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
                                 <br/>
-                                Created: <?= $paste['created_at'] ?>
+                                Created: <?= $paste->created_at ?>
                                 <br/>
-                                <?php if ($paste['updated_at'] != $paste['created_at']): ?>
-                                    Updated: <?= $paste['updated_at'] ?>
+                                <?php if ($paste->updated_at !== null && $paste->updated_at !== $paste->created_at): ?>
+                                    Updated: <?= $paste->updated_at ?>
+                                    <br/>
                                 <?php endif; ?>
                                 Expiry: <?= $paste->expiryDisplay() ?>
                             </small>
