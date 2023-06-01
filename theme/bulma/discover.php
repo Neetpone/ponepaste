@@ -1,3 +1,26 @@
+<?php
+// This is cancer. I'm sorry.
+function outputPasteCard($paste) {
+    echo '<div class="column is-half">
+            <div class="card">
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-content" style="overflow: hidden">
+                            <p class="title is-5">
+                                <a href="' . urlForPaste($paste) . '">' . pp_html_escape($paste->title) . '</a>
+                            </p>
+                            <p class="subtitle is-6">
+                                <a href="' . urlForMember($paste->user) . '">' . pp_html_escape($paste->user->username) . '</a>
+                                <br>
+                                <time datetime="' . $paste->created_at . '">' . friendlyDateDifference(date_create(), date_create($paste->created_at)) . '</time>
+                            </p>' .
+        ($paste->tags->isNotEmpty() ? tagsToHtml($paste->tags) : '<span class="tag is-warning">no tags</span>') . '
+                        </div>
+                    </div>
+                </div>
+           </div></div>';
+}
+?>
 <main class="bd-main">
     <!-- START CONTAINER -->
     <div class="bd-side-background"></div>
@@ -10,7 +33,7 @@
                         <div class="tabs">
                             <ul class="tabs-menu">
                                 <li class="is-active" data-target="first-tab"><a>Popular</a></li>
-                                <li data-target="second-tab"><a>Months Pop</a></li>
+                                <li data-target="second-tab"><a>Month's Pop</a></li>
                                 <li data-target="third-tab"><a>New</a></li>
                                 <li data-target="forth-tab"><a>Updated</a></li>
                                 <li data-target="fifth-tab"><a>Random</a></li>
@@ -24,34 +47,7 @@
                                 <h1 class="title is-4">Popular Pastes</h1>
                                 <div class="columns is-multiline">
                                     <?php foreach ($popular_pastes as $paste): ?>
-                                        <div class="column is-half">
-                                            <div class="card">
-                                                <div class="card-content">
-                                                    <div class="media">
-                                                        <div class="media-content" style="overflow: hidden">
-                                                            <p class="title is-5">
-                                                                <a href="<?= urlForPaste($paste) ?>"
-                                                                   title="<?= pp_html_escape($paste->title) ?>"> <?= pp_html_escape($paste->title) ?> </a>
-                                                            </p>
-                                                            <p class="subtitle is-6">
-                                                                <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
-                                                                <br>
-                                                                <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
-                                                            </p>
-                                                            <?php
-                                                            if (count($paste['tags']) !== 0) {
-                                                                echo tagsToHtml($paste['tags']);
-                                                            } else {
-                                                                echo ' <span class="tag is-warning">No tags</span>';
-                                                            }
-                                                            ?>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <br>
-                                        </div>
+                                        <?php outputPasteCard($paste); ?>
                                     <?php endforeach; ?>
                                 </div>
                             </div>
@@ -62,34 +58,7 @@
                                 <h1 class="title is-4">This month's popular pastes</h1>
                                 <div class="columns is-multiline">
                                     <?php foreach ($monthly_popular_pastes as $paste): ?>
-                                        <div class="column is-half">
-                                            <div class="card">
-                                                <div class="card-content">
-                                                    <div class="media">
-                                                        <div class="media-content" style="overflow: hidden">
-                                                            <p class="title is-5">
-                                                                <a href="<?= urlForPaste($paste) ?>"
-                                                                   title="<?= pp_html_escape($paste->title) ?>"> <?= pp_html_escape($paste->title) ?> </a>
-                                                            </p>
-                                                            <p class="subtitle is-6">
-                                                                <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
-                                                                <br>
-                                                                <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
-                                                            </p>
-                                                            <?php
-                                                            if (count($paste['tags']) !== 0) {
-                                                                echo tagsToHtml($paste['tags']);
-                                                            } else {
-                                                                echo ' <span class="tag is-warning">No tags</span>';
-                                                            }
-                                                            ?>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <br>
-                                        </div>
+                                        <?php outputPasteCard($paste); ?>
                                     <?php endforeach; ?>
                                 </div>
                             </div>
@@ -101,34 +70,7 @@
                                 <h1 class="title is-4">New Pastes</h1>
                                 <div class="columns is-multiline">
                                     <?php foreach ($recent_pastes as $paste): ?>
-                                        <div class="column is-half">
-                                            <div class="card">
-                                                <div class="card-content">
-                                                    <div class="media">
-                                                        <div class="media-content" style="overflow: hidden">
-                                                            <p class="title is-5">
-                                                                <a href="<?= urlForPaste($paste) ?>"
-                                                                   title="<?= pp_html_escape($paste->title) ?>"> <?= pp_html_escape($paste->title) ?> </a>
-                                                            </p>
-                                                            <p class="subtitle is-6">
-                                                                <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
-                                                                <br>
-                                                                <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
-                                                            </p>
-                                                            <?php
-                                                            if (count($paste['tags']) !== 0) {
-                                                                echo tagsToHtml($paste['tags']);
-                                                            } else {
-                                                                echo ' <span class="tag is-warning">No tags</span>';
-                                                            }
-                                                            ?>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <br>
-                                        </div>
+                                        <?php outputPasteCard($paste); ?>
                                     <?php endforeach; ?>
                                 </div>
                             </div>
@@ -140,34 +82,7 @@
                                 <h1 class="title is-4">Recently Updated Pastes</h1>
                                 <div class="columns is-multiline">
                                     <?php foreach ($updated_pastes as $paste): ?>
-                                        <div class="column is-half">
-                                            <div class="card">
-                                                <div class="card-content">
-                                                    <div class="media">
-                                                        <div class="media-content" style="overflow: hidden">
-                                                            <p class="title is-5">
-                                                                <a href="<?= urlForPaste($paste) ?>"
-                                                                   title="<?= pp_html_escape($paste->title) ?>"> <?= pp_html_escape($paste->title) ?> </a>
-                                                            </p>
-                                                            <p class="subtitle is-6">
-                                                                <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
-                                                                <br>
-                                                                <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_update_time'] ?></time>
-                                                            </p>
-                                                            <?php
-                                                            if (count($paste['tags']) !== 0) {
-                                                                echo tagsToHtml($paste['tags']);
-                                                            } else {
-                                                                echo ' <span class="tag is-warning">No tags</span>';
-                                                            }
-                                                            ?>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <br>
-                                        </div>
+                                        <?php outputPasteCard($paste); ?>
                                     <?php endforeach; ?>
                                 </div>
                             </div>
@@ -179,34 +94,7 @@
                                 <h1 class="title is-4">Random Pastes</h1>
                                 <div class="columns is-multiline">
                                     <?php foreach ($random_pastes as $paste): ?>
-                                        <div class="column is-half">
-                                            <div class="card">
-                                                <div class="card-content">
-                                                    <div class="media">
-                                                        <div class="media-content" style="overflow: hidden">
-                                                            <p class="title is-5">
-                                                                <a href="<?= urlForPaste($paste) ?>"
-                                                                   title="<?= pp_html_escape($paste->title) ?>"> <?= pp_html_escape($paste->title) ?> </a>
-                                                            </p>
-                                                            <p class="subtitle is-6">
-                                                                <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
-                                                                <br>
-                                                                <time datetime="<?= $paste['time'] ?>"><?= $paste['friendly_time'] ?></time>
-                                                            </p>
-                                                            <?php
-                                                            if (count($paste['tags']) !== 0) {
-                                                                echo tagsToHtml($paste['tags']);
-                                                            } else {
-                                                                echo ' <span class="tag is-warning">No tags</span>';
-                                                            }
-                                                            ?>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <br>
-                                        </div>
+                                        <?php outputPasteCard($paste); ?>
                                     <?php endforeach; ?>
                                 </div>
                             </div>
