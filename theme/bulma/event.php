@@ -35,8 +35,8 @@
 </script>
 <main class="bd-main">
     <!-- START CONTAINER -->
-    <div class="bd-side-background"></div>
-    <div class="bd-main-container container">
+
+    <div class="container">
         <div class="bd-duo">
             <div class="bd-lead">
                 <!-- Start Row -->

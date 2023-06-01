@@ -1,6 +1,6 @@
 <main class="bd-main">
-    <div class="bd-side-background"></div>
-    <div class="bd-main-container container">
+
+    <div class="container">
         <div class="bd-duo">
             <div class="bd-lead">
                 <?php if (isset($error)): ?>
@@ -10,10 +10,10 @@
                         <form method="post">
                             <div class="field has-addons">
                                 <div class="control">
-                                    <input type="hidden" name="id" value="<?= $paste->id; ?>" />
-                                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
+                                    <input type="hidden" name="id" value="<?= $paste->id; ?>"/>
+                                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>"/>
                                     <input type="password" class="input" name="mypass"
-                                           placeholder="Password" />
+                                           placeholder="Password"/>
                                 </div>
                             </div>
                             <button type="submit" name="submit" class="button is-info">Submit</button>

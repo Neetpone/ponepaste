@@ -1,6 +1,6 @@
 <main class="bd-main">
-    <div class="bd-side-background"></div>
-    <div class="bd-main-container container">
+
+    <div class="container">
         <div class="bd-duo">
             <div class="bd-lead">
                 <h1 class="title is-5">Total Pastes: <?= $total_user_pastes ?></h1>
@@ -79,7 +79,7 @@
                                 <label class="label" for="password_confirmation">Confirm Password</label>
                                 <div class="control has-icons-left has-icons-right">
                                     <input type="password" class="input" name="cpassword" id="password_confirmation"
-                                           placeholder="Confirm Password" />
+                                           placeholder="Confirm Password"/>
                                     <span class="icon is-small is-left">
 										<i class="fas fa-key"></i>
 									</span>
@@ -87,7 +87,7 @@
                             </div>
                             <div class="field">
                                 <?php if (isset($csrf_token)): ?>
-                                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
+                                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>"/>
                                 <?php endif; ?>
                                 <button type="submit" name="submit" class="button is-info">Submit</button>
                             </div>

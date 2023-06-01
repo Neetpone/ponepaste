@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="theme/bulma/css/bulma-tagsinput.min.css"/>
 <main class="bd-main">
-    <div class="bd-side-background"></div>
-    <div class="bd-main-container container">
+
+    <div class="container">
         <div class="bd-duo">
             <div class="bd-lead">
                 <?php if (isset($global_site_info['banner'])): ?>
@@ -76,7 +76,7 @@
                                         <small>Type a comma to separate each tag.</small>
                                         <div class="control">
                                             <input name="tag_input" class="input js-tag-input" id="field_tags"
-                                                   value="<?= (isset($_POST['tag_input'])) ? pp_html_escape($_POST['tag_input']) : ''; ?>" />
+                                                   value="<?= (isset($_POST['tag_input'])) ? pp_html_escape($_POST['tag_input']) : ''; ?>"/>
                                         </div>
                                     </div>
                                 </div>
@@ -93,7 +93,9 @@
                                         <div class="level-item is-pulled-left mr-1">
                                             <div class="field">
                                                 <div class="subtitle has-text-weight-semibold "
-                                                     style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;">Expiry</div>
+                                                     style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;">
+                                                    Expiry
+                                                </div>
                                                 <div class="control">
                                                     <div class="select">
                                                         <?php
@@ -107,8 +109,8 @@
                                                         <select name="paste_expire_date">
 
                                                             <?= optionsForSelect(
-                                                                ['Never', 'View Once', '10 minutes',   '1 hour', '1 day', '1 week', '2 weeks', '1 month'],
-                                                                ['N',     'self',      '0Y0M0DT0H10M', '1H',     '1D',    '1W',     '2W',      '1M'],
+                                                                ['Never', 'View Once', '10 minutes', '1 hour', '1 day', '1 week', '2 weeks', '1 month'],
+                                                                ['N', 'self', '0Y0M0DT0H10M', '1H', '1D', '1W', '2W', '1M'],
                                                                 $post_expire
                                                             ); ?>
                                                         </select>
@@ -119,7 +121,8 @@
                                         <div class="level-item is-pulled-left mx-1">
                                             <div class="field">
                                                 <div class="subtitle has-text-weight-semibold "
-                                                     style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;">Visibility
+                                                     style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;">
+                                                    Visibility
                                                     &nbsp;&nbsp;
                                                 </div>
                                                 <div class="control">
@@ -133,14 +136,17 @@
                                                         }
                                                         ?>
                                                         <select name="visibility">
-                                                            <option value="0" <?php echo ($post_visibility == "0") ? 'selected="selected"' : ''; ?>>
+                                                            <option
+                                                                value="0" <?php echo ($post_visibility == "0") ? 'selected="selected"' : ''; ?>>
                                                                 Public
                                                             </option>
-                                                            <option value="1" <?php echo ($post_visibility == "1") ? 'selected="selected"' : ''; ?>>
+                                                            <option
+                                                                value="1" <?php echo ($post_visibility == "1") ? 'selected="selected"' : ''; ?>>
                                                                 Unlisted
                                                             </option>
                                                             <?php if ($current_user) { ?>
-                                                                <option value="2" <?php echo ($post_visibility == "2") ? 'selected="selected"' : ''; ?>>
+                                                                <option
+                                                                    value="2" <?php echo ($post_visibility == "2") ? 'selected="selected"' : ''; ?>>
                                                                     Private
                                                                 </option>
                                                             <?php } else { ?>
@@ -186,20 +192,23 @@
                                 <?php if ($captcha_enabled && $current_user === null): ?>
                                     <div class="is-one-quarter">
                                         <div class="captcha_container">
-                                            <img src="/captcha?t=<?= $captcha_token = setupCaptcha() ?>" alt="CAPTCHA Image" />
+                                            <img src="/captcha?t=<?= $captcha_token = setupCaptcha() ?>"
+                                                 alt="CAPTCHA Image"/>
                                             <span id="captcha_refresh" style="height: 100%;">
                                                 <a href="javascript:void(0)">
                                                     <i class="fa fa-refresh" style="height: 100%;"></i>
                                                 </a>
                                             </span>
-                                            <input type="hidden" name="captcha_token" value="<?= $captcha_token ?>" />
-                                            <input type="text" class="input" name="captcha_answer" placeholder="Enter the CAPTCHA" />
-                                            <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press "Enter"</p>
+                                            <input type="hidden" name="captcha_token" value="<?= $captcha_token ?>"/>
+                                            <input type="text" class="input" name="captcha_answer"
+                                                   placeholder="Enter the CAPTCHA"/>
+                                            <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press
+                                                "Enter"</p>
                                         </div>
                                     </div>
                                 <?php endif; ?>
                                 <?php if (isset($csrf_token)): ?>
-                                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
+                                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>"/>
                                 <?php endif; ?>
                             </div>
                         </div>

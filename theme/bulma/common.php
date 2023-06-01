@@ -14,8 +14,8 @@ $flashes = getFlashes();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
     <title>
         <?php
@@ -97,9 +97,11 @@ $flashes = getFlashes();
                             </a>
                             <?php if ($current_user !== null && $current_user->role >= User::ROLE_MODERATOR): ?>
                                 <?php $has_reports = Report::where(['open' => true])->count() > 0; ?>
-                                <a class="button navbar-item mx-2" href="/admin" <?= $has_reports ? 'style="color: red;"' : '' ?>>
+                                <a class="button navbar-item mx-2"
+                                   href="/admin" <?= $has_reports ? 'style="color: red;"' : '' ?>>
                                     <span class="icon has-text-info">
-                                        <i class="fa <?= $has_reports ? 'fa-exclamation' : 'fa-toolbox' ?>" aria-hidden="true" <?= $has_reports ? 'style="color: red;"' : '' ?>></i>
+                                        <i class="fa <?= $has_reports ? 'fa-exclamation' : 'fa-toolbox' ?>"
+                                           aria-hidden="true" <?= $has_reports ? 'style="color: red;"' : '' ?>></i>
                                     </span>
                                     <span>Admin</span>
                                 </a>
@@ -107,14 +109,15 @@ $flashes = getFlashes();
                         <?php endif; /* !$site_is_private */ ?>
 
                         <div class="navbar-item has-dropdown is-hoverable">
-                            <a class="navbar-link" role="presentation"><?= pp_html_escape($current_user->username) ?></a>
+                            <a class="navbar-link"
+                               role="presentation"><?= pp_html_escape($current_user->username) ?></a>
                             <div class="navbar-dropdown">
                                 <a class="navbar-item" href="<?= urlForMember($current_user) ?>">Pastes</a>
                                 <a class="navbar-item" href="<?= urlForPage('profile') ?>">Settings</a>
                                 <hr class="navbar-divider"/>
                                 <form action="<?= urlForPage('logout') ?>" method="POST">
                                     <input class="button navbar-link" type="submit" value="Logout"
-                                        style="border:none;padding: 0.375rem 1rem;" />
+                                           style="border:none;padding: 0.375rem 1rem;"/>
                                 </form>
                             </div>
                         </div>
@@ -140,7 +143,8 @@ $flashes = getFlashes();
                                     <span>Events</span>
                                 </a>
                             <?php endif; ?>
-                            <a class="button is-info modal-button" data-target="#signin" href="/login?login">Sign In / Up</a>
+                            <a class="button is-info modal-button" data-target="#signin" href="/login?login">Sign In /
+                                Up</a>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -150,7 +154,8 @@ $flashes = getFlashes();
 </nav>
 
 <?php if ($current_user): ?>
-    <div class="hidden" id="js-data-holder" data-user-id="<?= $current_user->id ?>" data-csrf-token="<?= $csrf_token ?>"></div>
+    <div class="hidden" id="js-data-holder" data-user-id="<?= $current_user->id ?>"
+         data-csrf-token="<?= $csrf_token ?>"></div>
 <?php endif; ?>
 
 <div id="#signin" class="modal modal-fx-fadeInScale">
@@ -235,19 +240,19 @@ $flashes = getFlashes();
                         </div>
                         <div class="field">
                             <div class="captcha_container">
-                                <img src="/captcha?t=<?= $captcha_token = setupCaptcha() ?>" alt="CAPTCHA Image" />
+                                <img src="/captcha?t=<?= $captcha_token = setupCaptcha() ?>" alt="CAPTCHA Image"/>
                                 <span id="captcha_refresh" style="height: 100%;">
                                                 <a href="javascript:void(0)">
                                                     <i class="fa fa-refresh" style="height: 100%;"></i>
                                                 </a>
                                             </span>
-                                <input type="hidden" name="captcha_token" value="<?= $captcha_token ?>" />
-                                <input type="text" class="input" name="captcha_answer" placeholder="Enter the CAPTCHA" />
+                                <input type="hidden" name="captcha_token" value="<?= $captcha_token ?>"/>
+                                <input type="text" class="input" name="captcha_answer" placeholder="Enter the CAPTCHA"/>
                                 <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press "Enter"</p>
                             </div>
                         </div>
                     </div>
-                    <input class="button is-link is-fullwidth my-4" type="submit" name="signup" />
+                    <input class="button is-link is-fullwidth my-4" type="submit" name="signup"/>
                     <div class="field">
                         <p style="float:left;">By signing up you agree to our <a href="page/privacy">Privacy policy </a>
                             and <a href="page/rules">Site rules</a>. This site may contain material not suitable for

@@ -51,9 +51,7 @@
 </style>
 
 <main class="bd-main">
-    <div class="preloader"></div>
-    <div class="bd-side-background"></div>
-    <div class="bd-main-container container">
+    <div class="container">
         <div class="bd-duo">
             <div class="bd-lead">
                 <article class="message is-info">
@@ -67,7 +65,8 @@
                 <h1 class="title is-4">Pastes Archive</h1>
                 <form class="table_filterer" method="GET">
                     <label><i class="fa fa-search"></i>
-                        <input class="search" type="search" name="q" placeholder="Filter..." value="<?= pp_html_escape($filter_value); ?>" />
+                        <input class="search" type="search" name="q" placeholder="Filter..."
+                               value="<?= pp_html_escape($filter_value); ?>"/>
                     </label>
                     <label>
                         Show&nbsp;

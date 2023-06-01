@@ -1,10 +1,12 @@
 <main class="bd-main">
-    <div class="bd-side-background"></div>
-    <div class="bd-main-container container">
+
+    <div class="container">
         <div class="bd-duo">
             <div class="bd-lead">
                 <?php if (isset($success)): ?>
-                    <div class="notification is-success"><i class="fa fa-exclamation-circle" aria-hidden="true"></i><?= pp_html_escape($success); ?></div>
+                    <div class="notification is-success"><i class="fa fa-exclamation-circle"
+                                                            aria-hidden="true"></i><?= pp_html_escape($success); ?>
+                    </div>
                     <?php if (isset($new_password)): ?>
                         <p>Your new password is as follows:</p>
                         <code><?= pp_html_escape($new_password); ?></code>
@@ -13,12 +15,15 @@
 
                     <?php if (isset($recovery_code)): ?>
                         <br><span class="tag is-danger is-medium">IMPORTANT!</span>
-                        <p><b>If you wish to recover your account later, you will need the following code. Store it in a safe place!</b></p>
+                        <p><b>If you wish to recover your account later, you will need the following code. Store it in a
+                                safe place!</b></p>
                         <code id="recovery"><?= pp_html_escape($recovery_code); ?></code>
-                        <p>If you do not save this code, and you forget your password, there is no way to get your account back!</p>
+                        <p>If you do not save this code, and you forget your password, there is no way to get your
+                            account back!</p>
                     <?php endif; ?>
                 <?php elseif (isset($error)): ?>
-                    <div class="notification is-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i><?= pp_html_escape($error); ?></p></div>
+                    <div class="notification is-info"><i class="fa fa-exclamation-circle"
+                                                         aria-hidden="true"></i><?= pp_html_escape($error); ?></p></div>
                 <?php endif; ?>
                 <?php outputFlashes($flashes); ?>
                 <?php if (isset($_GET['register'])) { ?>
@@ -54,20 +59,23 @@
                                 <div class="field">
                                     <div class="notification">
                                         <div class="captcha_container">
-                                            <img src="/captcha?t=<?= $captcha_token = setupCaptcha() ?>" alt="CAPTCHA Image" />
+                                            <img src="/captcha?t=<?= $captcha_token = setupCaptcha() ?>"
+                                                 alt="CAPTCHA Image"/>
                                             <span id="captcha_refresh" style="height: 100%;">
                                                 <a href="javascript:void(0)">
                                                     <i class="fa fa-refresh" style="height: 100%;"></i>
                                                 </a>
                                             </span>
-                                            <input type="hidden" name="captcha_token" value="<?= $captcha_token ?>" />
-                                            <input type="text" class="input" name="captcha_answer" placeholder="Enter the CAPTCHA" />
-                                            <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press "Enter"</p>
+                                            <input type="hidden" name="captcha_token" value="<?= $captcha_token ?>"/>
+                                            <input type="text" class="input" name="captcha_answer"
+                                                   placeholder="Enter the CAPTCHA"/>
+                                            <p class="is-size-6	has-text-grey-light has-text-left mt-2">and press
+                                                "Enter"</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="field">
-                                    <input class="button is-info" type="submit" name="signup" value="Register" />
+                                    <input class="button is-info" type="submit" name="signup" value="Register"/>
                                 </div>
                                 <hr>
                             </div>
@@ -82,7 +90,7 @@
                                 not suitable for those aged under 18.</p>
                         </div>
                     </form>
-                    <?php } elseif (isset($_GET['forgotpassw'])) { ?>
+                <?php } elseif (isset($_GET['forgotpassw'])) { ?>
                     <form action="/forgot" method="post">
                         <div class="columns">
                             <div class="column">
@@ -119,48 +127,48 @@
                         </div>
                     </form>
                 <?php } else { ?>
-                <form action="/login" method="post">
-                    <div class="columns">
-                        <div class="column">
-                            <h1 class="title is-4">Login</h1>
-                            <div class="field">
-                                <label class="label">Username</label>
-                                <div class="control has-icons-left has-icons-right">
-                                    <input type="text" class="input" name="username" placeholder="Username">
-                                    <span class="icon is-small is-left">
+                    <form action="/login" method="post">
+                        <div class="columns">
+                            <div class="column">
+                                <h1 class="title is-4">Login</h1>
+                                <div class="field">
+                                    <label class="label">Username</label>
+                                    <div class="control has-icons-left has-icons-right">
+                                        <input type="text" class="input" name="username" placeholder="Username">
+                                        <span class="icon is-small is-left">
 											<i class="fas fa-user"></i>
 										</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="field">
-                                <label class="label">Password</label>
-                                <div class="control has-icons-left has-icons-right">
-                                    <input type="password" class="input" name="password" placeholder="Password">
-                                    <span class="icon is-small is-left">
+                                <div class="field">
+                                    <label class="label">Password</label>
+                                    <div class="control has-icons-left has-icons-right">
+                                        <input type="password" class="input" name="password" placeholder="Password">
+                                        <span class="icon is-small is-left">
 											<i class="fas fa-key"></i>
 										</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="field">
-                                <div class="b-checkbox is-info is-inline">
-                                    <input class="is-checkradio is-info" id="rememberme" name="remember_me"
-                                           type="checkbox" checked="">
-                                    <label for="rememberme">
-                                        Remember Me
-                                    </label>
+                                <div class="field">
+                                    <div class="b-checkbox is-info is-inline">
+                                        <input class="is-checkradio is-info" id="rememberme" name="remember_me"
+                                               type="checkbox" checked="">
+                                        <label for="rememberme">
+                                            Remember Me
+                                        </label>
+                                    </div>
                                 </div>
+                                <div class="field">
+                                    <input class="button is-info" type="submit" name="signin" value="Login"/>
+                                </div>
+                                <hr>
                             </div>
-                            <div class="field">
-                                <input class="button is-info" type="submit" name="signin" value="Login" />
+                            <div class="column">
                             </div>
-                            <hr>
+                            <div class="column">
+                            </div>
                         </div>
-                        <div class="column">
-                        </div>
-                        <div class="column">
-                        </div>
-                    </div>
-                </form>
+                    </form>
                 <?php } ?>
                 <div class="columns">
                     <div class="column">

@@ -1,5 +1,5 @@
 <main class="bd-main">
-    <div class="bd-main-container container">
+    <div class="container">
         <div class="bd-lead">
             <div class="rule">
                 <h2>The short version</h2>
@@ -34,7 +34,8 @@
                 </ul>
                 <p>Additionally, cookies of users that are logged into the service may contain:</p>
                 <ul>
-                    <li>A random authentication secret ("remember me" token) unique to the user to persist their login</li>
+                    <li>A random authentication secret ("remember me" token) unique to the user to persist their login
+                    </li>
                 </ul>
                 <p>These data are required for authentication, user security, or customization, which are all
                     "legitimate interests" as above, and thus we cannot ask for consent to use these
