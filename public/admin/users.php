@@ -11,6 +11,27 @@ list($per_page, $current_page) = pp_setup_pagination();
 
 $total_users = User::count();
 $all_users = User::limit($per_page)->offset($current_page * $per_page)->get();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verifyCsrfToken()) {
+        flashError('Invalid CSRF token.');
+        goto Render;
+    } elseif (!isset($_POST['user_id'])) {
+        flashError('No user ID specified.');
+        goto Render;
+    }
+
+    $user = User::find($_POST['user_id']);
+
+    if (!$user) {
+        flashError('User not found.');
+        goto Render;
+    }
+}
+
+Render:
+
+$csrf_token = setupCsrfToken();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -111,9 +132,7 @@ $all_users = User::limit($per_page)->offset($current_page * $per_page)->get();
                                 <tr>
                                     <th>Username</th>
                                     <th>Date Registered</th>
-                                    <th>Ban User</th>
-                                    <th>Profile</th>
-                                    <th>Delete</th>
+                                    <th>Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -123,6 +142,13 @@ $all_users = User::limit($per_page)->offset($current_page * $per_page)->get();
                                                 <a href="<?= urlForMember($user); ?>"><?= pp_html_escape($user->username); ?></a>
                                             </td>
                                             <td><?= pp_html_escape($user->created_at); ?> </td>
+                                            <td>
+                                                <form method="post">
+                                                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+                                                    <input type="hidden" name="user_id" value="<?= $user->id ?>">
+                                                    <button class="button is-small is-danger" type="submit" name="ban">Ban</button>
+                                                </form>
+                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

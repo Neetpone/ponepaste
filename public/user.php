@@ -17,7 +17,7 @@ $profile_username = trim($_GET['user']);
 
 $profile_info = User::with('favourites')
     ->where('username', $profile_username)
-    ->select('id', 'created_at', 'badge')
+    ->select('id', 'created_at', 'badge', 'role')
     ->first();
 
 if (!$profile_info) {
@@ -38,6 +38,18 @@ if ($can_administrate) {
             $profile_info->save();
 
             flashSuccess('Password reset to ' . $new_password);
+        }
+    } elseif (isset($_POST['change_role'])) {
+        if (!verifyCsrfToken()) {
+            flashError('Invalid CSRF token (do you have cookies enabled?)');
+        } else {
+            if ($profile_info->role === User::ROLE_MODERATOR) {
+                $profile_info->role = 0;
+            } elseif ($profile_info->role === 0) {
+                $profile_info->role = User::ROLE_MODERATOR;
+            }
+            $profile_info->save();
+            flashSuccess('Role changed.');
         }
     }
 }

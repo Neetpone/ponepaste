@@ -1,7 +1,8 @@
 <?php
-    use PonePaste\Models\Paste;
+use PonePaste\Models\Paste;
+use PonePaste\Models\User;
 
-    $public_paste_badges = [
+$public_paste_badges = [
         50 => '[ProbablyAutistic] Have more than fifty pastes',
         25 => '[Writefag] Have twenty-five or more pastes',
         5  => '[NewWritefag] Have five or more pastes',
@@ -53,6 +54,11 @@
                             <form method="post">
                                 <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
                                 <button class="button is-small is-success" type="submit" name="reset_password">Reset Password</button>
+                                <?php if ($profile_info->role === User::ROLE_MODERATOR): ?>
+                                    <button class="button is-small is-warning" type="submit" name="change_role">Demote Moderator</button>
+                                <?php elseif ($profile_info->role === 0): ?>
+                                    <button class="button is-small is-warning" type="submit" name="change_role">Promote to Moderator</button>
+                                <?php endif; ?>
                             </form>
                         </div>
                     <?php endif; ?>
