@@ -93,7 +93,7 @@
                     <tbody>
                     <?php foreach ($pastes as $paste): ?>
                         <tr>
-                            <td><?= pp_html_escape($paste->title) ?></td>
+                            <td><a href="<?= urlForPaste($paste); ?>"><?= pp_html_escape($paste->title) ?></a></td>
                             <td><?= pp_html_escape($paste->user->username) ?></td>
                             <td><?= pp_html_escape($paste->updated_at ?? $paste->created_at) ?></td>
                             <td><?= tagsToHtml($paste->tags) ?></td>
