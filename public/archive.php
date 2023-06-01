@@ -45,6 +45,7 @@ if (!empty($filter_value)) {
     }
 }
 
+$pastes = $pastes->orderBy('id', 'desc');
 $total_results = $pastes->count();
 
 $pastes = $pastes->limit($per_page)->offset($per_page * $current_page);

@@ -30,7 +30,7 @@ if (!empty($_GET['q']) && is_string($_GET['q'])) {
     });
 }
 
-$pastes = $pastes->get();
+$pastes = $pastes->orderBy('id', 'desc')->get();
 
 header('Content-Type: application/json; charset=UTF-8');
 
