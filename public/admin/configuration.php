@@ -34,11 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'site_info') {
         $data = $_POST['site_info'];
         $new_site_info = [
-            'title' => trim($data['title']),
             'description' => trim($data['description']),
             'keywords' => trim($data['keywords']),
             'site_name' => trim($data['site_name']),
-            'email' => trim($data['email'])
+            'email' => trim($data['email']),
+            'banner' => trim($data['banner'])
         ];
 
         $current_config['site_info'] = $new_site_info;
@@ -186,6 +186,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <input type="text" class="form-control" name="site_info[email]"
                                                    placeholder="Email" id="site_info_email"
                                                    value="<?= pp_html_escape($current_site_info['email']); ?>">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label form-label" for="site_info_banner">Site Banner</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="site_info[banner]"
+                                                   placeholder="Homepage banner, leave empty for none..." id="site_info_banner"
+                                                   value="<?= isset($current_site_info['banner']) ? pp_html_escape($current_site_info['banner']) : '' ?>">
                                         </div>
                                     </div>
 

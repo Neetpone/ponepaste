@@ -4,6 +4,11 @@
     <div class="bd-main-container container">
         <div class="bd-duo">
             <div class="bd-lead">
+                <?php if (isset($global_site_info['banner'])): ?>
+                    <div class="notification is-primary">
+                        <?= $global_site_info['banner'] /* Intentionally not escaped to allow HTML */ ?>
+                    </div>
+                <?php endif; ?>
                 <!-- Paste Panel -->
                 <?php if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     if (isset($error)) { ?>
