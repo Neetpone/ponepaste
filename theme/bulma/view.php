@@ -21,35 +21,13 @@
 <?php if ($using_highlighter): ?>
     <link rel="stylesheet" href="/vendor/scrivo/highlight.php/styles/default.css"/>
 <?php endif; ?>
-<?php
-$protocol = paste_protocol();
-$bg = array('/img/loader.gif', '/img/loader2.gif', '/img/loader3.gif'); // array of filenames
-$i = rand(0, count($bg) - 1); // generate random number size of the array
-$selectedloader = "$bg[$i]"; // set variable equal to which random filename was chosen
-?>
-
 <style>
-    .preloader {
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        width: 100%;
-        height: 100vh;
-        z-index: 99999999;
-        background-image: url('<?= $selectedloader ?>'); /* your icon gif file path */
-        background-repeat: no-repeat;
-        background-color: #FFF;
-        background-position: center;
-    }
-
     #stop-scrolling {
         height: 100% !important;
         overflow: hidden !important;
     }
 </style>
-<main class="bd-main" id="dstop-scrolling">
+<main class="bd-main" id="stop-scrolling">
     <div class="container">
         <div class="bd-duo">
             <div class="bd-lead">

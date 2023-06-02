@@ -333,7 +333,7 @@ class TagsInput {
         this.element.style.display = 'none';
 
         this.containerNode = makeEl('<div class="tags-input"></div>');
-        this.inputNode = makeEl('<input class="input" type="text" placeholder="32 tags maximum" value="" />');
+        this.inputNode = makeEl('<input class="input" type="text" placeholder="Type a comma to separate each tag..." value="" />');
         this.containerNode.appendChild(this.inputNode);
 
         this.element.parentNode.insertBefore(this.containerNode, this.element.nextSibling);
@@ -499,14 +499,6 @@ const globalSetup = () => {
                 $target.classList.toggle('is-active');
             });
         });
-    }
-
-    const preloader = $('.preloader');
-    const main = $('main');
-
-    if (preloader && main) {
-        preloader.remove();
-        main.id = '';
     }
 
     // CAPTCHA refresh

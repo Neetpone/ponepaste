@@ -72,14 +72,6 @@ const globalSetup = () => {
         });
     }
 
-    const preloader = $('.preloader');
-    const main = $('main');
-
-    if (preloader && main) {
-        preloader.remove();
-        main.id = '';
-    }
-
     // CAPTCHA refresh
     const captchaContainer = $('.captcha_container');
 
