@@ -1,6 +1,5 @@
 <link rel="stylesheet" href="theme/bulma/css/bulma-tagsinput.min.css"/>
 <main class="bd-main">
-
     <div class="container">
         <div class="bd-duo">
             <div class="bd-lead">
@@ -194,7 +193,7 @@
                                         <div class="captcha_container">
                                             <img src="/captcha?t=<?= $captcha_token = setupCaptcha() ?>"
                                                  alt="CAPTCHA Image"/>
-                                            <span id="captcha_refresh" style="height: 100%;">
+                                            <span style="height: 100%;">
                                                 <a href="javascript:void(0)">
                                                     <i class="fa fa-refresh" style="height: 100%;"></i>
                                                 </a>
