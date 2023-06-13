@@ -61,7 +61,7 @@
                 <!-- Text area -->
                 <textarea class="textarea" rows="15" id="code" name="paste_data" onkeyup="countChars(this);"
                           onkeydown="return catchTab(this,event)"
-                          placeholder="Paste Or Drop Text File Here."><?php echo (isset($_POST['paste_data'])) ? pp_html_escape($_POST['paste_data']) : ''; ?></textarea>
+                          placeholder="Paste or drop text file here."><?php echo (isset($_POST['paste_data'])) ? pp_html_escape($_POST['paste_data']) : ''; ?></textarea>
                 <p id="charNum"><b>File Size: </b><span style="color: green;">1000/1000Kb</span></p>
                 <!-- Tag system -->
 

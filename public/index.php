@@ -126,11 +126,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $paste_password = password_hash($paste_password, PASSWORD_DEFAULT);
     }
 
-    $paste_content = openssl_encrypt(
-        $_POST['paste_data'],
-        PP_ENCRYPTION_ALGO,
-        PP_ENCRYPTION_KEY
-    );
+    // If it's a new paste or the existing paste is encrypted, encrypt the paste
+    // This is to prevent legacy pastes from getting weird
+    if ($editing && !$paste->encrypt) {
+        $paste_content = $_POST['paste_data'];
+    } else {
+        $paste_content = openssl_encrypt(
+            $_POST['paste_data'],
+            PP_ENCRYPTION_ALGO,
+            PP_ENCRYPTION_KEY
+        );
+    }
 
     // Set expiry time
     $expires = calculatePasteExpiry($p_expiry);
