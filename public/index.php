@@ -139,7 +139,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($editing) {
         $paste = Paste::find($_POST['paste_id']);
         if (can('edit', $paste)) {
-            $paste_content = $paste->encrypt ? $paste_content : $_POST['paste_data'];
             $paste->update([
                 'title' => $paste_title,
                 'content' => $paste_content,
