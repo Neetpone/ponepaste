@@ -39,6 +39,10 @@ class AbilityHelper {
                 return $user !== null
                     && $user->role >= User::ROLE_MODERATOR; // Moderators and above can hide pastes
             },
+            'blank' => function(User | null $user, Paste $paste) {
+                return $user !== null
+                    && $user->role >= User::ROLE_ADMIN; // Only admins can blank pastes
+            },
             'delete' => function(User | null $user, Paste $paste) {
                 return $user !== null
                     && ($user->id === $paste->user_id // Creators of pastes can delete their own pastes

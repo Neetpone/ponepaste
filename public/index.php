@@ -4,6 +4,7 @@ define('IN_PONEPASTE', 1);
 require_once(__DIR__ . '/../includes/common.php');
 require_once(__DIR__ . '/../includes/captcha.php');
 
+use PonePaste\Helpers\DnsblHelper;
 use PonePaste\Models\Paste;
 use PonePaste\Models\Tag;
 use PonePaste\Models\User;
@@ -70,6 +71,14 @@ updatePageViews();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verifyCsrfToken()) {
         $error = 'Incorrect CSRF token (do you have cookies enabled?)';
+        goto OutPut;
+    }
+
+    $blacklisted = DnsblHelper::isBlacklisted($ip);
+
+    if ($blacklisted !== false) {
+        $error = "Your IP address is blacklisted by {$blacklisted}. Please create an account or log in to create pastes. 
+                  If you believe this is a mistake, please contact the operator of {$blacklisted}.";
         goto OutPut;
     }
 

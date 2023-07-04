@@ -9,6 +9,7 @@ require_once(__DIR__ . '/passwords.php');
 require_once(__DIR__ . '/captcha.php');
 
 use Illuminate\Database\Capsule\Manager as Capsule;
+use PonePaste\Helpers\RedisHelper;
 use PonePaste\Helpers\SessionHelper;
 use PonePaste\Models\IPBan;
 use PonePaste\Models\PageView;
@@ -241,8 +242,8 @@ if (IPBan::where('ip', $ip)->first()) {
 }
 
 /* Set up Redis */
-$redis = new Redis();
-$redis->pconnect(PP_REDIS_HOST);
+RedisHelper::init();
+$redis = RedisHelper::redis();
 
 // Setup site info
 $site_info = getSiteInfo();
