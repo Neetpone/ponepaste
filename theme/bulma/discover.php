@@ -1,6 +1,6 @@
 <?php
 // This is cancer. I'm sorry.
-function outputPasteCard($paste) {
+function outputPasteCard($paste, $use_updated = false) {
     echo '<div class="column is-half">
             <div class="card">
                 <div class="card-content">
@@ -12,7 +12,7 @@ function outputPasteCard($paste) {
                             <p class="subtitle is-6">
                                 <a href="' . urlForMember($paste->user) . '">' . pp_html_escape($paste->user->username) . '</a>
                                 <br>
-                                <time datetime="' . $paste->created_at . '">' . friendlyDateDifference(date_create(), date_create($paste->created_at)) . '</time>
+                                <time datetime="' . $paste->created_at . '">' . friendlyDateDifference(date_create(), date_create($use_updated ? $paste->updated_at : $paste->created_at)) . '</time>
                             </p>' .
         ($paste->tags->isNotEmpty() ? tagsToHtml($paste->tags) : '<span class="tag is-warning">no tags</span>') . '
                         </div>
@@ -83,7 +83,7 @@ function outputPasteCard($paste) {
                                 <h1 class="title is-4">Recently Updated Pastes</h1>
                                 <div class="columns is-multiline">
                                     <?php foreach ($updated_pastes as $paste): ?>
-                                        <?php outputPasteCard($paste); ?>
+                                        <?php outputPasteCard($paste, true); ?>
                                     <?php endforeach; ?>
                                 </div>
                             </div>
