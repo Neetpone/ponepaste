@@ -102,43 +102,6 @@ if (isset($_POST['delete'])) {
     die();
 }
 
-if (isset($_POST['hide'])) {
-    if (!can('hide', $paste)) {
-        $error = 'You do not have permission to hide this paste.';
-        goto Not_Valid_Paste;
-    }
-
-    $is_hidden = !$paste->is_hidden;
-
-    if ($is_hidden) {
-        $paste->reports()->update(['open' => false]);
-    }
-
-    $paste->is_hidden = $is_hidden;
-    $paste->save();
-    $redis->del('ajax_pastes'); /* Expire from Redis so it doesn't show up anymore */
-    flashSuccess('Paste ' . ($is_hidden ? 'hidden' : 'unhidden') . '.');
-    header('Location: ' . urlForPaste($paste));
-    die();
-}
-
-if (isset($_POST['blank'])) {
-    if (!can('blank', $paste)) {
-        $error = 'You do not have permission to blank this paste.';
-        goto Not_Valid_Paste;
-    }
-
-    $paste->content = '';
-    $paste->title = 'Removed by moderator';
-    $paste->tags()->detach();
-
-    $paste->save();
-    $redis->del('ajax_pastes'); /* Expire from Redis so it doesn't show up anymore */
-    flashSuccess('Paste contents blanked.');
-    header('Location: ' . urlForPaste($paste));
-    die();
-}
-
 /* Verify paste password */
 $password_required = $p_password !== null && $p_password !== 'NONE';
 $password_valid = true;

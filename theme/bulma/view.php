@@ -149,7 +149,8 @@
                 <?php if (can('hide', $paste)): ?>
                     <div class="mod-tools">
                         <p>Moderation Tools</p>
-                        <form method="post">
+                        <form action="/admin/paste_action.php" method="post">
+                            <input type="hidden" name="paste_id" value="<?= $paste->id ?>" />
                             <?php if (isset($csrf_token)): ?>
                                 <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>"/>
                             <?php endif; ?>

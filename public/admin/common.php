@@ -5,18 +5,7 @@ if (!defined('IN_PONEPASTE')) {
 
 require_once('../../includes/common.php');
 
-use PonePaste\Models\AdminLog;
 use PonePaste\Models\User;
-
-function updateAdminHistory(User $admin, int $action) : void {
-    $log = new AdminLog([
-        'user_id' => $admin->id,
-        'action' => $action,
-        'ip' => $_SERVER['REMOTE_ADDR']
-    ]);
-
-    $log->save();
-}
 
 if ($current_user === null || $current_user->role < User::ROLE_MODERATOR) {
     header('Location: ..');
@@ -24,6 +13,12 @@ if ($current_user === null || $current_user->role < User::ROLE_MODERATOR) {
 }
 
 if (!isset($_SESSION['admin_login'])) {
+    // this is a hack, paste_id is set when POSTing to admin/paste_action.php, which we can only arrive at from a paste page
+    if (isset($_POST['paste_id'])) {
+        flashError('You must authenticate to perform that action.');
+        $_SESSION['redirect_back'] = urlForPaste($_POST['paste_id']);
+    }
+
     header('Location: .');
     exit();
 }

@@ -33,12 +33,16 @@ function urlForPage($page = '') : string {
     return (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/' . $page;
 }
 
-function urlForPaste(Paste $paste) : string {
-    if (PP_MOD_REWRITE) {
-        return "/{$paste->id}";
+function urlForPaste(int | Paste $paste) : string {
+    if (!is_int($paste)) {
+        $paste = $paste->id;
     }
 
-    return "/paste.php?id={$paste->id}";
+    if (PP_MOD_REWRITE) {
+        return "/{$paste}";
+    }
+
+    return "/paste.php?id={$paste}";
 }
 
 function urlForReport(Paste $paste) : string {

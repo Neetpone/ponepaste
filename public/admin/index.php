@@ -5,16 +5,6 @@ require_once(__DIR__ . '/../../includes/common.php');
 use PonePaste\Models\User;
 use PonePaste\Models\AdminLog;
 
-function updateAdminHistory(User $admin, int $action) : void {
-    $log = new AdminLog([
-        'user_id' => $admin->id,
-        'action' => $action,
-        'ip' => $_SERVER['REMOTE_ADDR']
-    ]);
-
-    $log->save();
-}
-
 if ($current_user === null || $current_user->role < User::ROLE_MODERATOR) {
     header('Location: ..');
     die();
@@ -25,11 +15,18 @@ if (isset($_SESSION['admin_login']) && $_SESSION['admin_login']) {
     exit();
 }
 
+$flashes = getFlashes();
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (pp_password_verify($_POST['password'], $current_user->admin_password_hash)) {
         updateAdminHistory($current_user, AdminLog::ACTION_LOGIN);
         $_SESSION['admin_login'] = true;
-        header("Location: dashboard.php");
+        if (isset($_SESSION['redirect_back'])) {
+            flashSuccess('You have been logged in. Please try your action again.');
+            header('Location: ' . $_SESSION['redirect_back']);
+        } else {
+            header("Location: dashboard.php");
+        }
         exit();
     } else {
         updateAdminHistory($current_user, AdminLog::ACTION_FAIL_LOGIN);
@@ -60,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo $msg;
     }
     ?>
+    <?php outputFlashes($flashes); ?>
     <form action="." method="post">
         <div class="top">
             <h1>PonePaste Admin Authentication</h1>

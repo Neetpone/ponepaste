@@ -231,6 +231,7 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
                                 <td>Username</td>
                                 <td>Date</td>
                                 <td>Action</td>
+                                <td>Information</td>
                                 <td>IP Address</td>
                             </tr>
                             </thead>
@@ -240,6 +241,7 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
                                     <td><?= pp_html_escape($entry->user->username); ?></td>
                                     <td><?= pp_html_escape($entry->time); ?></td>
                                     <td><?= pp_html_escape(AdminLog::ACTION_NAMES[$entry->action]); ?></td>
+                                    <td><?= !empty($entry->message) ? pp_html_escape($entry->message) : '[none]' ?></td>
                                     <td><?= $is_admin ? pp_html_escape($entry->ip) : '[masked]' ?></td>
                                 </tr>
                             <?php endforeach; ?>
