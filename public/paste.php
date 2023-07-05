@@ -118,7 +118,24 @@ if (isset($_POST['hide'])) {
     $paste->save();
     $redis->del('ajax_pastes'); /* Expire from Redis so it doesn't show up anymore */
     flashSuccess('Paste ' . ($is_hidden ? 'hidden' : 'unhidden') . '.');
-    header('Location: /');
+    header('Location: ' . urlForPaste($paste));
+    die();
+}
+
+if (isset($_POST['blank'])) {
+    if (!can('blank', $paste)) {
+        $error = 'You do not have permission to blank this paste.';
+        goto Not_Valid_Paste;
+    }
+
+    $paste->content = '';
+    $paste->title = 'Removed by moderator';
+    $paste->tags()->detach();
+
+    $paste->save();
+    $redis->del('ajax_pastes'); /* Expire from Redis so it doesn't show up anymore */
+    flashSuccess('Paste contents blanked.');
+    header('Location: ' . urlForPaste($paste));
     die();
 }
 

@@ -153,11 +153,19 @@
                             <?php if (isset($csrf_token)): ?>
                                 <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>"/>
                             <?php endif; ?>
-                            <div class="field">
-                                <input class="button is-small <?= $paste->is_hidden ? 'is-success' : 'is-danger' ?>"
-                                       type="submit" name="hide" id="hide"
-                                       value="<?= $paste->is_hidden ? 'Unhide' : 'Hide' ?> Paste"/>
+                            <div class="field is-grouped">
+                                <div class="control">
+                                    <input class="button is-small <?= $paste->is_hidden ? 'is-success' : 'is-danger' ?>"
+                                           type="submit" name="hide" id="hide"
+                                           value="<?= $paste->is_hidden ? 'Unhide' : 'Hide' ?> Paste" />
+                                </div>
+                                <?php if (can('blank', $paste)): ?>
+                                    <div class="control">
+                                        <input class="button is-small is-danger" type="submit" name="blank" id="blank" value="Blank Paste Contents (No Undo)" />
+                                    </div>
+                                <?php endif; ?>
                             </div>
+
                         </form>
                     </div>
                 <?php endif; ?>
