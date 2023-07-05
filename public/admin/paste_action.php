@@ -17,6 +17,10 @@ if (!$paste) {
     die();
 }
 
+if (!verifyCsrfToken()) {
+    flashError('Invalid CSRF token (do you have cookies enabled?)');
+}
+
 if (isset($_POST['hide'])) {
     if (!can('hide', $paste)) {
         flashError('You do not have permission to hide this paste.');

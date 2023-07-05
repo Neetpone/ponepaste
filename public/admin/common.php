@@ -17,6 +17,9 @@ if (!isset($_SESSION['admin_login'])) {
     if (isset($_POST['paste_id'])) {
         flashError('You must authenticate to perform that action.');
         $_SESSION['redirect_back'] = urlForPaste($_POST['paste_id']);
+    } elseif (isset($_POST['user_id'])) {
+        flashError('You must authenticate to perform that action.');
+        $_SESSION['redirect_back'] = urlForMember($_POST['user_id']);
     }
 
     header('Location: .');

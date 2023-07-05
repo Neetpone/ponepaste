@@ -52,8 +52,9 @@ if ($is_current_user && isset($_GET['tab']) && $_GET['tab'] === 'favourites') {
                     <?php if ($can_administrate): ?>
                         <div>
                             <p>Admin Actions:</p>
-                            <form method="post">
+                            <form method="post" action="/admin/user_action.php">
                                 <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+                                <input type="hidden" name="user_id" value="<?= $profile_info->id ?>">
                                 <button class="button is-small is-success" type="submit" name="reset_password">Reset
                                     Password
                                 </button>

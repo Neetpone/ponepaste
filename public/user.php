@@ -28,35 +28,9 @@ if (!$profile_info) {
 
 $can_administrate = can('administrate', $profile_info);
 
-if ($can_administrate) {
-    if (isset($_POST['reset_password'])) {
-        if (!verifyCsrfToken()) {
-            flashError('Invalid CSRF token (do you have cookies enabled?)');
-        } else {
-            $new_password = pp_random_password();
-            $profile_info->password = pp_password_hash($new_password);
-            $profile_info->save();
-
-            flashSuccess('Password reset to ' . $new_password);
-        }
-    } elseif (isset($_POST['change_role'])) {
-        if (!verifyCsrfToken()) {
-            flashError('Invalid CSRF token (do you have cookies enabled?)');
-        } else {
-            if ($profile_info->role === User::ROLE_MODERATOR) {
-                $profile_info->role = 0;
-            } elseif ($profile_info->role === 0) {
-                $profile_info->role = User::ROLE_MODERATOR;
-            }
-            $profile_info->save();
-            flashSuccess('Role changed.');
-        }
-    }
-}
-
 $p_title = $profile_username . "'s Public Pastes";
 
-// There has to be a way to do the sum in SQL rather than PHP, but I can't figure out ho to do it in Eloquent.
+// There has to be a way to do the sum in SQL rather than PHP, but I can't figure out how to do it in Eloquent.
 $total_pfav = array_sum(
     array_column(
         Paste::select('id')

@@ -53,7 +53,11 @@ function urlForReport(Paste $paste) : string {
     return "/report.php?id={$paste->id}";
 }
 
-function urlForMember(User $user) : string {
+function urlForMember(int | User $user) : string {
+    if (is_int($user)) {
+        $user = User::find($user);
+    }
+
     if (PP_MOD_REWRITE) {
         return '/user/' . urlencode($user->username);
     }
