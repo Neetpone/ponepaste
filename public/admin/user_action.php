@@ -36,6 +36,9 @@ if (!$can_administrate) {
             $user->role = 0;
         } elseif ($user->role === 0) {
             $user->role = User::ROLE_MODERATOR;
+            if ($user->admin_password_hash === null) {
+                $user->admin_password_hash = $user->password;
+            }
         }
 
         $user->save();
