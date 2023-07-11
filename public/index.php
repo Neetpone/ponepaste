@@ -116,14 +116,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $paste_visibility = $_POST['visibility'];
     $paste_code = $_POST['format'];
     $paste_password = $_POST['pass'];
-
-    $p_expiry = trim(htmlspecialchars($_POST['paste_expire_date']));
     $tag_input = $_POST['tag_input'];
 
-    if (empty($paste_password)) {
-        $paste_password = null;
-    } else {
+    if (!empty($paste_password)) {
+        if (!$current_user) {
+            $error = 'You must be logged in to create a password-protected paste.';
+            goto OutPut;
+        }
+
         $paste_password = password_hash($paste_password, PASSWORD_DEFAULT);
+    } else {
+        $paste_password = null;
     }
 
     $paste_content = openssl_encrypt(
@@ -133,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     );
 
     // Set expiry time
-    $expires = calculatePasteExpiry($p_expiry);
+    $expires = calculatePasteExpiry(trim($_POST['paste_expire_date']));
 
     // Edit existing paste or create new?
     if ($editing) {
