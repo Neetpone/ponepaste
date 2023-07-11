@@ -331,18 +331,3 @@ function pp_setup_pagination() : array {
 
     return [$per_page, $current_page];
 }
-
-function pp_output_paginator(int $per_page, int $current_page) : void {
-
-}
-
-function updateAdminHistory(User $admin, int $action, string $message = null) : void {
-    $log = new AdminLog([
-        'user_id' => $admin->id,
-        'action' => $action,
-        'ip' => $_SERVER['REMOTE_ADDR'],
-        'message' => $message
-    ]);
-
-    $log->save();
-}

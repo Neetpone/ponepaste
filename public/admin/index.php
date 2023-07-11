@@ -19,7 +19,7 @@ $flashes = getFlashes();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (pp_password_verify($_POST['password'], $current_user->admin_password_hash)) {
-        updateAdminHistory($current_user, AdminLog::ACTION_LOGIN);
+        AdminLog::updateAdminHistory($current_user, AdminLog::ACTION_LOGIN);
         $_SESSION['admin_login'] = true;
         if (isset($_SESSION['redirect_back'])) {
             flashSuccess('You have been logged in. Please try your action again.');
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         exit();
     } else {
-        updateAdminHistory($current_user, AdminLog::ACTION_FAIL_LOGIN);
+        AdminLog::updateAdminHistory($current_user, AdminLog::ACTION_FAIL_LOGIN);
         $msg = '<div class="paste-alert alert6" style="text-align:center;">
 						Wrong Password
 					</div>';

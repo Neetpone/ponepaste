@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 									</div>';
     }
 
-    updateAdminHistory($current_user, AdminLog::ACTION_EDIT_CONFIG);
+    AdminLog::updateAdminHistory($current_user, AdminLog::ACTION_EDIT_CONFIG);
 }
 ?>
 

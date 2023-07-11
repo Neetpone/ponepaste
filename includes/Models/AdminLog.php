@@ -26,4 +26,15 @@ class AdminLog extends Model {
     public function user() {
         return $this->belongsto(User::class);
     }
+
+    public static function updateAdminHistory(User $admin, int $action, string $message = null) : void {
+        $log = new AdminLog([
+            'user_id' => $admin->id,
+            'action' => $action,
+            'ip' => $_SERVER['REMOTE_ADDR'],
+            'message' => $message
+        ]);
+
+        $log->save();
+    }
 }
