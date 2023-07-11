@@ -19,6 +19,8 @@ if (!$paste) {
 
 if (!verifyCsrfToken()) {
     flashError('Invalid CSRF token (do you have cookies enabled?)');
+    header('Location: ' . urlForPaste($paste));
+    die();
 }
 
 if (isset($_POST['hide'])) {

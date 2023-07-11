@@ -18,11 +18,7 @@ if (!$user) {
 
 if (!verifyCsrfToken()) {
     flashError('Invalid CSRF token (do you have cookies enabled?)');
-}
-
-$can_administrate = can('administrate', $user);
-
-if (!$can_administrate) {
+} elseif (!can('administrate', $user)) {
     flashError('Error: You do not have permission to administrate this user.');
 } else {
     if (isset($_POST['reset_password'])) {
