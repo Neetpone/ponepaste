@@ -43,7 +43,6 @@ updatePageViews();
 $totalpastes = Paste::count();
 
 $paste = Paste::with('user')->find((int) trim($_REQUEST['id']));
-$is_private = false;
 $error = null;
 
 if (!$paste) {
@@ -66,8 +65,6 @@ if (isset($_SESSION['password_ok'])) {
     $password_ok_pastes = [];
 }
 
-$paste_owner_id = $paste->user->id;
-$paste_title = $paste->title;
 $paste_code = $paste->code;
 $using_highlighter = $paste_code !== 'pastedown';
 $fav_count = $paste->favouriters()->count();
@@ -75,8 +72,6 @@ $fav_count = $paste->favouriters()->count();
 $p_content = $paste->content;
 $p_password = $paste->password;
 $paste_is_favourited = $current_user !== null && $current_user->favourites->where('id', $paste->id)->count() === 1;
-
-$is_private = $paste->visible === Paste::VISIBILITY_PRIVATE;
 
 if (!can('view', $paste)) {
     if ($paste->is_hidden) {
