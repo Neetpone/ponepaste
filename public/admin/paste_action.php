@@ -51,7 +51,7 @@ if (isset($_POST['hide'])) {
 
         $paste->save();
         $redis->del('ajax_pastes'); /* Expire from Redis so it doesn't show up anymore */
-        AdminLog::updateAdminHistory($current_user, AdminLog::ACTION_BLANK_PASTE, 'Paste ' . $paste->id . 'blanked.');
+        AdminLog::updateAdminHistory($current_user, AdminLog::ACTION_BLANK_PASTE, 'Paste ' . $paste->id . ' blanked.');
 
         flashSuccess('Paste contents blanked.');
     }

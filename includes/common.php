@@ -218,11 +218,7 @@ function verifyCsrfToken($token = null) : bool {
         return false;
     }
 
-    $success = hash_equals($_SESSION[SessionHelper::CSRF_TOKEN_KEY], $token);
-
-    unset($_SESSION[SessionHelper::CSRF_TOKEN_KEY]);
-
-    return $success;
+    return hash_equals($_SESSION[SessionHelper::CSRF_TOKEN_KEY], $token);
 }
 
 session_start();
