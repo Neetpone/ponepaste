@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (isset($_SESSION['redirect_back'])) {
             flashSuccess('You have been logged in. Please try your action again.');
             header('Location: ' . $_SESSION['redirect_back']);
+            unset($_SESSION['redirect_back']);
         } else {
             header("Location: dashboard.php");
         }
