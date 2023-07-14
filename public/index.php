@@ -114,9 +114,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $paste_content = $_POST['paste_data'];
     $paste_visibility = $_POST['visibility'];
-    $paste_code = $_POST['format'];
+    $paste_code = $_POST['format'] ?? 'green';
     $paste_password = $_POST['pass'];
     $tag_input = $_POST['tag_input'];
+
+    if (!in_array($paste_code, PP_HIGHLIGHT_FORMATS)) {
+        $paste_code = 'green';
+    }
 
     if (!empty($paste_password)) {
         if (!$current_user) {

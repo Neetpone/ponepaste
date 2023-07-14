@@ -34,8 +34,7 @@ const PP_ENCRYPTION_KEY = 'a long and secure random string here';
 const PP_HIGHLIGHT_FORMATS = [
     'green' => 'Green Text',
     'text' => 'Plain Text',
-    'pastedown' => 'pastedown',
-    'pastedown_old' => 'pastedown old'
+    'pastedown' => 'pastedown'
 ];
 
 // Cookie - I want a cookie, can I have one?

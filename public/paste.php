@@ -189,7 +189,14 @@ $p_content = rtrim($p_content);
 // Apply syntax highlight
 $p_content = htmlspecialchars_decode($p_content);
 
-if ($paste_code === "pastedown" || $paste_code === 'pastedown_old') {
+// Clean up the paste_code in case it's invalid
+$paste_code = match ($paste_code) {
+    'text', 'plaintext' => 'plaintext',
+    'pastedown_old', 'pastedown' => 'pastedown',
+    default => 'green',
+};
+
+if ($paste_code === "pastedown") {
     $parsedown = new Pastedown();
     $parsedown->setSafeMode(true);
     $p_content = $parsedown->text($p_content);
@@ -197,7 +204,7 @@ if ($paste_code === "pastedown" || $paste_code === 'pastedown_old') {
     Highlighter::registerLanguage('green', __DIR__ . '/../config/green.lang.json');
     Highlighter::registerLanguage('plaintext', __DIR__ . '/../vendor/scrivo/highlight.php/Highlight/languages/plaintext.json');
     $hl = new Highlighter(false);
-    $highlighted = $hl->highlight($paste_code == 'text' ? 'plaintext' : $paste_code, $p_content)->value;
+    $highlighted = $hl->highlight($paste_code, $p_content)->value;
     $lines = HighlightUtilities\splitCodeIntoArray($highlighted);
 }
 
