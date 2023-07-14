@@ -7,9 +7,6 @@ use PonePaste\Models\User;
 use PonePaste\Models\Paste;
 use PonePaste\Models\PageView;
 
-$today_users_count = 0;
-$today_pastes_count = 0;
-
 $last_page_view = PageView::select('tpage', 'tvisit')
     ->orderBy('id', 'desc')
     ->first();
@@ -20,10 +17,10 @@ $admin_email = getSiteInfo()['site_info']['email'];
 $c_date = date('jS F Y');
 
 /* Number of users today */
-$today_users_count = User::where(['created_at' => 'TODAY()'])->count();
+$today_users_count = User::whereDate('created_at', '=', date('Y-m-d'))->count();
 
 /* Number of pastes today */
-$today_pastes_count = Paste::where(['created_at' => 'TODAY()'])->count();
+$today_pastes_count = Paste::whereDate('created_at', '=', date('Y-m-d'))->count();
 
 foreach (PageView::orderBy('id', 'desc')->take(7)->get() as $row) {
     $sdate = $row['date'];
