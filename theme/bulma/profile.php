@@ -25,19 +25,6 @@
                 <form method="post">
                     <div class="columns">
                         <div class="column">
-                            <div class="field">
-                                <label class="label">Generate New Recovery Key</label>
-                                <div class="control has-icons-left has-icons-right">
-                                    <input disabled="disabled" type="text" class="input"
-                                           style="cursor:not-allowed;" placeholder="New key generated here" value="<?= isset($user_new_code) ? pp_html_escape($user_new_code) : '' ?>">
-                                    <span class="icon is-small is-left">
-										<i class="fas fa-user"></i>
-									</span>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <button disabled type="submit" name="reset_recovery_code" class="button is-info">Generate new key</button>
-                            </div>
                             <hr>
                             <div class="field">
                                 <label class="label" for="username">Username</label>
@@ -86,7 +73,20 @@
                                 <?php if (isset($csrf_token)): ?>
                                     <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>"/>
                                 <?php endif; ?>
-                                <button type="submit" name="submit" class="button is-info">Submit</button>
+                                <button type="submit" name="change_password" class="button is-info">Change Password</button>
+                            </div>
+                            <div class="field">
+                                <label class="label">Generate New Recovery Key</label>
+                                <div class="control has-icons-left has-icons-right">
+                                    <input disabled="disabled" type="text" class="input"
+                                           style="cursor:not-allowed;" placeholder="New key generated here" value="<?= isset($user_new_code) ? pp_html_escape($user_new_code) : '' ?>">
+                                    <span class="icon is-small is-left">
+										<i class="fas fa-user"></i>
+									</span>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <button type="submit" name="reset_recovery_code" class="button is-info">Generate new key</button>
                             </div>
                         </div>
                         <div class="column">

@@ -19,14 +19,18 @@ $user_password = $current_user->password;
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!verifyCsrfToken()) {
         $error = 'Invalid CSRF token (do you have cookies enabled?)';
-    } else if (isset($_POST['cpassword']) && !empty($_POST['old_password']) && !empty($_POST['password'])) {
+    } else if (isset($_POST['change_password']) && !empty($_POST['old_password']) && !empty($_POST['password'])) {
         if (pp_password_verify($_POST['old_password'], $user_password)) {
-            $user_new_cpass = pp_password_hash($_POST['password']);
+            if ($_POST['password'] !== $_POST['cpassword']) {
+                $error = 'Your new passwords do not match.';
+            } else {
+                $user_new_cpass = pp_password_hash($_POST['password']);
 
-            $current_user->password = $user_new_cpass;
-            $current_user->save();
+                $current_user->password = $user_new_cpass;
+                $current_user->save();
 
-            $success = 'Your profile has been updated.';
+                $success = 'Your profile has been updated.';
+            }
         } else {
             $error = 'Your old password is incorrect.';
         }
