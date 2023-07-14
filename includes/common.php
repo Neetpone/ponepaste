@@ -222,6 +222,7 @@ function verifyCsrfToken($token = null) : bool {
 }
 
 session_start();
+session_set_cookie_params(86400);
 
 /* Set up the database and Eloquent ORM */
 $capsule = new Capsule();
