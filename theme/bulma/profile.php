@@ -28,18 +28,15 @@
                             <div class="field">
                                 <label class="label">Generate New Recovery Key</label>
                                 <div class="control has-icons-left has-icons-right">
-                                    <input disabled="" type="text" class="input" name="username"
-                                           style="cursor:not-allowed;" placeholder="New key generated here">
+                                    <input disabled="disabled" type="text" class="input"
+                                           style="cursor:not-allowed;" placeholder="New key generated here" value="<?= isset($user_new_code) ? pp_html_escape($user_new_code) : '' ?>">
                                     <span class="icon is-small is-left">
 										<i class="fas fa-user"></i>
 									</span>
                                 </div>
                             </div>
                             <div class="field">
-                                <button disabled type="submit" name="Gen_key" class="button is-info">Generate New Key
-                                </button>
-                                <br>
-                                <small>Coming soon</small>
+                                <button disabled type="submit" name="reset_recovery_code" class="button is-info">Generate new key</button>
                             </div>
                             <hr>
                             <div class="field">
