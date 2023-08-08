@@ -164,7 +164,7 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
                                         </a>
                                     </td>
                                     <td><?= pp_html_escape($p_date_formatted); ?></td>
-                                    <td><?= pp_html_escape($paste->views); ?></td>
+                                    <td><?= pp_html_escape($paste->views || 0); ?></td>
                                 </tr>
                             <?php } ?>
                             </tbody>
