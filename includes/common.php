@@ -221,8 +221,8 @@ function verifyCsrfToken($token = null) : bool {
     return hash_equals($_SESSION[SessionHelper::CSRF_TOKEN_KEY], $token);
 }
 
-session_start();
 session_set_cookie_params(86400);
+session_start();
 
 /* Set up the database and Eloquent ORM */
 $capsule = new Capsule();
