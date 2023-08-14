@@ -174,6 +174,16 @@ function pp_html_escape(string $unescaped) : string {
 function updatePageViews() : void {
     global $redis;
 
+    $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '';
+
+    // Don't count bots
+    if (empty($userAgent)
+        || str_contains($userAgent, 'bot')
+        || str_contains($userAgent, 'spider')
+        || str_contains($userAgent, 'crawl')) {
+        return;
+    }
+
     $ip = $_SERVER['REMOTE_ADDR'];
     $date = date('jS F Y');
 
