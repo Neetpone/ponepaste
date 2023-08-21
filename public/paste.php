@@ -8,10 +8,6 @@ use PonePaste\Models\Paste;
 use PonePaste\Models\User;
 use PonePaste\Pastedown;
 
-function isRequesterLikelyBot() : bool {
-    return str_contains(strtolower($_SERVER['HTTP_USER_AGENT']), 'bot');
-}
-
 function rawView($content, $p_code) : void {
     if ($p_code) {
         header('Content-Type: text/plain');

@@ -170,10 +170,7 @@ function pp_html_escape(string $unescaped) : string {
     return htmlspecialchars($unescaped, ENT_QUOTES, 'UTF-8', false);
 }
 
-/* I think there is one row for each day, and in that row, tpage = non-unique, tvisit = unique page views for that day */
-function updatePageViews() : void {
-    global $redis;
-
+function isRequesterLikelyBot() : bool {
     $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '';
 
     // Don't count bots
@@ -181,6 +178,17 @@ function updatePageViews() : void {
         || str_contains($userAgent, 'bot')
         || str_contains($userAgent, 'spider')
         || str_contains($userAgent, 'crawl')) {
+        return true;
+    }
+
+    return false;
+}
+
+/* I think there is one row for each day, and in that row, tpage = non-unique, tvisit = unique page views for that day */
+function updatePageViews() : void {
+    global $redis;
+
+    if (isRequesterLikelyBot()) {
         return;
     }
 
