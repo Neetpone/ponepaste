@@ -6,6 +6,15 @@ use PonePaste\Models\AdminLog;
 use PonePaste\Models\User;
 use PonePaste\Models\Paste;
 use PonePaste\Models\PageView;
+use PonePaste\Models\ModMessage;
+
+if (isset($_POST['send_message']) && !empty($_POST['message'])) {
+    $message = new ModMessage([
+            'user_id' => $current_user->id,
+            'message' => $_POST['message']
+    ]);
+    $message->save();
+}
 
 $last_page_view = PageView::select('tpage', 'tvisit')
     ->orderBy('id', 'desc')
@@ -43,6 +52,11 @@ foreach (PageView::orderBy('id', 'desc')->take(7)->get() as $row) {
 $admin_histories = AdminLog::with('user')
     ->orderBy('id', 'desc')
     ->take(10)
+    ->get();
+
+$mod_messages = ModMessage::with('user')
+    ->orderBy('created_at', 'desc')
+    ->take(20)
     ->get();
 
 $most_recent_users = User::select('id', 'username', 'created_at', 'ip')
@@ -249,6 +263,39 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
                 </div>
             </div>
             <!-- End Admin History -->
+
+            <div class="col-md-12 col-lg-6">
+                <div class="panel panel-widget">
+                    <div class="panel-title">
+                        Mod Chat
+                    </div>
+                    <div class="panel-body table-responsive">
+                        <p>Latest 20 messages:</p>
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <td>Mod</td>
+                                <td>Date</td>
+                                <td>Message</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($mod_messages as $entry): ?>
+                                <tr>
+                                    <td><?= pp_html_escape($entry->user->username); ?></td>
+                                    <td><?= pp_html_escape($entry->created_at); ?></td>
+                                    <td><?= !empty($entry->message) ? pp_html_escape($entry->message) : '[none]' ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                        <form method="POST" class="form-inline" style="width: 100%;">
+                            <input class="form-control" type="text" name="message" maxlength="255" placeholder="Message" style="width: 90%;">
+                            <input class="btn btn-primary" type="submit" name="send_message" value="Send" />
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <!-- END CONTAINER -->
