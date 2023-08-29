@@ -9,11 +9,17 @@ use PonePaste\Models\PageView;
 use PonePaste\Models\ModMessage;
 
 if (isset($_POST['send_message']) && !empty($_POST['message'])) {
-    $message = new ModMessage([
+    if (!verifyCsrfToken()) {
+        flashError('Invalid CSRF token (do you have cookies enabled?)');
+    } else {
+        $message = new ModMessage([
             'user_id' => $current_user->id,
             'message' => $_POST['message']
-    ]);
-    $message->save();
+        ]);
+        $message->save();
+        header('Location: dashboard.php');
+        die();
+    }
 }
 
 $last_page_view = PageView::select('tpage', 'tvisit')
@@ -113,7 +119,7 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
         <!-- Start Menu -->
         <?php include 'menu.php'; ?>
         <!-- End Menu -->
-
+        <?php outputFlashes($flashes); ?>
         <!-- Start Stats -->
         <div class="row">
             <div class="col-md-12">
@@ -290,6 +296,7 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
                             </tbody>
                         </table>
                         <form method="POST" class="form-inline" style="width: 100%;">
+                            <input type="hidden" name="csrf_token" value="<?= setupCsrfToken(); ?>" />
                             <input class="form-control" type="text" name="message" maxlength="255" placeholder="Message" style="width: 90%;">
                             <input class="btn btn-primary" type="submit" name="send_message" value="Send" />
                         </form>
