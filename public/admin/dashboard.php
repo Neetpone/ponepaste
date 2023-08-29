@@ -70,7 +70,7 @@ $mod_messages = ModMessage::with('user')
 
 $most_recent_users = User::select('id', 'username', 'created_at', 'ip')
     ->orderBy('id', 'desc')
-    ->limit(7)
+    ->limit(10)
     ->get();
 
 function getRecentadmin($count = 5) {
