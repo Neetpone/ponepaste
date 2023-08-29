@@ -92,7 +92,7 @@
                                         <select name="paste_expire_date" id="paste_expire_date">
                                             <?= optionsForSelect(
                                                 ['Never', 'View Once', '10 minutes', '1 hour', '1 day', '1 week', '2 weeks', '1 month'],
-                                                ['N', 'self', '0Y0M0DT0H10M', '1H', '1D', '1W', '2W', '1M'],
+                                                ['N', 'self', '0Y0M0DT0H10M', 'T1H', '1D', '1W', '2W', '1M'],
                                                 $post_expire
                                             ); ?>
                                         </select>

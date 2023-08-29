@@ -55,15 +55,14 @@ class Paste extends Model {
         if ($expiry == 'SELF') {
             return '<b>View Once</b>';
         }
-
-        var_dump($expiry);
-
-        $dateTime = new DateTime($expiry);
+        
+        $dateTime = new DateTime();
         $dateTime->setTimestamp($expiry);
         $ret = $dateTime->format('Y-m-d H:i:s');
         if ($dateTime->diff(new DateTime())->days < 1) {
             $ret = "<b>$ret</b>";
         }
+
         return $ret;
     }
 

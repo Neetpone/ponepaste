@@ -268,7 +268,7 @@
                                                     <option value="N" selected="selected">Never</option>
                                                     <option value="self">View Once</option>
                                                     <option value="0Y0M0DT0H10M">10 Minutes</option>
-                                                    <option value="1H">1 Hour</option>
+                                                    <option value="T1H">1 Hour</option>
                                                     <option value="1D">1 Day</option>
                                                     <option value="1W">1 Week</option>
                                                     <option value="2W">2 Weeks</option>
