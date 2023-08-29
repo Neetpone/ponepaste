@@ -55,6 +55,8 @@ foreach (PageView::orderBy('id', 'desc')->take(7)->get() as $row) {
     $tvisit[] = $row['tvisit'];
 }
 
+[$mm_per_page, $mm_current_page] = pp_setup_pagination('mm', 10);
+
 $admin_histories = AdminLog::with('user')
     ->orderBy('id', 'desc')
     ->take(10)
@@ -62,7 +64,8 @@ $admin_histories = AdminLog::with('user')
 
 $mod_messages = ModMessage::with('user')
     ->orderBy('created_at', 'desc')
-    ->take(20)
+    ->skip($mm_current_page * $mm_per_page)
+    ->take($mm_per_page)
     ->get();
 
 $most_recent_users = User::select('id', 'username', 'created_at', 'ip')
@@ -276,7 +279,7 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
                         Mod Chat
                     </div>
                     <div class="panel-body table-responsive">
-                        <p>Latest 20 messages:</p>
+                        <p>Latest 10 messages:</p>
                         <table class="table table-hover">
                             <thead>
                             <tr>
@@ -300,6 +303,7 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
                             <input class="form-control" type="text" name="message" maxlength="255" placeholder="Message" style="width: 90%;">
                             <input class="btn btn-primary" type="submit" name="send_message" value="Send" />
                         </form>
+                        <?= paginate($mm_current_page, $mm_per_page, ModMessage::count()) ?>
                     </div>
                 </div>
             </div>
