@@ -55,7 +55,7 @@ foreach (PageView::orderBy('id', 'desc')->take(7)->get() as $row) {
     $tvisit[] = $row['tvisit'];
 }
 
-[$mm_per_page, $mm_current_page] = pp_setup_pagination('mm', 10);
+[$mm_per_page, $mm_current_page] = pp_setup_pagination('mm_', 10);
 
 $admin_histories = AdminLog::with('user')
     ->orderBy('id', 'desc')
@@ -303,7 +303,7 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
                             <input class="form-control" type="text" name="message" maxlength="255" placeholder="Message" style="width: 90%;">
                             <input class="btn btn-primary" type="submit" name="send_message" value="Send" />
                         </form>
-                        <?= paginate($mm_current_page, $mm_per_page, ModMessage::count()) ?>
+                        <?= paginate($mm_current_page, $mm_per_page, ModMessage::count(), 'mm_') ?>
                     </div>
                 </div>
             </div>
