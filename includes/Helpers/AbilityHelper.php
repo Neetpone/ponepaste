@@ -43,7 +43,11 @@ class AbilityHelper {
                 return $user !== null
                     && ($user->id === $paste->user_id // Creators of pastes can delete their own pastes
                         || $user->role >= User::ROLE_ADMIN); // Admins can delete all pastes
-            }
+            },
+            'blank' => function(User | null $user, Paste $paste) {
+                return $user !== null
+                    && $user->role >= User::ROLE_ADMIN; // Only admins can blank pastes
+            },
         ];
         $this->modelToActions['PonePaste\\Models\\User'] = [
             'view' => function(User | null $user, User $subject) {
