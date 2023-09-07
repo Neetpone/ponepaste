@@ -122,13 +122,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $paste_code = 'green';
     }
 
-    if (!empty($paste_password)) {
+    if (!empty($paste_password) && $editing) {
         if (!$current_user) {
             $error = 'You must be logged in to create a password-protected paste.';
             goto OutPut;
         }
 
-        $paste_password = password_hash($paste_password, PASSWORD_DEFAULT);
+        // $paste_password = password_hash($paste_password, PASSWORD_DEFAULT);
     } else {
         $paste_password = null;
     }
