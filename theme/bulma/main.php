@@ -2,7 +2,7 @@
 <main class="container">
     <div class="bd-duo">
         <div class="bd-lead">
-            <?php if (isset($global_site_info['banner'])): ?>
+            <?php if (!empty($global_site_info['banner'])): ?>
                 <div class="notification is-primary">
                     <?= $global_site_info['banner'] /* Intentionally not escaped to allow HTML */ ?>
                 </div>
