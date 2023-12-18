@@ -326,7 +326,6 @@
                                 <label for="encrypt">
                                     Encrypt on server (always enabled)
                                 </label>
-
                             </div>
                         </div>
                     </form>
