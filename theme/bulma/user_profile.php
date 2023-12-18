@@ -245,7 +245,7 @@ if ($is_current_user && isset($_GET['tab']) && $_GET['tab'] === 'favourites') {
                                 <tr data-paste-info="<?= pp_html_escape(json_encode($pasteJson)); ?>">
                                     <td><a href="<?= urlForPaste($paste) ?>"
                                            title="<?= $escaped_title ?>"><?= $escaped_title ?></a></td>
-                                    <td data-sort="<?= $p_date->format('U') ?>"
+                                    <td data-sort="<?= $f_date->format('U') ?>"
                                         class="td-center"><?= $f_date->format('d F Y') ?></td>
                                     <td class="td-center">
                                         <?php if ($delta->days <= 2): ?>
