@@ -155,7 +155,7 @@ $flashes = getFlashes();
 
 <?php if ($current_user): ?>
     <div class="hidden" id="js-data-holder" data-user-id="<?= $current_user->id ?>"
-         data-csrf-token="<?= $csrf_token ?>"></div>
+         data-csrf-token="<?= isset($csrf_token) ? $csrf_token : '' ?>"></div>
 <?php endif; ?>
 
 <div id="#signin" class="modal modal-fx-fadeInScale">

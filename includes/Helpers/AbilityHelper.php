@@ -29,7 +29,7 @@ class AbilityHelper {
 
                 return $publicly_visible // Everyone can see public pastes
                     || ($user !== null && $user->id === $paste->user_id) // Creators of pastes can see their own private pastes
-                    || $user->role >= User::ROLE_MODERATOR; // Moderators and above can see all pastes
+                    || ($user !== null && $user->role >= User::ROLE_MODERATOR); // Moderators and above can see all pastes
             },
             'edit' => function(User | null $user, Paste $paste) {
                 return $user !== null
