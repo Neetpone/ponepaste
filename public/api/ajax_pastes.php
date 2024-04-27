@@ -23,12 +23,12 @@ $pastes = Paste::with([
     ->where('hidden', false)
     ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
 
-if (!empty($_GET['q']) && is_string($_GET['q'])) {
-    $tags = explode(',', $_GET['q']);
-    $pastes = $pastes->whereHas('tags', function($query) use ($tags) {
-        $query->where('name', $tags);
-    });
-}
+// if (!empty($_GET['q']) && is_string($_GET['q'])) {
+//     $tags = explode(',', $_GET['q']);
+//     $pastes = $pastes->whereHas('tags', function($query) use ($tags) {
+//         $query->where('name', $tags);
+//     });
+// }
 
 $pastes = $pastes->orderBy('id', 'desc')->get();
 

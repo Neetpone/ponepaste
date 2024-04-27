@@ -33,15 +33,16 @@ $pastes = Paste::with([
     ->where('hidden', false)
     ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
 
-
 if (!empty($filter_value)) {
     if ($filter_value === 'untagged') {
         $pastes = $pastes->doesntHave('tags');
     } else {
-        $pastes = $pastes->where('title', 'LIKE', '%' . escapeLikeQuery($filter_value) . '%')
-            ->orWhereHas('tags', function($q) use ($filter_value) {
-                $q->where('name', 'LIKE', '%' . escapeLikeQuery($filter_value) . '%');
-            });
+        $pastes = $paste->where(function($query) {
+            $query->where('title', 'LIKE', '%' . escapeLikeQuery($filter_value) . '%')
+                ->orWhereHas('tags', function($q) use ($filter_value) {
+                    $q->where('name', 'LIKE', '%' . escapeLikeQuery($filter_value) . '%');
+                });
+        });
     }
 }
 
