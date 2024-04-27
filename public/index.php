@@ -115,22 +115,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $paste_content = $_POST['paste_data'];
     $paste_visibility = $_POST['visibility'];
     $paste_code = $_POST['format'] ?? 'green';
-    $paste_password = $_POST['pass'];
     $tag_input = $_POST['tag_input'];
 
     if (!in_array($paste_code, PP_HIGHLIGHT_FORMATS)) {
         $paste_code = 'green';
-    }
-
-    if (!empty($paste_password) && $editing) {
-        if (!$current_user) {
-            $error = 'You must be logged in to create a password-protected paste.';
-            goto OutPut;
-        }
-
-        // $paste_password = password_hash($paste_password, PASSWORD_DEFAULT);
-    } else {
-        $paste_password = null;
     }
 
     $paste_content = openssl_encrypt(
@@ -152,7 +140,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'visible' => $paste_visibility,
                 'code' => $paste_code,
                 'expiry' => $expires,
-                'password' => $paste_password,
                 'updated_at' => date_create(),
                 'ip' => $ip,
                 'encrypt' => true
@@ -171,7 +158,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'content' => $paste_content,
             'visible' => $paste_visibility,
             'expiry' => $expires,
-            'password' => $paste_password,
             'encrypt' => true,
             'created_at' => date_create(),
             'ip' => $ip

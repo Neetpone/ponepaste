@@ -137,14 +137,6 @@
                         </div>
                     </div>
                 </div>
-                <!--<div class="field">
-                    <div class="control">
-                        <input type="text" class="input pp-width-auto" name="pass" id="pass"
-                               placeholder="Password (optional)<?= $current_user ? ' (must be logged in)': '' ?>" autocomplete="new-password"<?= $current_user ? '' : ' disabled="disabled"' ?>
-                               value="<?php echo (isset($_POST['pass'])) ? pp_html_escape($_POST['pass']) : ''; ?>"/>
-                    </div>
-                </div>-->
-
                 <div class="field">
                     <div class="control">
                         <input class="is-checkradio is-info has-background-color" id="encrypt"

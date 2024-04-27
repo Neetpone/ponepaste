@@ -306,17 +306,6 @@
                                 </div>
                             </div>
                         </nav>
-                        <nav>
-                            <div class="level-left">
-                                <!-- Password -->
-                                <div class="columns">
-                                    <div class="column">
-                                        <input type="text" class="input" name="pass" id="pass" value=""
-                                               placeholder="Password" autocomplete="new-password"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </nav>
                         <br>
                         <div class="level-left">
                             <!-- Encrypted -->
