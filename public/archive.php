@@ -37,7 +37,7 @@ if (!empty($filter_value)) {
     if ($filter_value === 'untagged') {
         $pastes = $pastes->doesntHave('tags');
     } else {
-        $pastes = $paste->where(function($query) {
+        $pastes = $pastes->where(function($query) {
             $query->where('title', 'LIKE', '%' . escapeLikeQuery($filter_value) . '%')
                 ->orWhereHas('tags', function($q) use ($filter_value) {
                     $q->where('name', 'LIKE', '%' . escapeLikeQuery($filter_value) . '%');
