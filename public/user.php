@@ -43,12 +43,16 @@ $total_pfav = array_sum(
 $total_yfav = $profile_info->favourites->count();
 
 // Badges
-$profile_badge = match ((int) $profile_info['badge']) {
+$profile_badge = match ((int) 5) {
     1 => '<img src="/img/badges/donate.png" title="[Donated] Donated to Ponepaste" style="margin:5px" alt="Donated to PonePaste" />',
     2 => '<img src="/img/badges/spoon.png" title="[TheWoodenSpoon] You had one job" style="margin:5px" alt="You had one job" />',
     3 => '<img src="/img/badges/abadge.png" title="[>AFuckingBadge] Won a PasteJam Competition" style="margin:5px" alt="Won a PasteJam competition" />',
-    default => '',
+    4 => '<img src="/img/badges/abadge2023.png" title="[>AFuckingBadge] Winner of /PJ2023/" style="margin:5px">',
+    5 => '<span class="badge--padded badge--bgcolor-dark"><img src="/img/badges/hackerhorse.svg" title="[HackerHorse] Made a CTF write-up for a /mlp/ CTF and posted it on the site." /></span>',
+    default => ''
 };
+
+
 
 $profile_total_pastes = $profile_info->pastes->count();
 $profile_total_public = $profile_info->pastes->where('visible', 0)->count();

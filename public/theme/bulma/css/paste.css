@@ -331,6 +331,21 @@ table.hidden + .loading_container {
     background-position: center;
 }
 
-.pp-width-auto {
-    width: auto;
+.badges {
+    display: flex;
+    align-items: center;
+}
+
+.badges > * {
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+}
+
+.badge--bgcolor-dark {
+    background-color: #2e2e2eff;
+}
+
+.badge--padded > img {
+    margin: 10px;
 }

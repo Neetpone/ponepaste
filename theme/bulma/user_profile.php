@@ -75,6 +75,7 @@ if ($is_current_user && isset($_GET['tab']) && $_GET['tab'] === 'favourites') {
                 <!-- Badges system -->
                 <div class="box">
                     <h2 class="title is-5">Badges</h2>
+                    <div class="badges">
                     <?php
                     if (!empty($profile_join_date)) {
                         if (strtotime($profile_join_date) <= 1604188800) {
@@ -86,7 +87,7 @@ if ($is_current_user && isset($_GET['tab']) && $_GET['tab'] === 'favourites') {
                         }
                     }
 
-                    if (!str_contains($profile_badge, '0')) {
+                    if (!empty($profile_badge)) {
                         echo $profile_badge;
                     }
 
@@ -100,6 +101,7 @@ if ($is_current_user && isset($_GET['tab']) && $_GET['tab'] === 'favourites') {
                     }
 
                     ?>
+                    </div>
                 </div>
 
                 <?php outputFlashes($flashes) ?>
