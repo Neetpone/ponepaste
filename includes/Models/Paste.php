@@ -80,6 +80,7 @@ class Paste extends Model {
             ->orderBy('updated_at', 'DESC')
             ->where('visible', self::VISIBILITY_PUBLIC)
             ->where('is_hidden', false)
+            ->where('password', null)
             ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
             ->limit($count)->get();
     }
@@ -89,6 +90,7 @@ class Paste extends Model {
             ->orderBy('views')
             ->where('visible', self::VISIBILITY_PUBLIC)
             ->where('is_hidden', false)
+            ->where('password', null)
             ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
             ->limit($count)->get();
     }
@@ -98,6 +100,7 @@ class Paste extends Model {
             ->whereRaw('MONTH(created_at) = MONTH(NOW())')
             ->where('visible', self::VISIBILITY_PUBLIC)
             ->where('is_hidden', false)
+            ->where('password', null)
             ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
             ->orderBy('views')
             ->limit($count)->get();
