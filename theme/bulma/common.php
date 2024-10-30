@@ -295,7 +295,7 @@ $flashes = getFlashes();
                     <div class="column">
                         <ul>
                             <li><a href="/page/tags" target="_blank">Tag Guide</a></li>
-                            <li><a href="/page/transparency " target="_blank">Transparency</a></li>
+                            <li><a href="/transparency " target="_blank">Transparency</a></li>
                             <li><a href="https://ko-fi.com/floorbored" target="_blank">Donate</a></li>
                         </ul>
                     </div>

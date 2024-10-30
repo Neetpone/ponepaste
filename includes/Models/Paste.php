@@ -14,13 +14,18 @@ class Paste extends Model {
 
     protected $guarded = [];
     protected $casts = [
-        'visible' => 'integer',
-        'encrypt' => 'boolean'
+        'visible'    => 'integer',
+        'encrypt'    => 'boolean',
+        'deleted_at' => 'datetime',
     ];
     public $timestamps = false;
 
     public function user() {
         return $this->belongsTo(User::class);
+    }
+
+    public function deletedBy() {
+        return $this->belongsTo(User::class, 'deleted_by_id');
     }
 
     public function tags() {

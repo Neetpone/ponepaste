@@ -31,6 +31,11 @@ if (isset($_POST['hide'])) {
 
         if ($is_hidden) {
             $paste->reports()->update(['open' => false]);
+            $paste->deleted_at = date_create();
+            $paste->deleted_by_id = $current_user->id;
+        } else {
+            $paste->deleted_at = null;
+            $paste->deleted_by_id = null;
         }
 
         $paste->is_hidden = $is_hidden;
