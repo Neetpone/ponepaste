@@ -5,7 +5,7 @@ require_once(__DIR__ . '/../includes/common.php');
 
 use PonePaste\Models\Paste;
 
-$deleted_pastes = Paste::select('id', 'updated_at', 'title', 'user_id')
+$deleted_pastes = Paste::select('id', 'deleted_at', 'title', 'user_id')
                         ->with(['user' => function($q) { $q->select('id', 'username'); }])
                         ->where('is_hidden', true)
                         ->orderBy('deleted_at', 'desc')
