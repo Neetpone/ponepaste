@@ -1,5 +1,16 @@
-import { $, $$, toggleEl } from './dom';
+import { $, $$, toggleEl, escape } from './dom';
 import { TagsInput } from "./tag_input";
+
+const decompress = base64string => {
+    const bytes = Uint8Array.from(atob(base64string), c => c.charCodeAt(0));
+    const cs = new DecompressionStream('gzip');
+    const writer = cs.writable.getWriter();
+    writer.write(bytes);
+    writer.close();
+    return new Response(cs.readable).arrayBuffer().then(function (arrayBuffer) {
+        return new TextDecoder().decode(arrayBuffer);
+    });
+}
 
 const setupSignupModal = () => {
     const signupButton = $('[data-target~="#signin"],[data-target~="#signup"]');
@@ -100,6 +111,17 @@ const globalSetup = () => {
     if (hiddenElements) {
         Array.prototype.forEach.call(hiddenElements, (elem) => {
             toggleEl(elem);
+        });
+    }
+
+    // Used for encoding email to try to avoid spam.
+    const encodedElements = $$('[data-encoded-text]');
+
+    if (encodedElements) {
+        [...encodedElements].forEach(elem => {
+           decompress(elem.dataset.encodedText).then(data => {
+               setTimeout(() => elem[elem.dataset.encodedAttr] = data, 1500);
+           });
         });
     }
 }

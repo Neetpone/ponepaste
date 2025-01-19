@@ -289,7 +289,11 @@ $flashes = getFlashes();
                         <ul>
                             <li><a href="/rules" target="_blank">Site Rules</a></li>
                             <li><a href="/privacy" target="_blank">Privacy Policy</a></li>
-                            <li><a href="mailto:admin@ponepaste.org">Contact</a></li>
+                            <li>
+                                <!-- If you're smart enough to have JS disabled, and want to contact me, you're probably smart enough to read this.
+                                     The below value is gzipped and then base64-encoded. -->
+                                <a data-encoded-attr="href" data-encoded-text="H4sIAAAAAAAAA8tNzMwpybdKTMnNzHMoyM9LLUgsLknVyy9K5wIAai8HYBsAAAA=" href="#">Contact</a>
+                            </li>
                         </ul>
                     </div>
                     <div class="column">
