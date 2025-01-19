@@ -1,5 +1,4 @@
 <main class="bd-main">
-
     <div class="container">
         <div class="bd-duo">
             <div class="bd-lead">
@@ -19,8 +18,7 @@
                             <button type="submit" name="submit" class="button is-info">Submit</button>
                         </form>
                     <?php endif; ?>
-                    <a href="/" class="btn btn-default">New Paste</a>
-                <?php elseif (isset($flashes)): ?>
+                    <?php elseif (isset($flashes)): ?>
                     <?php outputFlashes($flashes) ?>
                 <?php endif; ?>
                 <a href="/" class="button">Go Home</a>
