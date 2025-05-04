@@ -353,17 +353,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </label>
                                 </div>
 
-                                <div class="form-group">
-
-                                    <div class="checkbox checkbox-primary">
-                                        <input <?php if ($site_is_private) echo 'checked="true"'; ?>
-                                            type="checkbox" name="siteprivate" id="siteprivate">
-                                        <label for="siteprivate">
-                                            Make site private (no Recent Pastes or Archives)
-                                        </label>
-                                    </div>
+                                <div class="checkbox checkbox-primary">
+                                    <input <?php if ($site_is_private) echo 'checked="true"'; ?>
+                                        type="checkbox" name="siteprivate" id="siteprivate">
+                                    <label for="siteprivate">
+                                        Make site private (no Recent Pastes or Archives)
+                                    </label>
                                 </div>
-
 
                                 <input type="hidden" name="permissions" value="permissions"/>
 

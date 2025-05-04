@@ -7,11 +7,16 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Events\ModelPruningFinished;
+use Illuminate\Database\Events\ModelPruningStarting;
 use Illuminate\Database\Events\ModelsPruned;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Finder\Finder;
 
+#[AsCommand(name: 'model:prune')]
 class PruneCommand extends Command
 {
     /**
@@ -22,6 +27,7 @@ class PruneCommand extends Command
     protected $signature = 'model:prune
                                 {--model=* : Class names of the models to be pruned}
                                 {--except=* : Class names of the models to be excluded from pruning}
+                                {--path=* : Absolute path(s) to directories where models are located}
                                 {--chunk=1000 : The number of models to retrieve per chunk of models to be deleted}
                                 {--pretend : Display the number of prunable records found instead of deleting them}';
 
@@ -70,9 +76,13 @@ class PruneCommand extends Command
             $this->components->twoColumnDetail($event->model, "{$event->count} records");
         });
 
+        $events->dispatch(new ModelPruningStarting($models->all()));
+
         $models->each(function ($model) {
             $this->pruneModel($model);
         });
+
+        $events->dispatch(new ModelPruningFinished($models->all()));
 
         $events->forget(ModelsPruned::class);
     }
@@ -108,7 +118,7 @@ class PruneCommand extends Command
     protected function models()
     {
         if (! empty($models = $this->option('model'))) {
-            return collect($models)->filter(function ($model) {
+            return (new Collection($models))->filter(function ($model) {
                 return class_exists($model);
             })->values();
         }
@@ -119,7 +129,7 @@ class PruneCommand extends Command
             throw new InvalidArgumentException('The --models and --except options cannot be combined.');
         }
 
-        return collect((new Finder)->in($this->getDefaultPath())->files()->name('*.php'))
+        return (new Collection(Finder::create()->in($this->getPath())->files()->name('*.php')))
             ->map(function ($model) {
                 $namespace = $this->laravel->getNamespace();
 
@@ -128,24 +138,26 @@ class PruneCommand extends Command
                     ['\\', ''],
                     Str::after($model->getRealPath(), realpath(app_path()).DIRECTORY_SEPARATOR)
                 );
-            })->when(! empty($except), function ($models) use ($except) {
-                return $models->reject(function ($model) use ($except) {
-                    return in_array($model, $except);
-                });
-            })->filter(function ($model) {
-                return $this->isPrunable($model);
-            })->filter(function ($model) {
-                return class_exists($model);
-            })->values();
+            })
+            ->when(! empty($except), fn ($models) => $models->reject(fn ($model) => in_array($model, $except)))
+            ->filter(fn ($model) => class_exists($model))
+            ->filter(fn ($model) => $this->isPrunable($model))
+            ->values();
     }
 
     /**
-     * Get the default path where models are located.
+     * Get the path where models are located.
      *
-     * @return string|string[]
+     * @return string[]|string
      */
-    protected function getDefaultPath()
+    protected function getPath()
     {
+        if (! empty($path = $this->option('path'))) {
+            return (new Collection($path))
+                ->map(fn ($path) => base_path($path))
+                ->all();
+        }
+
         return app_path('Models');
     }
 

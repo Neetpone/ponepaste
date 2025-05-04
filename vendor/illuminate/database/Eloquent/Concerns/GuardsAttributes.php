@@ -7,7 +7,7 @@ trait GuardsAttributes
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<string>
+     * @var array<int, string>
      */
     protected $fillable = [];
 
@@ -63,7 +63,7 @@ trait GuardsAttributes
      */
     public function mergeFillable(array $fillable)
     {
-        $this->fillable = array_merge($this->fillable, $fillable);
+        $this->fillable = array_values(array_unique(array_merge($this->fillable, $fillable)));
 
         return $this;
     }
@@ -76,8 +76,8 @@ trait GuardsAttributes
     public function getGuarded()
     {
         return $this->guarded === false
-                    ? []
-                    : $this->guarded;
+            ? []
+            : $this->guarded;
     }
 
     /**
@@ -101,7 +101,7 @@ trait GuardsAttributes
      */
     public function mergeGuarded(array $guarded)
     {
-        $this->guarded = array_merge($this->guarded, $guarded);
+        $this->guarded = array_values(array_unique(array_merge($this->guarded, $guarded)));
 
         return $this;
     }
@@ -214,14 +214,19 @@ trait GuardsAttributes
      */
     protected function isGuardableColumn($key)
     {
+        if ($this->hasSetMutator($key) || $this->hasAttributeSetMutator($key)) {
+            return true;
+        }
+
         if (! isset(static::$guardableColumns[get_class($this)])) {
             $columns = $this->getConnection()
-                        ->getSchemaBuilder()
-                        ->getColumnListing($this->getTable());
+                ->getSchemaBuilder()
+                ->getColumnListing($this->getTable());
 
             if (empty($columns)) {
                 return true;
             }
+
             static::$guardableColumns[get_class($this)] = $columns;
         }
 
