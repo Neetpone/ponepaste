@@ -4,13 +4,13 @@ namespace PonePaste\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class AdminLog extends Model {
-    public const ACTION_LOGIN = 0;
-    public const ACTION_FAIL_LOGIN = 1;
-    public const ACTION_EDIT_CONFIG = 2;
-    public const ACTION_HIDE_PASTE = 3;
-    public const ACTION_BLANK_PASTE = 4;
+    public const int ACTION_LOGIN = 0;
+    public const int ACTION_FAIL_LOGIN = 1;
+    public const int ACTION_EDIT_CONFIG = 2;
+    public const int ACTION_HIDE_PASTE = 3;
+    public const int ACTION_BLANK_PASTE = 4;
 
-    public const ACTION_NAMES = [
+    public const array ACTION_NAMES = [
         'Login',
         'Failed Login',
         'Edit Config',
@@ -27,7 +27,7 @@ class AdminLog extends Model {
         return $this->belongsto(User::class);
     }
 
-    public static function updateAdminHistory(User $admin, int $action, string $message = null) : void {
+    public static function updateAdminHistory(User $admin, int $action, ?string $message = null) : void {
         $log = new AdminLog([
             'user_id' => $admin->id,
             'action' => $action,

@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class Paste extends Model {
-    public const VISIBILITY_PUBLIC   = 0;
-    public const VISIBILITY_UNLISTED = 1;
-    public const VISIBILITY_PRIVATE  = 2;
+    public const int VISIBILITY_PUBLIC   = 0;
+    public const int VISIBILITY_UNLISTED = 1;
+    public const int VISIBILITY_PRIVATE  = 2;
 
     protected $table = 'pastes';
 

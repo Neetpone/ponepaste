@@ -6,8 +6,8 @@ use PonePaste\Models\User;
 use PonePaste\Models\UserSession;
 
 class SessionHelper {
-    public const REMEMBER_TOKEN_COOKIE = '_ponepaste_token';
-    public const CSRF_TOKEN_KEY = 'csrf_token';
+    public const string REMEMBER_TOKEN_COOKIE = '_ponepaste_token';
+    public const string CSRF_TOKEN_KEY = 'csrf_token';
 
     public static function currentUser() {
         $session_user = SessionHelper::currentUserFromPhpSession();

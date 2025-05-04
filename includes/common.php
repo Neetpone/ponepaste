@@ -68,7 +68,7 @@ function urlForMember(int | User $user) : string {
 /**
  * @throws Exception if the names and values aren't the same length
  */
-function optionsForSelect(array $displays, array $values, string $currentSelection = null) : string {
+function optionsForSelect(array $displays, array $values, ?string $currentSelection = null) : string {
     $size = count($displays);
 
     if (count($values) !== $size) {
