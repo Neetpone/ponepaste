@@ -26,7 +26,8 @@ $pastes = Paste::with([
 ])->select(['id', 'user_id', 'title', 'expiry', 'created_at', 'views', 'visible'])
     ->where('hidden', false)
     ->where('user_id', $user_id)
-    ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
+    ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
+    ->orderBy('created_at', 'desc');
 
 if (!$is_current_user) {
     $pastes = $pastes->where('visible', Paste::VISIBILITY_PUBLIC);

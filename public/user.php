@@ -52,13 +52,10 @@ $profile_badge = match ((int) $profile_info['badge']) {
     default => ''
 };
 
-
-
 $profile_total_pastes = $profile_info->pastes->count();
 $profile_total_public = $profile_info->pastes->where('visible', 0)->count();
 $profile_total_unlisted = $profile_info->pastes->where('visible', 1)->count();
 $profile_total_private = $profile_info->pastes->where('visible', 2)->count();
-
 
 $profile_total_paste_views = Paste::select('views')
     ->where('user_id', $profile_info->id)
@@ -75,6 +72,7 @@ list($per_page, $current_page) = pp_setup_pagination();
 
 $total_results = $profile_info->pastes->count();
 $profile_pastes = $profile_info->pastes()
+    ->orderBy('created_at', 'desc')
     ->limit($per_page)
     ->offset($per_page * $current_page)
     ->get();
