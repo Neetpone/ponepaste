@@ -4,6 +4,7 @@ define('IN_PONEPASTE', 1);
 require_once(__DIR__ . '/../includes/common.php');
 
 use Highlight\Highlighter;
+use PonePaste\Helpers\SpamHelper;
 use PonePaste\Models\Paste;
 use PonePaste\Models\User;
 use PonePaste\Pastedown;
@@ -164,6 +165,12 @@ if (isset($_GET['download'])) {
 if (isset($_GET['raw'])) {
     rawView($op_content, $paste_code);
     exit();
+}
+
+if (can('mark', $paste)) {
+    $paste_guessed_mark = SpamHelper::classifyPaste($paste);
+} else {
+    $paste_guessed_mark = null;
 }
 
 // Preprocess

@@ -168,6 +168,13 @@
                             </div>
                             <?php if ($paste->mark === null): ?>
                                 <p>The following buttons train the spam filter. Don't use them unless you're sure the paste belongs to the given category.</p>
+                                <p>Right now, the spam filter thinks this paste is
+                                    <b><?php echo match ($paste_guessed_mark) {
+                                        'spam' => 'spam',
+                                        'ham' => 'not spam',
+                                        default => 'unknown',
+                                    }; ?></b>. Even if that's correct, you should still hit the right button to improve the spam filter.
+                                </p>
                                 <div class="field is-grouped">
                                     <div class="control">
                                         <input class="button is-small is-success" type="submit" name="mark[ham]" value="Mark as Not Spam" />
