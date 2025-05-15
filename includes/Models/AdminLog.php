@@ -10,12 +10,15 @@ class AdminLog extends Model {
     public const int ACTION_HIDE_PASTE = 3;
     public const int ACTION_BLANK_PASTE = 4;
 
+    public const int ACTION_MARK_PASTE = 5;
+
     public const array ACTION_NAMES = [
         'Login',
         'Failed Login',
         'Edit Config',
         'Hide Paste',
-        'Blank Paste'
+        'Blank Paste',
+        'Mark Paste',
     ];
 
     protected $table = 'admin_logs';

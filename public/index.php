@@ -4,6 +4,7 @@ define('IN_PONEPASTE', 1);
 require_once(__DIR__ . '/../includes/common.php');
 require_once(__DIR__ . '/../includes/captcha.php');
 
+use PonePaste\Helpers\SpamHelper;
 use PonePaste\Models\Paste;
 use PonePaste\Models\Tag;
 use PonePaste\Models\User;
@@ -162,6 +163,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'created_at' => date_create(),
             'ip' => $ip
         ]);
+
+        if (!$current_user && SpamHelper::classifyPaste($paste) === 'spam') {
+            $error = 'Your paste appears to be spam. If this is a mistake, please log in or create an account, and try again.';
+            goto OutPut;
+        }
 
         $paste->user()->associate($paste_owner);
         $paste->save();

@@ -10,4 +10,5 @@ yarn-error.log
 assets/bundle/*
 !assets/bundle/.gitkeep
 config/site.php
+config/spam.json
 includes/config.php

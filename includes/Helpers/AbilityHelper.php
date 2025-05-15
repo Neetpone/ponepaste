@@ -48,6 +48,10 @@ class AbilityHelper {
                 return $user !== null
                     && $user->role >= User::ROLE_ADMIN; // Only admins can blank pastes
             },
+            'mark' => function(User | null $user, Paste $paste) {
+                return $user !== null
+                    && $user->role >= User::ROLE_MODERATOR;
+            }
         ];
         $this->modelToActions['PonePaste\\Models\\User'] = [
             'view' => function(User | null $user, User $subject) {

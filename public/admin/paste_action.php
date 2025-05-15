@@ -4,6 +4,7 @@ require_once(__DIR__ . '/common.php');
 
 use PonePaste\Models\AdminLog;
 use PonePaste\Models\Paste;
+use PonePaste\Helpers\SpamHelper;
 
 if (empty($_POST['paste_id'])) {
     echo "Error: No paste ID specified.";
@@ -63,6 +64,29 @@ if (isset($_POST['hide'])) {
         flashSuccess('Paste contents blanked.');
     }
 
+    header('Location: ' . urlForPaste($paste));
+    die();
+} elseif (isset($_POST['mark'])) {
+    if (!can('mark', $paste)) {
+        flashError('You do not have permission to mark this paste.');
+    } elseif ($paste->mark !== null) {
+        flashError('Paste has already been marked as ' . $paste->mark . '.');
+    } else {
+        $mark = $_POST['mark'];
+
+        if (isset($mark['ham'])) {
+            $mark = 'ham';
+        } else {
+            $mark = 'spam';
+        }
+
+        SpamHelper::markPaste($paste, $mark);
+        $paste->mark = $mark;
+        $paste->save();
+
+        AdminLog::updateAdminHistory($current_user, AdminLog::ACTION_MARK_PASTE, 'Paste ' . $paste->id . ' marked ' . $mark . '.');
+        flashsuccess('Paste marked as ' . $mark . '.');
+    }
     header('Location: ' . urlForPaste($paste));
     die();
 } else {

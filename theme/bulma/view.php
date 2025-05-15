@@ -166,7 +166,17 @@
                                     </div>
                                 <?php endif; ?>
                             </div>
-
+                            <?php if ($paste->mark === null): ?>
+                                <p>The following buttons train the spam filter. Don't use them unless you're sure the paste belongs to the given category.</p>
+                                <div class="field is-grouped">
+                                    <div class="control">
+                                        <input class="button is-small is-success" type="submit" name="mark[ham]" value="Mark as Not Spam" />
+                                    </div>
+                                    <div class="control">
+                                        <input class="button is-small is-danger" type="submit" name="mark[spam]" value="Mark as Spam" />
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </form>
                     </div>
                 <?php endif; ?>

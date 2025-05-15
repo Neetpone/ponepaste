@@ -71,6 +71,14 @@ class Paste extends Model {
         return $ret;
     }
 
+    public function plaintextContent() : string {
+        if ($this->encrypt) {
+            return openssl_decrypt($this->content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY);
+        }
+
+        return $this->content;
+    }
+
     public static function getRecent(int $count = 10) : Collection {
         return Paste::with('user')
             ->orderBy('created_at', 'DESC')
