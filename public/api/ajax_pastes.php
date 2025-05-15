@@ -20,7 +20,7 @@ $pastes = Paste::with([
     }
 ])->select(['id', 'user_id', 'title', 'expiry', 'created_at', 'updated_at'])
     ->where('visible', Paste::VISIBILITY_PUBLIC)
-    ->where('hidden', false)
+    ->where('is_hidden', false)
     ->where('password', null)
     ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
 

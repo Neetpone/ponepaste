@@ -24,7 +24,7 @@ $pastes = Paste::with([
         $query->select('tags.id', 'name', 'slug');
     }
 ])->select(['id', 'user_id', 'title', 'expiry', 'created_at', 'views', 'visible'])
-    ->where('hidden', false)
+    ->where('is_hidden', false)
     ->where('user_id', $user_id)
     ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
     ->orderBy('created_at', 'desc');
