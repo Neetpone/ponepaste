@@ -100,22 +100,22 @@ class Paste extends Model {
 
     public static function getMostViewed(int $count = 10) : Collection {
         return Paste::with('user')
-            ->orderBy('views')
             ->where('visible', self::VISIBILITY_PUBLIC)
             ->where('is_hidden', false)
             ->where('password', null)
             ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
+            ->orderBy('views', 'desc')
             ->limit($count)->get();
     }
 
     public static function getMonthPopular(int $count = 10) : Collection {
         return Paste::with('user')
-            ->whereRaw('MONTH(created_at) = MONTH(NOW())')
+            ->whereRaw('EXTRACT(YEAR_MONTH FROM created_at) = EXTRACT(YEAR_MONTH FROM NOW())')
             ->where('visible', self::VISIBILITY_PUBLIC)
             ->where('is_hidden', false)
             ->where('password', null)
             ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
-            ->orderBy('views')
+            ->orderBy('views', 'desc')
             ->limit($count)->get();
     }
 
