@@ -61,7 +61,7 @@ abstract class Seeder
             $seeder->__invoke($parameters);
 
             if ($silent === false && isset($this->command)) {
-                $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
+                $runTime = number_format((microtime(true) - $startTime) * 1000);
 
                 with(new TwoColumnDetail($this->command->getOutput()))->render(
                     $name,
@@ -110,11 +110,15 @@ abstract class Seeder
      */
     public function callOnce($class, $silent = false, array $parameters = [])
     {
-        if (in_array($class, static::$called)) {
-            return;
-        }
+        $classes = Arr::wrap($class);
 
-        $this->call($class, $silent, $parameters);
+        foreach ($classes as $class) {
+            if (in_array($class, static::$called)) {
+                continue;
+            }
+
+            $this->call($class, $silent, $parameters);
+        }
     }
 
     /**

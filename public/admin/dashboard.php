@@ -6,9 +6,21 @@ use PonePaste\Models\AdminLog;
 use PonePaste\Models\User;
 use PonePaste\Models\Paste;
 use PonePaste\Models\PageView;
+use PonePaste\Models\ModMessage;
 
-$today_users_count = 0;
-$today_pastes_count = 0;
+if (isset($_POST['send_message']) && !empty($_POST['message'])) {
+    if (!verifyCsrfToken()) {
+        flashError('Invalid CSRF token (do you have cookies enabled?)');
+    } else {
+        $message = new ModMessage([
+            'user_id' => $current_user->id,
+            'message' => $_POST['message']
+        ]);
+        $message->save();
+        header('Location: dashboard.php');
+        die();
+    }
+}
 
 $last_page_view = PageView::select('tpage', 'tvisit')
     ->orderBy('id', 'desc')
@@ -20,10 +32,10 @@ $admin_email = getSiteInfo()['site_info']['email'];
 $c_date = date('jS F Y');
 
 /* Number of users today */
-$today_users_count = User::where(['created_at' => 'TODAY()'])->count();
+$today_users_count = User::whereDate('created_at', '=', date('Y-m-d'))->count();
 
 /* Number of pastes today */
-$today_pastes_count = Paste::where(['created_at' => 'TODAY()'])->count();
+$today_pastes_count = Paste::whereDate('created_at', '=', date('Y-m-d'))->count();
 
 foreach (PageView::orderBy('id', 'desc')->take(7)->get() as $row) {
     $sdate = $row['date'];
@@ -43,14 +55,22 @@ foreach (PageView::orderBy('id', 'desc')->take(7)->get() as $row) {
     $tvisit[] = $row['tvisit'];
 }
 
+[$mm_per_page, $mm_current_page] = pp_setup_pagination('mm_', 10);
+
 $admin_histories = AdminLog::with('user')
     ->orderBy('id', 'desc')
     ->take(10)
     ->get();
 
+$mod_messages = ModMessage::with('user')
+    ->orderBy('created_at', 'desc')
+    ->skip($mm_current_page * $mm_per_page)
+    ->take($mm_per_page)
+    ->get();
+
 $most_recent_users = User::select('id', 'username', 'created_at', 'ip')
     ->orderBy('id', 'desc')
-    ->limit(7)
+    ->limit(10)
     ->get();
 
 function getRecentadmin($count = 5) {
@@ -102,7 +122,7 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
         <!-- Start Menu -->
         <?php include 'menu.php'; ?>
         <!-- End Menu -->
-
+        <?php outputFlashes($flashes); ?>
         <!-- Start Stats -->
         <div class="row">
             <div class="col-md-12">
@@ -167,7 +187,7 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
                                         </a>
                                     </td>
                                     <td><?= pp_html_escape($p_date_formatted); ?></td>
-                                    <td><?= pp_html_escape($paste->views); ?></td>
+                                    <td><?= pp_html_escape($paste->views || 0); ?></td>
                                 </tr>
                             <?php } ?>
                             </tbody>
@@ -231,6 +251,7 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
                                 <td>Username</td>
                                 <td>Date</td>
                                 <td>Action</td>
+                                <td>Information</td>
                                 <td>IP Address</td>
                             </tr>
                             </thead>
@@ -240,6 +261,7 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
                                     <td><?= pp_html_escape($entry->user->username); ?></td>
                                     <td><?= pp_html_escape($entry->time); ?></td>
                                     <td><?= pp_html_escape(AdminLog::ACTION_NAMES[$entry->action]); ?></td>
+                                    <td><?= !empty($entry->message) ? pp_html_escape($entry->message) : '[none]' ?></td>
                                     <td><?= $is_admin ? pp_html_escape($entry->ip) : '[masked]' ?></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -250,6 +272,41 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
                 </div>
             </div>
             <!-- End Admin History -->
+
+            <div class="col-md-12 col-lg-6">
+                <div class="panel panel-widget">
+                    <div class="panel-title">
+                        Mod Chat
+                    </div>
+                    <div class="panel-body table-responsive">
+                        <p>Latest 10 messages:</p>
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <td>Mod</td>
+                                <td>Date</td>
+                                <td>Message</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($mod_messages as $entry): ?>
+                                <tr>
+                                    <td><?= pp_html_escape($entry->user->username); ?></td>
+                                    <td><?= pp_html_escape($entry->created_at); ?></td>
+                                    <td><?= !empty($entry->message) ? pp_html_escape($entry->message) : '[none]' ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                        <form method="POST" class="form-inline" style="width: 100%;">
+                            <input type="hidden" name="csrf_token" value="<?= setupCsrfToken(); ?>" />
+                            <input class="form-control" type="text" name="message" maxlength="255" placeholder="Message" style="width: 90%;">
+                            <input class="btn btn-primary" type="submit" name="send_message" value="Send" />
+                        </form>
+                        <?= paginate($mm_current_page, $mm_per_page, ModMessage::count(), 'mm_') ?>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <!-- END CONTAINER -->

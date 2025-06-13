@@ -5,6 +5,7 @@ require_once(__DIR__ . '/../includes/common.php');
 require_once(__DIR__ . '/../includes/captcha.php');
 
 use PonePaste\Helpers\SearchHelper;
+use PonePaste\Helpers\SpamHelper;
 use PonePaste\Models\Paste;
 use PonePaste\Models\Tag;
 use PonePaste\Models\User;
@@ -38,7 +39,7 @@ function calculatePasteExpiry(string $expiry) : ?string {
         return 'SELF';
     }
 
-    $valid_expiries = ['0Y0M0DT0H10M', '1H', '1D', '1W', '2W', '1M'];
+    $valid_expiries = ['0Y0M0DT0H10M', 'T1H', '1D', '1W', '2W', '1M'];
 
     return in_array($expiry, $valid_expiries)
         ? (new DateTime())->add(new DateInterval("P{$expiry}"))->format('U')
@@ -115,16 +116,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $paste_content = $_POST['paste_data'];
     $paste_visibility = $_POST['visibility'];
-    $paste_code = $_POST['format'];
-    $paste_password = $_POST['pass'];
-
-    $p_expiry = trim(htmlspecialchars($_POST['paste_expire_date']));
+    $paste_code = $_POST['format'] ?? 'green';
     $tag_input = $_POST['tag_input'];
 
-    if (empty($paste_password)) {
-        $paste_password = null;
-    } else {
-        $paste_password = password_hash($paste_password, PASSWORD_DEFAULT);
+    if (!in_array($paste_code, PP_HIGHLIGHT_FORMATS)) {
+        $paste_code = 'green';
     }
 
     $paste_content = openssl_encrypt(
@@ -134,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     );
 
     // Set expiry time
-    $expires = calculatePasteExpiry($p_expiry);
+    $expires = calculatePasteExpiry(trim($_POST['paste_expire_date']));
 
     // Edit existing paste or create new?
     if ($editing) {
@@ -146,9 +142,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'visible' => $paste_visibility,
                 'code' => $paste_code,
                 'expiry' => $expires,
-                'password' => $paste_password,
                 'updated_at' => date_create(),
-                'ip' => $ip
+                'ip' => $ip,
+                'encrypt' => true
             ]);
 
             $paste->replaceTags($tags);
@@ -165,11 +161,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'content' => $paste_content,
             'visible' => $paste_visibility,
             'expiry' => $expires,
-            'password' => $paste_password,
             'encrypt' => true,
             'created_at' => date_create(),
             'ip' => $ip
         ]);
+
+        if (!$current_user && SpamHelper::classifyPaste($paste) === 'spam') {
+            $error = 'Your paste appears to be spam. If this is a mistake, please log in or create an account, and try again.';
+            goto OutPut;
+        }
 
         $paste->user()->associate($paste_owner);
         $paste->save();

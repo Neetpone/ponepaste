@@ -208,7 +208,15 @@ class DataTable {
 
         const firstIndex = (this.perPage * this.currentPage);
         const lastIndex = (firstIndex + this.perPage) > this.totalRecords ? this.totalRecords : (firstIndex + this.perPage);
+        
 
+        const numResults = lastIndex - firstIndex;
+
+        if (numResults === 0) {
+            const notFound = makeEl(`<tr><td colspan="${this.element.querySelectorAll('th').length}">No results found</td></tr>`);
+            bodyElement.appendChild(notFound);
+            return;
+        }
 
         for (let i = firstIndex; i < lastIndex; i++) {
             const rowElem = makeEl(this.options.rowCallback(this.data[i]));
@@ -289,6 +297,16 @@ const dumbFilterCallback = (datum, query) => {
     }
 
     /* this is inefficient */
+    if (queryLower.includes(',')) {
+        const searchTags = queryLower.split(',')
+            .map(tag => tag.trim())
+            .filter(tag => tag.length > 0);
+            
+        return searchTags.every(searchTag => 
+            datum.tags.some(tag => tag.name.toLowerCase() === searchTag.toLowerCase())
+        );
+    }
+
     for (const tag of datum.tags) {
         if (tag.name.toLowerCase().indexOf(queryLower) !== -1) {
             return true;
@@ -333,7 +351,7 @@ class TagsInput {
         this.element.style.display = 'none';
 
         this.containerNode = makeEl('<div class="tags-input"></div>');
-        this.inputNode = makeEl('<input class="input" type="text" placeholder="32 tags maximum" value="" />');
+        this.inputNode = makeEl('<input class="input" type="text" placeholder="Type a comma to separate each tag..." value="" />');
         this.containerNode.appendChild(this.inputNode);
 
         this.element.parentNode.insertBefore(this.containerNode, this.element.nextSibling);
@@ -430,6 +448,17 @@ class TagsInput {
     }
 }
 
+const decompress = base64string => {
+    const bytes = Uint8Array.from(atob(base64string), c => c.charCodeAt(0));
+    const cs = new DecompressionStream('gzip');
+    const writer = cs.writable.getWriter();
+    writer.write(bytes);
+    writer.close();
+    return new Response(cs.readable).arrayBuffer().then(function (arrayBuffer) {
+        return new TextDecoder().decode(arrayBuffer);
+    });
+};
+
 const setupSignupModal = () => {
     const signupButton = $('[data-target~="#signin"],[data-target~="#signup"]');
 
@@ -501,14 +530,6 @@ const globalSetup = () => {
         });
     }
 
-    const preloader = $('.preloader');
-    const main = $('main');
-
-    if (preloader && main) {
-        preloader.remove();
-        main.id = '';
-    }
-
     // CAPTCHA refresh
     const captchaContainer = $('.captcha_container');
 
@@ -539,6 +560,17 @@ const globalSetup = () => {
             toggleEl(elem);
         });
     }
+
+    // Used for encoding email to try to avoid spam.
+    const encodedElements = $$('[data-encoded-text]');
+
+    if (encodedElements) {
+        [...encodedElements].forEach(elem => {
+           decompress(elem.dataset.encodedText).then(data => {
+               setTimeout(() => elem[elem.dataset.encodedAttr] = data, 1500);
+           });
+        });
+    }
 };
 
 const getUserInfo = () => {
@@ -566,7 +598,7 @@ whenReady(() => {
     const myParam = urlParams.get('q');
     const myPastesElem = document.getElementById('archive');
     const apiUrl = '/api/user_pastes.php?user_id=' + myPastesElem.dataset.userId;
-    console.log('myPastesElem', myPastesElem);
+
     const table = new DataTable(myPastesElem, {
         ajaxCallback: (resolve) => {
             fetch(apiUrl)
@@ -574,10 +606,8 @@ whenReady(() => {
                 .then(resolve);
         },
         rowCallback: (rowData) => {
-            console.log('rowData', rowData);
             const userData = getUserInfo();
             const ownedByUser = (parseInt(rowData.author_id) === parseInt(userData.userId));
-            console.log(ownedByUser);
             const deleteElem = ownedByUser ? `<td class="td-center">
                                          <form action="/${rowData.id}" method="POST">
                                             <input type="hidden" name="delete" value="delete" />
@@ -610,7 +640,6 @@ whenReady(() => {
 
     const faveTable = new DataTable(myFavesElem, {
         ajaxCallback: (resolve) => {
-            console.log('invoker invoked');
             resolve({
                 data: Array.prototype.map.call(myFavesElem.querySelectorAll('tbody > tr'), parsePasteInfo)
             });

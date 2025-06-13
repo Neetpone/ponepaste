@@ -320,6 +320,13 @@ dl,
 dt,
 fieldset,
 figure,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
 html,
 iframe,
 legend,
@@ -327,9 +334,22 @@ li,
 ol,
 p,
 pre,
-textarea {
+textarea,
+ul {
     margin: 0;
     padding: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-size: 100%;
+    font-weight: 400;
+}
+ul {
+    list-style: none;
 }
 button,
 input,
@@ -8244,7 +8264,7 @@ a.has-text-link-dark:hover {
     background-color: #2160c4 !important;
 }
 .has-text-info {
-    color: #3298dc;
+    color: #3298dc !important;
 }
 a.has-text-info:focus,
 a.has-text-info:hover {

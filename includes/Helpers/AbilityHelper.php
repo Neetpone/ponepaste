@@ -29,7 +29,7 @@ class AbilityHelper {
 
                 return $publicly_visible // Everyone can see public pastes
                     || ($user !== null && $user->id === $paste->user_id) // Creators of pastes can see their own private pastes
-                    || $user->role >= User::ROLE_MODERATOR; // Moderators and above can see all pastes
+                    || ($user !== null && $user->role >= User::ROLE_MODERATOR); // Moderators and above can see all pastes
             },
             'edit' => function(User | null $user, Paste $paste) {
                 return $user !== null
@@ -43,6 +43,14 @@ class AbilityHelper {
                 return $user !== null
                     && ($user->id === $paste->user_id // Creators of pastes can delete their own pastes
                         || $user->role >= User::ROLE_ADMIN); // Admins can delete all pastes
+            },
+            'blank' => function(User | null $user, Paste $paste) {
+                return $user !== null
+                    && $user->role >= User::ROLE_ADMIN; // Only admins can blank pastes
+            },
+            'mark' => function(User | null $user, Paste $paste) {
+                return $user !== null
+                    && $user->role >= User::ROLE_MODERATOR;
             }
         ];
         $this->modelToActions['PonePaste\\Models\\User'] = [

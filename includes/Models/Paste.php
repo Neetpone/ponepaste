@@ -7,16 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 use PonePaste\Helpers\SearchHelper;
 
 class Paste extends Model {
-    public const VISIBILITY_PUBLIC   = 0;
-    public const VISIBILITY_UNLISTED = 1;
-    public const VISIBILITY_PRIVATE  = 2;
+    public const int VISIBILITY_PUBLIC   = 0;
+    public const int VISIBILITY_UNLISTED = 1;
+    public const int VISIBILITY_PRIVATE  = 2;
 
     protected $table = 'pastes';
 
     protected $guarded = [];
     protected $casts = [
-        'visible' => 'integer',
-        'encrypt' => 'boolean'
+        'visible'    => 'integer',
+        'encrypt'    => 'boolean',
+        'deleted_at' => 'datetime',
     ];
     public $timestamps = false;
 
@@ -36,6 +37,10 @@ class Paste extends Model {
 
     public function user() {
         return $this->belongsTo(User::class);
+    }
+
+    public function deletedBy() {
+        return $this->belongsTo(User::class, 'deleted_by_id');
     }
 
     public function tags() {
@@ -70,16 +75,23 @@ class Paste extends Model {
         if ($expiry == 'SELF') {
             return '<b>View Once</b>';
         }
-
-        var_dump($expiry);
-
-        $dateTime = new DateTime($expiry);
+        
+        $dateTime = new DateTime();
         $dateTime->setTimestamp($expiry);
         $ret = $dateTime->format('Y-m-d H:i:s');
         if ($dateTime->diff(new DateTime())->days < 1) {
             $ret = "<b>$ret</b>";
         }
+
         return $ret;
+    }
+
+    public function plaintextContent() : string {
+        if ($this->encrypt) {
+            return openssl_decrypt($this->content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY);
+        }
+
+        return $this->content;
     }
 
     public static function getRecent(int $count = 10) : Collection {
@@ -96,26 +108,29 @@ class Paste extends Model {
             ->orderBy('updated_at', 'DESC')
             ->where('visible', self::VISIBILITY_PUBLIC)
             ->where('is_hidden', false)
+            ->where('password', null)
             ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
             ->limit($count)->get();
     }
 
     public static function getMostViewed(int $count = 10) : Collection {
         return Paste::with('user')
-            ->orderBy('views')
             ->where('visible', self::VISIBILITY_PUBLIC)
             ->where('is_hidden', false)
+            ->where('password', null)
             ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
+            ->orderBy('views', 'desc')
             ->limit($count)->get();
     }
 
     public static function getMonthPopular(int $count = 10) : Collection {
         return Paste::with('user')
-            ->whereRaw('MONTH(created_at) = MONTH(NOW())')
+            ->whereRaw('EXTRACT(YEAR_MONTH FROM created_at) = EXTRACT(YEAR_MONTH FROM NOW())')
             ->where('visible', self::VISIBILITY_PUBLIC)
             ->where('is_hidden', false)
+            ->where('password', null)
             ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
-            ->orderBy('views')
+            ->orderBy('views', 'desc')
             ->limit($count)->get();
     }
 

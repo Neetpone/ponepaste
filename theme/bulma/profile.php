@@ -1,6 +1,6 @@
 <main class="bd-main">
-    <div class="bd-side-background"></div>
-    <div class="bd-main-container container">
+
+    <div class="container">
         <div class="bd-duo">
             <div class="bd-lead">
                 <h1 class="title is-5">Total Pastes: <?= $total_user_pastes ?></h1>
@@ -25,22 +25,6 @@
                 <form method="post">
                     <div class="columns">
                         <div class="column">
-                            <div class="field">
-                                <label class="label">Generate New Recovery Key</label>
-                                <div class="control has-icons-left has-icons-right">
-                                    <input disabled="" type="text" class="input" name="username"
-                                           style="cursor:not-allowed;" placeholder="New key generated here">
-                                    <span class="icon is-small is-left">
-										<i class="fas fa-user"></i>
-									</span>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <button disabled type="submit" name="Gen_key" class="button is-info">Generate New Key
-                                </button>
-                                <br>
-                                <small>Coming soon</small>
-                            </div>
                             <hr>
                             <div class="field">
                                 <label class="label" for="username">Username</label>
@@ -79,7 +63,7 @@
                                 <label class="label" for="password_confirmation">Confirm Password</label>
                                 <div class="control has-icons-left has-icons-right">
                                     <input type="password" class="input" name="cpassword" id="password_confirmation"
-                                           placeholder="Confirm Password" />
+                                           placeholder="Confirm Password"/>
                                     <span class="icon is-small is-left">
 										<i class="fas fa-key"></i>
 									</span>
@@ -87,9 +71,22 @@
                             </div>
                             <div class="field">
                                 <?php if (isset($csrf_token)): ?>
-                                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
+                                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>"/>
                                 <?php endif; ?>
-                                <button type="submit" name="submit" class="button is-info">Submit</button>
+                                <button type="submit" name="change_password" class="button is-info">Change Password</button>
+                            </div>
+                            <div class="field">
+                                <label class="label">Generate New Recovery Key</label>
+                                <div class="control has-icons-left has-icons-right">
+                                    <input disabled="disabled" type="text" class="input"
+                                           style="cursor:not-allowed;" placeholder="New key generated here" value="<?= isset($user_new_code) ? pp_html_escape($user_new_code) : '' ?>">
+                                    <span class="icon is-small is-left">
+										<i class="fas fa-user"></i>
+									</span>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <button type="submit" name="reset_recovery_code" class="button is-info">Generate new key</button>
                             </div>
                         </div>
                         <div class="column">

@@ -4,8 +4,8 @@ namespace PonePaste\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends Model {
-    public const ROLE_MODERATOR = 1;
-    public const ROLE_ADMIN = 2;
+    public const int ROLE_MODERATOR = 1;
+    public const int ROLE_ADMIN = 2;
 
     protected $table = 'users';
     protected $fillable = [

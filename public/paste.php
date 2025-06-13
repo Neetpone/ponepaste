@@ -4,13 +4,10 @@ define('IN_PONEPASTE', 1);
 require_once(__DIR__ . '/../includes/common.php');
 
 use Highlight\Highlighter;
+use PonePaste\Helpers\SpamHelper;
 use PonePaste\Models\Paste;
 use PonePaste\Models\User;
 use PonePaste\Pastedown;
-
-function isRequesterLikelyBot() : bool {
-    return str_contains(strtolower($_SERVER['HTTP_USER_AGENT']), 'bot');
-}
 
 function rawView($content, $p_code) : void {
     if ($p_code) {
@@ -43,7 +40,6 @@ updatePageViews();
 $totalpastes = Paste::count();
 
 $paste = Paste::with('user')->find((int) trim($_REQUEST['id']));
-$is_private = false;
 $error = null;
 
 if (!$paste) {
@@ -66,8 +62,6 @@ if (isset($_SESSION['password_ok'])) {
     $password_ok_pastes = [];
 }
 
-$paste_owner_id = $paste->user->id;
-$paste_title = $paste->title;
 $paste_code = $paste->code;
 $using_highlighter = $paste_code !== 'pastedown';
 $fav_count = $paste->favouriters()->count();
@@ -75,8 +69,6 @@ $fav_count = $paste->favouriters()->count();
 $p_content = $paste->content;
 $p_password = $paste->password;
 $paste_is_favourited = $current_user !== null && $current_user->favourites->where('id', $paste->id)->count() === 1;
-
-$is_private = $paste->visible === Paste::VISIBILITY_PRIVATE;
 
 if (!can('view', $paste)) {
     if ($paste->is_hidden) {
@@ -99,26 +91,6 @@ if (isset($_POST['delete'])) {
 //    flashSuccess('Paste deleted.');
     flashError('Paste deletion is currently disabled.');
     header('Location: ' . urlForMember($current_user));
-    die();
-}
-
-if (isset($_POST['hide'])) {
-    if (!can('hide', $paste)) {
-        $error = 'You do not have permission to hide this paste.';
-        goto Not_Valid_Paste;
-    }
-
-    $is_hidden = !$paste->is_hidden;
-
-    if ($is_hidden) {
-        $paste->reports()->update(['open' => false]);
-    }
-
-    $paste->is_hidden = $is_hidden;
-    $paste->save();
-    $redis->del('ajax_pastes'); /* Expire from Redis so it doesn't show up anymore */
-    flashSuccess('Paste ' . ($is_hidden ? 'hidden' : 'unhidden') . '.');
-    header('Location: /');
     die();
 }
 
@@ -195,6 +167,12 @@ if (isset($_GET['raw'])) {
     exit();
 }
 
+if (can('mark', $paste)) {
+    $paste_guessed_mark = SpamHelper::classifyPaste($paste);
+} else {
+    $paste_guessed_mark = null;
+}
+
 // Preprocess
 $highlight = [];
 $prefix_size = strlen('!highlight!');
@@ -214,7 +192,14 @@ $p_content = rtrim($p_content);
 // Apply syntax highlight
 $p_content = htmlspecialchars_decode($p_content);
 
-if ($paste_code === "pastedown" || $paste_code === 'pastedown_old') {
+// Clean up the paste_code in case it's invalid
+$paste_code = match ($paste_code) {
+    'text', 'plaintext' => 'plaintext',
+    'pastedown_old', 'pastedown' => 'pastedown',
+    default => 'green',
+};
+
+if ($paste_code === "pastedown") {
     $parsedown = new Pastedown();
     $parsedown->setSafeMode(true);
     $p_content = $parsedown->text($p_content);
@@ -222,13 +207,13 @@ if ($paste_code === "pastedown" || $paste_code === 'pastedown_old') {
     Highlighter::registerLanguage('green', __DIR__ . '/../config/green.lang.json');
     Highlighter::registerLanguage('plaintext', __DIR__ . '/../vendor/scrivo/highlight.php/Highlight/languages/plaintext.json');
     $hl = new Highlighter(false);
-    $highlighted = $hl->highlight($paste_code == 'text' ? 'plaintext' : $paste_code, $p_content)->value;
+    $highlighted = $hl->highlight($paste_code, $p_content)->value;
     $lines = HighlightUtilities\splitCodeIntoArray($highlighted);
 }
 
 // Embed view after highlighting is applied so that $p_code is syntax highlighted as it should be.
 if (isset($_GET['embed'])) {
-    embedView($paste->id, $paste->title, $p_content, $title);
+    embedView($paste->id, $paste->title, $p_content, $site_name);
     exit();
 }
 

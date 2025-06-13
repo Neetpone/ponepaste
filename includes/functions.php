@@ -1,6 +1,8 @@
 <?php
 use Illuminate\Database\Eloquent\Collection;
+use PonePaste\Models\AdminLog;
 use PonePaste\Models\Paste;
+use PonePaste\Models\User;
 
 function tagsToHtml(array | Collection $tags) : string {
     $output = "";
@@ -247,7 +249,7 @@ function escapeLikeQuery(string $query) : string {
     return str_replace(['\\', '_', '%'], ['\\\\', '\\_', '\\%'], $query);
 }
 
-function paginate(int $current_page, int $per_page, int $total_records) : string {
+function paginate(int $current_page, int $per_page, int $total_records, $prefix = '') : string {
     $first_page = 0;
     $last_page = floor($total_records / $per_page);
     $window = 2;
@@ -256,11 +258,11 @@ function paginate(int $current_page, int $per_page, int $total_records) : string
         // Do something?
     }
 
-    $_page_button = function(int $page, string $text, bool $disabled = false) use ($current_page) : string {
+    $_page_button = function(int $page, string $text, bool $disabled = false) use ($current_page, $prefix) : string {
         /* We need to update the 'page' parameter in the request URI, or add it if it doesn't exist. */
         $request_uri = parse_url($_SERVER['REQUEST_URI']);
         parse_str((string) @$request_uri['query'], $parsed_query);
-        $parsed_query['page'] = (string) $page;
+        $parsed_query[$prefix . 'page'] = (string) $page;
         $page_uri = ((string) @$request_uri['path']) . '?' . http_build_query($parsed_query);
 
         $selected_class = $current_page == $page ? ' paginator__button--selected' : '';
@@ -315,21 +317,16 @@ function pp_filename_escape(string $filename, string $extension) : string {
     return $filename . $extension;
 }
 
-function pp_setup_pagination() : array {
-    $per_page = 20;
+function pp_setup_pagination($prefix = '', $per_page = 20) : array {
     $current_page = 0;
 
-    if (!empty($_GET['page'])) {
-        $current_page = max(0, intval($_GET['page']));
+    if (!empty($_GET[$prefix . 'page'])) {
+        $current_page = max(0, intval($_GET[$prefix . 'page']));
     }
 
-    if (!empty($_GET['per_page'])) {
-        $per_page = max(1, min(100, intval($_GET['per_page'])));
+    if (!empty($_GET[$prefix . 'per_page'])) {
+        $per_page = max(1, min(100, intval($_GET[$prefix . 'per_page'])));
     }
 
     return [$per_page, $current_page];
-}
-
-function pp_output_paginator(int $per_page, int $current_page) : void {
-
 }

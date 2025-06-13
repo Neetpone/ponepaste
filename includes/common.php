@@ -33,12 +33,16 @@ function urlForPage($page = '') : string {
     return (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/' . $page;
 }
 
-function urlForPaste(Paste $paste) : string {
-    if (PP_MOD_REWRITE) {
-        return "/{$paste->id}";
+function urlForPaste(int | Paste $paste) : string {
+    if (!is_int($paste)) {
+        $paste = $paste->id;
     }
 
-    return "/paste.php?id={$paste->id}";
+    if (PP_MOD_REWRITE) {
+        return "/{$paste}";
+    }
+
+    return "/paste.php?id={$paste}";
 }
 
 function urlForReport(Paste $paste) : string {
@@ -49,7 +53,11 @@ function urlForReport(Paste $paste) : string {
     return "/report.php?id={$paste->id}";
 }
 
-function urlForMember(User $user) : string {
+function urlForMember(int | User $user) : string {
+    if (is_int($user)) {
+        $user = User::find($user);
+    }
+
     if (PP_MOD_REWRITE) {
         return '/user/' . urlencode($user->username);
     }
@@ -60,7 +68,7 @@ function urlForMember(User $user) : string {
 /**
  * @throws Exception if the names and values aren't the same length
  */
-function optionsForSelect(array $displays, array $values, string $currentSelection = null) : string {
+function optionsForSelect(array $displays, array $values, ?string $currentSelection = null) : string {
     $size = count($displays);
 
     if (count($values) !== $size) {
@@ -162,9 +170,27 @@ function pp_html_escape(string $unescaped) : string {
     return htmlspecialchars($unescaped, ENT_QUOTES, 'UTF-8', false);
 }
 
+function isRequesterLikelyBot() : bool {
+    $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '';
+
+    // Don't count bots
+    if (empty($userAgent)
+        || str_contains($userAgent, 'bot')
+        || str_contains($userAgent, 'spider')
+        || str_contains($userAgent, 'crawl')) {
+        return true;
+    }
+
+    return false;
+}
+
 /* I think there is one row for each day, and in that row, tpage = non-unique, tvisit = unique page views for that day */
 function updatePageViews() : void {
     global $redis;
+
+    if (isRequesterLikelyBot()) {
+        return;
+    }
 
     $ip = $_SERVER['REMOTE_ADDR'];
     $date = date('jS F Y');
@@ -210,13 +236,10 @@ function verifyCsrfToken($token = null) : bool {
         return false;
     }
 
-    $success = hash_equals($_SESSION[SessionHelper::CSRF_TOKEN_KEY], $token);
-
-    unset($_SESSION[SessionHelper::CSRF_TOKEN_KEY]);
-
-    return $success;
+    return hash_equals($_SESSION[SessionHelper::CSRF_TOKEN_KEY], $token);
 }
 
+session_set_cookie_params(86400);
 session_start();
 
 /* Set up the database and Eloquent ORM */

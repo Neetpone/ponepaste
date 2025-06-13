@@ -5,7 +5,7 @@ function pp_password_hash(string $password) : string {
     return 'P' . password_hash($password . PP_PASSWORD_PEPPER, PASSWORD_BCRYPT);
 }
 
-function pp_password_verify(string $password, string $hash, bool &$needs_rehash = null) : bool {
+function pp_password_verify(string $password, string $hash, ?bool &$needs_rehash = null) : bool {
     /* New, peppered hash. */
     if ($hash && $hash[0] === 'P') {
         if ($needs_rehash !== null) {

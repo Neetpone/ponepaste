@@ -34,11 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'site_info') {
         $data = $_POST['site_info'];
         $new_site_info = [
-            'title' => trim($data['title']),
             'description' => trim($data['description']),
             'keywords' => trim($data['keywords']),
             'site_name' => trim($data['site_name']),
-            'email' => trim($data['email'])
+            'email' => trim($data['email']),
+            'banner' => trim($data['banner'])
         ];
 
         $current_config['site_info'] = $new_site_info;
@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 									</div>';
     }
 
-    updateAdminHistory($current_user, AdminLog::ACTION_EDIT_CONFIG);
+    AdminLog::updateAdminHistory($current_user, AdminLog::ACTION_EDIT_CONFIG);
 }
 ?>
 
@@ -189,6 +189,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         </div>
                                     </div>
 
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label form-label" for="site_info_banner">Site Banner</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="site_info[banner]"
+                                                   placeholder="Homepage banner, leave empty for none..." id="site_info_banner"
+                                                   value="<?= isset($current_site_info['banner']) ? pp_html_escape($current_site_info['banner']) : '' ?>">
+                                        </div>
+                                    </div>
+
                                     <input type="hidden" name="action" value="site_info"/>
 
                                     <div class="form-group">
@@ -240,75 +249,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                             <!-- CAPTCHA -->
                             <div class="tabs__content">
-
                                 <h2>CAPTCHA</h2>
                                 <form class="form-horizontal" method="POST"
                                       action="<?= $_SERVER['PHP_SELF']; ?>">
 
                                     <div class="form-group">
-
-                                        <div class="checkbox checkbox-primary">
-                                            <input <?php if ($current_captcha['enabled']) echo 'checked="true"'; ?>
-                                                type="checkbox"
-                                                name="captcha[enabked]"
-                                                id="captcha_enabled">
-                                            <label for="captcha_enabled">Enable Captcha</label>
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <div class="checkbox checkbox-primary">
+                                                <input <?php if ($current_captcha['enabled']) echo 'checked="true"'; ?>
+                                                    type="checkbox"
+                                                    name="captcha[enabled]"
+                                                    id="captcha_enabled">
+                                                <label for="captcha_enabled">Enable Captcha</label>
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label form-label" for="captcha_mode">Captcha
                                             Type</label>
-                                        <select class="form-control col-sm-10" id="captcha_mode" class="" name="captcha[mode]">
-                                            <?php
-                                            if ($current_captcha['mode'] == "Easy") {
-                                                echo '<option selected="">Easy</option>';
-                                            } else {
-                                                echo '<option>Easy</option>';
-                                            }
+                                        <div class="col-sm-10">
+                                            <select class="form-control" id="captcha_mode" name="captcha[mode]">
+                                                <?php
+                                                if ($current_captcha['mode'] == "Easy") {
+                                                    echo '<option selected="">Easy</option>';
+                                                } else {
+                                                    echo '<option>Easy</option>';
+                                                }
 
-                                            if ($current_captcha['mode'] == "Normal") {
-                                                echo '<option selected="">Normal</option>';
-                                            } else {
-                                                echo '<option>Normal</option>';
-                                            }
+                                                if ($current_captcha['mode'] == "Normal") {
+                                                    echo '<option selected="">Normal</option>';
+                                                } else {
+                                                    echo '<option>Normal</option>';
+                                                }
 
-                                            if ($current_captcha['mode'] == "Tough") {
-                                                echo '<option selected="">Tough</option>';
-                                            } else {
-                                                echo '<option>Tough</option>';
-                                            }
-                                            ?>
-                                        </select>
+                                                if ($current_captcha['mode'] == "Tough") {
+                                                    echo '<option selected="">Tough</option>';
+                                                } else {
+                                                    echo '<option>Tough</option>';
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
                                     </div>
 
                                     <hr/>
-                                    <div class="panel-title">
-                                        Internal Captcha Settings:
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <div class="panel-title">
+                                                Internal Captcha Settings:
+                                            </div>
+                                            <div class="checkbox checkbox-primary">
+                                                <input <?php if ($current_captcha['multiple']) echo 'checked="checked"'; ?>
+                                                    type="checkbox"
+                                                    name="captcha[multiple]"
+                                                    id="captcha_multiple">
+                                                <label for="captcha_multiple">Enable multiple backgrounds</label>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="checkbox checkbox-primary">
-                                        <input <?php if ($current_captcha['multiple']) echo 'checked="checked"'; ?>
-                                            type="checkbox"
-                                            name="captcha[multiple]"
-                                            id="captcha_multiple">
-                                        <label for="captcha_multiple">Enable multiple backgrounds</label>
-                                    </div>
-                                    <br/>
-                                    <div class="form-group row">
-                                        <label for="captcha_allowed" class="col-sm-1 col-form-label">Captcha
+
+                                    <div class="form-group">
+                                        <label for="captcha_allowed" class="col-sm-2 control-label form-label">Captcha
                                             Characters</label>
                                         <div class="col-sm-10">
-                                            <input type="text" id="captcha_allowed" name="captcha[allowed]"
+                                            <input type="text" class="form-control" id="captcha_allowed" name="captcha[allowed]"
                                                    placeholder="Allowed Characters"
                                                    value="<?php echo $current_captcha['allowed']; ?>">
                                         </div>
                                     </div>
 
-                                    <div class="form-group row">
-                                        <label for="captcha_colour" class="col-sm-1 col-form-label">Captcha Text
+                                    <div class="form-group">
+                                        <label for="captcha_colour" class="col-sm-2 control-label form-label">Captcha Text
                                             Colour</label>
                                         <div class="col-sm-10">
-                                            <input type="text" id="captcha_colour" name="captcha[colour]"
+                                            <input type="text" class="form-control" id="captcha_colour" name="captcha[colour]"
                                                    placeholder="Captcha Text Colour"
                                                    value="<?= $current_captcha['colour']; ?>">
                                         </div>
@@ -316,7 +331,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                     <hr/>
 
-                                    <input type="hidden" name="cap" value="cap"/>
+                                    <input type="hidden" name="action" value="captcha"/>
 
                                     <div class="form-group">
                                         <div class="col-sm-offset-2 col-sm-10">
@@ -338,17 +353,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </label>
                                 </div>
 
-                                <div class="form-group">
-
-                                    <div class="checkbox checkbox-primary">
-                                        <input <?php if ($site_is_private) echo 'checked="true"'; ?>
-                                            type="checkbox" name="siteprivate" id="siteprivate">
-                                        <label for="siteprivate">
-                                            Make site private (no Recent Pastes or Archives)
-                                        </label>
-                                    </div>
+                                <div class="checkbox checkbox-primary">
+                                    <input <?php if ($site_is_private) echo 'checked="true"'; ?>
+                                        type="checkbox" name="siteprivate" id="siteprivate">
+                                    <label for="siteprivate">
+                                        Make site private (no Recent Pastes or Archives)
+                                    </label>
                                 </div>
-
 
                                 <input type="hidden" name="permissions" value="permissions"/>
 

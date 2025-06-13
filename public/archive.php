@@ -28,23 +28,26 @@ $pastes = Paste::with([
     'tags' => function($q) {
         $q->select('tags.id', 'name', 'slug');
     }])
-    ->select('id', 'user_id', 'title', 'created_at')
+    ->select('id', 'user_id', 'title', 'created_at', 'updated_at')
     ->where('visible', Paste::VISIBILITY_PUBLIC)
-    ->where('hidden', false)
+    ->where('is_hidden', false)
+    ->where('password', null)
     ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
-
 
 if (!empty($filter_value)) {
     if ($filter_value === 'untagged') {
         $pastes = $pastes->doesntHave('tags');
     } else {
-        $pastes = $pastes->where('title', 'LIKE', '%' . escapeLikeQuery($filter_value) . '%')
-            ->orWhereHas('tags', function($q) use ($filter_value) {
-                $q->where('name', 'LIKE', '%' . escapeLikeQuery($filter_value) . '%');
-            });
+        $pastes = $pastes->where(function($query) use ($filter_value) {
+            $query->where('title', 'LIKE', '%' . escapeLikeQuery($filter_value) . '%')
+                ->orWhereHas('tags', function($q) use ($filter_value) {
+                    $q->where('name', 'LIKE', '%' . escapeLikeQuery($filter_value) . '%');
+                });
+        });
     }
 }
 
+$pastes = $pastes->orderBy('id', 'desc');
 $total_results = $pastes->count();
 
 $pastes = $pastes->limit($per_page)->offset($per_page * $current_page);

@@ -21,38 +21,14 @@
 <?php if ($using_highlighter): ?>
     <link rel="stylesheet" href="/vendor/scrivo/highlight.php/styles/default.css"/>
 <?php endif; ?>
-<?php
-$protocol = paste_protocol();
-$bg = array('/img/loader.gif', '/img/loader2.gif', '/img/loader3.gif'); // array of filenames
-$i = rand(0, count($bg) - 1); // generate random number size of the array
-$selectedloader = "$bg[$i]"; // set variable equal to which random filename was chosen
-?>
-
 <style>
-    .preloader {
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        width: 100%;
-        height: 100vh;
-        z-index: 99999999;
-        background-image: url('<?= $selectedloader ?>'); /* your icon gif file path */
-        background-repeat: no-repeat;
-        background-color: #FFF;
-        background-position: center;
-    }
-
     #stop-scrolling {
         height: 100% !important;
         overflow: hidden !important;
     }
 </style>
-<main class="bd-main" id="dstop-scrolling">
-    <!-- <div class="preloader"></div> -->
-    <div class="bd-side-background"></div>
-    <div class="bd-main-container container">
+<main class="bd-main" id="stop-scrolling">
+    <div class="container">
         <div class="bd-duo">
             <div class="bd-lead">
                 <div class="content panel">
@@ -83,12 +59,14 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                         <div class="column is-4 has-text-centered">
                             <h1 class="title is-6" style="margin-bottom:0;"><?= pp_html_escape($paste->title); ?></h1>
                             <small class="title is-6 has-text-weight-normal has-text-grey">
-                                By <a href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
+                                By <a
+                                    href="<?= urlForMember($paste->user) ?>"><?= pp_html_escape($paste->user->username) ?></a>
                                 <br/>
-                                Created: <?= $paste['created_at'] ?>
+                                Created: <?= $paste->created_at ?>
                                 <br/>
-                                <?php if ($paste['updated_at'] != $paste['created_at']): ?>
-                                    Updated: <?= $paste['updated_at'] ?>
+                                <?php if ($paste->updated_at !== null && $paste->updated_at !== $paste->created_at): ?>
+                                    Updated: <?= $paste->updated_at ?>
+                                    <br/>
                                 <?php endif; ?>
                                 Expiry: <?= $paste->expiryDisplay() ?>
                             </small>
@@ -99,30 +77,32 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     <?php if ($current_user !== null): ?>
                                         <form method="POST" class="form--inline">
                                             <?php if (isset($csrf_token)): ?>
-                                                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
+                                                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>"/>
                                             <?php endif; ?>
-                                            <input type="hidden" name="fave" value="1" />
-                                            <button type="submit" class="icon tool-icon button--no-style"><i class="fas fa-star fa-lg <?= $paste_is_favourited ? '' : 'has-text-grey' ?>" title="Favourite"></i></button>
+                                            <input type="hidden" name="fave" value="1"/>
+                                            <button type="submit" class="icon tool-icon button--no-style"><i
+                                                    class="fas fa-star fa-lg <?= $paste_is_favourited ? '' : 'has-text-grey' ?>"
+                                                    title="Favourite"></i></button>
                                         </form>
                                     <?php endif; ?>
                                     <a class="icon tool-icon flip" href="<?= urlForReport($paste); ?>"><i
-                                                class="far fa-flag fa-lg has-text-grey" title="Report Paste"></i></a>
+                                            class="far fa-flag fa-lg has-text-grey" title="Report Paste"></i></a>
                                     <?php if ($paste['code'] != "pastedown") { ?>
                                         <a class="icon tool-icon" href="javascript:togglev();"><i
-                                                    class="fas fa-list-ol fa-lg has-text-grey"
-                                                    title="Toggle Line Numbers"></i></a>
+                                                class="fas fa-list-ol fa-lg has-text-grey"
+                                                title="Toggle Line Numbers"></i></a>
                                     <?php } ?>
                                     <a class="icon tool-icon" href="#" onclick="selectText('paste');"><i
-                                                class="far fa-clipboard fa-lg has-text-grey"
-                                                title="Select Text"></i></a>
+                                            class="far fa-clipboard fa-lg has-text-grey"
+                                            title="Select Text"></i></a>
                                     <a class="icon tool-icon" href="<?php echo $p_raw; ?>"><i
-                                                class="far fa-file-alt fa-lg has-text-grey" title="View Raw"></i></a>
+                                            class="far fa-file-alt fa-lg has-text-grey" title="View Raw"></i></a>
                                     <a class="icon tool-icon" href="<?php echo $p_download; ?>"><i
-                                                class="fas fa-file-download fa-lg has-text-grey"
-                                                title="Download Paste"></i></a>
+                                            class="fas fa-file-download fa-lg has-text-grey"
+                                            title="Download Paste"></i></a>
                                     <a class="icon tool-icon embed-tool "><i
-                                                class="far fa-file-code fa-lg has-text-grey"
-                                                title="Embed This Paste"></i></a>
+                                            class="far fa-file-code fa-lg has-text-grey"
+                                            title="Embed This Paste"></i></a>
                                     <a class="icon tool-icon expand-tool"><i class="fas fa-expand-alt has-text-grey"
                                                                              title="Full Screen"></i></a>
                                     <div class="panel-embed my-5 is-hidden">
@@ -133,7 +113,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                } else {
                                                    echo 'paste.php?embed&id=';
                                                }
-                                               echo $paste->id . '"></script>'; ?>' readonly />
+                                               echo $paste->id . '"></script>'; ?>' readonly/>
                                     </div>
                                 </div>
                             </div>
@@ -163,22 +143,49 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             </div>
                         </div>
                     <?php else: ?>
-                            <div id="paste" style="line-height: 18px;"><?= $p_content  ?></div>
+                        <div id="paste" style="line-height: 18px;"><?= $p_content ?></div>
                     <?php endif; ?>
                 </div>
                 <?php if (can('hide', $paste)): ?>
-                <div class="mod-tools">
-                    <p>Moderation Tools</p>
-                    <form method="post">
-                        <?php if (isset($csrf_token)): ?>
-                            <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
-                        <?php endif; ?>
-                        <div class="field">
-                            <input class="button is-small <?= $paste->is_hidden ? 'is-success' : 'is-danger' ?>" type="submit" name="hide" id="hide"
-                                   value="<?= $paste->is_hidden ? 'Unhide' : 'Hide' ?> Paste" />
-                        </div>
-                    </form>
-                </div>
+                    <div class="mod-tools">
+                        <p>Moderation Tools</p>
+                        <form action="/admin/paste_action.php" method="post">
+                            <input type="hidden" name="paste_id" value="<?= $paste->id ?>" />
+                            <?php if (isset($csrf_token)): ?>
+                                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>"/>
+                            <?php endif; ?>
+                            <div class="field is-grouped">
+                                <div class="control">
+                                    <input class="button is-small <?= $paste->is_hidden ? 'is-success' : 'is-danger' ?>"
+                                           type="submit" name="hide" id="hide"
+                                           value="<?= $paste->is_hidden ? 'Unhide' : 'Hide' ?> Paste" />
+                                </div>
+                                <?php if (can('blank', $paste)): ?>
+                                    <div class="control">
+                                        <input class="button is-small is-danger" type="submit" name="blank" id="blank" value="Blank Paste Contents (No Undo)" />
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <?php if ($paste->mark === null): ?>
+                                <p>The following buttons train the spam filter. Don't use them unless you're sure the paste belongs to the given category.</p>
+                                <p>Right now, the spam filter thinks this paste is
+                                    <b><?php echo match ($paste_guessed_mark) {
+                                        'spam' => 'spam',
+                                        'ham' => 'not spam',
+                                        default => 'unknown',
+                                    }; ?></b>. Even if that's correct, you should still hit the right button to improve the spam filter.
+                                </p>
+                                <div class="field is-grouped">
+                                    <div class="control">
+                                        <input class="button is-small is-success" type="submit" name="mark[ham]" value="Mark as Not Spam" />
+                                    </div>
+                                    <div class="control">
+                                        <input class="button is-small is-danger" type="submit" name="mark[spam]" value="Mark as Spam" />
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </form>
+                    </div>
                 <?php endif; ?>
                 <!-- Guests -->
                 <?php if ($totalpastes !== 0 && !can('edit', $paste)) { ?>
@@ -193,7 +200,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             <p class="subtitle is-7">by <i><?= pp_html_escape($paste->user->username) ?></i></p>
                         </header>
                     <?php } ?>
-                <?php } else if (can('edit', $paste)) { ?>
+                <?php } elseif (can('edit', $paste)) { ?>
                     <!-- Paste Panel -->
                     <hr>
                     <h1 class="title is-6 mx-1">Edit Paste</h1>
@@ -205,7 +212,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     <p class="control has-icons-left">
                                         <input type="text" class="input" name="title"
                                                placeholder="<?= pp_html_escape($paste['title']) ?>"
-                                               value="<?= pp_html_escape($paste['title']) ?>" />
+                                               value="<?= pp_html_escape($paste['title']) ?>"/>
                                         <span class="icon is-small is-left">
                                             <i class="fa fa-font"></i>
                                         </span>
@@ -228,14 +235,14 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 <div class="level-item is-pulled-left mx-1">
                                     <a class="button"
                                        onclick="highlight(document.getElementById('code')); return false;"><i
-                                                class="fa fa-indent"></i>&nbsp;Highlight</a>
+                                            class="fa fa-indent"></i>&nbsp;Highlight</a>
                                 </div>
                                 <div class="level-item mx-1">
                                     <?php if (isset($csrf_token)): ?>
-                                        <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>" />
+                                        <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>"/>
                                     <?php endif; ?>
                                     <input class="button is-info" type="submit" name="edit" id="edit"
-                                           value="Save Changes" />
+                                           value="Save Changes"/>
                                 </div>
                             </div>
                         </nav>
@@ -255,7 +262,9 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                     <div class="control">
                                         <div class="control">
                                             <input name="tag_input" class="input js-tag-input" id="field_tags"
-                                                   value="<?= pp_html_escape($paste->tags->map(function($t) { return $t->name; })->join(',')) ?>" />
+                                                   value="<?= pp_html_escape($paste->tags->map(function ($t) {
+                                                       return $t->name;
+                                                   })->join(',')) ?>"/>
                                         </div>
                                     </div>
                                 </div>
@@ -267,7 +276,8 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 <div class="level-item is-pulled-left mr-1">
                                     <div class="field">
                                         <div class="subtitle has-text-weight-semibold "
-                                             style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;">Expiry</div>
+                                             style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;">Expiry
+                                        </div>
                                         <div class="control">
                                             <!-- Expiry -->
                                             <div class="select">
@@ -275,7 +285,7 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                                     <option value="N" selected="selected">Never</option>
                                                     <option value="self">View Once</option>
                                                     <option value="0Y0M0DT0H10M">10 Minutes</option>
-                                                    <option value="1H">1 Hour</option>
+                                                    <option value="T1H">1 Hour</option>
                                                     <option value="1D">1 Day</option>
                                                     <option value="1W">1 Week</option>
                                                     <option value="2W">2 Weeks</option>
@@ -288,7 +298,8 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                 <div class="level-item is-pulled-left mx-1">
                                     <div class="field">
                                         <div class="subtitle has-text-weight-semibold "
-                                             style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;">Visibility
+                                             style="margin-left: 2px; margin-bottom: 0.6rem; font-size: 1rem;">
+                                            Visibility
                                             &nbsp;&nbsp;
                                         </div>
                                         <div class="control">
@@ -296,29 +307,18 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                                             <div class="select">
                                                 <select name="visibility">
                                                     <?php
-                                                        $visibility_names = ['Public', 'Unlisted'];
-                                                        $visibility_codes = ['0', '1'];
-                                                        if ($current_user) {
-                                                            $visibility_names[] = 'Private';
-                                                            $visibility_codes[] = '2';
-                                                        }
+                                                    $visibility_names = ['Public', 'Unlisted'];
+                                                    $visibility_codes = ['0', '1'];
+                                                    if ($current_user) {
+                                                        $visibility_names[] = 'Private';
+                                                        $visibility_codes[] = '2';
+                                                    }
 
-                                                        echo optionsForSelect($visibility_names, $visibility_codes, $paste->visible);
+                                                    echo optionsForSelect($visibility_names, $visibility_codes, $paste->visible);
                                                     ?>
                                                 </select>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </nav>
-                        <nav>
-                            <div class="level-left">
-                                <!-- Password -->
-                                <div class="columns">
-                                    <div class="column">
-                                        <input type="text" class="input" name="pass" id="pass" value=""
-                                               placeholder="Password" autocomplete="new-password" />
                                     </div>
                                 </div>
                             </div>
@@ -328,18 +328,15 @@ $selectedloader = "$bg[$i]"; // set variable equal to which random filename was 
                             <!-- Encrypted -->
                             <div class="b-checkbox is-info is-inline">
                                 <input class="is-checkradio is-info" id="encrypt" name="encrypted"
-                                       type="checkbox" disabled="disabled" checked="checked" />
+                                       type="checkbox" disabled="disabled" checked="checked"/>
                                 <label for="encrypt">
                                     Encrypt on server (always enabled)
                                 </label>
-
                             </div>
                         </div>
                     </form>
                 <?php } ?>
-
             </div>
-
         </div>
     </div>
 </main>

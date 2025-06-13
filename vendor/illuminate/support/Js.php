@@ -2,13 +2,14 @@
 
 namespace Illuminate\Support;
 
-use BackedEnum;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
+use Stringable;
+use UnitEnum;
 
-class Js implements Htmlable
+class Js implements Htmlable, Stringable
 {
     /**
      * The JavaScript string.
@@ -30,7 +31,6 @@ class Js implements Htmlable
      * @param  mixed  $data
      * @param  int|null  $flags
      * @param  int  $depth
-     * @return void
      *
      * @throws \JsonException
      */
@@ -70,11 +70,11 @@ class Js implements Htmlable
             return $data->toHtml();
         }
 
-        if ($data instanceof BackedEnum) {
-            $data = $data->value;
+        if ($data instanceof UnitEnum) {
+            $data = enum_value($data);
         }
 
-        $json = $this->jsonEncode($data, $flags, $depth);
+        $json = static::encode($data, $flags, $depth);
 
         if (is_string($data)) {
             return "'".substr($json, 1, -1)."'";
@@ -93,7 +93,7 @@ class Js implements Htmlable
      *
      * @throws \JsonException
      */
-    protected function jsonEncode($data, $flags = 0, $depth = 512)
+    public static function encode($data, $flags = 0, $depth = 512)
     {
         if ($data instanceof Jsonable) {
             return $data->toJson($flags | static::REQUIRED_FLAGS);
