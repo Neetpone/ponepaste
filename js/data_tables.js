@@ -163,7 +163,15 @@ class DataTable {
 
         const firstIndex = (this.perPage * this.currentPage);
         const lastIndex = (firstIndex + this.perPage) > this.totalRecords ? this.totalRecords : (firstIndex + this.perPage);
+        
 
+        const numResults = lastIndex - firstIndex;
+
+        if (numResults === 0) {
+            const notFound = makeEl(`<tr><td colspan="${this.element.querySelectorAll('th').length}">No results found</td></tr>`);
+            bodyElement.appendChild(notFound);
+            return;
+        }
 
         for (let i = firstIndex; i < lastIndex; i++) {
             const rowElem = makeEl(this.options.rowCallback(this.data[i]));
@@ -244,6 +252,16 @@ const dumbFilterCallback = (datum, query) => {
     }
 
     /* this is inefficient */
+    if (queryLower.includes(',')) {
+        const searchTags = queryLower.split(',')
+            .map(tag => tag.trim())
+            .filter(tag => tag.length > 0);
+            
+        return searchTags.every(searchTag => 
+            datum.tags.some(tag => tag.name.toLowerCase() === searchTag.toLowerCase())
+        );
+    }
+
     for (const tag of datum.tags) {
         if (tag.name.toLowerCase().indexOf(queryLower) !== -1) {
             return true;
