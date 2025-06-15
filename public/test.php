@@ -10,12 +10,13 @@ if (isset($_POST['reindex'])) {
     Paste::chunk(5, function($models) {
         foreach ($models as $model) {
             SearchHelper::instance()->indexPaste($model);
-
         }
     });
 }
 
-$search_results = SearchHelper::instance()->search($_GET['q']);
+if (isset($_GET['q'])) {
+    $search_results = SearchHelper::instance()->search($_GET['q']);
+}
 
 $page_title = 'Search Test';
 $page_template = 'test';

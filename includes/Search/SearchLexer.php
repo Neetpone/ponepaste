@@ -6,16 +6,17 @@ use PonePaste\Helpers\SearchParsingError;
 
 class SearchLexer {
     public static function lex($search_str) {
+        SearchToken::init();
         $TOKEN_LIST = [
-            ['quoted_lit', '/^\s*"(?:(?:[^"]|\\")+)"/'],
-            ['lparen',     '/^\(/'],
-            ['rparen',     '/^\)/'],
-            ['and_op',     '/^(?:&&|AND|,)/'],
-            ['or_op',      '/^(?:\|\||OR)/'],
-            ['not_op',     '/^NOT(?:\s+|(?>\())/'],
-            ['not_op',     '/^[!\-]/'],
-            ['space',      '/^\s+/'],
-            ['word',       '/^(?:[^\s,()]|\\[\s,()])+/']
+            [SearchToken::$QUOTED_LIT, '/^\s*"(?:(?:[^"]|\\")+)"/'],
+            [SearchToken::$LPAREN,     '/^\(/'],
+            [SearchToken::$RPAREN,     '/^\)/'],
+            [SearchToken::$AND_OP,     '/^(?:&&|AND|,)/'],
+            [SearchToken::$OR_OP,      '/^(?:\|\||OR)/'],
+            [SearchToken::$NOT_OP,     '/^NOT(?:\s+|(?>\())/'],
+            [SearchToken::$NOT_OP,     '/^[!\-]/'],
+            [SearchToken::$SPACE,      '/^\s+/'],
+            [SearchToken::$WORD,       '/^(?:[^\s,()]|\\[\s,()])+/']
         ];
 
         $ops = [];
@@ -43,49 +44,49 @@ class SearchLexer {
                 throw new SearchParsingError('Failed to match a token');
             }
 
-            if (in_array($symbol, ['and_op', 'or_op']) || ($symbol === 'rparen' && $lparen_in_term === 0)) {
+            if (in_array($symbol, [SearchToken::$AND_OP, SearchToken::$OR_OP]) || ($symbol === SearchToken::$RPAREN && $lparen_in_term === 0)) {
                 if ($search_term) {
                     $token_stack[] = trim($search_term);
                     $search_term = null;
                     $lparen_in_term = 0;
                     if ($negate) {
-                        $token_stack[] = 'not_op';
+                        $token_stack[] = SearchToken::$NOT_OP;
                         $negate = false;
                     }
                 }
             }
 
             switch ($symbol) {
-                case 'and_op':
-                    while (!empty($ops) && $ops[0] === 'and_op') {
+                case SearchToken::$AND_OP:
+                    while (!empty($ops) && $ops[0] === SearchToken::$AND_OP) {
                         $token_stack[] = array_shift($ops);
                     }
-                    array_unshift($ops, 'and_op');
+                    array_unshift($ops, SearchToken::$AND_OP);
                     break;
-                case 'or_op':
-                    while (!empty($ops) && in_array($ops[0], ['and_op', 'or_op'])) {
+                case SearchToken::$OR_OP:
+                    while (!empty($ops) && in_array($ops[0], [SearchToken::$AND_OP, SearchToken::$OR_OP])) {
                         $token_stack[] = array_shift($ops);
                     }
-                    array_unshift($ops, 'or_op');
+                    array_unshift($ops, SearchToken::$OR_OP);
                     break;
-                case 'not_op':
+                case SearchToken::$NOT_OP:
                     if ($search_term) {
                         $search_term .= $match;
                     } else {
                         $negate = !$negate;
                     }
                     break;
-                case 'lparen':
+                case SearchToken::$LPAREN:
                     if ($search_term) {
                         $search_term .= $match;
                         $lparen_in_term++;
                     } else {
-                        array_unshift($ops, 'lparen');
+                        array_unshift($ops, SearchToken::$LPAREN);
                         $group_negate[] = $negate;
                         $negate = false;
                     }
                     break;
-                case 'rparen':
+                case SearchToken::$RPAREN:
                     if ($lparen_in_term !== 0) {
                         $search_term .= $match;
                         $lparen_in_term--;
@@ -93,7 +94,7 @@ class SearchLexer {
                         $balanced = false;
                         while (!empty($ops)) {
                             $op = array_shift($ops);
-                            if ($op === 'lparen') {
+                            if ($op === SearchToken::$LPAREN) {
                                 $balanced = true;
                                 break;
                             }
@@ -103,12 +104,12 @@ class SearchLexer {
                             throw new SearchParsingError('Imbalanced parentheses.');
                         }
                         if (array_pop($group_negate)) {
-                            $token_stack[] = 'not_op';
+                            $token_stack[] = SearchToken::$NOT_OP;
                         }
                     }
                     break;
-                case 'word':
-                case 'quoted_lit':
+                case SearchToken::$WORD:
+                case SearchToken::$QUOTED_LIT:
                     if ($search_term) {
                         $search_term .= $match;
                     } else {
@@ -130,14 +131,16 @@ class SearchLexer {
         }
 
         if ($negate) {
-            $token_stack[] = 'not_op';
+            $token_stack[] = SearchToken::$NOT_OP;
         }
 
-        if (in_array('lparen', $ops) || in_array('rparen', $ops)) {
+        if (in_array(SearchToken::$LPAREN, $ops) || in_array(SearchToken::$RPAREN, $ops)) {
             throw new SearchParsingError('Imbalanced parentheses.');
         }
 
         $token_stack = array_merge($token_stack, $ops);
+
+        var_dump($token_stack);
 
         return $token_stack;
     }

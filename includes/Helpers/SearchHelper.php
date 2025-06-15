@@ -16,14 +16,17 @@ class SearchHelper {
 
     public function indexPaste(Paste $paste) {
         $paste->loadMissing('user'); // We need the user to index the paste
+        $paste->loadMissing('tags');
+
         $this->client->index([
             'index' => 'pastes',
             'id' => $paste->id,
             'body' => [
-            'title' => $paste->title,
-            'author' => $paste->user->username,
-            'content' =>  openssl_decrypt($paste->content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY)
-                ]
+                'title' => $paste->title,
+                'author' => $paste->user->username,
+                'content' =>  openssl_decrypt($paste->content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY),
+                'tags' => $paste->tags->map(function($tag) { return $tag->name; })->toArray(),
+            ]
         ]);
     }
 
@@ -49,17 +52,11 @@ class SearchHelper {
             $helper = new SearchHelper(
                 ClientBuilder::create()
                     ->setHosts([PP_ELASTICSEARCH_URL])
-                    ->setBasicAuthentication(PP_ELASTICSEARCH_USER, PP_ELASTICSEARCH_PASS)
+                    //->setBasicAuthentication(PP_ELASTICSEARCH_USER, PP_ELASTICSEARCH_PASS)
                     ->build()
             );
         }
 
         return $helper;
-    }
-
-
-    public static function parseSearchQuery(string $query) {
-        $words = preg_split('/\s+/', $query, -1, PREG_SPLIT_NO_EMPTY);
-
     }
 }

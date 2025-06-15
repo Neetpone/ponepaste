@@ -47,7 +47,7 @@ class SearchParser {
                 $op = ['bool' => ['must_not' => [$op]]];
             }
 
-            $bool_exp = $op['bool'];
+            $bool_exp = isset($op['bool']) ? $op['bool'] : null;
 
             if ($bool_exp && count($bool_exp) === 1 && array_key_exists($bool_op_type, $bool_exp)) {
                 $boolses = array_merge($boolses, $bool_exp[$bool_op_type]);
@@ -78,14 +78,16 @@ class SearchParser {
         $tokens = $this->tokens();
 
         foreach ($tokens as $idx => $token) {
-            if ($token === 'not_op') {
+            $is_token_op = $token instanceof SearchToken;
+            if ($is_token_op && $token->type === 'not_op') {
                 continue;
             }
 
-            $negate = ($tokens[$idx + 1] === 'not_op');
+            $negate = ($idx < count($tokens) - 1) && ($tokens[$idx + 1] instanceof SearchToken && $tokens[$idx + 1]->type === 'not_op');
 
             if ($token instanceof SearchTerm) {
                 $parsed = $token->parse();
+                var_dump($parsed);
                 if ($token->wildcarded || $token->fuzz || $token->boost || $token->ngram_query) {
                     $this->requires_query = true;
                 }

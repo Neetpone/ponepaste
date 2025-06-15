@@ -17,6 +17,8 @@ class SearchTerm {
      * @var array|mixed
      */
     private array $field_aliases;
+    private array $field_transforms;
+    private array $no_downcase;
     private string $default_field;
     /**
      * @var array|mixed
@@ -143,10 +145,14 @@ class SearchTerm {
     public function parse() {
         $this->setup_fuzz_and_boost();
 
+        echo "term: " . $this->term . "\n";
+
         $wildcardable = !preg_match('/^"([^"]|\\\\")+"$/', $this->term);
-        if ($wildcardable) {
+        if (!$wildcardable) {
             $this->term = substr($this->term, 1, strlen($this->term) - 2);
         }
+
+        echo "after wildcardable: " . $this->term . "\n";
 
         $field = null;
         $value = null;

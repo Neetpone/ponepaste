@@ -12,8 +12,10 @@ use PonePaste\Search\SearchParser;
                     <button class="button" type="submit" name="reindex">Reindex</button>
                 </form>
                 <pre>
-                    <?= var_dump((new SearchParser($_GET['q'], "tags.name"))->tokens()) ?>
+                    <?= var_dump((new SearchParser($_GET['test'], "tags.name"))->parsed()) ?>
                 </pre>
+                <?php if (isset($_GET['q'])): ?>
+
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -29,6 +31,7 @@ use PonePaste\Search\SearchParser;
                 <pre>
                     <?= var_dump($search_results['hits']) ?>
                 </pre>
+                <?php endif; ?>
             </div>
         </div>
     </div>
