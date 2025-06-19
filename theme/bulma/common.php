@@ -268,6 +268,23 @@ $flashes = getFlashes();
 <?php require_once(__DIR__ . '/' . $page_template . '.php'); ?>
 <!-- Main page content end -->
 
+<?php
+$debug_messages = pp_get_debug();
+if (PP_DEBUG && !empty($debug_messages)):
+    ?>
+    <div class="container">
+        <div class="columns">
+            <div class="column">
+                <h5 class="title is-5">Debug</h5>
+                <ul>
+                    <?php foreach ($debug_messages as $message): ?>
+                        <li><?= $message ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+    <?php
+endif;
+?>
 <footer class="footer has-background-white" style="border-top: 1px solid #ebeaeb">
     <div class="container">
         <div class="columns">

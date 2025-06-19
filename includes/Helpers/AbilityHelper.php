@@ -19,7 +19,9 @@ class AbilityHelper {
             return true;
         }
 
-        return $this->modelToActions[$subject::class][$action]($this->user, $subject);
+        $subject_name = is_string($subject) ? $subject : get_class($subject);
+
+        return $this->modelToActions[$subject_name][$action]($this->user, $subject);
     }
 
     private function setupAllowedActions() : void {
@@ -51,6 +53,9 @@ class AbilityHelper {
             'mark' => function(User | null $user, Paste $paste) {
                 return $user !== null
                     && $user->role >= User::ROLE_MODERATOR;
+            },
+            'reindex' => function(User | null $user, Paste $paste) {
+                return $user !== null && $user->role >= User::ROLE_ADMIN;
             }
         ];
         $this->modelToActions['PonePaste\\Models\\User'] = [

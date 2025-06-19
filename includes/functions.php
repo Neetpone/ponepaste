@@ -330,3 +330,18 @@ function pp_setup_pagination($prefix = '', $per_page = 20) : array {
 
     return [$per_page, $current_page];
 }
+
+static $debug_messages = [];
+
+function pp_push_debug(string $message) {
+    global $debug_messages;
+    if (PP_DEBUG) { 
+        $debug_messages[] = $message;
+    }
+}
+
+function pp_get_debug(): array {
+    global $debug_messages;
+    return $debug_messages;
+}
+

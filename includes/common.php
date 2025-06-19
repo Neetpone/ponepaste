@@ -192,6 +192,10 @@ function updatePageViews() : void {
         return;
     }
 
+    if (php_sapi_name() === 'cli') {
+        return;
+    }
+
     $ip = $_SERVER['REMOTE_ADDR'];
     $date = date('jS F Y');
 
@@ -258,7 +262,7 @@ $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
 // Check if IP is banned
-$ip = $_SERVER['REMOTE_ADDR'];
+$ip = php_sapi_name() === 'cli' ? '127.0.0.1' : $_SERVER['REMOTE_ADDR'];
 if (IPBan::where('ip', $ip)->first()) {
     die('You have been banned.');
 }
@@ -311,7 +315,9 @@ function can(string $action, mixed $subject) : bool {
 
 $script_bundles = [];
 
-/* Security headers */
-header('X-Frame-Options: SAMEORIGIN');
-header('X-Content-Type-Options: nosniff');
-header("Content-Security-Policy: default-src 'self' data: 'unsafe-inline'; img-src 'self' data: " . implode(' ', $site_info['allowed_image_hosts']));
+if (php_sapi_name() !== 'cli') {
+    /* Security headers */
+    header('X-Frame-Options: SAMEORIGIN');
+    header('X-Content-Type-Options: nosniff');
+    header("Content-Security-Policy: default-src 'self' data: 'unsafe-inline'; img-src 'self' data: " . implode(' ', $site_info['allowed_image_hosts']));
+}

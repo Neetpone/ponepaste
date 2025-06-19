@@ -140,8 +140,6 @@ class SearchLexer {
 
         $token_stack = array_merge($token_stack, $ops);
 
-        var_dump($token_stack);
-
         return $token_stack;
     }
 }

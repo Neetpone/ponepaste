@@ -87,7 +87,6 @@ class SearchParser {
 
             if ($token instanceof SearchTerm) {
                 $parsed = $token->parse();
-                var_dump($parsed);
                 if ($token->wildcarded || $token->fuzz || $token->boost || $token->ngram_query) {
                     $this->requires_query = true;
                 }
@@ -146,5 +145,9 @@ class SearchParser {
                 'no_downcase' => $this->no_downcase
             ]
         );
+    }
+
+    public function requiresQuery() : bool {
+        return $this->requires_query;
     }
 }

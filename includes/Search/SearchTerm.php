@@ -145,14 +145,10 @@ class SearchTerm {
     public function parse() {
         $this->setup_fuzz_and_boost();
 
-        echo "term: " . $this->term . "\n";
-
         $wildcardable = !preg_match('/^"([^"]|\\\\")+"$/', $this->term);
         if (!$wildcardable) {
             $this->term = substr($this->term, 1, strlen($this->term) - 2);
         }
-
-        echo "after wildcardable: " . $this->term . "\n";
 
         $field = null;
         $value = null;
