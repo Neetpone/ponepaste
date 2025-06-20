@@ -28,7 +28,10 @@ class SearchHelper {
                 'author' => $paste->user->username,
                 'content' =>  openssl_decrypt($paste->content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY),
                 'tags' => $paste->tags->map(function($tag) { return $tag->name; })->toArray(),
-                'created_at' => $paste->created_at
+                'created_at' => $paste->created_at,
+                'visible' => $paste->visible,
+                'is_hidden' => $paste->is_hidden === '1',
+                'expiry' => $paste->expiry
             ]
         ]);
     }
@@ -69,6 +72,15 @@ class SearchHelper {
                         'created_at' => [
                             'type' => 'date',
                             'format' => 'yyyy-MM-dd HH:mm:ss'
+                        ],
+                        'visible' => [
+                            'type' => 'integer'
+                        ],
+                        'is_hidden' => [
+                            'type' => 'boolean'
+                        ],
+                        'expiry' => [
+                            'type' => 'integer'
                         ]
                     ]
                 ]
@@ -123,7 +135,14 @@ class SearchHelper {
         ];
     }
 
-    public function fancySearch(array $options = []): \Elastic\Elasticsearch\Response\Elasticsearch|\Http\Promise\Promise {
+    /**
+     * fancySearch is a wrapper around the search method that allows for more complex queries.
+     * 
+     * @param array $options The options for the search.    
+     * @param callable|null $filter_callback A callback function that can be used to add filters to the query.
+     * @return \Elastic\Elasticsearch\Response\Elasticsearch|\Http\Promise\Promise The search results.
+     */
+    public function fancySearch(array $options = [], callable|null $filter_callback = null): \Elastic\Elasticsearch\Response\Elasticsearch|\Http\Promise\Promise {
         $queries = $options['queries'] ?? [];
         $filters = $options['filters'] ?? [];
         $sorts = $options['sorts'] ?? [];
@@ -136,12 +155,16 @@ class SearchHelper {
                     'literal' => ['author']
                 ]
             ]);
-            
+
             if ($searchParser->requiresQuery()) {
                 $queries[] = $searchParser->parsed();
             } else {
                 $filters[] = $searchParser->parsed();
             }
+        }
+
+        if ($filter_callback !== null) {
+            $filter_callback($filters);
         }
 
         // Use default sort if none provided
@@ -166,6 +189,10 @@ class SearchHelper {
             '_source' => false,
             'track_total_hits' => true
         ];
+
+        echo '<pre>';
+        echo json_encode($searchBody, JSON_PRETTY_PRINT);
+        echo '</pre>';
 
         // Handle pagination
         $size = (int)($options['size'] ?? $options['per_page'] ?? 25);

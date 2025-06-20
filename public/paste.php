@@ -124,8 +124,8 @@ if (PP_MOD_REWRITE) {
 }
 
 /* Expiry */
-if (!empty($paste->expiry) && $paste->expiry !== 'NULL') {
-    if ($paste->expiry === 'SELF') {
+if (!empty($paste->expiry) && $paste->expiry !== 0) {
+    if ($paste->expiry === 1) {
         $paste->delete();
         flashWarning('This paste has self-destructed - if you close this window, you will no longer be able to view it!');
     } else if (time() > (int) $paste->expiry) {

@@ -32,7 +32,7 @@ $pastes = Paste::with([
     ->where('visible', Paste::VISIBILITY_PUBLIC)
     ->where('is_hidden', false)
     ->where('password', null)
-    ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
+    ->whereRaw("((expiry = 0) OR (expiry > NOW()))");
 
 if (!empty($filter_value)) {
     if ($filter_value === 'untagged') {

@@ -31,19 +31,19 @@ function verifyCaptcha() : string|bool {
  * @param string $expiry Expiry time.
  *                       SELF means to expire upon one view. +0Y0M0DT0H10M, +1H, +1D, +1W, +2W, +1M all do the obvious.
  *                       Anything unhandled means to expire never.
- * @return string|null 'SELF', Expiry time as Unix timestamp, or NULL if expires never.
+ * @return integer - 0 if no expiry, 1 if view once, UNIX time otherwise.
  */
-function calculatePasteExpiry(string $expiry) : ?string {
+function calculatePasteExpiry(string $expiry) : int {
     // used to use mktime
     if ($expiry === 'self') {
-        return 'SELF';
+        return 1;
     }
 
     $valid_expiries = ['0Y0M0DT0H10M', 'T1H', '1D', '1W', '2W', '1M'];
 
     return in_array($expiry, $valid_expiries)
         ? (new DateTime())->add(new DateInterval("P{$expiry}"))->format('U')
-        : null;
+        : 0;
 }
 
 function validatePasteFields() : string|null {

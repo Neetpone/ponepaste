@@ -23,20 +23,36 @@ if (isset($_GET['q'])) {
         'query' => trim($_GET['q']),
         'from' => $current_page * $per_page,
         'size' => $per_page,
-        // 'filters' => [
-        //     'must' => [
-        //         [
-        //             'term' => ['visible' => Paste::VISIBILITY_PUBLIC]
-        //         ],
-        //         [
-        //             'term' => ['is_hidden' => false]
-        //         ],
-        //         [
-        //             'range' => ['expiry' => ['lte' => time()]]
-        //         ]
-        //     ]
-        // ]
-    ])->asArray();
+
+    ], function(&$filters) {
+        // Public and not hidden
+        $filters[] = [
+            'bool' => [
+                'must' => [
+                    [
+                        'term' => ['visible' => Paste::VISIBILITY_PUBLIC]
+                    ],
+                    [
+                        'term' => ['is_hidden' => false]
+                    ]
+                ]
+            ]
+        ];
+
+        // Non-expired or never expiring
+        $filters[] = [
+            'bool' => [
+                'should' => [
+                    [
+                        'range' => ['expiry' => ['gte' => time()]]
+                    ],
+                    [
+                        'term' => ['expiry' => 0]
+                    ]
+                ]
+            ]
+        ];
+    })->asArray();
 
     // This map will store the highlights for each hit, and is used to render the highlights in the template
     $highlights = [];

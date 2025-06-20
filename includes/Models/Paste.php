@@ -68,11 +68,11 @@ class Paste extends Model {
 
     public function expiryDisplay() {
         $expiry = $this->expiry;
-        if (!$expiry || $expiry === 'NULL') { // TODO: Investigate why this is a string
+        if (!$expiry) {
             return 'Never';
         }
 
-        if ($expiry == 'SELF') {
+        if ($expiry == 1) {
             return '<b>View Once</b>';
         }
         
@@ -99,7 +99,7 @@ class Paste extends Model {
             ->orderBy('created_at', 'DESC')
             ->where('visible', self::VISIBILITY_PUBLIC)
             ->where('is_hidden', false)
-            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
+            ->whereRaw("((expiry = 0) OR (expiry > NOW()))")
             ->limit($count)->get();
     }
 
@@ -109,7 +109,7 @@ class Paste extends Model {
             ->where('visible', self::VISIBILITY_PUBLIC)
             ->where('is_hidden', false)
             ->where('password', null)
-            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
+            ->whereRaw("((expiry = 0) OR (expiry > NOW()))")
             ->limit($count)->get();
     }
 
@@ -118,7 +118,7 @@ class Paste extends Model {
             ->where('visible', self::VISIBILITY_PUBLIC)
             ->where('is_hidden', false)
             ->where('password', null)
-            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
+            ->whereRaw("((expiry = 0) OR (expiry > NOW()))")
             ->orderBy('views', 'desc')
             ->limit($count)->get();
     }
@@ -129,7 +129,7 @@ class Paste extends Model {
             ->where('visible', self::VISIBILITY_PUBLIC)
             ->where('is_hidden', false)
             ->where('password', null)
-            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
+            ->whereRaw("((expiry = 0) OR (expiry > NOW()))")
             ->orderBy('views', 'desc')
             ->limit($count)->get();
     }
@@ -154,7 +154,7 @@ class Paste extends Model {
             $paste = Paste::with('user')
                 ->where('visible', self::VISIBILITY_PUBLIC)
                 ->where('is_hidden', false)
-                ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
+                ->whereRaw("((expiry = 0) OR (expiry > NOW()))")
                 ->where('id', $paste_id)
                 ->first();
         } while (!$paste);
