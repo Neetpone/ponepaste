@@ -32,8 +32,8 @@ class SearchParser {
         $this->parsed = $this->_parse();
     }
 
-    private function _bool_to_es_op($operator) {
-        return $operator === 'and_op'
+    private function _bool_to_es_op(SearchToken $operator) {
+        return $operator->type === 'and_op'
             ? 'must'
             : 'should';
     }
@@ -60,17 +60,17 @@ class SearchParser {
             throw new Exception('What?');
         }
 
-        $query = ['bool' => [$bool_op_type => $boolses]];
+        $query = [$bool_op_type => $boolses];
 
         if ($negate_result) {
             if ($bool_op_type === 'must_not') {
-                return ['subexp', false, ['bool' => ['must' => $boolses]]];
+                return [SearchToken::$SUBEXP, false, ['bool' => ['must' => $boolses]]];
             }
 
-            return ['subexp', false, ['bool' => ['must_not' => [['bool' => $query]]]]];
+            return [SearchToken::$SUBEXP, false, ['bool' => ['must_not' => [['bool' => $query]]]]];
         }
 
-        return ['subexp', false, ['bool' => $query]];
+        return [SearchToken::$SUBEXP, false, ['bool' => $query]];
     }
 
     private function _parse() : array {

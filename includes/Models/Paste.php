@@ -11,6 +11,38 @@ class Paste extends Model {
     public const int VISIBILITY_UNLISTED = 1;
     public const int VISIBILITY_PRIVATE  = 2;
 
+    public static $ELASTICSEARCH_MAPPINGS = [
+        'title' => [
+            'type' => 'text',
+            'analyzer' => 'snowball'
+        ],
+        'author' => [
+            'type' => 'text',
+            'analyzer' => 'snowball'
+        ],
+        'content' => [
+            'type' => 'text',
+            'analyzer' => 'snowball'
+        ],
+        'tags' => [
+            'type' => 'text',
+            'analyzer' => 'keyword'
+        ],
+        'created_at' => [
+            'type' => 'date',
+            'format' => 'yyyy-MM-dd HH:mm:ss'
+        ],
+        'visible' => [
+            'type' => 'integer'
+        ],
+        'is_hidden' => [
+            'type' => 'boolean'
+        ],
+        'expiry' => [
+            'type' => 'integer'
+        ]
+    ];
+
     protected $table = 'pastes';
 
     protected $guarded = [];
@@ -92,6 +124,55 @@ class Paste extends Model {
         }
 
         return $this->content;
+    }
+
+    public function index(\Elastic\Elasticsearch\Client $client) {
+        $this->loadMissing('user');
+        $this->loadMissing('tags');
+
+        $client->index([
+            'index' => 'pastes',
+            'id' => $this->id,
+            'body' => [
+                'title' => $this->title,
+                'author' => $this->user->username,
+                'content' =>  openssl_decrypt($this->content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY),
+                'tags' => $this->tags->map(function($tag) { return $tag->name; })->toArray(),
+                'created_at' => $this->created_at,
+                'visible' => $this->visible,
+                'is_hidden' => $this->is_hidden === '1',
+                'expiry' => $this->expiry
+            ]
+        ]);
+    }
+    
+    public static function addFilters(array &$filters) {
+        $filters[] = [
+            'bool' => [
+                'must' => [
+                    [
+                        'term' => ['visible' => Paste::VISIBILITY_PUBLIC]
+                    ],
+                    [
+                        'term' => ['is_hidden' => false]
+                    ]
+                ]
+            ]
+        ];
+
+        // Non-expired or never expiring
+        $filters[] = [
+            'bool' => [
+                'should' => [
+                    [
+                        'range' => ['expiry' => ['gte' => time()]]
+                    ],
+                    [
+                        'term' => ['expiry' => 0]
+                    ]
+                ]
+            ]
+        ];
     }
 
     public static function getRecent(int $count = 10) : Collection {

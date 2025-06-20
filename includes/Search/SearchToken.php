@@ -11,11 +11,16 @@ class SearchToken {
     public static $QUOTED_LIT;
     public static $WORD;
     public static $SPACE;
+    public static $SUBEXP;  
 
     public string $type;
 
     public function __construct(string $type) {
         $this->type = $type;
+    }
+
+    public function __toString() {
+        return "SearchToken({$this->type})";
     }
 
     public static function init() {
@@ -31,5 +36,6 @@ class SearchToken {
         self::$QUOTED_LIT = new SearchToken('quoted_lit');
         self::$WORD = new SearchToken('word');
         self::$SPACE = new SearchToken('space');
+        self::$SUBEXP = new SearchToken('subexp');
     }
 }

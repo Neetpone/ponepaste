@@ -1,33 +1,24 @@
 <?php
 /** @noinspection PhpDefineCanBeReplacedWithConstInspection */
 define('IN_PONEPASTE', 1);
-require_once(__DIR__ . '/../includes/common.php');
+require_once(__DIR__ .'/../../includes/common.php');
 
 use PonePaste\Helpers\SearchHelper;
 use PonePaste\Models\Paste;
 
+$search_helper = SearchHelper::instance();
 [$per_page, $current_page] = pp_setup_pagination();
 
 if (isset($_GET['q'])) {
-    $search_results = SearchHelper::instance()->fancySearch([
-        'query' => trim($_GET['q']),
+    $search_results = $search_helper->search([
+        'query' => $_GET['q'],
         'from' => $current_page * $per_page,
         'size' => $per_page,
-
     ], function(&$filters) {
         Paste::addFilters($filters);
     })->asArray();
-
-    // This map will store the highlights for each hit, and is used to render the highlights in the template
-    $highlights = [];
-
-    foreach ($search_results['hits']['hits'] as $hit) {
-        if (isset($hit['highlight'])) {
-            $highlights[$hit['_id']] = $hit['highlight'];
-        }
-    }
 } else {
-    $search_results = SearchHelper::instance()->fancySearch([
+    $search_results = $search_helper->search([
         'from' => $current_page * $per_page,
         'size' => $per_page,
     ], function(&$filters) {
@@ -37,9 +28,16 @@ if (isset($_GET['q'])) {
 
 $total_records = $search_results['hits']['total']['value'];
 $search_results = SearchHelper::toRecords($search_results);
+$pastes = $search_results->map(function($paste) {
+    return [
+        'id' => $paste->id,
+        'title' => $paste->title,
+        'author' => $paste->user->username,
+    ];
+});
 
-$page_title = 'Search Test';
-$page_template = 'test';
-$csrf_token = setupCsrfToken();
-
-require_once(__DIR__ . '/../theme/' . $default_theme . '/common.php');
+header('Content-Type: application/json; charset=UTF-8');
+echo json_encode([
+    'total_records' => $total_records,
+    'pastes' => $pastes,
+]);

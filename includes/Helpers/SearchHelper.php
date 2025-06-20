@@ -9,39 +9,32 @@ use PonePaste\Models\Paste;
 use PonePaste\Search\SearchParser;
 use stdClass;
 
+/**
+ * SearchHelper is the main entry point for the search functionality.
+ */
 class SearchHelper {
     private Client $client;
 
+    /**
+     * SearchHelper constructor.
+     * @param Client $client The Elasticsearch client.
+     */
     public function __construct(Client $client) {
         $this->client = $client;
     }
 
-    public function indexPaste(Paste $paste) {
-        $paste->loadMissing('user'); // We need the user to index the paste
-        $paste->loadMissing('tags');
-
-        $this->client->index([
-            'index' => 'pastes',
-            'id' => $paste->id,
-            'body' => [
-                'title' => $paste->title,
-                'author' => $paste->user->username,
-                'content' =>  openssl_decrypt($paste->content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY),
-                'tags' => $paste->tags->map(function($tag) { return $tag->name; })->toArray(),
-                'created_at' => $paste->created_at,
-                'visible' => $paste->visible,
-                'is_hidden' => $paste->is_hidden === '1',
-                'expiry' => $paste->expiry
-            ]
-        ]);
-    }
-
+    /**
+     * Drop the paste index and all data in it completely.
+     */
     public function dropPasteIndex() {
         $this->client->indices()->delete([
             'index' => 'pastes'
         ]);
     }
 
+    /**
+     * Create the paste index with the appropriate field types and settings.
+     */
     public function createPasteIndex() {
         $this->client->indices()->create([
             'index' => 'pastes',
@@ -52,54 +45,29 @@ class SearchHelper {
                 ],
                 'mappings' => [
                     'dynamic' => false,
-                    'properties' => [
-                        'title' => [
-                            'type' => 'text',
-                            'analyzer' => 'snowball'
-                        ],
-                        'author' => [
-                            'type' => 'text',
-                            'analyzer' => 'snowball'
-                        ],
-                        'content' => [
-                            'type' => 'text',
-                            'analyzer' => 'snowball'
-                        ],
-                        'tags' => [
-                            'type' => 'text',
-                            'analyzer' => 'keyword'
-                        ],
-                        'created_at' => [
-                            'type' => 'date',
-                            'format' => 'yyyy-MM-dd HH:mm:ss'
-                        ],
-                        'visible' => [
-                            'type' => 'integer'
-                        ],
-                        'is_hidden' => [
-                            'type' => 'boolean'
-                        ],
-                        'expiry' => [
-                            'type' => 'integer'
-                        ]
-                    ]
+                    'properties' => Paste::$ELASTICSEARCH_MAPPINGS
                 ]
             ]
         ]);
     }
 
+    /**
+     * Index a paste into ElasticSearch.    
+     * 
+     * @param Paste $paste The paste to index.
+     */
+    public function indexPaste(Paste $paste) {
+        $paste->index($this->client);
+    }
+
+    /**
+     * Execute a raw search query against the paste index.
+     * Also highlights the results for some reason.
+     * 
+     * @param array $query The query to search for.
+     * @return \Elastic\Elasticsearch\Response\Elasticsearch|\Http\Promise\Promise The search results.
+     */
     public function search(array $query) : \Elastic\Elasticsearch\Response\Elasticsearch|\Http\Promise\Promise {
-//        return $this->client->search([
-//            'index' => 'pastes',
-//            'body' => [
-//                'query' => [
-//                    'multi_match' => [
-//                        'query' => $query,
-//                        'fields' => ['title', 'author', 'content']
-//                    ]
-//                ]
-//            ]
-//        ]);
         $searchBody = array_merge($query, [
             'highlight' => [
                 'fields' => [
@@ -123,16 +91,6 @@ class SearchHelper {
             'index' => 'pastes',
             'body' => $searchBody,
         ]);
-    }
-
-    private function defaultSort(): array {
-        return [['created_at' => 'desc']];
-    }
-
-    private function defaultQuery(): array {
-        return [
-            'match_all' => new stdClass(),
-        ];
     }
 
     /**
@@ -190,10 +148,6 @@ class SearchHelper {
             'track_total_hits' => true
         ];
 
-        echo '<pre>';
-        echo json_encode($searchBody, JSON_PRETTY_PRINT);
-        echo '</pre>';
-
         // Handle pagination
         $size = (int)($options['size'] ?? $options['per_page'] ?? 25);
 
@@ -208,13 +162,35 @@ class SearchHelper {
             $searchBody['from'] = 0;
         }
 
-        // echo '<pre>';
-        // echo json_encode($searchBody, JSON_PRETTY_PRINT);
-        // echo '</pre>';
-
         return $this->search($searchBody);
     }
 
+    /**
+     * The default sort for the search: created_at descending.
+     * 
+     * @return array The default sort.
+     */
+    private function defaultSort(): array {
+        return [['created_at' => 'desc']];
+    }
+
+    /**
+     * The default query for the search: match_all.
+     * 
+     * @return array The default query.
+     */
+    private function defaultQuery(): array {
+        return [
+            'match_all' => new stdClass(),
+        ];
+    }
+
+    /**
+     * Convert the search results to a collection of pastes.
+     * 
+     * @param \Elastic\Elasticsearch\Response\Elasticsearch|array $results The search results.
+     * @return \Illuminate\Database\Eloquent\Collection The collection of pastes.
+     */
     public static function toRecords(\Elastic\Elasticsearch\Response\Elasticsearch|array $results) : \Illuminate\Database\Eloquent\Collection {
         $ids = array_column($results['hits']['hits'], '_id');
         return Paste::with('user')->whereIn('id', $ids)->get();
