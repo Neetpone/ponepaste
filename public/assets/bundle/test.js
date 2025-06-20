@@ -122,204 +122,6 @@ class SimplePaginator {
     }
 }
 
-class DataTable {
-    constructor(element, options) {
-        this.element = element;
-        this.container = element.parentElement;
-        this.options = options;
-
-        this.ajaxCallback = options.ajaxCallback;
-        this.data = [];
-        this.unfilteredData = [];
-
-        this.totalRecords = -1;
-        this.perPage = 20;
-        this.currentPage = 0;
-
-        this.paginator = new SimplePaginator(this.container.querySelector('.paginator'));
-
-        this.filterCallback = options.filterCallback;
-        this.sortField = null;
-        this.sortDir = true;
-    }
-
-    attach() {
-        this.filterField = this.container.querySelector('input.search');
-        if (this.filterField && this.filterCallback) {
-            this.filterField.addEventListener('keyup', evt => {
-               if (evt.target) {
-                   this._updateFilter(evt.target.value);
-               }
-            });
-
-            if (this.options.preFilter) {
-                this.filterField.value = this.options.preFilter;
-            }
-        }
-
-        this.perPageField = this.container.querySelector('select[name=per_page]');
-
-        if (this.perPageField) {
-            this.perPageField.addEventListener('change', evt => {
-               this.perPage = Number(evt.target.value);
-               this._updatePage(0);
-            });
-        }
-
-        const header = this.element.querySelector('tr.paginator__sort');
-
-        if (header) {
-            header.addEventListener('click', evt => {
-                const target = evt.target;
-
-                if (!target.dataset.sortField) {
-                    return;
-                }
-
-                if (this.sortField) {
-                    const elem = this.element.querySelector(`th[data-sort-field=${this.sortField}]`);
-                    elem.classList.remove('paginator__sort--down');
-                    elem.classList.remove('paginator__sort--up');
-                }
-
-                this._updateSort(target.dataset.sortField, !this.sortDir);
-
-                target.classList.add(this.sortDir ? 'paginator__sort--up' : 'paginator__sort--down');
-            });
-        }
-
-        this.paginator.attach(this._updatePage.bind(this));
-        this._loadEntries();
-    }
-
-    /* Load the requested data from the server, and when done, update the DOM. */
-    _loadEntries() {
-        new Promise(this.ajaxCallback)
-            .then(data => {
-                this.element.classList.remove('hidden');
-                this.unfilteredData = data.data;
-                this._updateFilter(this.options.preFilter);
-            });
-    }
-
-    /* Update the DOM to reflect the current state of the data we have loaded */
-    _updateEntries(data) {
-        this.data = data;
-        this.totalRecords = this.data.length;
-
-        const bodyElement = this.element.querySelector('tbody');
-        clearEl(bodyElement);
-
-        const firstIndex = (this.perPage * this.currentPage);
-        const lastIndex = (firstIndex + this.perPage) > this.totalRecords ? this.totalRecords : (firstIndex + this.perPage);
-        
-
-        const numResults = lastIndex - firstIndex;
-
-        if (numResults === 0) {
-            const notFound = makeEl(`<tr><td colspan="${this.element.querySelectorAll('th').length}">No results found</td></tr>`);
-            bodyElement.appendChild(notFound);
-            return;
-        }
-
-        for (let i = firstIndex; i < lastIndex; i++) {
-            const rowElem = makeEl(this.options.rowCallback(this.data[i]));
-            rowElem.classList.add(i % 2 === 0 ? 'odd' : 'even');
-
-            bodyElement.appendChild(rowElem);
-        }
-
-        this.paginator.update(this.totalRecords, this.perPage, this.currentPage);
-    }
-
-    _updatePage(n) {
-        this.currentPage = n;
-        this.paginator.update(this.totalRecords, this.perPage, this.currentPage);
-        this._updateEntries(this.data);
-    }
-
-    _updateFilter(query) {
-        /* clearing the query */
-        if (query === null || query === '') {
-            this._updateEntries(this.unfilteredData);
-            return;
-        }
-
-        let data = [];
-        for (const datum of this.unfilteredData) {
-            if (this.filterCallback(datum, query)) {
-                data.push(datum);
-            }
-        }
-
-        this._updatePage(0);
-        this._updateEntries(data);
-    }
-
-    _updateSort(field, direction) {
-        this.sortField = field;
-        this.sortDir = direction;
-
-        let newEntries = [...this.data].sort((a, b) => {
-            let sorter = 0;
-
-            if (a[field] > b[field]) {
-                sorter = 1;
-            } else if (a[field] < b[field]) {
-                sorter = -1;
-            }
-
-            if (!direction) {
-                sorter = -sorter;
-            }
-
-            return sorter;
-        });
-
-        this._updatePage(0);
-        this._updateEntries(newEntries);
-    }
-}
-
-const dumbFilterCallback = (datum, query) => {
-    if (!query) {
-        return true;
-    }
-
-    const queryLower = query.toLowerCase();
-
-    if (queryLower === 'untagged' && datum.tags.length === 0) {
-        return true;
-    }
-
-    if (datum.title.toLowerCase().indexOf(queryLower) !== -1) {
-        return true;
-    }
-
-    if (datum.author.toLowerCase().indexOf(queryLower) !== -1) {
-        return true;
-    }
-
-    /* this is inefficient */
-    if (queryLower.includes(',')) {
-        const searchTags = queryLower.split(',')
-            .map(tag => tag.trim())
-            .filter(tag => tag.length > 0);
-            
-        return searchTags.every(searchTag => 
-            datum.tags.some(tag => tag.name.toLowerCase() === searchTag.toLowerCase())
-        );
-    }
-
-    for (const tag of datum.tags) {
-        if (tag.name.toLowerCase().indexOf(queryLower) !== -1) {
-            return true;
-        }
-    }
-
-    return false;
-};
-
 const tagsToHtml = (tags) => {
     return tags.map(tagData => {
         let tagColorClass;
@@ -577,92 +379,136 @@ const globalSetup = () => {
     }
 };
 
-const getUserInfo = () => {
-    const elem = document.getElementById('js-data-holder');
+class SearchableTable {
+    constructor(element, options) {
+        this.element = element;
+        this.container = element.parentElement;
+        this.options = options;
 
-    if (!elem) {
-        return { userId: null, csrfToken: null };
+        this.ajaxCallback = options.ajaxCallback;
+        this.data = [];
+
+        this.totalRecords = -1;
+        this.perPage = 20;
+        this.currentPage = 0;
+
+        this.paginator = new SimplePaginator(this.container.querySelector('.paginator'));
+
+        this.sortField = 'created_at';
+        this.sortDir = true;
+        this.query = options.preFilter || '';
     }
 
-    return { userId: elem.dataset.userId, csrfToken: elem.dataset.csrfToken };
-};
+    attach() {
+        this.filterField = this.container.querySelector('input.search');
+        if (this.filterField) {
+            this.filterField.addEventListener('keyup', evt => {
+                if (evt.target && evt.keyCode === 13) { // Enter
+                    this._updateFilter(evt.target.value);
+                }
+            });
 
-const parsePasteInfo = (elem) => {
-    if (!elem.dataset.pasteInfo) {
-        return null;
+            if (this.options.preFilter) {
+                this.filterField.value = this.options.preFilter;
+            }
+        }
+
+        this.perPageField = this.container.querySelector('select[name=per_page]');
+
+        if (this.perPageField) {
+            this.perPageField.addEventListener('change', evt => {
+                this.perPage = Number(evt.target.value);
+                this._updatePage(0);
+            });
+        }
+
+        const header = this.element.querySelector('tr.paginator__sort');
+
+        if (header) {
+            header.addEventListener('click', evt => {
+                const target = evt.target;
+
+                if (!target.dataset.sortField) {
+                    return;
+                }
+
+                if (this.sortField) {
+                    const elem = this.element.querySelector(`th[data-sort-field=${this.sortField}]`);
+                    elem.classList.remove('paginator__sort--down');
+                    elem.classList.remove('paginator__sort--up');
+                }
+
+                this._updateSort(target.dataset.sortField, !this.sortDir);
+
+                target.classList.add(this.sortDir ? 'paginator__sort--up' : 'paginator__sort--down');
+            });
+        }
+
+        this.paginator.attach(this._updatePage.bind(this));
+        this._loadEntries();
     }
 
-    return JSON.parse(elem.dataset.pasteInfo);
-};
+    /* Load the requested data from the server, and when done, update the DOM. */
+    _loadEntries() {
+        fetch(`/api/search.php?q=${this.query}&page=${this.currentPage}&per_page=${this.perPage}&sf=${this.sortField}&sd=${this.sortDir ? 'desc' : 'asc'}`).then(response => response.json()).then(data => {
+            this.element.classList.remove('hidden');
+            this.totalRecords = data.total_records;
+
+            const bodyElement = this.element.querySelector('tbody');
+            clearEl(bodyElement);
+            const numResults = data.pastes.length;
+    
+            if (numResults === 0) {
+                const notFound = makeEl(`<tr><td colspan="${this.element.querySelectorAll('th').length}">No results found</td></tr>`);
+                bodyElement.appendChild(notFound);
+                return;
+            }
+    
+            for (let i = 0; i < numResults; i++) {
+                const rowElem = makeEl(this.options.rowCallback(data.pastes[i]));
+                rowElem.classList.add(i % 2 === 0 ? 'odd' : 'even');
+    
+                bodyElement.appendChild(rowElem);
+            }
+
+            this.paginator.update(this.totalRecords, this.perPage, this.currentPage);
+        });
+    }
+
+    _updatePage(n) {
+        this.currentPage = n;
+        // this.paginator.update(this.totalRecords, this.perPage, this.currentPage);
+        this._loadEntries();
+    }
+
+    _updateFilter(query) {
+        this.query = query;
+        this._updatePage(0);
+    }
+
+    _updateSort(field, direction) {
+        this.sortField = field;
+        this.sortDir = direction;
+        this._updatePage(0);
+    }
+}
 
 whenReady(() => {
     globalSetup();
 
     const urlParams = new URLSearchParams(window.location.search);
     const myParam = urlParams.get('q');
-    const myPastesElem = document.getElementById('archive');
-    const apiUrl = '/api/user_pastes.php?user_id=' + myPastesElem.dataset.userId;
 
-    const table = new DataTable(myPastesElem, {
-        ajaxCallback: (resolve) => {
-            fetch(apiUrl)
-                .then(r => r.json())
-                .then(resolve);
-        },
+    const search = new SearchableTable(document.getElementById('search'), {
         rowCallback: (rowData) => {
-            const userData = getUserInfo();
-            const ownedByUser = (parseInt(rowData.author_id) === parseInt(userData.userId));
-            const deleteElem = ownedByUser ? `<td class="td-center">
-                                         <form action="/${rowData.id}" method="POST">
-                                            <input type="hidden" name="delete" value="delete" />
-                                            <input type="hidden" name="csrf_token" value="${userData.csrfToken}" />
-                                            <input type="submit" value="Delete" />
-                                         </form>
-                                       </td>` : '';
-            const pasteCreatedAt = new Date(rowData.created_at).toLocaleString();
-            const pasteVisibility = ownedByUser ? `<td class="td-center">${['Public', 'Unlisted', 'Private'][rowData.visibility]}</td>` : '';
-
             return `<tr>
                         <td><a href="/${rowData.id}">${escape(rowData.title)}</a></td>
-                        <td class="td-center">${pasteCreatedAt}</td>
-                        ${pasteVisibility}
-                        <td class="td-center">${rowData.views || 0}</td>
+                        <td><a href="/user/${escape(rowData.author)}">${escape(rowData.author)}</a></td>
+                        <td>${escape(rowData.updated_at)}</td>
                         <td>${tagsToHtml(rowData.tags)}</td>
-                        ${deleteElem}
                     </tr>`;
         },
-        filterCallback: dumbFilterCallback,
         preFilter: myParam
     });
-    table.attach();
-
-    const myFavesElem = document.getElementById('favs');
-
-    if (!myFavesElem) {
-        return;
-    }
-
-    const faveTable = new DataTable(myFavesElem, {
-        ajaxCallback: (resolve) => {
-            resolve({
-                data: Array.prototype.map.call(myFavesElem.querySelectorAll('tbody > tr'), parsePasteInfo)
-            });
-        },
-        rowCallback: (rowData) => {
-            const recentUpdate = rowData.recently_updated ?
-                `<i class='far fa-check-square fa-lg' aria-hidden='true'></i>` :
-                `<i class='far fa-minus-square fa-lg' aria-hidden='true'></i>`;
-            const pasteFavedAt = new Date(rowData.favourited_at).toLocaleString();
-
-            //                         <td><a href="/user/${escape(rowData.author)}">${escape(rowData.author)}</a></td>
-            return `<tr>
-                        <td><a href="/${rowData.id}">${escape(rowData.title)}</a></td>
-                        <td class="td-center">${pasteFavedAt}</td>
-                        <td class="td-center">${recentUpdate}</td>
-                        <td>${tagsToHtml(rowData.tags)}</td>
-                    </tr>`;
-        },
-        filterCallback: dumbFilterCallback
-    });
-    faveTable.attach();
+    search.attach();
 });

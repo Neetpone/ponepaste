@@ -24,16 +24,16 @@ function highlight(string $text): string {
                     </form>
                 <?php endif; ?>
                 <?php if (isset($search_results)): ?>
-                    <table class="table table-bordered">
+                    <table id="search" class="table table-bordered is-fullwidth is-hoverable">
                         <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Author</th>
+                            <tr class="paginator__sort">
+                                <th data-sort-field="title">Title</th>
+                                <th data-sort-field="author">Author</th>
                                 <?php if (!empty($highlights)): ?>
                                     <th>Match</th>
                                 <?php endif; ?>
+                                <th data-sort-field="created_at">Created At</th>
                                 <th>Tags</th>
-                                <th>Created At</th>
                             </tr>
                         </thead>
                         <?php foreach($search_results as $hit): ?>
@@ -43,12 +43,14 @@ function highlight(string $text): string {
                                 <?php if (isset($highlights) && isset($highlights[$hit->id])): ?>
                                     <td>...<?= highlight(pp_html_escape($highlights[$hit->id]['content'][0])) ?>...</td>
                                 <?php endif; ?>
-                                <td><?= tagsToHtml($hit->tags) ?></td>
                                 <td><?= pp_html_escape($hit->created_at) ?></td>
+                                <td><?= tagsToHtml($hit->tags) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </table>
-                    <?= paginate($current_page, $per_page, $total_records) ?>
+                    <div class="paginator">
+                        <?= paginate($current_page, $per_page, $total_records) ?>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>

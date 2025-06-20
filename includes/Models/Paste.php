@@ -16,9 +16,17 @@ class Paste extends Model {
             'type' => 'text',
             'analyzer' => 'snowball'
         ],
+        'title_keyword' => [
+            'type' => 'text',
+            'analyzer' => 'keyword'
+        ],
         'author' => [
             'type' => 'text',
             'analyzer' => 'snowball'
+        ],
+        'author_keyword' => [
+            'type' => 'text',
+            'analyzer' => 'keyword'
         ],
         'content' => [
             'type' => 'text',
@@ -135,11 +143,13 @@ class Paste extends Model {
             'id' => $this->id,
             'body' => [
                 'title' => $this->title,
+                'title_keyword' => $this->title,
                 'author' => $this->user->username,
+                'author_keyword' => $this->user->username,
                 'content' =>  openssl_decrypt($this->content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY),
                 'tags' => $this->tags->map(function($tag) { return $tag->name; })->toArray(),
                 'created_at' => $this->created_at,
-                'visible' => $this->visible,
+                'visible' => (int) $this->visible,
                 'is_hidden' => $this->is_hidden === '1',
                 'expiry' => $this->expiry
             ]

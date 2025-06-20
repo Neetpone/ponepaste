@@ -38,8 +38,12 @@ if (isset($_GET['q'])) {
 $total_records = $search_results['hits']['total']['value'];
 $search_results = SearchHelper::toRecords($search_results);
 
+var_dump($total_records);
+
 $page_title = 'Search Test';
 $page_template = 'test';
 $csrf_token = setupCsrfToken();
+
+$script_bundles[] = 'test';
 
 require_once(__DIR__ . '/../theme/' . $default_theme . '/common.php');

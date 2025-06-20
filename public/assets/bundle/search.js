@@ -1,4 +1,16 @@
-import { makeEl, clearEl } from "./dom";
+const makeEl = function(html) {
+    const template = document.createElement('template');
+
+    template.innerHTML = html.trim();
+
+    return template.content.firstChild;
+};
+
+const clearEl = function(el) {
+    while (el.firstChild) {
+        el.removeChild(el.firstChild);
+    }
+};
 
 class SimplePaginator {
     constructor(element) {
@@ -9,12 +21,8 @@ class SimplePaginator {
         this.element.addEventListener('click', evt => {
             if (evt.target && evt.target.classList.contains('paginator__button')) {
                 pageCallback(+evt.target.dataset.page);
-                evt.preventDefault();
             }
-            console.log('clicked', evt.target);
         });
-
-        console.log('attached');
     }
 
     update(totalRecords, perPage, currentPage) {
@@ -38,7 +46,7 @@ class SimplePaginator {
         const showLastPage = (Math.abs(lastPage - currentPage)) > (numPagesToShow);
 
 
-        const prevButtonDisabled = currentPage === firstPage ? 'disabled' : ''
+        const prevButtonDisabled = currentPage === firstPage ? 'disabled' : '';
 
         /* Previous button */
         this.element.appendChild(makeEl(
@@ -69,7 +77,7 @@ class SimplePaginator {
             ));
         }
 
-        const nextButtonDisabled = currentPage === lastPage ? 'disabled' : ''
+        const nextButtonDisabled = currentPage === lastPage ? 'disabled' : '';
         /* Next button */
         this.element.appendChild(makeEl(
             `<button class="paginator__button next" ${nextButtonDisabled} data-page="${currentPage + 1}">Next</button>`
@@ -77,7 +85,7 @@ class SimplePaginator {
     }
 }
 
-class DataTable {
+class SearchableTable {
     constructor(element, options) {
         this.element = element;
         this.container = element.parentElement;
@@ -85,7 +93,6 @@ class DataTable {
 
         this.ajaxCallback = options.ajaxCallback;
         this.data = [];
-        this.unfilteredData = [];
 
         this.totalRecords = -1;
         this.perPage = 20;
@@ -96,15 +103,16 @@ class DataTable {
         this.filterCallback = options.filterCallback;
         this.sortField = null;
         this.sortDir = true;
+        this.query = '';
     }
 
     attach() {
         this.filterField = this.container.querySelector('input.search');
         if (this.filterField && this.filterCallback) {
             this.filterField.addEventListener('keyup', evt => {
-               if (evt.target) {
-                   this._updateFilter(evt.target.value);
-               }
+                if (evt.target && evt.keyCode === 13) { // Enter
+                    this._updateFilter(evt.target.value);
+                }
             });
 
             if (this.options.preFilter) {
@@ -116,8 +124,8 @@ class DataTable {
 
         if (this.perPageField) {
             this.perPageField.addEventListener('change', evt => {
-               this.perPage = Number(evt.target.value);
-               this._updatePage(0);
+                this.perPage = Number(evt.target.value);
+                this._updatePage(0);
             });
         }
 
@@ -132,7 +140,7 @@ class DataTable {
                 }
 
                 if (this.sortField) {
-                    const elem = this.element.querySelector(`th[data-sort-field=${this.sortField}]`)
+                    const elem = this.element.querySelector(`th[data-sort-field=${this.sortField}]`);
                     elem.classList.remove('paginator__sort--down');
                     elem.classList.remove('paginator__sort--up');
                 }
@@ -149,12 +157,11 @@ class DataTable {
 
     /* Load the requested data from the server, and when done, update the DOM. */
     _loadEntries() {
-        new Promise(this.ajaxCallback)
-            .then(data => {
-                this.element.classList.remove('hidden');
-                this.unfilteredData = data.data;
-                this._updateFilter(this.options.preFilter);
-            });
+        fetch(`/api/search?q=${this.query}`).then(response => response.json()).then(data => {
+            this.element.classList.remove('hidden');
+            this.totalRecords = data.total_records;
+            this.data = data.pastes;
+        });
     }
 
     /* Update the DOM to reflect the current state of the data we have loaded */
@@ -167,7 +174,7 @@ class DataTable {
 
         const firstIndex = (this.perPage * this.currentPage);
         const lastIndex = (firstIndex + this.perPage) > this.totalRecords ? this.totalRecords : (firstIndex + this.perPage);
-        
+
 
         const numResults = lastIndex - firstIndex;
 
@@ -207,7 +214,7 @@ class DataTable {
             }
         }
 
-        this._updatePage(0)
+        this._updatePage(0);
         this._updateEntries(data);
     }
 
@@ -236,43 +243,4 @@ class DataTable {
     }
 }
 
-const dumbFilterCallback = (datum, query) => {
-    if (!query) {
-        return true;
-    }
-
-    const queryLower = query.toLowerCase();
-
-    if (queryLower === 'untagged' && datum.tags.length === 0) {
-        return true;
-    }
-
-    if (datum.title.toLowerCase().indexOf(queryLower) !== -1) {
-        return true;
-    }
-
-    if (datum.author.toLowerCase().indexOf(queryLower) !== -1) {
-        return true;
-    }
-
-    /* this is inefficient */
-    if (queryLower.includes(',')) {
-        const searchTags = queryLower.split(',')
-            .map(tag => tag.trim())
-            .filter(tag => tag.length > 0);
-            
-        return searchTags.every(searchTag => 
-            datum.tags.some(tag => tag.name.toLowerCase() === searchTag.toLowerCase())
-        );
-    }
-
-    for (const tag of datum.tags) {
-        if (tag.name.toLowerCase().indexOf(queryLower) !== -1) {
-            return true;
-        }
-    }
-
-    return false;
-};
-
-export { DataTable, SimplePaginator, dumbFilterCallback };
+export { SearchableTable };

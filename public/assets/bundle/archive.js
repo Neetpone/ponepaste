@@ -54,8 +54,12 @@ class SimplePaginator {
         this.element.addEventListener('click', evt => {
             if (evt.target && evt.target.classList.contains('paginator__button')) {
                 pageCallback(+evt.target.dataset.page);
+                evt.preventDefault();
             }
+            console.log('clicked', evt.target);
         });
+
+        console.log('attached');
     }
 
     update(totalRecords, perPage, currentPage) {
