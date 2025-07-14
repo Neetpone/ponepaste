@@ -176,7 +176,7 @@ class SearchTerm {
             $this->ngram_query = false;
 
             if ($value === '*') {
-                return ['match_all' => []];
+                return ['match_all' => new \stdClass()];
             }
 
             if (empty($extra)) {

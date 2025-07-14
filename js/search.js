@@ -19,17 +19,18 @@ class SearchableTable {
         this.sortField = 'created_at';
         this.sortDir = true;
         this.query = options.preFilter || '';
+
+        this.loader = this.element.querySelector('.loading');
     }
 
     attach() {
-        this.filterField = this.container.querySelector('input.search');
-        if (this.filterField) {
-            this.filterField.addEventListener('keyup', evt => {
-                if (evt.target && evt.keyCode === 13) { // Enter
-                    this._updateFilter(evt.target.value);
-                }
-            });
+        this.filterField = this.container.querySelector('input[type=search]');
+        this.container.querySelector('form').addEventListener('submit', evt => {
+            evt.preventDefault();
+            this._updateFilter(this.filterField.value);
+        });
 
+        if (this.filterField) {
             if (this.options.preFilter) {
                 this.filterField.value = this.options.preFilter;
             }
@@ -72,17 +73,30 @@ class SearchableTable {
 
     /* Load the requested data from the server, and when done, update the DOM. */
     _loadEntries() {
+        this._markLoading(true);
+        // clearEl(bodyElement);
+        // this.paginator.update(0, 0, 0);
+
         fetch(`/api/search.php?q=${this.query}&page=${this.currentPage}&per_page=${this.perPage}&sf=${this.sortField}&sd=${this.sortDir ? 'desc' : 'asc'}`).then(response => response.json()).then(data => {
             this.element.classList.remove('hidden');
             this.totalRecords = data.total_records;
 
             const bodyElement = this.element.querySelector('tbody');
             clearEl(bodyElement);
+
+            if (data.error) {
+                const notFound = makeEl(`<tr><td colspan="${this.element.querySelectorAll('th').length}"><b>Search error:</b> ${data.error}</td></tr>`);
+                bodyElement.appendChild(notFound);
+                this._markLoading(false);
+                return;
+            }
+
             const numResults = data.pastes.length;
     
             if (numResults === 0) {
                 const notFound = makeEl(`<tr><td colspan="${this.element.querySelectorAll('th').length}">No results found</td></tr>`);
                 bodyElement.appendChild(notFound);
+                this._markLoading(false);
                 return;
             }
     
@@ -94,6 +108,7 @@ class SearchableTable {
             }
 
             this.paginator.update(this.totalRecords, this.perPage, this.currentPage);
+            this._markLoading(false);
         });
     }
 
@@ -112,6 +127,14 @@ class SearchableTable {
         this.sortField = field;
         this.sortDir = direction;
         this._updatePage(0);
+    }
+
+    _markLoading(loading) {
+        if (loading) {
+            this.loader.classList.remove('is-hidden');
+        } else {
+            this.loader.classList.add('is-hidden');
+        }
     }
 };
 

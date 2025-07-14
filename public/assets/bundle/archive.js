@@ -320,7 +320,7 @@ const dumbFilterCallback = (datum, query) => {
     return false;
 };
 
-const tagsToHtml = (tags) => {
+const tagsToHtml = (tags, searchEndpoint = '/archive') => {
     return tags.map(tagData => {
         let tagColorClass;
         const tagLower = tagData.name.toLowerCase();
@@ -334,7 +334,7 @@ const tagsToHtml = (tags) => {
             tagColorClass = 'is-info';
         }
 
-        return `<a href="/archive?q=${tagData.slug}">
+        return `<a href="${searchEndpoint}?q=${tagData.slug}">
                             <span class="tag ${tagColorClass}">${escape(tagData.name)}</span>
                         </a>`;
     }).join('');

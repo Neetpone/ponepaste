@@ -27,9 +27,13 @@ class SearchHelper {
      * Drop the paste index and all data in it completely.
      */
     public function dropPasteIndex() {
-        $this->client->indices()->delete([
-            'index' => 'pastes'
-        ]);
+        try {
+            $this->client->indices()->delete([
+                'index' => 'pastes'
+            ]);
+        } catch (Exception $e) {
+            print_r($e);
+        }
     }
 
     /**
@@ -181,7 +185,7 @@ class SearchHelper {
      */
     private function defaultQuery(): array {
         return [
-            'match_all' => new stdClass(),
+            'match_all' => new \stdClass(),
         ];
     }
 
@@ -193,7 +197,11 @@ class SearchHelper {
      */
     public static function toRecords(\Elastic\Elasticsearch\Response\Elasticsearch|array $results) : \Illuminate\Database\Eloquent\Collection {
         $ids = array_column($results['hits']['hits'], '_id');
-        return Paste::with('user')->whereIn('id', $ids)->get();
+        $pastes = Paste::with('user')->whereIn('id', $ids)->get()->sortBy(function($paste) use ($ids) {
+            return array_search($paste->id, $ids);
+        });
+
+        return $pastes;
     }
 
     // Create the client lazily since most pages don't need it

@@ -14,19 +14,21 @@ class Paste extends Model {
     public static $ELASTICSEARCH_MAPPINGS = [
         'title' => [
             'type' => 'text',
-            'analyzer' => 'snowball'
-        ],
-        'title_keyword' => [
-            'type' => 'text',
-            'analyzer' => 'keyword'
+            'analyzer' => 'snowball',
+            'fields' => [
+                'keyword' => [
+                    'type' => 'keyword'
+                ]
+            ]
         ],
         'author' => [
             'type' => 'text',
-            'analyzer' => 'snowball'
-        ],
-        'author_keyword' => [
-            'type' => 'text',
-            'analyzer' => 'keyword'
+            'analyzer' => 'snowball',
+            'fields' => [
+                'keyword' => [
+                    'type' => 'keyword'
+                ]
+            ]
         ],
         'content' => [
             'type' => 'text',
@@ -143,9 +145,7 @@ class Paste extends Model {
             'id' => $this->id,
             'body' => [
                 'title' => $this->title,
-                'title_keyword' => $this->title,
                 'author' => $this->user->username,
-                'author_keyword' => $this->user->username,
                 'content' =>  openssl_decrypt($this->content, PP_ENCRYPTION_ALGO, PP_ENCRYPTION_KEY),
                 'tags' => $this->tags->map(function($tag) { return $tag->name; })->toArray(),
                 'created_at' => $this->created_at,

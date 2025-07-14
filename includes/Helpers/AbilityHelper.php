@@ -19,9 +19,13 @@ class AbilityHelper {
             return true;
         }
 
-        $subject_name = is_string($subject) ? $subject : get_class($subject);
+        // The idea here is that if the subject is a string, it's a model name, otherwise it's an instance of a model
+        // If it's a model name, we can't pass a model instance to the callback, so we pass null instead.
+        $subject_name = is_string($subject)
+            ? $subject
+            : get_class($subject);
 
-        return $this->modelToActions[$subject_name][$action]($this->user, $subject);
+        return $this->modelToActions[$subject_name][$action]($this->user, is_string($subject) ? null : $subject);
     }
 
     private function setupAllowedActions() : void {
@@ -54,7 +58,7 @@ class AbilityHelper {
                 return $user !== null
                     && $user->role >= User::ROLE_MODERATOR;
             },
-            'reindex' => function(User | null $user, Paste $paste) {
+            'reindex' => function(User | null $user, Paste | null $paste) {
                 return $user !== null && $user->role >= User::ROLE_ADMIN;
             }
         ];

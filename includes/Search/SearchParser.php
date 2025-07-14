@@ -120,7 +120,7 @@ class SearchParser {
     }
 
     public function parsed() {
-        return !empty($this->parsed) ? $this->parsed : ['match_none' => []];
+        return !empty($this->parsed) ? $this->parsed : ['match_none' => new \stdClass()];
     }
 
     public function tokens() {

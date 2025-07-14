@@ -2,7 +2,7 @@
 
 namespace PonePaste\Search;
 
-use PonePaste\Helpers\SearchParsingError;
+use PonePaste\Search\SearchParsingError;
 
 class SearchLexer {
     public static function lex($search_str) {

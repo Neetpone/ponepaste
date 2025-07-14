@@ -4,16 +4,18 @@ define('IN_PONEPASTE', 1);
 require_once(__DIR__ . '/../includes/common.php');
 
 use PonePaste\Helpers\SearchHelper;
+use PonePaste\Search\SearchParsingError;
 use PonePaste\Models\Paste;
 
 [$per_page, $current_page] = pp_setup_pagination();
 
-if (isset($_GET['q'])) {
+$query = !empty($_GET['q']) ? trim($_GET['q']) : '*';
+
+try {
     $search_results = SearchHelper::instance()->fancySearch([
-        'query' => trim($_GET['q']),
+        'query' => $query,
         'from' => $current_page * $per_page,
         'size' => $per_page,
-
     ], function(&$filters) {
         Paste::addFilters($filters);
     })->asArray();
@@ -26,19 +28,15 @@ if (isset($_GET['q'])) {
             $highlights[$hit['_id']] = $hit['highlight'];
         }
     }
-} else {
-    $search_results = SearchHelper::instance()->fancySearch([
-        'from' => $current_page * $per_page,
-        'size' => $per_page,
-    ], function(&$filters) {
-        Paste::addFilters($filters);
-    })->asArray();
+
+    $total_records = $search_results['hits']['total']['value'];
+    $search_results = SearchHelper::toRecords($search_results);
+} catch (SearchParsingError $e) {
+    $error = $e->getMessage();
+    $search_results = [];
+    $total_records = 0;
 }
 
-$total_records = $search_results['hits']['total']['value'];
-$search_results = SearchHelper::toRecords($search_results);
-
-var_dump($total_records);
 
 $page_title = 'Search Test';
 $page_template = 'test';

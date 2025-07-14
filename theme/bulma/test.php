@@ -23,35 +23,44 @@ function highlight(string $text): string {
                         <button class="button" type="submit" name="reindex">Reindex</button>
                     </form>
                 <?php endif; ?>
-                <?php if (isset($search_results)): ?>
-                    <table id="search" class="table table-bordered is-fullwidth is-hoverable">
-                        <thead>
-                            <tr class="paginator__sort">
-                                <th data-sort-field="title">Title</th>
-                                <th data-sort-field="author">Author</th>
-                                <?php if (!empty($highlights)): ?>
-                                    <th>Match</th>
-                                <?php endif; ?>
-                                <th data-sort-field="created_at">Created At</th>
-                                <th>Tags</th>
+                <table id="search" class="table table-bordered is-fullwidth is-hoverable">
+                    <thead>
+                        <tr class="paginator__sort">
+                            <th data-sort-field="title">Title</th>
+                            <th data-sort-field="author">Author</th>
+                            <?php if (!empty($highlights)): ?>
+                                <th>Match</th>
+                            <?php endif; ?>
+                            <th data-sort-field="created_at">Created At</th>
+                            <th>Tags</th>
+                        </tr>
+                        <tr class="loading is-hidden">
+                            <td colspan="5">Loading results...</td>
+                        </tr>
+                        
+                    </thead>
+                    <tbody>
+                        <?php if (isset($error)): ?>
+                            <tr>
+                                <td colspan="5"><b>Search error:</b> <?= $error ?></td>
                             </tr>
-                        </thead>
+                        <?php endif; ?>
                         <?php foreach($search_results as $hit): ?>
                             <tr>
                                 <td><a href="<?= urlForPaste($hit) ?>"><?= pp_html_escape($hit->title) ?></a></td>
-                                <td><a href="<?= urlForMember($hit->user) ?>"><?= pp_html_escape($hit->user->username) ?></a></td>
-                                <?php if (isset($highlights) && isset($highlights[$hit->id])): ?>
-                                    <td>...<?= highlight(pp_html_escape($highlights[$hit->id]['content'][0])) ?>...</td>
-                                <?php endif; ?>
-                                <td><?= pp_html_escape($hit->created_at) ?></td>
-                                <td><?= tagsToHtml($hit->tags) ?></td>
+                            <td><a href="<?= urlForMember($hit->user) ?>"><?= pp_html_escape($hit->user->username) ?></a></td>
+                            <?php if (isset($highlights) && isset($highlights[$hit->id])): ?>
+                                <td>...<?= highlight(pp_html_escape($highlights[$hit->id]['content'][0])) ?>...</td>
+                            <?php endif; ?>
+                            <td><?= pp_html_escape($hit->created_at) ?></td>
+                            <td><?= tagsToHtml($hit->tags, '/test') ?></td>
                             </tr>
                         <?php endforeach; ?>
-                    </table>
-                    <div class="paginator">
-                        <?= paginate($current_page, $per_page, $total_records) ?>
-                    </div>
-                <?php endif; ?>
+                    </tbody>
+                </table>
+                <div class="paginator">
+                    <?= paginate($current_page, $per_page, $total_records) ?>
+                </div>
             </div>
         </div>
     </div>

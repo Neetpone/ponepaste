@@ -4,6 +4,7 @@ define('IN_PONEPASTE', 1);
 require_once(__DIR__ .'/../../includes/common.php');
 
 use PonePaste\Helpers\SearchHelper;
+use PonePaste\Search\SearchParsingError;
 use PonePaste\Models\Paste;
 
 $search_helper = SearchHelper::instance();
@@ -23,48 +24,50 @@ if (!in_array($sortDir, ['asc', 'desc'])) {
 
 $sortField = match($sortField) {
     'created_at' => 'created_at',
-    'title' => 'title_keyword',
-    'author' => 'author_keyword',
+    'title' => 'title.keyword',
+    'author' => 'author.keyword',
 };
 
-if (!empty($_GET['q'])) {
+$query = !empty($_GET['q']) ? trim($_GET['q']) : '*';
+
+try {
     $search_results = $search_helper->fancySearch([
-        'query' => $_GET['q'],
+        'query' => $query,
         'from' => $current_page * $per_page,
         'size' => $per_page,
-        'sorts' => [[$sortField => $sortDir]],
+        'sorts' => [[$sortField => ['order' => $sortDir]]],
     ], function(&$filters) {
         Paste::addFilters($filters);
     })->asArray();
-} else {
-    $search_results = $search_helper->fancySearch([
-        'from' => $current_page * $per_page,
-        'size' => $per_page,
-        'sorts' => [[$sortField => $sortDir]],
-    ], function(&$filters) {
-        Paste::addFilters($filters);
-    })->asArray();
+
+    $total_records = $search_results['hits']['total']['value'];
+    $search_results = SearchHelper::toRecords($search_results);
+    $pastes = $search_results->map(function($paste) {
+        return [
+            'id' => $paste->id,
+            'title' => $paste->title,
+            'author' => $paste->user->username,
+            'updated_at' => $paste->updated_at ?? $paste->created_at,
+            'tags' => $paste->tags->map(function($tag) {
+                return [
+                    'name' => $tag->name,
+                    'slug' => $tag->slug,
+                ];
+            })->toArray(),
+        ];
+    })->toArray();
+
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode([
+        'total_records' => $total_records,
+        'pastes' => array_values($pastes),
+    ]);
+} catch (SearchParsingError $e) {
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode([
+        'error' => $e->getMessage(),
+    ]);
+    exit;
 }
 
-$total_records = $search_results['hits']['total']['value'];
-$search_results = SearchHelper::toRecords($search_results);
-$pastes = $search_results->map(function($paste) {
-    return [
-        'id' => $paste->id,
-        'title' => $paste->title,
-        'author' => $paste->user->username,
-        'updated_at' => $paste->updated_at ?? $paste->created_at,
-        'tags' => $paste->tags->map(function($tag) {
-            return [
-                'name' => $tag->name,
-                'slug' => $tag->slug,
-            ];
-        })->toArray(),
-    ];
-});
 
-header('Content-Type: application/json; charset=UTF-8');
-echo json_encode([
-    'total_records' => $total_records,
-    'pastes' => $pastes,
-]);

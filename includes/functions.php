@@ -4,7 +4,7 @@ use PonePaste\Models\AdminLog;
 use PonePaste\Models\Paste;
 use PonePaste\Models\User;
 
-function tagsToHtml(array | Collection $tags) : string {
+function tagsToHtml(array | Collection $tags, string $searchEndpoint = '/archive') : string {
     $output = "";
     foreach ($tags as $tagObj) {
         $tag = $tagObj->name;
@@ -18,7 +18,7 @@ function tagsToHtml(array | Collection $tags) : string {
         } else {
             $tagcolor = "tag is-info";
         }
-        $output .= '<a href="/archive?q=' . urlencode($tag) . '"><span class="' . $tagcolor . '">' . pp_html_escape($tag) . '</span></a>';
+        $output .= '<a href="' . $searchEndpoint . '?q=' . urlencode($tag) . '"><span class="' . $tagcolor . '">' . pp_html_escape($tag) . '</span></a>';
     }
     return $output;
 }
