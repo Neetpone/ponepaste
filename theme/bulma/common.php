@@ -31,7 +31,7 @@ $flashes = getFlashes();
     <meta name="description" content="<?= pp_html_escape($global_site_info['description']) ?>"/>
     <meta name="keywords" content="<?= pp_html_escape($global_site_info['keywords']) ?>"/>
     <link rel="shortcut icon" href="/theme/bulma/img/favicon.ico">
-    <link href="/theme/bulma/css/paste.css" rel="stylesheet"/>
+    <link href="/theme/bulma/css/paste.css?version=2.0" rel="stylesheet"/>
     <link href="/theme/bulma/css/table-responsive.css" rel="stylesheet"/>
     <link href="/theme/bulma/css/table-row-orders.css" rel="stylesheet"/>
     <style>
