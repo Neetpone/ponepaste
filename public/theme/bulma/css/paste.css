@@ -349,3 +349,28 @@ table.hidden + .loading_container {
 .badge--padded > img {
     margin: 10px;
 }
+
+.content ol {
+    list-style: none !important;
+}
+
+.content ol li {
+    display: table-row;
+    position: relative;
+    left: -26px;
+    line-height: 22px;
+}
+
+.content ol li a {
+    min-width: 1.5em;
+    text-decoration: none;
+    color: #B0B0B0;
+    user-select: none;
+    display: table-cell;
+    padding-right: 0.5rem;
+    text-align: right;
+}
+
+.content ol li div {
+    /* white-space: pre-wrap; */
+}

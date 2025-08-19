@@ -136,7 +136,10 @@
                                     <?php foreach ($lines as $num => $line):
                                         $line = trim($line); ?>
                                         <li class="<?= $num == 0 ? 'li1 ln-xtra' : 'li1' ?>" id="<?= $num + 1 ?>">
-                                            <div class="de1"><?= $line === '' ? '&nbsp;' : linkify($line) ?></div>
+                                            <a href="#<?= $num + 1 ?>"><?= $num + 1 ?>.</a>
+                                            <div class="de1">
+                                                <?= $line === '' ? '&nbsp;' : linkify($line) ?>
+                                            </div>
                                         </li>
                                     <?php endforeach; ?>
                                 </ol>
