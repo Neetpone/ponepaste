@@ -18,7 +18,12 @@ if (isset($_SESSION['admin_login']) && $_SESSION['admin_login']) {
 $flashes = getFlashes();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (pp_password_verify($_POST['password'], $current_user->admin_password_hash)) {
+    if (!verifyCsrfToken()) {
+        AdminLog::updateAdminHistory($current_user, AdminLog::ACTION_FAIL_LOGIN);
+        $msg = '<div class="paste-alert alert6" style="text-align:center;">
+                        Invalid CSRF token
+                    </div>';
+    } else if (pp_password_verify($_POST['password'], $current_user->admin_password_hash)) {
         AdminLog::updateAdminHistory($current_user, AdminLog::ACTION_LOGIN);
         $_SESSION['admin_login'] = true;
         if (isset($_SESSION['redirect_back'])) {
@@ -60,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     ?>
     <?php outputFlashes($flashes); ?>
     <form action="." method="post">
+        <input type="hidden" name="csrf_token" value="<?= setupCsrfToken(); ?>">
         <div class="top">
             <h1>PonePaste Admin Authentication</h1>
         </div>
@@ -70,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
             <div class="group">
                 <input type="password" class="form-control" id="password" name="password" placeholder="Password"
-                       value="">
+                       value="" required>
                 <i class="fa fa-key"></i>
             </div>
             <button type="submit" class="btn btn-default btn-block">Authenticate</button>

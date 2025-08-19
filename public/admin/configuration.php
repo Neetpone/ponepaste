@@ -29,6 +29,13 @@ $current_captcha = $current_config['captcha'];
 
 /* Update the configuration if necessary */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verifyCsrfToken()) {
+        $msg = '<div class="paste-alert alert6" style="text-align: center;">
+                                Invalid CSRF token.
+                                </div>';
+        goto render;
+    }
+    
     $action = $_POST['action'];
 
     if ($action === 'site_info') {
@@ -90,6 +97,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     AdminLog::updateAdminHistory($current_user, AdminLog::ACTION_EDIT_CONFIG);
 }
+
+render:
+$csrf_token = setupCsrfToken();
 ?>
 
 <!DOCTYPE html>
@@ -146,6 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <h2>General Settings</h2>
                                 <form class="form-horizontal" method="POST"
                                       action="<?= $_SERVER['PHP_SELF']; ?>">
+                                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
 
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label form-label" for="site_info_name">Site
@@ -213,6 +224,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="tabs__content">
                                 <form class="form-horizontal" method="POST"
                                       action="<?= $_SERVER['PHP_SELF']; ?>">
+                                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
 
                                     <?php foreach ($current_allowed_image_hosts as $index => $host): ?>
                                         <div class="form-group">
@@ -252,6 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <h2>CAPTCHA</h2>
                                 <form class="form-horizontal" method="POST"
                                       action="<?= $_SERVER['PHP_SELF']; ?>">
+                                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
 
                                     <div class="form-group">
                                         <div class="col-sm-offset-2 col-sm-10">
@@ -315,7 +328,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <div class="col-sm-10">
                                             <input type="text" class="form-control" id="captcha_allowed" name="captcha[allowed]"
                                                    placeholder="Allowed Characters"
-                                                   value="<?php echo $current_captcha['allowed']; ?>">
+                                                   value="<?= pp_html_escape($current_captcha['allowed']); ?>">
                                         </div>
                                     </div>
 
@@ -325,7 +338,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <div class="col-sm-10">
                                             <input type="text" class="form-control" id="captcha_colour" name="captcha[colour]"
                                                    placeholder="Captcha Text Colour"
-                                                   value="<?= $current_captcha['colour']; ?>">
+                                                   value="<?= pp_html_escape($current_captcha['colour']); ?>">
                                         </div>
                                     </div>
 
@@ -344,6 +357,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <h2>Permissions</h2>
                             <form class="form-horizontal" method="POST"
                                   action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
 
                                 <div class="checkbox checkbox-primary">
                                     <input <?php if ($site_disable_guests) echo 'checked="true"'; ?>

@@ -78,7 +78,7 @@ $csrf_token = setupCsrfToken();
                     <?php
                     if (isset($_GET['details'])) {
                         $user = User::find($_GET['details']);
-                        $user_date = $row['date'];
+                        $user_date = $user['date'];
 
                         if ($user->banned) {
                             $user_verified = 'Banned';

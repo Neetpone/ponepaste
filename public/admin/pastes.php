@@ -57,25 +57,6 @@ $pastes = Paste::with('user')
         <!-- Start Menu -->
         <?php include 'menu.php'; ?>
         <!-- End Menu -->
-
-        <?php
-        if (isset($_GET['delete'])) {
-            $delid = htmlentities(Trim($_GET['delete']));
-            $query = "DELETE FROM pastes WHERE id=$delid";
-            $result = mysqli_query($con, $query);
-            if (mysqli_errno($con)) {
-                $msg = '<div class="paste-alert alert6" style="text-align: center;">
-				 ' . mysqli_error($con) . '
-				 </div>';
-            } else {
-                $msg = '<div class="paste-alert alert3" style="text-align: center;">
-					 Paste deleted
-					 </div>';
-            }
-
-        }
-        ?>
-
         <!-- Start Pastes -->
         <div class="row">
             <div class="col-md-12">
@@ -96,7 +77,6 @@ $pastes = Paste::with('user')
                                 <th>Username</th>
                                 <th>IP</th>
                                 <th>Visibility</th>
-                                <th>Delete</th>
                             </tr>
                             </thead>
                             <tbody>
