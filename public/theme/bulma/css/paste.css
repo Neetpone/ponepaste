@@ -374,3 +374,7 @@ table.hidden + .loading_container {
 .content ol li div {
     /* white-space: pre-wrap; */
 }
+
+.content ol.hide-line-numbers li a {
+    display: none;
+}

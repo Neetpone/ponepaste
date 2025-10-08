@@ -151,12 +151,15 @@ function highlight(e) {
 }
 
 function togglev() {
-    if (
-        document.getElementsByTagName("ol")[0].style.listStyle.substr(0, 4) ===
-        "none"
-    ) {
-        document.getElementsByTagName("ol")[0].style.listStyle = "decimal";
+    const orderedList = document.querySelector('ol');
+
+    if (!orderedList) {
+        return;
+    }
+
+    if (orderedList.classList.contains('hide-line-numbers')) {
+        orderedList.classList.remove('hide-line-numbers');
     } else {
-        document.getElementsByTagName("ol")[0].style.listStyle = "none";
+        orderedList.classList.add('hide-line-numbers');
     }
 }
