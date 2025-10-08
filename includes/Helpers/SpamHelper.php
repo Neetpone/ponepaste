@@ -33,7 +33,7 @@ class SpamHelper {
         $bayes = new Bayes();
 
         /* Yes, this could race, but only once in the life of the site. */
-        if (!file_Exists(self::FILE_PATH)) {
+        if (!file_exists(self::FILE_PATH)) {
             file_put_contents(self::FILE_PATH, $bayes->toJson());
         }
 
