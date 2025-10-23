@@ -56,6 +56,7 @@ foreach (PageView::orderBy('id', 'desc')->take(7)->get() as $row) {
 }
 
 [$mm_per_page, $mm_current_page] = pp_setup_pagination('mm_', 10);
+[$p_per_page, $p_current_page] = pp_setup_pagination('p_', 10);
 
 $admin_histories = AdminLog::with('user')
     ->orderBy('id', 'desc')
@@ -73,11 +74,11 @@ $most_recent_users = User::select('id', 'username', 'created_at', 'ip')
     ->limit(10)
     ->get();
 
-function getRecentadmin($count = 5) {
-    return Paste::with('user')
+$most_recent_pastes = Paste::with('user')
         ->orderBy('id', 'desc')
-        ->limit($count)->get();
-}
+        ->skip($p_current_page * $p_per_page)
+        ->take($p_per_page)
+        ->get();
 
 $is_admin = $current_user->role >= User::ROLE_ADMIN;
 
@@ -173,14 +174,16 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
                             </thead>
                             <tbody>
                             <?php
-                            $res = getRecentadmin(7);
-                            foreach ($res as $paste) {
+                            foreach ($most_recent_pastes as $paste) {
                                 $p_date = new DateTime($paste['created_at']);
                                 $p_date_formatted = $p_date->format('jS F Y h:i:s A');
-                                $title = truncate($paste->title, 5, 30);
-                                ?>
+                                $title = truncate($paste->title, 5, 30); ?>
                                 <tr>
-                                    <td><?= pp_html_escape($paste->user->username); ?></td>
+                                    <td>
+                                        <a href="<?= urlForMember($paste->user) ?>">
+                                            <?= pp_html_escape($paste->user->username); ?>
+                                        </a>
+                                    </td>
                                     <td>
                                         <a href="<?= urlForPaste($paste); ?>">
                                             <?= pp_html_escape($paste->title); ?>
@@ -192,7 +195,7 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
                             <?php } ?>
                             </tbody>
                         </table>
-
+                        <?= paginate($p_current_page, $p_per_page, Paste::count(), 'p_', true) ?>
                     </div>
                 </div>
             </div>
@@ -209,11 +212,11 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
 
                         <table class="table table-hover">
                             <thead>
-                            <tr>
-                                <td>Username</td>
-                                <td>Date</td>
-                                <td>IP</td>
-                            </tr>
+                                <tr>
+                                    <td>Username</td>
+                                    <td>Date</td>
+                                    <td>IP</td>
+                                </tr>
                             </thead>
                             <tbody>
                             <?php foreach ($most_recent_users as $user): ?>
@@ -303,7 +306,7 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
                             <input class="form-control" type="text" name="message" maxlength="255" placeholder="Message" style="width: 90%;">
                             <input class="btn btn-primary" type="submit" name="send_message" value="Send" />
                         </form>
-                        <?= paginate($mm_current_page, $mm_per_page, ModMessage::count(), 'mm_') ?>
+                        <?= paginate($mm_current_page, $mm_per_page, ModMessage::count(), 'mm_', true) ?>
                     </div>
                 </div>
             </div>
@@ -315,7 +318,6 @@ $is_admin = $current_user->role >= User::ROLE_ADMIN;
     <div class="row footer">
     </div>
     <!-- End Footer -->
-
 </div>
 <!-- End content -->
 

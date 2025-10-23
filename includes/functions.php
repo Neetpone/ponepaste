@@ -249,7 +249,8 @@ function escapeLikeQuery(string $query) : string {
     return str_replace(['\\', '_', '%'], ['\\\\', '\\_', '\\%'], $query);
 }
 
-function paginate(int $current_page, int $per_page, int $total_records, $prefix = '') : string {
+function paginate(int $current_page, int $per_page, int $total_records, $prefix = '', bool $use_bootstrap = false) : string {
+    // TODO: Clean this up, get rid of use_bootstrap once we make the admin page not use bootstrap.
     $first_page = 0;
     $last_page = floor($total_records / $per_page);
     $window = 2;
@@ -258,17 +259,26 @@ function paginate(int $current_page, int $per_page, int $total_records, $prefix 
         // Do something?
     }
 
-    $_page_button = function(int $page, string $text, bool $disabled = false) use ($current_page, $prefix) : string {
+    $_page_button = function(int $page, string $text, bool $disabled = false) use ($current_page, $prefix, $use_bootstrap) : string {
         /* We need to update the 'page' parameter in the request URI, or add it if it doesn't exist. */
         $request_uri = parse_url($_SERVER['REQUEST_URI']);
         parse_str((string) @$request_uri['query'], $parsed_query);
         $parsed_query[$prefix . 'page'] = (string) $page;
         $page_uri = ((string) @$request_uri['path']) . '?' . http_build_query($parsed_query);
 
+        $button_class = $use_bootstrap ? 'btn btn-default btn-xs' : 'paginator__button';
         $selected_class = $current_page == $page ? ' paginator__button--selected' : '';
 
+        if ($use_bootstrap) {
+            $selected_class = $current_page == $page ? ' active' : '';
+        }
+
         $disabled_text = $disabled ? ' aria-disabled="true"' : '';
-        return sprintf("<a type=\"button\" class=\"paginator__button$selected_class\" href=\"%s\"%s>%s</a>", $page_uri, $disabled_text, $text);
+        if ($use_bootstrap) {
+            $disabled_text = $disabled ? ' disabled="disabled"' : '';
+        }
+
+        return sprintf("<a type=\"button\" class=\"$button_class$selected_class\" href=\"%s\"%s>%s</a>", $page_uri, $disabled_text, $text);
     };
 
     $html = '';
