@@ -106,6 +106,8 @@ if (isset($_POST['forgot'])) {
         $error = 'Incorrect CAPTCHA.';
     } elseif (empty($_POST['password']) || empty($_POST['username'])) {
         $error = 'All fields must be filled out.';
+    } elseif (strlen($_POST['password']) < 8) {
+        $error = 'Password must be at least 8 characters long.';
     } elseif (strlen($username) > 25) {
         $error = 'Username too long.';
     } elseif (!preg_match('/^[A-Za-z0-9._\\-]+$/', $username)) {
