@@ -25,7 +25,7 @@ function checkCaptcha(string $token, string $answer) : bool {
         return false;
     }
 
-    $redis->del('captcha/' . $token);
+    $redis->del('captcha/' . md5($token));
 
     return strtolower($redis_answer) === strtolower($answer);
 }
