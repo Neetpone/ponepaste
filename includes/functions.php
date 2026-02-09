@@ -56,6 +56,8 @@ function tagsToHtmlUser(string | array | Collection $tags, $profile_username) : 
     return $output;
 }
 
+// Despite what LLMs may tell you, this function is not vulnerable to XSS, because any input passed into it
+// is already escaped.
 function linkify($value, $protocols = array('http', 'mail'), array $attributes = array()) : array|string|null {
     // Link attributes
     $attr = '';

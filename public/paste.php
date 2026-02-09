@@ -239,7 +239,7 @@ if ($error) {
         'og:type' => 'article',
         'og:title' => $paste->title,
         'og:article:author' => $paste->user->username,
-        'og:article:published_time' => (new DateTime($paste->created_at))->toIso8601String(),
+        'og:article:published_time' => (new DateTime($paste->created_at))->format(DateTime::ATOM),
         'og:site_name' => $site_name,
     ];
 
