@@ -239,7 +239,14 @@ function verifyCsrfToken($token = null) : bool {
     return hash_equals($_SESSION[SessionHelper::CSRF_TOKEN_KEY], $token);
 }
 
-session_set_cookie_params(86400);
+session_set_cookie_params([
+    'lifetime' => 86400,
+    'path' => '/',
+    'domain' => $_SERVER['HTTP_HOST'],
+    'secure' => !empty($_SERVER['HTTPS']),
+    'httponly' => true,
+    'samesite' => 'Lax'
+]);
 session_start();
 
 /* Set up the database and Eloquent ORM */
