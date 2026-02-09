@@ -154,8 +154,7 @@ $csrf_token = setupCsrfToken();
                         <div class="tabs">
                             <div class="tabs__content">
                                 <h2>General Settings</h2>
-                                <form class="form-horizontal" method="POST"
-                                      action="<?= $_SERVER['PHP_SELF']; ?>">
+                                <form class="form-horizontal" method="POST">
                                     <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
 
                                     <div class="form-group">
@@ -222,8 +221,7 @@ $csrf_token = setupCsrfToken();
                             <!-- Allowed Image Hosts -->
                             <h2>Allowed Image Hosts</h2>
                             <div class="tabs__content">
-                                <form class="form-horizontal" method="POST"
-                                      action="<?= $_SERVER['PHP_SELF']; ?>">
+                                <form class="form-horizontal" method="POST">
                                     <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
 
                                     <?php foreach ($current_allowed_image_hosts as $index => $host): ?>
@@ -262,8 +260,7 @@ $csrf_token = setupCsrfToken();
                             <!-- CAPTCHA -->
                             <div class="tabs__content">
                                 <h2>CAPTCHA</h2>
-                                <form class="form-horizontal" method="POST"
-                                      action="<?= $_SERVER['PHP_SELF']; ?>">
+                                <form class="form-horizontal" method="POST">
                                     <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
 
                                     <div class="form-group">
@@ -355,8 +352,7 @@ $csrf_token = setupCsrfToken();
                             </div>
 
                             <h2>Permissions</h2>
-                            <form class="form-horizontal" method="POST"
-                                  action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                            <form class="form-horizontal" method="POST">
                                 <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
 
                                 <div class="checkbox checkbox-primary">

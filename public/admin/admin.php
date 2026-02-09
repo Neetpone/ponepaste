@@ -81,8 +81,7 @@ $admin_logs = AdminLog::with('user')
                                 <div role="tabpanel" class="tab-pane active" id="settings">
                                     <div class="login-form" style="padding:0;">
                                         <?php if (isset($msg)) echo $msg; ?>
-                                        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" class="form-area"
-                                              method="POST">
+                                        <form class="form-area" method="POST">
                                             <div class="form-area">
                                                 <div class="group">
                                                     <label for="password">Change your personal admin password:</label>
