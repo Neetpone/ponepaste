@@ -30,7 +30,7 @@ function urlForPage($page = '') : string {
         $page .= '.php';
     }
 
-    return (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/' . $page;
+    return paste_protocol() . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/' . $page;
 }
 
 function urlForPaste(int | Paste $paste) : string {
@@ -243,7 +243,7 @@ session_set_cookie_params([
     'lifetime' => 86400,
     'path' => '/',
     'domain' => $_SERVER['HTTP_HOST'],
-    'secure' => !empty($_SERVER['HTTPS']),
+    'secure' => pp_is_https(),
     'httponly' => true,
     'samesite' => 'Lax'
 ]);

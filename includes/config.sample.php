@@ -18,6 +18,9 @@ const PP_PASSWORD_PEPPER = 'a long and secure random string here';
 /* Whether to use friendly URLs that require mod_rewrite */
 const PP_MOD_REWRITE = true;
 
+/* Whether we are behind a reverse proxy or not. */
+const PP_REVERSE_PROXY = false;
+
 /* Redis credentials */
 const PP_REDIS_HOST = '127.0.0.1';
 const PP_REDIS_DB = 'ponepaste';

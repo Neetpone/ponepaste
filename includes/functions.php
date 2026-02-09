@@ -238,8 +238,14 @@ function addToSitemap(Paste $paste, $priority, $changefreq) : void {
     file_put_contents("sitemap.xml", $full_map);
 }
 
+function pp_is_https() : bool {
+    return PP_REVERSE_PROXY
+        ? @$_SERVER['X_FORWARDED_PROTO'] === 'https'
+        : !empty($_SERVER['HTTPS']);
+}
+
 function paste_protocol() : string {
-    return !empty($_SERVER['HTTPS']) ? 'https://' : 'http://';
+    return pp_is_https() ? 'https://' : 'http://';
 }
 
 function pp_site_url() : string {

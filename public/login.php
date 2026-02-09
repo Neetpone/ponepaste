@@ -82,7 +82,7 @@ if (isset($_POST['forgot'])) {
 
                     setcookie(SessionHelper::REMEMBER_TOKEN_COOKIE, $remember_token, [
                         'expires' => (int) $expire_at->format('U'),
-                        'secure' => !empty($_SERVER['HTTPS']), /* Local dev environment is non-HTTPS */
+                        'secure' => pp_is_https(), /* Local dev environment is non-HTTPS */
                         'httponly' => true,
                         'samesite' => 'Lax'
                     ]);
