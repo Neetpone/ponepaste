@@ -1,11 +1,14 @@
 <?php
+/**
+ * @throws \Random\RandomException if there's no randomness available.
+ */
 function setupCaptcha($token = null) : string {
     global $redis;
     $allowed = "ABCDEFGHIJKLMNOPQRSTUVYXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     $code = '';
     for ($i = 0; $i < 5; $i++) {
-        $code .= substr($allowed, rand() % (strlen($allowed)), 1);
+        $code .= substr($allowed, random_int(0, strlen($allowed) - 1), 1);
     }
 
     if ($token === null) {
