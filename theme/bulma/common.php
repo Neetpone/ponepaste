@@ -47,6 +47,11 @@ $flashes = getFlashes();
             padding-bottom: 0;
         }
     </style>
+    <?php if (isset($og_tags)): ?>
+        <?php foreach ($og_tags as $tag => $content): ?>
+            <meta property="<?= pp_html_escape($tag) ?>" content="<?= pp_html_escape($content) ?>"/>
+        <?php endforeach; ?>
+    <?php endif; ?>
 </head>
 
 <body>

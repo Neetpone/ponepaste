@@ -234,6 +234,18 @@ Not_Valid_Paste:
 if ($error) {
     $page_title = 'Error';
     $page_template = 'errors';
+} else {
+    $og_tags = [
+        'og:type' => 'article',
+        'og:title' => $paste->title,
+        'og:article:author' => $paste->user->username,
+        'og:article:published_time' => (new DateTime($paste->created_at))->toIso8601String(),
+        'og:site_name' => $site_name,
+    ];
+
+    if ($paste->updated_at) {
+        $og_tags['og:article:modified_time'] = $paste->updated_at;
+    }
 }
 
 $csrf_token = setupCsrfToken();

@@ -278,7 +278,7 @@ function paginate(int $current_page, int $per_page, int $total_records, $prefix 
             $disabled_text = $disabled ? ' disabled="disabled"' : '';
         }
 
-        return sprintf("<a type=\"button\" class=\"$button_class$selected_class\" href=\"%s\"%s>%s</a>", $page_uri, $disabled_text, $text);
+        return sprintf("<a type=\"button\" class=\"%s\" href=\"%s\"%s>%s</a>", $button_class . $selected_class, $page_uri, $disabled_text, $text);
     };
 
     $html = '';
