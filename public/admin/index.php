@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>';
     } else if (pp_password_verify($_POST['password'], $current_user->admin_password_hash)) {
         AdminLog::updateAdminHistory($current_user, AdminLog::ACTION_LOGIN);
+        session_regenerate_id(true);
         $_SESSION['admin_login'] = true;
         if (isset($_SESSION['redirect_back'])) {
             flashSuccess('You have been logged in. Please try your action again.');

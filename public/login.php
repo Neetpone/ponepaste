@@ -65,7 +65,8 @@ if (isset($_POST['forgot'])) {
             if ($user->banned) {
                 $error = 'You are banned.';
             } else {
-                // Login successful
+                // Login successful - regenerate session ID to prevent session fixation
+                session_regenerate_id(true);
                 $_SESSION['user_id'] = (string) $user->id;
 
                 if ($remember_me) {
