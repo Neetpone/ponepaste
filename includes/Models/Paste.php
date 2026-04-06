@@ -119,31 +119,33 @@ class Paste extends Model {
             ->limit($count)->get();
     }
 
+    /**
+     * Get an array of randomly-selected public, non-expired, non-deleted pastes ("candidate pastes")
+     * from the database.
+     *
+     * @param int $count Maximum number of random candidate pastes to fetch.
+     * @return array An array of randomly-selected Paste objects. If there are less than
+     *               $count candidate pastes in the database, the length of this array
+     *               will be less than $count.
+     */
     public static function getRandom(int $count = 10) : array {
-        $total_pastes = Paste::count();
-        $pastes = [];
+        $candidates = Paste::where('visible', self::VISIBILITY_PUBLIC)
+                           ->where('is_hidden', false)
+                           ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
+                           ->pluck('id')
+                           ->toArray();
+        $count = min($count, count($candidates));
 
-        for ($i = 0; $i < $count; $i++) {
-            $pastes[] = self::getSingleRandom($total_pastes);
+        if ($count == 0) {
+            return [];
         }
 
-        return $pastes;
-    }
+        shuffle($candidates);
 
-    private static function getSingleRandom(int $total) {
-        $paste = null;
+        $random_ids = array_slice($candidates, 0, $count);
 
-        do {
-            $paste_id = rand(1, $total);
-
-            $paste = Paste::with('user')
-                ->where('visible', self::VISIBILITY_PUBLIC)
-                ->where('is_hidden', false)
-                ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
-                ->where('id', $paste_id)
-                ->first();
-        } while (!$paste);
-
-        return $paste;
+        return Paste::with('user')
+                    ->whereIn('id', $random_ids)
+                    ->toArray();
     }
 }

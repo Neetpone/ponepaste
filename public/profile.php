@@ -12,7 +12,6 @@ if ($current_user === null) {
 
 $user_username = $current_user->username;
 $user_id = $current_user->id;
-$user_date = $current_user->date;
 $user_ip = $current_user->ip;
 $user_password = $current_user->password;
 

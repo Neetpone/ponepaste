@@ -78,7 +78,6 @@ $csrf_token = setupCsrfToken();
                     <?php
                     if (isset($_GET['details'])) {
                         $user = User::find($_GET['details']);
-                        $user_date = $user['date'];
 
                         if ($user->banned) {
                             $user_verified = 'Banned';
@@ -112,7 +111,7 @@ $csrf_token = setupCsrfToken();
 
                                 <tr>
                                     <td>Date Registered</td>
-                                    <td><?php echo $user_date; ?> </td>
+                                    <td><?= $user->created_at ?> </td>
                                 </tr>
                                 </tbody>
                             </table>
