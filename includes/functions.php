@@ -348,3 +348,42 @@ function pp_setup_pagination($prefix = '', $per_page = 20) : array {
 
     return [$per_page, $current_page];
 }
+
+function pp_random_lines_from_file(string $filename, int $count = 0) : array {
+    $fp = fopen($filename, 'r');
+    fseek($fp, 0, SEEK_END);
+    $bcount = ftell($fp);
+
+    $lines = [];
+    for ($i = 0; $i < $count; $i++) {
+        // ensure we're not at the beginning of the file.
+        $offs = random_int(1, $bcount);
+        fseek($fp, $offs, SEEK_SET);
+
+        // Seek backward until we hit a newline or the beginning of the file
+        while ($offs > 0) {
+            fseek($fp, $offs, SEEK_SET);
+            $char = fgetc($fp);
+            if ($char === "\n") {
+                break;
+            }
+            $offs--;
+        }
+
+        // If we're not at the beginning, move past the newline
+        if ($offs > 0) {
+            fseek($fp, $offs + 1, SEEK_SET);
+        } else {
+            fseek($fp, 0, SEEK_SET);
+        }
+
+        // Read one line and append
+        $line = fgets($fp);
+        if ($line !== false) {
+            $lines[] = trim($line);
+        }
+    }
+
+    fclose($fp);
+    return $lines;
+}

@@ -36,6 +36,19 @@ function pp_random_token() : string {
     return hash('SHA512', pp_random_bytes(64));
 }
 
+function pp_random_friendly_token($size = 6) : string {
+    $path = '/usr/share/dict/words';
+
+    if (!file_exists($path)) {
+        die('fatal internal error: random token word file does not exist.');
+    }
+
+    $words = pp_random_lines_from_file($path, $size);
+    $joined = implode(' ', $words);
+
+    return preg_replace('/[^a-z ]/', '', strtolower($joined));
+}
+
 function pp_random_password() : string {
     /* MD-5 is OK to use here because it is not being used to protect secure data,
      * but rather to reduce the size of the string a little into something that

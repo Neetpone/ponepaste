@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     } else if (isset($_POST['reset_recovery_code'])) {
         if (pp_password_verify($_POST['old_password'], $user_password)) {
-            $user_new_code = pp_random_token();
+            $user_new_code = pp_random_friendly_token();
 
             $current_user->recovery_code_hash = pp_password_hash($user_new_code);
             $current_user->save();

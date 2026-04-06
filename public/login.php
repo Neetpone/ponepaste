@@ -28,7 +28,7 @@ if (isset($_POST['forgot'])) {
             $new_password = pp_random_password();
             $new_password_hash = pp_password_hash($new_password);
 
-            $recovery_code = pp_random_token();
+            $recovery_code = pp_random_friendly_token();
             $new_recovery_code_hash = pp_password_hash($recovery_code);
 
             $user->password = $new_password_hash;
@@ -116,7 +116,7 @@ if (isset($_POST['forgot'])) {
         $error = 'That username has already been taken.';
     } else {
         /* this is displayed to the user in the template, hence the variable rather than inlining */
-        $recovery_code = pp_random_token();
+        $recovery_code = pp_random_friendly_token();
 
         $user = new User([
             'username' => $username,
