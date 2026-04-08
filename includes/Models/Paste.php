@@ -2,6 +2,7 @@
 namespace PonePaste\Models;
 
 use DateTime;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -80,43 +81,33 @@ class Paste extends Model {
     }
 
     public static function getRecent(int $count = 10) : Collection {
-        return Paste::with('user')
+        return self::publiclyVisible()
             ->orderBy('created_at', 'DESC')
-            ->where('visible', self::VISIBILITY_PUBLIC)
-            ->where('is_hidden', false)
-            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
-            ->limit($count)->get();
+            ->limit($count)
+            ->get();
     }
 
     public static function getRecentlyUpdated(int $count = 10) : Collection {
-        return Paste::with('user')
+        return self::publiclyVisible()
+            ->whereNotNull('updated_at')
             ->orderBy('updated_at', 'DESC')
-            ->where('visible', self::VISIBILITY_PUBLIC)
-            ->where('is_hidden', false)
-            ->where('password', null)
-            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
-            ->limit($count)->get();
+            ->limit($count)
+            ->get();
     }
 
     public static function getMostViewed(int $count = 10) : Collection {
-        return Paste::with('user')
-            ->where('visible', self::VISIBILITY_PUBLIC)
-            ->where('is_hidden', false)
-            ->where('password', null)
-            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
+        return self::publiclyVisible()
             ->orderBy('views', 'desc')
-            ->limit($count)->get();
+            ->limit($count)
+            ->get();
     }
 
     public static function getMonthPopular(int $count = 10) : Collection {
-        return Paste::with('user')
+        return self::publiclyVisible()
             ->whereRaw('EXTRACT(YEAR_MONTH FROM created_at) = EXTRACT(YEAR_MONTH FROM NOW())')
-            ->where('visible', self::VISIBILITY_PUBLIC)
-            ->where('is_hidden', false)
-            ->where('password', null)
-            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
             ->orderBy('views', 'desc')
-            ->limit($count)->get();
+            ->limit($count)
+            ->get();
     }
 
     /**
@@ -124,20 +115,18 @@ class Paste extends Model {
      * from the database.
      *
      * @param int $count Maximum number of random candidate pastes to fetch.
-     * @return array An array of randomly-selected Paste objects. If there are less than
-     *               $count candidate pastes in the database, the length of this array
-     *               will be less than $count.
+     * @return Collection A collection of randomly-selected Paste objects. If there are less than
+     *                    $count candidate pastes in the database, the size of this collection
+     *                    will be less than $count.
      */
-    public static function getRandom(int $count = 10) : array {
-        $candidates = Paste::where('visible', self::VISIBILITY_PUBLIC)
-                           ->where('is_hidden', false)
-                           ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
+    public static function getRandom(int $count = 10) : Collection {
+        $candidates = self::publiclyVisible()
                            ->pluck('id')
                            ->toArray();
         $count = min($count, count($candidates));
 
         if ($count == 0) {
-            return [];
+            return new Collection();
         }
 
         shuffle($candidates);
@@ -146,6 +135,20 @@ class Paste extends Model {
 
         return Paste::with('user')
                     ->whereIn('id', $random_ids)
-                    ->toArray();
+                    ->get();
+    }
+
+    /**
+     * Get a Builder with filters applied to only return publicly-visible and accessible pastes.
+     * This means not private or unlisted, not deleted, no password, and not expired.
+     *
+     * @return Builder A builder with WHERE filters pre-applied.
+     */
+    private static function publiclyVisible() : Builder {
+        return Paste::with('user')
+            ->where('visible', self::VISIBILITY_PUBLIC)
+            ->where('is_hidden', false)
+            ->where('password', null)
+            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
     }
 }
