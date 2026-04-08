@@ -51,12 +51,22 @@ if (isset($_POST['forgot'])) {
                     ->where('username', $username)
                     ->first();
 
-        $needs_rehash = false;
-
-        /* This is designed to be a constant time lookup, hence the warning suppression operator so that
-         * we always call pp_password_verify, even if the user is null.
+        /* This is designed to be a constant time comparison for the password hash, whether the user is found or not.
+         * Assumptions: pp_password_verify() is itself constant time.
+         * - Both paths: we set $dummy = password_hash(''); this takes n time.
+         * - User not found path: we set $password_ok to a constant and call pp_password_verify($input, $dummy); this takes m time, for a total of n + m time.
+         * - User found path: we set $password_ok to a constant call pp_password_verify($input, $user->password); this takes m time, for a total of n + m time.
+         * In reality, a timing attack to a PHP server on the Internet is highly unlikely,
+         * but this is funny and I implemented it badly several years ago for some reason, so I'm going to keep coming back to it.
          */
-        if (pp_password_verify($_POST['password'], @$user->password, $needs_rehash)) {
+        $password_ok = false;
+        $needs_rehash = false;
+        $dummy_hash = pp_password_hash('');
+        if (!$user) {
+            $password_ok = false;
+            pp_password_verify($_POST['password'], $dummy_hash);
+        } else if (pp_password_verify($_POST['password'], $user->password, $needs_rehash)) {
+            $password_ok = true;
             if ($needs_rehash) {
                 $user->password = pp_password_hash($_POST['password']);
                 $user->save();
@@ -91,7 +101,9 @@ if (isset($_POST['forgot'])) {
                 header('Location: ' . $_SERVER['HTTP_REFERER']);
                 exit();
             }
-        } else {
+        }
+
+        if (!$password_ok) {
             // Username not found or password incorrect.
             $error = 'Incorrect username or password.';
         }
