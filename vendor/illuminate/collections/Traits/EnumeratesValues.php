@@ -12,12 +12,9 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Enumerable;
 use Illuminate\Support\HigherOrderCollectionProxy;
-use InvalidArgumentException;
 use JsonSerializable;
-use Traversable;
 use UnexpectedValueException;
 use UnitEnum;
-use WeakMap;
 
 use function Illuminate\Support\enum_value;
 
@@ -36,6 +33,8 @@ use function Illuminate\Support\enum_value;
  * @property-read HigherOrderCollectionProxy<TKey, TValue> $first
  * @property-read HigherOrderCollectionProxy<TKey, TValue> $flatMap
  * @property-read HigherOrderCollectionProxy<TKey, TValue> $groupBy
+ * @property-read HigherOrderCollectionProxy<TKey, TValue> $hasMany
+ * @property-read HigherOrderCollectionProxy<TKey, TValue> $hasSole
  * @property-read HigherOrderCollectionProxy<TKey, TValue> $keyBy
  * @property-read HigherOrderCollectionProxy<TKey, TValue> $last
  * @property-read HigherOrderCollectionProxy<TKey, TValue> $map
@@ -84,6 +83,8 @@ trait EnumeratesValues
         'first',
         'flatMap',
         'groupBy',
+        'hasMany',
+        'hasSole',
         'keyBy',
         'last',
         'map',
@@ -333,6 +334,27 @@ trait EnumeratesValues
     }
 
     /**
+     * Determine if the collection contains multiple items, optionally matching the given criteria.
+     *
+     * @param  (callable(TValue, TKey): bool)|string|null  $key
+     * @param  mixed  $operator
+     * @param  mixed  $value
+     * @return bool
+     */
+    public function hasMany($key = null, $operator = null, $value = null): bool
+    {
+        $filter = func_num_args() > 1
+            ? $this->operatorForWhere(...func_get_args())
+            : $key;
+
+        return $this
+            ->unless($filter == null)
+            ->filter($filter)
+            ->take(2)
+            ->count() === 2;
+    }
+
+    /**
      * Get a single key's value from the first matching item in the collection.
      *
      * @template TValueDefault
@@ -343,11 +365,11 @@ trait EnumeratesValues
      */
     public function value($key, $default = null)
     {
-        if ($value = $this->firstWhere($key)) {
-            return data_get($value, $key, $default);
-        }
+        $value = $this->first(function ($target) use ($key) {
+            return data_has($target, $key);
+        });
 
-        return value($default);
+        return data_get($value, $key, $default);
     }
 
     /**
@@ -511,8 +533,8 @@ trait EnumeratesValues
      * Partition the collection into two arrays using the given callback or key.
      *
      * @param  (callable(TValue, TKey): bool)|TValue|string  $key
-     * @param  TValue|string|null  $operator
-     * @param  TValue|null  $value
+     * @param  mixed  $operator
+     * @param  mixed  $value
      * @return static<int<0, 1>, static<TKey, TValue>>
      */
     public function partition($key, $operator = null, $value = null)
@@ -964,15 +986,12 @@ trait EnumeratesValues
     public function jsonSerialize(): array
     {
         return array_map(function ($value) {
-            if ($value instanceof JsonSerializable) {
-                return $value->jsonSerialize();
-            } elseif ($value instanceof Jsonable) {
-                return json_decode($value->toJson(), true);
-            } elseif ($value instanceof Arrayable) {
-                return $value->toArray();
-            }
-
-            return $value;
+            return match (true) {
+                $value instanceof JsonSerializable => $value->jsonSerialize(),
+                $value instanceof Jsonable => json_decode($value->toJson(), true),
+                $value instanceof Arrayable => $value->toArray(),
+                default => $value,
+            };
         }, $this->all());
     }
 
@@ -985,6 +1004,17 @@ trait EnumeratesValues
     public function toJson($options = 0)
     {
         return json_encode($this->jsonSerialize(), $options);
+    }
+
+    /**
+     * Get the collection of items as pretty print formatted JSON.
+     *
+     * @param  int  $options
+     * @return string
+     */
+    public function toPrettyJson(int $options = 0)
+    {
+        return $this->toJson(JSON_PRETTY_PRINT | $options);
     }
 
     /**
@@ -1059,17 +1089,9 @@ trait EnumeratesValues
      */
     protected function getArrayableItems($items)
     {
-        return match (true) {
-            is_array($items) => $items,
-            $items instanceof WeakMap => throw new InvalidArgumentException('Collections can not be created using instances of WeakMap.'),
-            $items instanceof Enumerable => $items->all(),
-            $items instanceof Arrayable => $items->toArray(),
-            $items instanceof Traversable => iterator_to_array($items),
-            $items instanceof Jsonable => json_decode($items->toJson(), true),
-            $items instanceof JsonSerializable => (array) $items->jsonSerialize(),
-            $items instanceof UnitEnum => [$items],
-            default => (array) $items,
-        };
+        return is_null($items) || is_scalar($items) || $items instanceof UnitEnum
+            ? Arr::wrap($items)
+            : Arr::from($items);
     }
 
     /**

@@ -9,6 +9,7 @@ use Illuminate\Bus\PendingBatch;
 use Illuminate\Contracts\Bus\QueueingDispatcher;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Illuminate\Support\Traits\ReflectsClosures;
 use PHPUnit\Framework\Assert as PHPUnit;
 use RuntimeException;
@@ -133,6 +134,17 @@ class BusFake implements Fake, QueueingDispatcher
     }
 
     /**
+     * Assert if a job was pushed exactly once.
+     *
+     * @param  string|\Closure  $command
+     * @return void
+     */
+    public function assertDispatchedOnce($command)
+    {
+        $this->assertDispatchedTimes($command, 1);
+    }
+
+    /**
      * Assert if a job was pushed a number of times.
      *
      * @param  string|\Closure  $command
@@ -153,7 +165,11 @@ class BusFake implements Fake, QueueingDispatcher
 
         PHPUnit::assertSame(
             $times, $count,
-            "The expected [{$command}] job was pushed {$count} times instead of {$times} times."
+            sprintf(
+                "The expected [{$command}] job was pushed {$count} %s instead of {$times} %s.",
+                Str::plural('time', $count),
+                Str::plural('time', $times)
+            )
         );
     }
 
@@ -232,7 +248,11 @@ class BusFake implements Fake, QueueingDispatcher
 
         PHPUnit::assertSame(
             $times, $count,
-            "The expected [{$command}] job was synchronously pushed {$count} times instead of {$times} times."
+            sprintf(
+                "The expected [{$command}] job was synchronously pushed {$count} %s instead of {$times} %s.",
+                Str::plural('time', $count),
+                Str::plural('time', $times)
+            )
         );
     }
 
@@ -297,7 +317,11 @@ class BusFake implements Fake, QueueingDispatcher
 
         PHPUnit::assertSame(
             $times, $count,
-            "The expected [{$command}] job was pushed {$count} times instead of {$times} times."
+            sprintf(
+                "The expected [{$command}] job was pushed {$count} %s instead of {$times} %s.",
+                Str::plural('time', $count),
+                Str::plural('time', $times)
+            )
         );
     }
 
@@ -463,7 +487,7 @@ class BusFake implements Fake, QueueingDispatcher
     /**
      * Create a new assertion about a chained batch.
      *
-     * @param  \Closure  $callback
+     * @param  \Closure(\Illuminate\Bus\PendingBatch): bool  $callback
      * @return \Illuminate\Support\Testing\Fakes\ChainedBatchTruthTest
      */
     public function chainedBatch(Closure $callback)
@@ -474,11 +498,13 @@ class BusFake implements Fake, QueueingDispatcher
     /**
      * Assert if a batch was dispatched based on a truth-test callback.
      *
-     * @param  callable  $callback
+     * @param  array|callable(\Illuminate\Bus\PendingBatch): bool  $callback
      * @return void
      */
-    public function assertBatched(callable $callback)
+    public function assertBatched(callable|array $callback)
     {
+        $callback = is_array($callback) ? fn (PendingBatchFake $batch) => $batch->hasJobs($callback) : $callback;
+
         PHPUnit::assertTrue(
             $this->batched($callback)->count() > 0,
             'The expected batch was not dispatched.'
@@ -581,8 +607,8 @@ class BusFake implements Fake, QueueingDispatcher
     /**
      * Get all of the pending batches matching a truth-test callback.
      *
-     * @param  callable  $callback
-     * @return \Illuminate\Support\Collection
+     * @param  callable(\Illuminate\Bus\PendingBatch): bool  $callback
+     * @return \Illuminate\Support\Collection<int, \Illuminate\Bus\PendingBatch>
      */
     public function batched(callable $callback)
     {
@@ -708,10 +734,10 @@ class BusFake implements Fake, QueueingDispatcher
     /**
      * Create a new chain of queueable jobs.
      *
-     * @param  \Illuminate\Support\Collection|array  $jobs
+     * @param  \Illuminate\Support\Collection|array|null  $jobs
      * @return \Illuminate\Foundation\Bus\PendingChain
      */
-    public function chain($jobs)
+    public function chain($jobs = null)
     {
         $jobs = Collection::wrap($jobs);
         $jobs = ChainedBatch::prepareNestedBatches($jobs);
