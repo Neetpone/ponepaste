@@ -8,7 +8,8 @@ $menu_options = [
         ['name' => 'Admin Password', 'icon' => 'fa-user', 'path' => '/admin/admin.php', 'access' => User::ROLE_MODERATOR],
         ['name' => 'Reports', 'icon' => 'fa-flag', 'path' => '/admin/reports.php', 'access' => User::ROLE_MODERATOR],
         ['name' => 'Pastes', 'icon' => 'fa-clipboard', 'path' => '/admin/pastes.php', 'access' => User::ROLE_ADMIN],
-        ['name' => 'Users', 'icon' => 'fa-users', 'path' => '/admin/users.php', 'access' => User::ROLE_ADMIN]
+        ['name' => 'Users', 'icon' => 'fa-users', 'path' => '/admin/users.php', 'access' => User::ROLE_ADMIN],
+        ['name' => 'Pages', 'icon' => 'fa-file', 'path' => '/admin/pages.php', 'access' => User::ROLE_ADMIN],
     ];
     $current_path = $_SERVER['PHP_SELF'];
 ?>

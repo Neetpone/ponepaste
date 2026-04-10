@@ -135,21 +135,21 @@ $csrf_token = setupCsrfToken();
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($all_users as $user): ?>
-                                        <tr>
-                                            <td>
-                                                <a href="<?= urlForMember($user); ?>"><?= pp_html_escape($user->username); ?></a>
-                                            </td>
-                                            <td><?= pp_html_escape($user->created_at); ?> </td>
-                                            <td>
-                                                <form method="post">
-                                                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
-                                                    <input type="hidden" name="user_id" value="<?= $user->id ?>">
-                                                    <button class="button is-small is-danger" type="submit" name="ban">Ban</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
+                                <?php foreach ($all_users as $user): ?>
+                                    <tr>
+                                        <td>
+                                            <a href="<?= urlForMember($user); ?>"><?= pp_html_escape($user->username); ?></a>
+                                        </td>
+                                        <td><?= pp_html_escape($user->created_at); ?> </td>
+                                        <td>
+                                            <form method="post">
+                                                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+                                                <input type="hidden" name="user_id" value="<?= $user->id ?>">
+                                                <button class="button is-small is-danger" type="submit" name="ban">Ban</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
                                 </tbody>
                             </table>
                             <?= paginate($current_page, $per_page, $total_users); ?>

@@ -94,12 +94,11 @@ DROP TABLE IF EXISTS `pages`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pages` (
-                         `id` int(11) NOT NULL AUTO_INCREMENT,
+                         `page_name` varchar(255) NOT NULL,
                          `last_date` varchar(255) DEFAULT NULL,
-                         `page_name` varchar(255) DEFAULT NULL,
                          `page_title` longtext DEFAULT NULL,
                          `page_content` longtext DEFAULT NULL,
-                         PRIMARY KEY (`id`)
+                         PRIMARY KEY (`page_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

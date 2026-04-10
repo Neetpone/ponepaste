@@ -170,6 +170,19 @@ function pp_html_escape(string $unescaped) : string {
     return htmlspecialchars($unescaped, ENT_QUOTES, 'UTF-8', false);
 }
 
+/**
+ * Like `pp_html_escape()` but designed for strings used as part of a URL, embedded into an HTML attribute.
+ * I'm honestly not convinced this is correct, so if something strange happens with attr encoding, look here.
+ *
+ * @param string $unescaped String to escape.
+ * @return string URL-encoded and HTML-escaped string.
+ */
+function pp_url_escape(string $unescaped) : string {
+    return pp_html_escape(
+        urlencode($unescaped),
+    );
+}
+
 function isRequesterLikelyBot() : bool {
     $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '';
 
@@ -237,6 +250,10 @@ function verifyCsrfToken($token = null) : bool {
     }
 
     return hash_equals($_SESSION[SessionHelper::CSRF_TOKEN_KEY], $token);
+}
+
+function outputCsrfToken() : string {
+    return sprintf("<input type=\"hidden\" name=\"%s\" value=\"%s\" />", SessionHelper::CSRF_TOKEN_KEY, setupCsrfToken());
 }
 
 session_set_cookie_params([

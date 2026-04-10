@@ -8,6 +8,7 @@ use PonePaste\Models\Page;
 updatePageViews();
 
 $page_title = 'Page not found';
+$page_content = '';
 
 if (isset($_GET['page'])) {
     $page = Page::select('page_title', 'page_content', 'last_date')
@@ -16,6 +17,9 @@ if (isset($_GET['page'])) {
 
     if (isset($page)) {
         $page_title = $page->page_title;
+        $config = HTMLPurifier_Config::createDefault();
+        $purifier = new HTMLPurifier($config);
+        $page_content = $purifier->purify($page->page_content);
     }
 }
 
