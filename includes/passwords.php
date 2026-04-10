@@ -40,7 +40,9 @@ function pp_random_friendly_token($size = 6) : string {
     $path = '/usr/share/dict/words';
 
     if (!file_exists($path)) {
-        die('fatal internal error: random token word file does not exist.');
+        trigger_error('Friendly token word file does not exist; falling back to using an unfriendly token.', E_USER_WARNING);
+
+        return pp_random_token();
     }
 
     $words = pp_random_lines_from_file($path, $size);
