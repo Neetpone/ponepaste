@@ -24,7 +24,7 @@ You need Yarn (version 1, not version 2 - 2 may work, but I haven't tried it.) A
 6) Create the initial admin user by doing the following:
    * `php -f util/ppadmin.php hashpw` -> enter your desired password, and hit enter. Copy the hashed password to clipboard.
    * Open a MySQL console to the database you configured above, and run something like
-     `INSERT INTO users (username, password, role, admin_password_hash, recovery_code_hash) VALUES ('admin', 'THE HASH FROM EARLIER', 2, 'THE SAME HASH FROM EARLIER', ''');`
+     `INSERT INTO users (username, password, role, admin_password_hash, recovery_code_hash) VALUES ('admin', 'THE HASH FROM EARLIER', 2, 'THE SAME HASH FROM EARLIER', '');`
 7) Go to `http://ponepaste.local` (or whatever hostname you configured), log in, and explore the site!
 
 # Production Deployment
@@ -47,5 +47,5 @@ You need Yarn (version 1, not version 2 - 2 may work, but I haven't tried it.) A
    * `php -f util/ppadmin.php hashpw` -> enter your desired password, and hit enter. Copy the hashed password to clipboard.
    * Do the same, but use a different password. This second password is the re-authentication password for administrative actions; this is essentially 2FA where both factors are different passwords.
    * Open a MySQL console to the database you configured above, and run something like
-     `INSERT INTO users (username, password, role, admin_password_hash, recovery_code_hash) VALUES ('admin', 'THE FIRST HASH FROM EARLIER', 2, 'THE SECOND HASH FROM EARLIER', ''');`
+     `INSERT INTO users (username, password, role, admin_password_hash, recovery_code_hash) VALUES ('admin', 'THE FIRST HASH FROM EARLIER', 2, 'THE SECOND HASH FROM EARLIER', '');`
 7) Go to `http://{your-domain}`, log in, and explore the site!

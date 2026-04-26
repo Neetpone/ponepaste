@@ -33,7 +33,11 @@ function pp_random_bytes(int $length) : string {
 }
 
 function pp_random_token() : string {
-    return hash('SHA512', pp_random_bytes(64));
+    return bin2hex(pp_random_bytes(64));
+}
+
+function pp_random_password() : string {
+    return bin2hex(pp_random_bytes(16));
 }
 
 function pp_random_friendly_token($size = 6) : string {
@@ -49,12 +53,4 @@ function pp_random_friendly_token($size = 6) : string {
     $joined = implode(' ', $words);
 
     return preg_replace('/[^a-z ]/', '', strtolower($joined));
-}
-
-function pp_random_password() : string {
-    /* MD-5 is OK to use here because it is not being used to protect secure data,
-     * but rather to reduce the size of the string a little into something that
-     * can reasonably be handled by a user.
-     */
-    return hash('MD5', pp_random_bytes(64));
 }
