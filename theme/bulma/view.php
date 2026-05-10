@@ -1,3 +1,11 @@
+<?php
+function vOutputInfoItem(string $title, string $item, string $icon) : void {
+    $escapedItem = pp_html_escape($item);
+    echo <<<ITEM
+<span title="{$title}"><i class="fa fa-lg {$icon}" aria-hidden="true"></i> {$escapedItem}</span>
+ITEM;
+}
+?>
 <link rel="stylesheet" href="theme/bulma/css/bulma-tagsinput.min.css"/>
 <script>
     function openreport() {
@@ -34,27 +42,13 @@
                 <div class="content panel">
                     <?php outputFlashes($flashes) ?>
                     <div class="columns is-multiline">
-                        <div class="column is-4">
-                            <span class="tag is-normal"><i class="fa fa-code fa-lg"
-                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?= strtoupper(pp_html_escape($paste['code'])); ?></span>
-                            <span class="tag is-normal"><i class="fa fa-eye fa-lg"
-                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?= pp_html_escape($paste['views']); ?></span>
-                            <span class="tag is-normal"><i class="fa fa-star fa-lg"
-                                                           aria-hidden="true"></i>&nbsp;&nbsp;<?= pp_html_escape($fav_count); ?></span>
-                            <br>
-                            <span class="tag is-normal">
-                                <i class="fa fa-file-word fa-lg" aria-hidden="true"></i>
-                                &nbsp;&nbsp;
-                                <?= str_word_count($op_content); ?>
-                            </span>
-                            <span class="tag is-normal">
-                                <i class="fa fa-hdd fa-lg" aria-hidden="true"></i>
-                                <?= formatBytes(strlen($op_content)) ?>
-                            </span>
-                            <span class="tag is-normal">
-                                <i class="fa fa-list-ol fa-lg" aria-hidden="true"></i>&nbsp;&nbsp;
-                                <?= substr_count($op_content, "\n") + 1; ?>
-                            </span>
+                        <div class="column is-4 paste-info">
+                            <?php vOutputInfoItem('Highlighting code', strtoupper($paste->code), 'fa-code'); ?>
+                            <?php vOutputInfoItem('View count', (string) $paste->views, 'fa-eye'); ?>
+                            <?php vOutputInfoItem('Favourite count', (string) $fav_count, 'fa-star'); ?>
+                            <?php vOutputInfoItem('Word count', (string) str_word_count($op_content), 'fa-file-word'); ?>
+                            <?php vOutputInfoItem('Data size', formatBytes(strlen($op_content)), 'fa-hdd'); ?>
+                            <?php vOutputInfoItem('Line count', (string) (substr_count($op_content, "\n") + 1), 'fa-list-ol'); ?>
                         </div>
                         <div class="column is-4 has-text-centered">
                             <h1 class="title is-6" style="margin-bottom:0;"><?= pp_html_escape($paste->title); ?></h1>
@@ -68,7 +62,9 @@
                                     Updated: <?= $paste->updated_at ?>
                                     <br/>
                                 <?php endif; ?>
-                                Expiry: <?= $paste->expiryDisplay() ?>
+                                <?php if ($paste->expiry && $paste->expiry !== 'NULL'): ?>
+                                    Expiry: <?= $paste->expiryDisplay() ?>
+                                <?php endif; ?>
                             </small>
                         </div>
                         <div class="column is-4 has-text-right">
@@ -120,7 +116,7 @@
                         </div>
                     </div>
                     <!-- Tag display  -->
-                    <div class="columns is-desktop is-centered">
+                    <div class="tags is-centered is-centered-desktop">
                         <?= tagsToHtml($paste->tags); ?>
                     </div>
                     <br>

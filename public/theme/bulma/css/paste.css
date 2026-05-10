@@ -378,3 +378,25 @@ table.hidden + .loading_container {
 .content ol.hide-line-numbers li a {
     display: none;
 }
+
+.paste-info {
+    display: flex;
+    flex-direction: row;
+    font-size: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.paste-info span {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.paste-info span i {
+    margin-right: 2px;
+}
+
+@media(max-width: 1024px) {
+    .tags.is-centered-desktop {
+        justify-content: flex-start;
+    }
+}
