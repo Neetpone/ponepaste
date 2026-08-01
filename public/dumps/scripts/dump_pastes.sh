@@ -6,7 +6,7 @@ YDAY=$(date -d 'yesterday 01:00' +'%d-%m-%Y')
 
 cd $WORKDIR
 
-php -f dump_pastes.php $TODAY/
+php -f $PUBDIR/scripts/dump_pastes.php $TODAY/
 tar -cvzf $TODAY.tar.gz $TODAY/
 if [ -f $PUBDIR/$YDAY.tar.gz ]; then
   xdelta3 -e -s $PUBDIR/$YDAY.tar.gz $TODAY.tar.gz ${YDAY}_${TODAY}.xdelta3
