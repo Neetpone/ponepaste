@@ -127,9 +127,11 @@ if (PP_MOD_REWRITE) {
 if (!empty($paste->expiry) && $paste->expiry !== 'NULL') {
     if ($paste->expiry === 'SELF') {
         $paste->delete();
+        $redis->del('paste_render:v1:' . $paste->id);
         flashWarning('This paste has self-destructed - if you close this window, you will no longer be able to view it!');
     } else if (time() > (int) $paste->expiry) {
         $paste->delete();
+        $redis->del('paste_render:v1:' . $paste->id);
         $error = 'This paste has expired.';
         goto Not_Valid_Paste;
     }
@@ -173,42 +175,59 @@ if (can('mark', $paste)) {
     $paste_guessed_mark = null;
 }
 
-// Preprocess
-$highlight = [];
-$prefix_size = strlen('!highlight!');
-$lines = explode("\n", $p_content);
-$p_content = "";
+$render_cache_key = 'paste_render:v1:' . $paste->id;
+$cached_render = json_decode($redis->get($render_cache_key) ?: '', true);
 
-foreach ($lines as $idx => $line) {
-    if (substr($line, 0, $prefix_size) == '!highlight!') {
-        $highlight[] = $idx + 1;
-        $line = substr($line, $prefix_size);
-    }
-    $p_content .= $line . "\n";
-}
-
-$p_content = rtrim($p_content);
-
-// Apply syntax highlight
-$p_content = htmlspecialchars_decode($p_content);
-
-// Clean up the paste_code in case it's invalid
-$paste_code = match ($paste_code) {
-    'text', 'plaintext' => 'plaintext',
-    'pastedown_old', 'pastedown' => 'pastedown',
-    default => 'green',
-};
-
-if ($paste_code === "pastedown") {
-    $parsedown = new Pastedown();
-    $parsedown->setSafeMode(true);
-    $p_content = $parsedown->text($p_content);
+if ($cached_render) {
+    $paste_code = $cached_render['code'];
+    $highlight = $cached_render['highlight'];
+    $p_content = $cached_render['content'];
+    $lines = $cached_render['lines'];
 } else {
-    Highlighter::registerLanguage('green', __DIR__ . '/../config/green.lang.json');
-    Highlighter::registerLanguage('plaintext', __DIR__ . '/../vendor/scrivo/highlight.php/Highlight/languages/plaintext.json');
-    $hl = new Highlighter(false);
-    $highlighted = $hl->highlight($paste_code, $p_content)->value;
-    $lines = HighlightUtilities\splitCodeIntoArray($highlighted);
+    // Preprocess
+    $highlight = [];
+    $prefix_size = strlen('!highlight!');
+    $lines = explode("\n", $p_content);
+    $p_content = "";
+
+    foreach ($lines as $idx => $line) {
+        if (substr($line, 0, $prefix_size) == '!highlight!') {
+            $highlight[] = $idx + 1;
+            $line = substr($line, $prefix_size);
+        }
+        $p_content .= $line . "\n";
+    }
+
+    $p_content = rtrim($p_content);
+
+    // Apply syntax highlight
+    $p_content = htmlspecialchars_decode($p_content);
+
+    // Clean up the paste_code in case it's invalid
+    $paste_code = match ($paste_code) {
+        'text', 'plaintext' => 'plaintext',
+        'pastedown_old', 'pastedown' => 'pastedown',
+        default => 'green',
+    };
+
+    if ($paste_code === "pastedown") {
+        $parsedown = new Pastedown();
+        $parsedown->setSafeMode(true);
+        $p_content = $parsedown->text($p_content);
+    } else {
+        Highlighter::registerLanguage('green', __DIR__ . '/../config/green.lang.json');
+        Highlighter::registerLanguage('plaintext', __DIR__ . '/../vendor/scrivo/highlight.php/Highlight/languages/plaintext.json');
+        $hl = new Highlighter(false);
+        $highlighted = $hl->highlight($paste_code, $p_content)->value;
+        $lines = HighlightUtilities\splitCodeIntoArray($highlighted);
+    }
+
+    $redis->setEx($render_cache_key, 86400, json_encode([
+        'code' => $paste_code,
+        'highlight' => $highlight,
+        'content' => $p_content,
+        'lines' => $lines
+    ]));
 }
 
 // Embed view after highlighting is applied so that $p_code is syntax highlighted as it should be.
