@@ -12,3 +12,5 @@ assets/bundle/*
 config/site.php
 config/spam.json
 includes/config.php
+public/dumps/*
+!public/dumps/scripts/
