@@ -55,7 +55,12 @@ $pastes = $pastes->limit($per_page)->offset($per_page * $current_page);
 $pastes = $pastes->get();
 
 // Temp count for untagged pastes
-$total_untagged = Paste::doesntHave('tags')->count();
+if ($redis->exists('total_untagged')) {
+    $total_untagged = (int) $redis->get('total_untagged');
+} else {
+    $total_untagged = Paste::doesntHave('tags')->count();
+    $redis->setEx('total_untagged', 3600, $total_untagged);
+}
 
 updatePageViews();
 
