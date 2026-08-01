@@ -36,7 +36,7 @@ while ($row = $resp->fetch()) {
     list($paste_id, $paste_title, $paste_is_encrypted, $paste_content,
         $paste_created_at, $paste_updated_at, $paste_author) = $row;
 
-    if ($paste_is_encrypted == '1') {
+    if ($paste_is_encrypted) {
         $paste_content = openssl_decrypt($paste_content, 'AES-256-CBC', $PP_ENCRYPTION_KEY);
 
         if ($paste_content === false) {
