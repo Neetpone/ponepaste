@@ -69,13 +69,18 @@ $is_current_user = ($current_user !== null) && ($profile_info->id == $current_us
 // Pastes filtering
 $filter_value = '';
 list($per_page, $current_page) = pp_setup_pagination();
-
 $total_results = $profile_info->pastes->count();
-$profile_pastes = $profile_info->pastes()
-    ->orderBy('created_at', 'desc')
-    ->limit($per_page)
-    ->offset($per_page * $current_page)
-    ->get();
+$max_page = ceil($total_results / $per_page);
+
+if ($current_page <= $max_page) {
+    $profile_pastes = $profile_info->pastes()
+        ->orderBy('created_at', 'desc')
+        ->limit($per_page)
+        ->offset($per_page * $current_page)
+        ->get();
+} else {
+    $profile_pastes = null;
+}
 
 updatePageViews();
 
@@ -83,13 +88,18 @@ $csrf_token = setupCsrfToken();
 
 Render:
 
-if (isset($profile_info)) {
+if (!isset($profile_info)) {
+    $page_title = 'User not found';
+    $page_template = 'errors';
+} elseif ($profile_pastes === null) { // intentionally not checking isEmpty because a user can just have no pastes.
+    $page_title = 'Bad Request';
+    $page_template = 'errors';
+    header('HTTP/1.1 400 Bad Request');
+    flashError('Bad request (page does not exist.)');
+} else {
     $page_title = 'Profile of ' . $profile_username;
     $page_template = 'user_profile';
     $script_bundles[] = 'user_profile';
-} else {
-    $page_title = 'User not found';
-    $page_template = 'errors';
 }
 
 require_once(__DIR__ . '/../theme/' . $default_theme . '/common.php');
