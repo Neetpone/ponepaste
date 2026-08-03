@@ -69,8 +69,6 @@ if ($redis->exists('total_untagged')) {
 
 updatePageViews();
 
-var_dump(['total' => $total_results, 'per_page' => $per_page, 'current_page' => $current_page, 'total_untagged' => $total_untagged, 'max_page' => $max_page, 'total_results' => $total_results]);
-
 if ($pastes === null || $pastes->isEmpty()) {
     $page_template = 'errors';
     $page_title = 'Bad Request';
