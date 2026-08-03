@@ -48,7 +48,7 @@ if (!empty($filter_value)) {
 }
 
 $total_results = $pastes->count();
-$max_page = 999;//ceil($total_results / $per_page);
+$max_page = ceil($total_results / $per_page);
 
 if ($current_page <= $max_page) {
     $pastes = $pastes->orderBy('id', 'desc')
@@ -74,7 +74,8 @@ var_dump(['total' => $total_results, 'per_page' => $per_page, 'current_page' => 
 if ($pastes === null || $pastes->isEmpty()) {
     $page_template = 'errors';
     $page_title = 'Bad Request';
-    flashError('Bad Request');
+    header('HTTP/1.1 400 Bad Request');
+    flashError('Bad request (page does not exist.)');
 } else {
     $page_template = 'archive';
     $page_title = 'Pastes Archive';
