@@ -58,7 +58,6 @@
                 </table>
                 <div class="loading_container is-hidden">
                 </div>
-
                 <div class="paginator">
                     <?= paginate($current_page, $per_page, $total_results) ?>
                 </div>

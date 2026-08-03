@@ -47,12 +47,17 @@ if (!empty($filter_value)) {
     }
 }
 
-$pastes = $pastes->orderBy('id', 'desc');
 $total_results = $pastes->count();
+$max_page = 999;//ceil($total_results / $per_page);
 
-$pastes = $pastes->limit($per_page)->offset($per_page * $current_page);
-
-$pastes = $pastes->get();
+if ($current_page <= $max_page) {
+    $pastes = $pastes->orderBy('id', 'desc')
+                     ->limit($per_page)
+                     ->offset($current_page * $per_page)
+                     ->get();
+} else {
+    $pastes = null;
+}
 
 // Temp count for untagged pastes
 if ($redis->exists('total_untagged')) {
@@ -64,8 +69,16 @@ if ($redis->exists('total_untagged')) {
 
 updatePageViews();
 
-$page_template = 'archive';
-$page_title = 'Pastes Archive';
-$script_bundles[] = 'archive';
+var_dump(['total' => $total_results, 'per_page' => $per_page, 'current_page' => $current_page, 'total_untagged' => $total_untagged, 'max_page' => $max_page, 'total_results' => $total_results]);
+
+if ($pastes === null || $pastes->isEmpty()) {
+    $page_template = 'errors';
+    $page_title = 'Bad Request';
+    flashError('Bad Request');
+} else {
+    $page_template = 'archive';
+    $page_title = 'Pastes Archive';
+    $script_bundles[] = 'archive';
+}
 
 require_once(__DIR__ . '/../theme/' . $default_theme . '/common.php');
