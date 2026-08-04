@@ -33,7 +33,6 @@ class SimplePaginator {
         const showFirstPage = (Math.abs(firstPage - currentPage)) > (numPagesToShow);
         const showLastPage = (Math.abs(lastPage - currentPage)) > (numPagesToShow);
 
-
         const prevButtonDisabled = currentPage === firstPage ? 'disabled' : ''
 
         /* Previous button */
@@ -66,6 +65,7 @@ class SimplePaginator {
         }
 
         const nextButtonDisabled = currentPage === lastPage ? 'disabled' : ''
+
         /* Next button */
         this.element.appendChild(makeEl(
             `<button class="paginator__button next" ${nextButtonDisabled} data-page="${currentPage + 1}">Next</button>`
@@ -109,7 +109,6 @@ class DataTable {
         }
 
         this.perPageField = this.container.querySelector('select[name=per_page]');
-
         if (this.perPageField) {
             this.perPageField.addEventListener('change', evt => {
                this.perPage = Number(evt.target.value);
@@ -118,7 +117,6 @@ class DataTable {
         }
 
         const header = this.element.querySelector('tr.paginator__sort');
-
         if (header) {
             header.addEventListener('click', evt => {
                 const target = evt.target;

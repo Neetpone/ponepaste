@@ -137,16 +137,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="field">
-                    <div class="control">
-                        <input class="is-checkradio is-info has-background-color" id="encrypt"
-                               checked="checked" disabled="disabled" type="checkbox">
-                        <label for="encrypt">
-                            Encrypt on Server (always enabled)
-                        </label>
-                    </div>
-                </div>
-
+                <p class="help">Pastes are always encrypted server-side. <b>Note:</b> "Unlisted" only guarantees that the paste will not be visible on the "Archive" or "Discover" pages - not that nobody can discover it at all.</p>
                 <?php if ($captcha_enabled && $current_user === null): ?>
                     <div class="is-one-quarter">
                         <div class="captcha_container">

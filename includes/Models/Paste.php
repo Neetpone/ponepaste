@@ -10,6 +10,7 @@ class Paste extends Model {
     public const int VISIBILITY_PUBLIC   = 0;
     public const int VISIBILITY_UNLISTED = 1;
     public const int VISIBILITY_PRIVATE  = 2;
+    public const string AJAX_PASTES_CACHE_KEY = 'ajax_pastes:v2';
 
     protected $table = 'pastes';
 

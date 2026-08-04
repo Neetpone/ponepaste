@@ -5,9 +5,10 @@ require_once(__DIR__ .'/../../includes/common.php');
 
 use PonePaste\Models\Paste;
 
-if (empty($_GET['q']) && $redis->exists('ajax_pastes')) {
-    header('Content-Type: application/json; charset=UTF-8');
-    echo $redis->get('ajax_pastes');
+header('Content-Type: application/json; charset=UTF-8');
+
+if ($redis->exists(Paste::AJAX_PASTES_CACHE_KEY)) {
+    echo $redis->get(Paste::AJAX_PASTES_CACHE_KEY);
     die;
 }
 
@@ -18,28 +19,20 @@ $pastes = Paste::with([
     'tags' => function($query) {
         $query->select('tags.id', 'name', 'slug');
     }
-])->select(['id', 'user_id', 'title', 'expiry', 'created_at', 'updated_at'])
-    ->where('visible', Paste::VISIBILITY_PUBLIC)
+])->select(['id', 'user_id', 'title', 'expiry', 'created_at', 'updated_at', 'visible'])
+    ->where('visible', '!=', Paste::VISIBILITY_PRIVATE)
     ->where('is_hidden', false)
     ->where('password', null)
-    ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
-
-// if (!empty($_GET['q']) && is_string($_GET['q'])) {
-//     $tags = explode(',', $_GET['q']);
-//     $pastes = $pastes->whereHas('tags', function($query) use ($tags) {
-//         $query->where('name', $tags);
-//     });
-// }
-
-$pastes = $pastes->orderBy('id', 'desc')->get();
-
-header('Content-Type: application/json; charset=UTF-8');
+    ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
+    ->orderBy('id', 'desc')
+    ->get();
 
 $pastes_json = json_encode(['data' => $pastes->map(function($paste) {
     return [
         'id' => $paste->id,
         'created_at' => $paste->created_at,
         'updated_at' => $paste->updated_at ?? $paste->created_at,
+        'visibility' => $paste->visible,
         'title' => $paste->title,
         'author' => $paste->user->username,
         'author_id' => $paste->user->id,
@@ -49,6 +42,6 @@ $pastes_json = json_encode(['data' => $pastes->map(function($paste) {
     ];
 })]);
 
-$redis->setEx('ajax_pastes', 3600, $pastes_json);
+$redis->setEx(Paste::AJAX_PASTES_CACHE_KEY, 3600, $pastes_json);
 
 echo $pastes_json;

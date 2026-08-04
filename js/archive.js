@@ -14,7 +14,14 @@ whenReady(() => {
         ajaxCallback: (resolve) => {
             fetch(apiUrl)
                 .then(r => r.json())
-                .then(resolve);
+                .then(data => {
+                    // yes, this is a client-side filter; unlisted pastes are not considered "secure" or "private".
+                    // the API returns them in the first place so scrapers can get the data they were gonna get anyway
+                    // in a more efficient manner.
+                    const publicPastes = data.data.filter(it => it.visibility === 0);
+
+                    resolve({ data: publicPastes });
+                });
         },
         rowCallback: (rowData) => {
             return `<tr>

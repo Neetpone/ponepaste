@@ -41,7 +41,7 @@ if (isset($_POST['hide'])) {
 
         $paste->is_hidden = $is_hidden;
         $paste->save();
-        $redis->del('ajax_pastes'); /* Expire from Redis so it doesn't show up anymore */
+        $redis->del(Paste::AJAX_PASTES_CACHE_KEY); /* Expire from Redis so it doesn't show up anymore */
 
         AdminLog::updateAdminHistory($current_user, AdminLog::ACTION_HIDE_PASTE, 'Paste ' . $paste->id . ' ' . ($is_hidden ? 'hidden' : 'unhidden') . '.');
         flashSuccess('Paste ' . ($is_hidden ? 'hidden' : 'unhidden') . '.');
@@ -58,7 +58,7 @@ if (isset($_POST['hide'])) {
         $paste->tags()->detach();
 
         $paste->save();
-        $redis->del('ajax_pastes'); /* Expire from Redis so it doesn't show up anymore */
+        $redis->del(Paste::AJAX_PASTES_CACHE_KEY); /* Expire from Redis so it doesn't show up anymore */
         $redis->del('paste_render:v1:' . $paste->id);
         AdminLog::updateAdminHistory($current_user, AdminLog::ACTION_BLANK_PASTE, 'Paste ' . $paste->id . ' blanked.');
 

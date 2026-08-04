@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
 
             $paste->replaceTags($tags);
-            $redis->del('ajax_pastes'); /* Expire from Redis so the edited paste shows up */
+            $redis->del(Paste::AJAX_PASTES_CACHE_KEY); /* Expire from Redis so the edited paste shows up */
             $redis->del('paste_render:v1:' . $paste->id);
         } else {
             $error = 'You must be logged in to do that.';
@@ -179,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             addToSitemap($paste, $priority, $changefreq);
         }
 
-        $redis->del('ajax_pastes'); /* Expire from Redis so the new paste shows up */
+        $redis->del(Paste::AJAX_PASTES_CACHE_KEY); /* Expire from Redis so the new paste shows up */
         $redis->del('paste_render:v1:' . $paste->id);
     }
 
