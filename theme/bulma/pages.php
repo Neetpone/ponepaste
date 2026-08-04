@@ -1,5 +1,5 @@
 <main class="bd-main">
-    <div class="container content">
+    <div class="container content my-4">
         <?php if (isset($page)): ?>
             <h1><?= pp_html_escape($page->page_title); ?></h1>
             <?= $page_content /* Already processed with HTML Purifier. */ ?>
