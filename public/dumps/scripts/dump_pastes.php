@@ -1,4 +1,9 @@
 <?php
+if (php_sapi_name() !== 'cli') {
+    header('HTTP/1.1 400 Bad Request');
+    die;
+}
+
 /* SELECT pastes.id, title, pastes.content, created_at, updated_at,users.username FROM pastes INNER JOIN users ON users.id = pastes.user_id WHERE visible = '0'; */
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
