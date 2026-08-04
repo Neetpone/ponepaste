@@ -28,7 +28,7 @@ $db = new PDO("mysql:host=localhost;dbname=ponepaste_beta;charset=utf8mb4", $PP_
     PDO::ATTR_EMULATE_PREPARES => false
 ]);
 $outfile = fopen("{$outpath}/pastes.csv", 'w');
-$resp = $db->query("SELECT pastes.id, title, pastes.encrypt, pastes.content, pastes.created_at, pastes.updated_at, users.username
+$resp = $db->query("SELECT pastes.id, title, pastes.content, pastes.created_at, pastes.updated_at, users.username
 	            	FROM pastes
 			INNER JOIN users ON users.id = pastes.user_id
 			WHERE pastes.visible = '0'");
@@ -38,28 +38,17 @@ $skipped = 0;
 $reencoded = 0;
 
 while ($row = $resp->fetch()) {
-    list($paste_id, $paste_title, $paste_is_encrypted, $paste_content,
+    list($paste_id, $paste_title, $paste_content,
         $paste_created_at, $paste_updated_at, $paste_author) = $row;
 
-    if ($paste_is_encrypted) {
-        $paste_content = openssl_decrypt($paste_content, 'AES-256-CBC', $PP_ENCRYPTION_KEY);
-
-        if ($paste_content === false) {
-            fwrite(STDERR, "paste {$paste_id}: failed to decrypt, skipping\n");
-            $skipped++;
-            continue;
-        }
-    } else {
-        $paste_content = base64_decode($paste_content, true);
-
-        if ($paste_content === false) {
-            fwrite(STDERR, "paste {$paste_id}: invalid base64, skipping\n");
-            $skipped++;
-            continue;
-        }
+    $paste_content = @openssl_decrypt($paste_content, 'AES-256-CBC', $PP_ENCRYPTION_KEY);
+    if ($paste_content === false) {
+        fwrite(STDERR, "paste {$paste_id}: failed to decrypt, skipping\n");
+        $skipped++;
+        continue;
     }
 
-    /* Legacy pastes are raw browser bytes; anything not already UTF-8 is probably Windows-1252. */
+    /* Legacy pastes are raw bytes of an unknown encoding; anything not already UTF-8 is likely Windows-1252. */
     if (!mb_check_encoding($paste_content, 'UTF-8')) {
         $paste_content = mb_convert_encoding($paste_content, 'UTF-8', 'Windows-1252');
         $reencoded++;
