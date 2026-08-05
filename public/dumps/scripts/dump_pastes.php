@@ -31,7 +31,7 @@ $outfile = fopen("{$outpath}/pastes.csv", 'w');
 $resp = $db->query("SELECT pastes.id, title, pastes.content, pastes.created_at, pastes.updated_at, users.username
 	            	FROM pastes
 			INNER JOIN users ON users.id = pastes.user_id
-			WHERE pastes.visible = '0'");
+			WHERE pastes.visible < 2 AND (NOT pastes.is_hidden)");
 
 $dumped = 0;
 $skipped = 0;
