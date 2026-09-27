@@ -18,6 +18,7 @@ $flashes = getFlashes();
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <script nonce="D4rkm0deeee">
         (() => {
+            document.documentElement.classList.add('theme-initializing');
             const savedTheme = localStorage.getItem('theme') || <?= json_encode($_COOKIE['theme'] ?? '') ?>;
 
             if (savedTheme === 'dark' || savedTheme === 'light') {
@@ -44,6 +45,11 @@ $flashes = getFlashes();
     <link href="/theme/bulma/css/table-responsive.css" rel="stylesheet"/>
     <link href="/theme/bulma/css/table-row-orders.css" rel="stylesheet"/>
     <style>
+        html.theme-initializing .theme-switch .slider,
+        html.theme-initializing .theme-switch .slider:before {
+            transition: none !important;
+        }
+
         footer h5 {
             margin: 0;
             padding: 0;
@@ -368,6 +374,11 @@ $flashes = getFlashes();
 <script nonce="D4rkm0d3">
     const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
     toggleSwitch.checked = document.documentElement.getAttribute('data-theme') === 'dark';
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            document.documentElement.classList.remove('theme-initializing');
+        });
+    });
 
     function switchTheme(e) {
         if (e.target.checked) {
