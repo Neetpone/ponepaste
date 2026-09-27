@@ -328,7 +328,7 @@ const tagsToHtml = (tags) => {
             tagColorClass = 'is-info';
         }
 
-        return `<a href="/archive?q=${tagData.slug}">
+        return `<a href="/archive?q=${encodeURIComponent(tagData.name)}">
                             <span class="tag ${tagColorClass}">${escape(tagData.name)}</span>
                         </a>`;
     }).join('');
