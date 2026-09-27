@@ -16,6 +16,15 @@ $flashes = getFlashes();
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script nonce="D4rkm0deeee">
+        (() => {
+            const savedTheme = localStorage.getItem('theme') || <?= json_encode($_COOKIE['theme'] ?? '') ?>;
+
+            if (savedTheme === 'dark' || savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        })();
+    </script>
 
     <title>
         <?php
@@ -358,15 +367,7 @@ $flashes = getFlashes();
 </script>
 <script nonce="D4rkm0d3">
     const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
-    const currentTheme = localStorage.getItem('theme') || "<?= @$_COOKIE['theme'] ?>";
-
-    if (currentTheme) {
-        document.documentElement.setAttribute('data-theme', currentTheme);
-
-        if (currentTheme === 'dark') {
-            toggleSwitch.checked = true;
-        }
-    }
+    toggleSwitch.checked = document.documentElement.getAttribute('data-theme') === 'dark';
 
     function switchTheme(e) {
         if (e.target.checked) {
