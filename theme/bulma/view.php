@@ -132,7 +132,7 @@ ITEM;
                                     <?php foreach ($lines as $num => $line):
                                         $line = trim($line); ?>
                                         <li class="<?= $num == 0 ? 'li1 ln-xtra' : 'li1' ?>" id="<?= $num + 1 ?>">
-                                            <a href="#<?= $num + 1 ?>"><?= $num + 1 ?>.</a>
+                                            <a href="#<?= $num + 1 ?>" class="ln"><?= $num + 1 ?>.</a>
                                             <div class="de1">
                                                 <?= $line === '' ? '&nbsp;' : linkify($line) ?>
                                             </div>
