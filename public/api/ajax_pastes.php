@@ -7,7 +7,7 @@ use PonePaste\Models\Paste;
 
 header('Content-Type: application/json; charset=UTF-8');
 
-if ($redis->exists(Paste::AJAX_PASTES_CACHE_KEY)) {
+if (!PP_DEBUG && $redis->exists(Paste::AJAX_PASTES_CACHE_KEY)) {
     echo $redis->get(Paste::AJAX_PASTES_CACHE_KEY);
     die;
 }
@@ -19,7 +19,7 @@ $pastes = Paste::with([
     'tags' => function($query) {
         $query->select('tags.id', 'name', 'slug');
     }
-])->select(['id', 'user_id', 'title', 'expiry', 'created_at', 'updated_at', 'visible'])
+])->select(['id', 'user_id', 'title', 'expiry', 'created_at', 'updated_at', 'visible', 'code'])
     ->where('visible', '!=', Paste::VISIBILITY_PRIVATE)
     ->where('is_hidden', false)
     ->where('password', null)
@@ -34,6 +34,11 @@ $pastes_json = json_encode(['data' => $pastes->map(function($paste) {
         'updated_at' => $paste->updated_at ?? $paste->created_at,
         'visibility' => $paste->visible,
         'title' => $paste->title,
+        'format' => match ($paste->code) {
+            'text', 'plaintext' => 'plaintext',
+            'pastedown_old', 'pastedown' => 'pastedown',
+            default => 'green',
+        },
         'author' => $paste->user->username,
         'author_id' => $paste->user->id,
         'tags' => $paste->tags->map(function($tag) {
@@ -42,6 +47,8 @@ $pastes_json = json_encode(['data' => $pastes->map(function($paste) {
     ];
 })]);
 
-$redis->setEx(Paste::AJAX_PASTES_CACHE_KEY, 3600, $pastes_json);
+if (!PP_DEBUG) {
+    $redis->setEx(Paste::AJAX_PASTES_CACHE_KEY, 3600, $pastes_json);
+}
 
 echo $pastes_json;
