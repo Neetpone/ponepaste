@@ -361,7 +361,7 @@ table.hidden + .loading_container {
     line-height: 22px;
 }
 
-.content ol li a {
+.content ol li a.ln {
     min-width: 1.5em;
     text-decoration: none;
     color: #B0B0B0;
