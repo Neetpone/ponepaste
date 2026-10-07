@@ -75,10 +75,15 @@ function linkify($value, $protocols = array('http', 'mail'), array $attributes =
     // Extract text links for each protocol
     foreach ((array) $protocols as $protocol) {
         $value = match ($protocol) {
-            'http', 'https' => preg_replace_callback('~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) {
-                if ($match[1]) $protocol = $match[1];
-                $link = $match[2] ?: $match[3];
-                return '<' . array_push($links, "<a $attr href=\"$protocol://$link\">$protocol://$link</a>") . '>';
+            'http', 'https' => preg_replace_callback('~(\(\s*)?(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) {
+                if ($match[2]) $protocol = $match[2];
+                $link = $match[3] ?: $match[4];
+                $closing_parenthesis = '';
+                if ($match[1] !== '' && str_ends_with($link, ')')) {
+                    $link = substr($link, 0, -1);
+                    $closing_parenthesis = ')';
+                }
+                return $match[1] . '<' . array_push($links, "<a $attr href=\"$protocol://$link\">$protocol://$link</a>") . '>' . $closing_parenthesis;
             }, $value),
             default => preg_replace_callback('~' . preg_quote($protocol, '~') . '://([^\s<]+?)(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) {
                 return '<' . array_push($links, "<a $attr href=\"$protocol://{$match[1]}\">$protocol://{$match[1]}</a>") . '>';
