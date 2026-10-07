@@ -23,8 +23,8 @@ const PP_REVERSE_PROXY = false;
 
 /* Redis credentials */
 const PP_REDIS_HOST = '127.0.0.1';
-const PP_REDIS_DB = 'ponepaste';
 
+/* Database credentials */
 $db_host = 'localhost';
 $db_schema = 'ponepaste';
 $db_user = 'ponepaste';
