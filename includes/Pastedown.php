@@ -22,6 +22,7 @@ class Pastedown extends ParsedownExtra {
                 'element' => [
                     'name' => 'span',
                     'rawHtml' => '&gt;' . $this->escapeColoredText($matches[1]),
+                    'allowRawHtmlInSafeMode' => true, // safe to do because the content is escaped by escapeColoredText()
                     'attributes' => [
                         'class' => 'greentext'
                     ]
@@ -38,6 +39,7 @@ class Pastedown extends ParsedownExtra {
                 'element' => [
                     'name' => 'span',
                     'rawHtml' => '&lt;' . $this->escapeColoredText($matches[1]),
+                    'allowRawHtmlInSafeMode' => true, // safe to do because the content is escaped by escapeColoredText()
                     'attributes' => [
                         'class' => 'redtext'
                     ]
@@ -54,6 +56,7 @@ class Pastedown extends ParsedownExtra {
                 'element' => [
                     'name' => 'span',
                     'rawHtml' => '&#64;' . $this->escapeColoredText($matches[1]),
+                    'allowRawHtmlInSafeMode' => true, // safe to do because the content is escaped by escapeColoredText()
                     'attributes' => [
                         'class' => 'purpletext'
                     ]

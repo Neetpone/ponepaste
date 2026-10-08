@@ -37,6 +37,18 @@ final class PastedownTest extends TestCase
         );
     }
 
+    public function testColoredTextInSafeMode(): void
+    {
+        $parser = new Pastedown();
+        $parser->setSafeMode(true);
+        $html = $parser->text('>hello & world <div></div>');
+
+        self::assertStringContainsString(
+            '<p><span class="greentext">&gt;hello &amp; world &lt;div&gt;&lt;/div&gt;</span></p>',
+            $html
+        );
+    }
+
     public function testGreentextInline(): void
     {
         $html = (new Pastedown())->text('inline is not greentext >hello');
