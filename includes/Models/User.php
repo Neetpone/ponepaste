@@ -23,6 +23,14 @@ class User extends Model {
 
     public function pastes() {
         return $this->hasMany(Paste::class)
+            ->where('is_hidden', false)
+            ->where(function ($query) {
+                $query->whereNull('title')
+                    ->orWhere('title', '!=', Paste::MODERATION_REMOVAL_TITLE)
+                    ->orWhereNull('content')
+                    ->orWhere('content', '!=', '')
+                    ->orWhereHas('tags');
+            })
             ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
     }
 

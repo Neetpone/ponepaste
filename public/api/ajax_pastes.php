@@ -2,7 +2,7 @@
 /** @noinspection PhpDefineCanBeReplacedWithConstInspection */
 define('IN_PONEPASTE', 1);
 require_once(__DIR__ . '/../../includes/common.php');
-
+use Illuminate\Database\Eloquent\Builder;
 use PonePaste\Models\Paste;
 
 header('Content-Type: application/json; charset=UTF-8');
@@ -24,6 +24,13 @@ $pastes = Paste::with([
     ->where('is_hidden', false)
     ->where('password', null)
     ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
+    ->where(function (Builder $query) {
+        $query->whereNull('title')
+            ->orWhere('title', '!=', Paste::MODERATION_REMOVAL_TITLE)
+            ->orWhereNull('content')
+            ->orWhere('content', '!=', '')
+            ->orWhereHas('tags');
+    })
     ->orderBy('id', 'desc')
     ->get();
 

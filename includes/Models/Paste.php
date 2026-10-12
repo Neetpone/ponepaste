@@ -10,6 +10,7 @@ class Paste extends Model {
     public const int VISIBILITY_PUBLIC   = 0;
     public const int VISIBILITY_UNLISTED = 1;
     public const int VISIBILITY_PRIVATE  = 2;
+    public const string MODERATION_REMOVAL_TITLE = 'Removed by moderator';
     public const string AJAX_PASTES_CACHE_KEY = 'ajax_pastes:v3';
 
     protected $table = 'pastes';
@@ -150,6 +151,13 @@ class Paste extends Model {
             ->where('visible', self::VISIBILITY_PUBLIC)
             ->where('is_hidden', false)
             ->where('password', null)
+            ->where(function (Builder $query) {
+                $query->whereNull('title')
+                    ->orWhere('title', '!=', self::MODERATION_REMOVAL_TITLE)
+                    ->orWhereNull('content')
+                    ->orWhere('content', '!=', '')
+                    ->orWhereHas('tags');
+            })
             ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
     }
 }
