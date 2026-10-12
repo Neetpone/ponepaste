@@ -40,4 +40,8 @@ const PP_HIGHLIGHT_FORMATS = [
     'pastedown' => 'pastedown'
 ];
 
+// set to true if the site is behind a reverse proxy like Cloudflare
+const PP_BEHIND_REVERSE_PROXY = false;
+const PP_REMOTE_ADDR_HEADER = 'CF-CONNECTING-IP';
+
 // Cookie - I want a cookie, can I have one?

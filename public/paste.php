@@ -237,10 +237,26 @@ if (isset($_GET['embed'])) {
 }
 
 // View counter
+# only count unique views per IP if not visited this paste for 24 hours
+# crude, but avoids counting it as a new view if someone is refreshing two pages back-to-back (thus overriding not_unique value in the session)
+$remote_ip = $_SERVER['REMOTE_ADDR'];
+# if it has a reverse proxy header, use that
+if (PP_BEHIND_REVERSE_PROXY && isset($_SERVER[PP_REMOTE_ADDR_HEADER])) {
+    $remote_ip = $_SERVER[PP_REMOTE_ADDR_HEADER];
+}
+# calculate the view key, hash it so the raw IP is not stored
+$paste_view_key = "paste_view_" . hash('sha256', $paste->id . "_" . $remote_ip);
+
 if (!isRequesterLikelyBot() && @$_SESSION['not_unique'] !== $paste->id) {
     $_SESSION['not_unique'] = $paste->id;
-    $paste->views += 1;
-    $paste->save();
+
+    if ($redis->set($paste_view_key, '1', ['nx', 'ex' => 86400])) {
+        Paste::whereKey($paste->id)->increment('views');
+        // optimistically increment it locally, if it's off by one (due to concurrent updates), the user won't notice
+        $paste->views += 1;
+    } else {
+        $redis->expire($paste_view_key, 86400);
+    }
 }
 
 $page_title = $paste->title;
