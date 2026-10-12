@@ -79,7 +79,7 @@ if (!can('view', $paste)) {
 
     goto Not_Valid_Paste;
 } else if ($paste->title === "Removed by moderator" && $p_content === "" && count($paste->tags) === 0 ) {
-    // hack: this handles the "Blank Paste Contents" state (no separate flag)
+    // This handles the "Blank Paste Contents" state (no separate flag exist for this)
     $error = 'This paste has been removed by the moderation team.';
     goto Not_Valid_Paste;
 }

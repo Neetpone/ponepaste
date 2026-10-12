@@ -2,7 +2,6 @@
 /** @noinspection PhpDefineCanBeReplacedWithConstInspection */
 define('IN_PONEPASTE', 1);
 require_once(__DIR__ . '/../includes/common.php');
-use Illuminate\Database\Eloquent\Builder;
 use PonePaste\Models\Paste;
 
 $per_page = 20;
@@ -29,17 +28,7 @@ $pastes = Paste::with([
         $q->select('tags.id', 'name', 'slug');
     }])
     ->select('id', 'user_id', 'title', 'created_at', 'updated_at')
-    ->where('visible', Paste::VISIBILITY_PUBLIC)
-    ->where('is_hidden', false)
-    ->where('password', null)
-    ->where(function (Builder $query) {
-        $query->whereNull('title')
-            ->orWhere('title', '!=', Paste::MODERATION_REMOVAL_TITLE)
-            ->orWhereNull('content')
-            ->orWhere('content', '!=', '')
-            ->orWhereHas('tags');
-    })
-    ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
+    ->publiclyVisible();
 
 $total_untagged = (clone $pastes)->doesntHave('tags')->count();
 

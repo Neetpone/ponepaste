@@ -18,20 +18,12 @@ class User extends Model {
 
     public function favourites() {
         return $this->belongsToMany(Paste::class, 'user_favourites')->withPivot('created_at')
-            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
+            ->availableForListing();
     }
 
     public function pastes() {
         return $this->hasMany(Paste::class)
-            ->where('is_hidden', false)
-            ->where(function ($query) {
-                $query->whereNull('title')
-                    ->orWhere('title', '!=', Paste::MODERATION_REMOVAL_TITLE)
-                    ->orWhereNull('content')
-                    ->orWhere('content', '!=', '')
-                    ->orWhereHas('tags');
-            })
-            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
+            ->availableForListing();
     }
 
     public function badges() {
