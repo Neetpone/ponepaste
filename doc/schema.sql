@@ -138,7 +138,7 @@ CREATE TABLE `pastes` (
                           `password` longtext DEFAULT NULL,
                           `encrypt` longtext DEFAULT NULL,
                           `ip` longtext DEFAULT NULL,
-                          `views` int(11) DEFAULT NULL,
+                          `views` int(11) NOT NULL DEFAULT 0,
                           `s_date` longtext DEFAULT NULL,
                           `tagsys` longtext DEFAULT NULL,
                           `user_id` int(11) DEFAULT NULL,
