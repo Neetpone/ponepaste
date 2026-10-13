@@ -241,7 +241,7 @@ if (isset($_GET['embed'])) {
 # crude, but avoids counting it as a new view if someone is refreshing two pages back-to-back (thus overriding not_unique value in the session)
 $remote_ip = $_SERVER['REMOTE_ADDR'];
 # if it has a reverse proxy header, use that
-if (PP_BEHIND_REVERSE_PROXY && isset($_SERVER[PP_REMOTE_ADDR_HEADER])) {
+if (PP_REMOTE_ADDR_HEADER && isset($_SERVER[PP_REMOTE_ADDR_HEADER])) {
     $remote_ip = $_SERVER[PP_REMOTE_ADDR_HEADER];
 }
 # calculate the view key, hash it so the raw IP is not stored
