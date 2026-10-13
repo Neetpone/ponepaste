@@ -139,8 +139,6 @@ CREATE TABLE `pastes` (
                           `encrypt` longtext DEFAULT NULL,
                           `ip` longtext DEFAULT NULL,
                           `views` int(11) DEFAULT NULL,
-                          `s_date` longtext DEFAULT NULL,
-                          `tagsys` longtext DEFAULT NULL,
                           `user_id` int(11) DEFAULT NULL,
                           `created_at` datetime DEFAULT NULL,
                           `updated_at` datetime DEFAULT NULL,
