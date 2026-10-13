@@ -2,7 +2,6 @@
 /** @noinspection PhpDefineCanBeReplacedWithConstInspection */
 define('IN_PONEPASTE', 1);
 require_once(__DIR__ . '/../includes/common.php');
-
 use PonePaste\Models\Paste;
 
 $per_page = 20;
@@ -29,10 +28,9 @@ $pastes = Paste::with([
         $q->select('tags.id', 'name', 'slug');
     }])
     ->select('id', 'user_id', 'title', 'created_at', 'updated_at')
-    ->where('visible', Paste::VISIBILITY_PUBLIC)
-    ->where('is_hidden', false)
-    ->where('password', null)
-    ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
+    ->publiclyVisible();
+
+$total_untagged = (clone $pastes)->doesntHave('tags')->count();
 
 if (!empty($filter_value)) {
     if ($filter_value === 'untagged') {
@@ -57,14 +55,6 @@ if ($current_page <= $max_page) {
                      ->get();
 } else {
     $pastes = null;
-}
-
-// Temp count for untagged pastes
-if ($redis->exists('total_untagged')) {
-    $total_untagged = (int) $redis->get('total_untagged');
-} else {
-    $total_untagged = Paste::doesntHave('tags')->count();
-    $redis->setEx('total_untagged', 3600, $total_untagged);
 }
 
 updatePageViews();
