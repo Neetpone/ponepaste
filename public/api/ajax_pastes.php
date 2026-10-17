@@ -11,39 +11,50 @@ if (!PP_DEBUG && $redis->exists(Paste::AJAX_PASTES_CACHE_KEY)) {
     die;
 }
 
-$pastes = Paste::with([
-    'user' => function($query) {
-        $query->select('users.id', 'username');
-    },
-    'tags' => function($query) {
-        $query->select('tags.id', 'name', 'slug');
-    }
-])->select(['id', 'user_id', 'title', 'expiry', 'created_at', 'updated_at', 'visible', 'code'])
-    ->where('visible', '!=', Paste::VISIBILITY_PRIVATE)
-    ->where('password', null)
-    ->availableForListing()
-    ->orderBy('id', 'desc')
-    ->get();
+$tag_json_query = $capsule->getConnection()->table('paste_taggings')
+    ->join('tags', 'tags.id', '=', 'paste_taggings.tag_id')
+    ->whereColumn('paste_taggings.paste_id', 'pastes.id')
+    ->selectRaw("COALESCE(JSON_ARRAYAGG(JSON_OBJECT('slug', tags.slug, 'name', tags.name)), JSON_ARRAY())");
 
-$pastes_json = json_encode(['data' => $pastes->map(function($paste) {
-    return [
+$pastes_query = Paste::query()
+    ->leftJoin('users', 'users.id', '=', 'pastes.user_id')
+    ->select([
+        'pastes.id',
+        'pastes.user_id',
+        'pastes.title',
+        'pastes.expiry',
+        'pastes.created_at',
+        'pastes.updated_at',
+        'pastes.visible',
+        'pastes.code',
+        'users.username as author'
+    ])
+    ->selectSub($tag_json_query, 'tags_json')
+    ->where('pastes.visible', '!=', Paste::VISIBILITY_PRIVATE)
+    ->whereNull('pastes.password')
+    ->availableForListing()
+    ->orderBy('pastes.id', 'desc')
+    ->toBase();
+
+$encoded_pastes = [];
+foreach ($pastes_query->cursor() as $paste) {
+    $encoded_pastes[] = json_encode([
         'id' => $paste->id,
         'created_at' => $paste->created_at,
         'updated_at' => $paste->updated_at ?? $paste->created_at,
-        'visibility' => $paste->visible,
+        'visibility' => (int) $paste->visible,
         'title' => $paste->title,
         'format' => match ($paste->code) {
             'text', 'plaintext' => 'plaintext',
             'pastedown_old', 'pastedown' => 'pastedown',
             default => 'green',
         },
-        'author' => $paste->user->username,
-        'author_id' => $paste->user->id,
-        'tags' => $paste->tags->map(function($tag) {
-            return ['slug' => $tag->slug, 'name' => $tag->name];
-        })
-    ];
-})]);
+        'author' => $paste->author,
+        'author_id' => $paste->user_id,
+        'tags' => json_decode($paste->tags_json, true, 512, JSON_THROW_ON_ERROR)
+    ], JSON_THROW_ON_ERROR);
+}
+$pastes_json = '{"data":[' . implode(',', $encoded_pastes) . ']}';
 
 if (!PP_DEBUG) {
     $redis->setEx(Paste::AJAX_PASTES_CACHE_KEY, 3600, $pastes_json);
