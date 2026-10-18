@@ -21,6 +21,11 @@ const PP_MOD_REWRITE = true;
 /* Whether we are behind a reverse proxy or not. */
 const PP_REVERSE_PROXY = false;
 
+/* If behind a reverse proxy, specify the header to use for the real client IP address */
+const PP_REMOTE_ADDR_HEADER = false; // use the default $_SERVER['REMOTE_ADDR']
+//const PP_REMOTE_ADDR_HEADER = 'X-Forwarded-For'; // generic reverse proxy header
+//const PP_REMOTE_ADDR_HEADER = 'CF-CONNECTING-IP'; // cloudflare reverse proxy header
+
 /* Redis credentials */
 const PP_REDIS_HOST = '127.0.0.1';
 

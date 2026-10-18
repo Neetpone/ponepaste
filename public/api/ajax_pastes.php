@@ -2,7 +2,6 @@
 /** @noinspection PhpDefineCanBeReplacedWithConstInspection */
 define('IN_PONEPASTE', 1);
 require_once(__DIR__ . '/../../includes/common.php');
-
 use PonePaste\Models\Paste;
 
 header('Content-Type: application/json; charset=UTF-8');
@@ -21,9 +20,8 @@ $pastes = Paste::with([
     }
 ])->select(['id', 'user_id', 'title', 'expiry', 'created_at', 'updated_at', 'visible', 'code'])
     ->where('visible', '!=', Paste::VISIBILITY_PRIVATE)
-    ->where('is_hidden', false)
     ->where('password', null)
-    ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))")
+    ->availableForListing()
     ->orderBy('id', 'desc')
     ->get();
 

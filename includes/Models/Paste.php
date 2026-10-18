@@ -10,6 +10,7 @@ class Paste extends Model {
     public const int VISIBILITY_PUBLIC   = 0;
     public const int VISIBILITY_UNLISTED = 1;
     public const int VISIBILITY_PRIVATE  = 2;
+    public const string MODERATION_REMOVAL_TITLE = 'Removed by moderator';
     public const string AJAX_PASTES_CACHE_KEY = 'ajax_pastes:v3';
 
     protected $table = 'pastes';
@@ -40,6 +41,28 @@ class Paste extends Model {
 
     public function reports() {
         return $this->hasMany(Report::class);
+    }
+
+    public function scopeNotExpired(Builder $query): Builder {
+        return $query->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
+    }
+
+    public function scopeAvailableForListing(Builder $query): Builder {
+        return $query->where('is_hidden', false)
+            ->where(function (Builder $query) {
+                $query->whereNull('title')
+                    ->orWhere('title', '!=', self::MODERATION_REMOVAL_TITLE)
+                    ->orWhereNull('content')
+                    ->orWhere('content', '!=', '')
+                    ->orWhereHas('tags');
+            })
+            ->notExpired();
+    }
+
+    public function scopePubliclyVisible(Builder $query): Builder {
+        return $query->where('visible', self::VISIBILITY_PUBLIC)
+            ->where('password', null)
+            ->availableForListing();
     }
 
     public function replaceTags(array $tags) : void {
@@ -147,9 +170,6 @@ class Paste extends Model {
      */
     private static function publiclyVisible() : Builder {
         return Paste::with('user')
-            ->where('visible', self::VISIBILITY_PUBLIC)
-            ->where('is_hidden', false)
-            ->where('password', null)
-            ->whereRaw("((expiry IS NULL) OR ((expiry != 'SELF') AND (expiry > NOW())))");
+            ->publiclyVisible();
     }
 }
