@@ -38,10 +38,10 @@ if (isset($_POST['forgot'])) {
 
             $success = 'Your password has been changed. A new recovery code has also been generated. Please note the recovery code and then sign in with the new password.';
         } else {
-            $error = 'Incorrect username or recovery code.';
+            flashError('Incorrect username or recovery code.');
         }
     } else {
-        $error = 'All fields must be filled out.';
+        flashError('All fields must be filled out.');
     }
 } elseif (isset($_POST['signin'])) { // Login process
     if (!empty($_POST['username']) && !empty($_POST['password'])) {
@@ -73,7 +73,7 @@ if (isset($_POST['forgot'])) {
             }
 
             if ($user->banned) {
-                $error = 'You are banned.';
+                flashError('You are banned.');
             } else {
                 // Login successful - regenerate session ID to prevent session fixation
                 // session_regenerate_id(true);
@@ -104,28 +104,27 @@ if (isset($_POST['forgot'])) {
         }
 
         if (!$password_ok) {
-            // Username not found or password incorrect.
-            $error = 'Incorrect username or password.';
+            flashError('Incorrect username or password.');
         }
     } else {
-        $error = 'All fields must be filled out.';
+        flashError('All fields must be filled out.');
     }
 } elseif (isset($_POST['signup'])) { // Registration process
     $username = trim($_POST['username']);
     $password = pp_password_hash($_POST['password']);
 
     if ($captcha_enabled && !checkCaptcha($_POST['captcha_token'], trim($_POST['captcha_answer']))) {
-        $error = 'Incorrect CAPTCHA.';
+        flashError('Incorrect CAPTCHA.');
     } elseif (empty($_POST['password']) || empty($_POST['username'])) {
-        $error = 'All fields must be filled out.';
+        flashError('All fields must be filled out.');
     } elseif (strlen($_POST['password']) < 8) {
-        $error = 'Password must be at least 8 characters long.';
+        flashError('Password must be at least 8 characters long.');
     } elseif (strlen($username) > 25) {
-        $error = 'Username too long.';
+        flashError('Username too long.');
     } elseif (!preg_match('/^[A-Za-z0-9._\\-]+$/', $username)) {
-        $error = 'Username is invalid - please use A-Za-z0-9, periods, hyphens, and underscores only.';
+        flashError('Username is invalid - please use A-Za-z0-9, periods, hyphens, and underscores only.');
     } elseif (User::where('username', $username)->first()) {
-        $error = 'That username has already been taken.';
+        flashError('That username has already been taken.');
     } else {
         /* this is displayed to the user in the template, hence the variable rather than inlining */
         $recovery_code = pp_random_friendly_token();

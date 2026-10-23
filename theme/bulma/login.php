@@ -21,9 +21,6 @@
                         <p>If you do not save this code, and you forget your password, there is no way to get your
                             account back!</p>
                     <?php endif; ?>
-                <?php elseif (isset($error)): ?>
-                    <div class="notification is-info"><i class="fa fa-exclamation-circle"
-                                                         aria-hidden="true"></i><?= pp_html_escape($error); ?></p></div>
                 <?php endif; ?>
                 <?php outputFlashes($flashes); ?>
                 <?php if (isset($_GET['register'])) { ?>

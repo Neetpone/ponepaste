@@ -137,7 +137,7 @@ function getFlashes() {
 function outputFlashes($flashes) : void {
     function __outputFlash($level, $flash) : void {
         echo '<div class="notification is-' . $level . ' flash">
-                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>'
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i> '
             . pp_html_escape($flash) .
             '</div>';
     }
