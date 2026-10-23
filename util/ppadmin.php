@@ -29,15 +29,28 @@ function prompt_silent($prompt = "Enter Password:") {
 }
 
 if (count($argv) != 2) {
-    die("usage: {$argv[0]} hashpw");
+    die("usage: {$argv[0]} <hashpw/checkpw/gentoken>");
 }
 
-$password = prompt_silent('Password to hash (will not be echoed): ');
+if ($argv[1] === 'hashpw') {
+    $password = prompt_silent('Password to hash (will not be echoed): ');
 
-if (empty($password)) {
-    die('Error: no password entered, or password prompting failed.');
+    if (empty($password)) {
+        die('Error: no password entered, or password prompting failed.');
+    }
+
+    echo pp_password_hash($password);
+} elseif ($argv[1] === 'checkpw') {
+    $password = prompt_silent('Password to check (will not be echoed): ');
+    $hash = prompt_silent('Hash to check against (will not be echoed): ');
+
+    if (empty($password) || empty($hash)) {
+        die('Error: no password or no hash entered, or prompting failed.');
+    }
+
+    echo pp_password_verify($password, $hash) ? 'ok' : 'fail';
+} else if ($argv[1] === 'gentoken') {
+    echo pp_random_friendly_token();
 }
-
-echo pp_password_hash($password);
 ?>
 
