@@ -8,6 +8,7 @@ require_once(__DIR__ . '/functions.php');
 require_once(__DIR__ . '/passwords.php');
 require_once(__DIR__ . '/captcha.php');
 
+use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use PonePaste\Helpers\SessionHelper;
 use PonePaste\Models\IPBan;
@@ -280,6 +281,10 @@ $capsule->addConnection([
 ]);
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
+
+if (PP_DEBUG && PP_QUERY_LOG) {
+    DB::connection()->enableQueryLog();
+}
 
 // Check if IP is banned
 $ip = $_SERVER['REMOTE_ADDR'];

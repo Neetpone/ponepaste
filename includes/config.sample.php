@@ -9,6 +9,8 @@ if (PP_DEBUG) {
     ini_set('display_errors', 0);
 }
 
+const PP_QUERY_LOG = false;
+
 /* Maximum paste size in bytes */
 const PP_PASTE_LIMIT_BYTES = 1048576;
 

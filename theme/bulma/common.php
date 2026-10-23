@@ -3,6 +3,7 @@
 
 use PonePaste\Models\Report;
 use PonePaste\Models\User;
+use Illuminate\Database\Capsule\Manager as DB;
 
 $template_candidates = scandir(__DIR__);
 if (!in_array($page_template . '.php', $template_candidates)) {
@@ -344,6 +345,13 @@ $flashes = getFlashes();
             </div>
         </div>
     </div>
+    <?php if (PP_DEBUG && PP_QUERY_LOG): ?>
+        <pre>
+            <?php foreach (DB::getQueryLog() as $query): ?>
+                <?= sprintf('%.2f', $query['time']) ?> <?= $query['query'] . "\n" ?>
+            <?php endforeach; ?>
+        </pre>
+    <?php endif; ?>
 </footer>
 
 <script src="/theme/bulma/js/paste.js"></script>
