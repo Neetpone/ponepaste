@@ -65,6 +65,15 @@ class Paste extends Model {
             ->availableForListing();
     }
 
+    public function scopeForSummary(Builder $query): Builder {
+        return $query->select('id', 'title', 'created_at', 'updated_at', 'user_id')
+            ->with(['user' => function ($q) {
+                return $q->select('users.id', 'username');
+            }, 'tags' => function ($q) {
+                return $q->select('tags.id', 'name', 'slug');
+            }]);
+    }
+
     public function replaceTags(array $tags) : void {
         $this->tags()->detach();
 
@@ -106,6 +115,7 @@ class Paste extends Model {
 
     public static function getRecent(int $count = 10) : Collection {
         return self::publiclyVisible()
+            ->forSummary()
             ->orderBy('created_at', 'DESC')
             ->limit($count)
             ->get();
@@ -113,6 +123,7 @@ class Paste extends Model {
 
     public static function getRecentlyUpdated(int $count = 10) : Collection {
         return self::publiclyVisible()
+            ->forSummary()
             ->whereNotNull('updated_at')
             ->orderBy('updated_at', 'DESC')
             ->limit($count)
@@ -121,6 +132,7 @@ class Paste extends Model {
 
     public static function getMostViewed(int $count = 10) : Collection {
         return self::publiclyVisible()
+            ->forSummary()
             ->orderBy('views', 'desc')
             ->limit($count)
             ->get();
@@ -128,6 +140,7 @@ class Paste extends Model {
 
     public static function getMonthPopular(int $count = 10) : Collection {
         return self::publiclyVisible()
+            ->forSummary()
             ->whereRaw('EXTRACT(YEAR_MONTH FROM created_at) = EXTRACT(YEAR_MONTH FROM NOW())')
             ->orderBy('views', 'desc')
             ->limit($count)
@@ -145,6 +158,7 @@ class Paste extends Model {
      */
     public static function getRandom(int $count = 10) : Collection {
         $candidates = self::publiclyVisible()
+                           ->select('id')
                            ->pluck('id')
                            ->toArray();
         $count = min($count, count($candidates));
@@ -157,7 +171,7 @@ class Paste extends Model {
 
         $random_ids = array_slice($candidates, 0, $count);
 
-        return Paste::with('user')
+        return Paste::forSummary()
                     ->whereIn('id', $random_ids)
                     ->get();
     }
