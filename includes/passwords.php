@@ -1,5 +1,6 @@
 <?php
 require_once(__DIR__ . '/config.php');
+require_once(__DIR__ . '/functions.php');
 
 function pp_password_hash(string $password) : string {
     return 'P' . password_hash($password . PP_PASSWORD_PEPPER, PASSWORD_BCRYPT);

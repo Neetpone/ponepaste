@@ -87,7 +87,7 @@
                                 not suitable for those aged under 18.</p>
                         </div>
                     </form>
-                <?php } elseif (isset($_GET['forgotpassw'])) { ?>
+                <?php } elseif (isset($_GET['forgot'])) { ?>
                     <form action="/forgot" method="post">
                         <div class="columns">
                             <div class="column">
@@ -106,7 +106,7 @@
                                 <div class="field">
                                     <label class="label">Recovery Code</label>
                                     <div class="control has-icons-left has-icons-right">
-                                        <input type="password" class="input" name="recovery_code"
+                                        <input type="recovery_code" class="input" name="recovery_code"
                                                placeholder="Recovery code">
                                         <span class="icon is-small is-left">
 											<i class="fas fa-key"></i>
@@ -114,7 +114,7 @@
                                     </div>
                                 </div>
                                 <div class="field">
-                                    <input class="button" type="submit" name="forgot"/>
+                                    <input class="button is-info" type="submit" name="forgot" value="Reset Password" />
                                 </div>
                             </div>
                             <div class="column">

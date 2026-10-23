@@ -22,9 +22,11 @@ if (isset($_POST['forgot'])) {
         $recovery_code = trim($_POST['recovery_code']);
 
         $user = User::select('id', 'recovery_code_hash')
-                    ->where('username', $username);
+                    ->where('username', $username)
+                    ->first();
+
         /* see justification below for error-suppression operator */
-        if (pp_password_verify($_POST['recovery_code'], @$user->recovery_code_hash)) {
+        if (pp_password_verify($_POST['recovery_code'], @$user->recovery_code_hash ?: '')) {
             $new_password = pp_random_password();
             $new_password_hash = pp_password_hash($new_password);
 
