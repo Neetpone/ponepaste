@@ -180,7 +180,11 @@ if (can('mark', $paste)) {
 }
 
 $render_cache_key = 'paste_render:v1:' . $paste->id;
-$cached_render = json_decode($redis->get($render_cache_key) ?: '', true);
+if (!PP_DEBUG) {
+    $cached_render = json_decode($redis->get($render_cache_key) ?: '', true);
+} else {
+    $cached_render = null; // Disable cache for debugging purposes
+}
 
 if ($cached_render) {
     $paste_code = $cached_render['code'];

@@ -142,7 +142,7 @@ ITEM;
                             </div>
                         </div>
                     <?php else: ?>
-                        <div id="paste" style="line-height: 18px;"><?= $p_content ?></div>
+                        <div id="paste" class="pastedown" style="line-height: 18px;"><?= $p_content ?></div>
                     <?php endif; ?>
                 </div>
                 <?php if (can('hide', $paste)): ?>

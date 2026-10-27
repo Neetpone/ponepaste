@@ -23,6 +23,32 @@
     color: white !important;
 }
 
+#paste.pastedown [id^="fn:"]:target,
+#paste.pastedown [id^="fnref"]:target {
+    animation: linked-element-highlight 2s ease-out;
+}
+
+#paste.pastedown h1:target,
+#paste.pastedown h2:target,
+#paste.pastedown h3:target,
+#paste.pastedown h4:target,
+#paste.pastedown h5:target,
+#paste.pastedown h6:target {
+    animation: linked-element-highlight 2s ease-out;
+}
+
+@keyframes linked-element-highlight {
+    from {
+        background-color: gray;
+        border-radius: 5px;
+    }
+
+    to {
+        background-color: unset;
+        border-radius: 5px;
+    }
+}
+
 .theme-switch-wrapper {
     display: flex;
     align-items: center;
